@@ -1,0 +1,49 @@
+# Pipeline /.devops/pipeline-build-devops-ci.yml
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - dev
+      - feature/*
+      - hotfix/*
+      - release/*
+pr:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+name: CI-$(date:yyyyMMdd)$(rev:.r)
+jobs:
+  - job: Package
+    displayName: Package job
+    steps:
+    - task: PowerShell@2
+      displayName: Parse project.xml
+      inputs:
+        filePath: '$(System.DefaultWorkingDirectory)/code/file-system/Read-ProjectXml.ps1'
+        arguments: '-DevOpsPlatformCode ADO'
+    - task: CopyFiles@2
+      displayName: Copy files to artifact folder
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '*'
+        TargetFolder: '$(System.DefaultWorkingDirectory)/code'
+    - task: ArchiveFiles@2
+      displayName: Zip artifact files
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/code'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+        replaceExistingArchive: true
+    - task: PublishBuildArtifacts@1
+      displayName: Publish artifact devops-toolset
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+        ArtifactName: 'devops-toolset'
+        publishLocation: 'Container'
