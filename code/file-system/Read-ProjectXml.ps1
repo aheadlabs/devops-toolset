@@ -13,7 +13,7 @@ Param(
 $ProjectFile = "project.xml"
 
 # Find project root and project file
-.".\Get-ProjectRoot.ps1"
+."$PSScriptRoot\Get-ProjectRoot.ps1"
 $ProjectRoot = Get-ProjectRoot -File $ProjectFile
 
 # Add tools
