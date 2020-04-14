@@ -1,10 +1,11 @@
 # DevOps Toolset
 ![Build status](https://img.shields.io/azure-devops/build/aheadlabs/DevOps-toolset/6)
-![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)
-![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)
 ![Repo size](https://img.shields.io/github/repo-size/aheadlabs/devops-toolset)
-![License](https://img.shields.io/github/license/aheadlabs/devops-toolset)
-![]()
+![Top language](https://img.shields.io/github/languages/top/aheadlabs/devops-toolset)
+![License](https://img.shields.io/github/license/aheadlabs/devops-toolset)  
+![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)
+![Release date](https://img.shields.io/github/release-date/aheadlabs/devops-toolset)
+![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)
 <br>
 
 General purpose DevOps-related scripts and tools.<br><br>
