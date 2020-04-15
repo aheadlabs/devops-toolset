@@ -17,10 +17,10 @@ $ProjectFile = "project.xml"
 $ProjectRoot = Get-ProjectRoot -File $ProjectFile
 
 # Add tools
-."$ProjectRoot\code\.tools\Convert-XmlToJson.ps1"
+."$ProjectRoot\.tools\Convert-XmlToJson.ps1"
 
 # Add platform specific logic
-."$ProjectRoot\code\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
+."$ProjectRoot\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
 
 # Read the project file
 [XML]$Content = (Get-Content -Path "$ProjectRoot\$ProjectFile" -Raw)
