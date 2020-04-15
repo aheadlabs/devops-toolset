@@ -36,7 +36,7 @@ jobs:
     - task: ArchiveFiles@2
       displayName: Zip artifact files
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/code'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
