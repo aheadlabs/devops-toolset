@@ -25,18 +25,22 @@ jobs:
     - task: PowerShell@2
       displayName: Parse project.xml
       inputs:
-        filePath: '$(System.DefaultWorkingDirectory)/code/file-system/Read-ProjectXml.ps1'
+        filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
     - task: CopyFiles@2
       displayName: Copy files to artifact folder
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
-        Contents: '*'
-        TargetFolder: '$(System.DefaultWorkingDirectory)/code'
+        Contents: |
+          *
+          !.devops**
+          !.media**
+          !.gitignore
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/_artifact'
     - task: ArchiveFiles@2
       displayName: Zip artifact files
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/code'
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_artifact'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
