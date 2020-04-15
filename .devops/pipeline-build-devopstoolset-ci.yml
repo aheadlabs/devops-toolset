@@ -32,9 +32,10 @@ jobs:
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: |
-          *
-          !.devops**
-          !.media**
+          **
+          !.git/**
+          !.devops/**
+          !.media/**
           !.gitignore
         TargetFolder: '$(Build.ArtifactStagingDirectory)/_artifact'
     - task: ArchiveFiles@2
