@@ -19,12 +19,12 @@ Param(
 )
 
 # Set latest version if not provided
-if ([String]::IsNullOrEmpty($Version) {
+if ([String]::IsNullOrEmpty($Version)) {
     $Version = 'latest'
 }
 
 # Set en_US locale if not provided
-if ([String]::IsNullOrEmpty($Locale) {
+if ([String]::IsNullOrEmpty($Locale)) {
     $Version = 'en_US'
 }
 
