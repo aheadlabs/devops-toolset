@@ -17,7 +17,7 @@ $ProjectFile = "project.xml"
 $ProjectRoot = Get-ProjectRoot -File $ProjectFile
 
 # Add tools
-."$ProjectRoot\.tools\Convert-XmlToJson.ps1"
+."$ProjectRoot\.tools\Convert-ToJson.ps1"
 
 # Add platform specific logic
 ."$ProjectRoot\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
@@ -28,6 +28,6 @@ $ProjectRoot = Get-ProjectRoot -File $ProjectFile
 # Convert to JSON key-value pairs
 $EnvironmentVariables = (Convert-XmlToJsonKeyValuePairs -XmlDocument $Content) | ConvertFrom-Json
 
-# Generate key-value pairs
+# Create environment variables
 CreateEnvironmentVariables $EnvironmentVariables
 LogEnvironmentVariables $EnvironmentVariables

@@ -27,18 +27,16 @@
     Output:
     -------
 
-    {
-        "project":[
-            {
-                "key":"name",
-                "value":"devops-toolset"
-            },
-            {
-                "key":"version",
-                "value":"1.6.0"
-            }
-        ]
-    }
+    [
+        {
+            "key":"name",
+            "value":"devops-toolset"
+        },
+        {
+            "key":"version",
+            "value":"1.6.0"
+        }
+    ]
 #>
 function Convert-XmlToJsonKeyValuePairs {
     [CmdletBinding()]
@@ -53,7 +51,7 @@ function Convert-XmlToJsonKeyValuePairs {
     $TextInfo = (Get-Culture).TextInfo
 
     # Set everything up at root level
-    $DocumentElement = $Content.DocumentElement
+    $DocumentElement = $XmlDocument.DocumentElement
     $TrailingName = $TextInfo.ToTitleCase($DocumentElement.LocalName)
     
     if ($DocumentElement.HasChildNodes) {
