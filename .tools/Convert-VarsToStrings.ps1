@@ -47,3 +47,54 @@ function Convert-WpCliConfigCreateAutoUpdateCore {
         return "$AutoUpdateCore --raw"
     }
 }
+
+function Convert-WpCliCoreInstallSkipEmail {
+    [CmdletBinding()]
+    param (
+        # E-mail
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$AdminPassword
+    )
+
+    if ($AdminPassword) {
+        return "--admin-password=`"$AdminPassword`" --skip-email"
+    }
+    else {
+        return ""
+    }
+}
+
+function Get-WpCliCoreDownloadVersion {
+    [CmdletBinding()]
+    param (
+        # Version (latest by default)
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$Version
+    )
+    
+    if ($Version) {
+        return "$Version"
+    }
+    else {
+        return "latest"
+    }
+}
+
+function Get-WpCliCoreDownloadLocale {
+    [CmdletBinding()]
+    param (
+        # Locale (en_US by default)
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$Locale
+    )
+    
+    if ($Locale) {
+        return "$Locale"
+    }
+    else {
+        return "en_US"
+    }
+}

@@ -23,9 +23,19 @@
         "settings": {
             "type":"object",
             "properties": {
+                "title":{"type":"string"},
+                "description":{"type":"string"},
                 "version":{"type":"string","format":"hostname"},
                 "locale":{"type":"string"},
                 "site_url":{"type":"string","format":"uri"},
+                "admin":{
+                    "type":"object",
+                    "properties": {
+                        "user":{"type":"string"},
+                        "email":{"type":"string"}
+                    },
+                    "required": ["user","email"]
+                },
                 "content_url":{"type":"string","format":"uri"},
                 "plugin_url":{"type":"string","format":"uri"},
                 "noblogredirect_url":{"type":"string","format":"uri"},
@@ -44,10 +54,10 @@
             },
             "additionalProperties": false,
             "additionalItems": false,
-            "required": ["version","locale","site_url","content_url","plugin_url","noblogredirect_url",
-                "disable_fatal_error_handler_and_debug_display","concatenate_scripts","cache","save_queries",
-                "empty_trash_days","disallow_file_edit","disallow_file_mods","force_ssl_admin",
-                "http_block_external","auto_update_core","image_edit_overwrite"]
+            "required": ["title","description","version","locale","site_url","admin","content_url","plugin_url",
+                "noblogredirect_url","disable_fatal_error_handler_and_debug_display","concatenate_scripts",
+                "cache","save_queries","empty_trash_days","disallow_file_edit","disallow_file_mods",
+                "force_ssl_admin","http_block_external","auto_update_core","image_edit_overwrite"]
         },
         "themes": {
             "type":"object"
