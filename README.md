@@ -4,8 +4,9 @@
 ![Top language](https://img.shields.io/github/languages/top/aheadlabs/devops-toolset)
 ![License](https://img.shields.io/github/license/aheadlabs/devops-toolset)  
 ![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)
-![Release date](https://img.shields.io/github/release-date/aheadlabs/devops-toolset)
-![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)
+![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)  
+![Liberapay](https://img.shields.io/liberapay/receives/ahead-labs?logo=liberapay)
+![Liberapay button](https://liberapay.com/assets/widgets/donate.svg)
 <br>
 
 General purpose DevOps-related scripts and tools.<br><br>
@@ -24,8 +25,10 @@ i.e.: /wordpress/SetConfigValues.ps1 for /code/wordpress/SetConfigValues.ps1
 | Directory / file | Description |
 | -- | -- |
 | /.devops | Contains pipeline definitions for the project |
+| /.devops-platform-specific | Contains platform-specific code |
 | /.media | Contains media files |
-| /code | Contains scripts and tools in different formats, grouped by categories |
+| /.tools | Contains helpers and tools used in scripts |
+| /\<category\> | Contains scripts and tools in different formats, grouped by categories |
 | /project.xml | Project description and project version |
 
 # Troubleshooting
