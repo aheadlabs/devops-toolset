@@ -9,24 +9,24 @@ Param(
     [ValidateNotNullOrEmpty()]
     [String] $Path,
 
-    # WordPress version to be downloaded. latest (default) and nightly are valid
-    [Parameter (Mandatory=$false)]
-    [String] $Version,
-
-    # WordPress locale. Default is en_US
-    [Parameter (Mandatory=$false)]
-    [String] $Locale
+    # WordPress site config in JSON string format
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $SiteConfig
 )
 
-# Set latest version if not provided
-if ([String]::IsNullOrEmpty($Version)) {
-    $Version = 'latest'
-}
+# Parse site configuration
+$SiteConfigJson = ConvertFrom-Json $SiteConfig
 
-# Set en_US locale if not provided
-if ([String]::IsNullOrEmpty($Locale)) {
-    $Version = 'en_US'
-}
+# Get project root
+$ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+
+# Add tools
+."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
+
+# Set/expand variables before using WP CLI
+$_version = Get-WpCliCoreDownloadVersion $SiteConfigJson.settings.version
+$_locale = Get-WpCliCoreDownloadLocale $SiteConfigJson.settings.locale
 
 # Download WordPress without the default themes and plugins
-wp core download --version=$Version --locale=$Locale --path=$Path --skip-content
+wp core download --version=$_version --locale=$_locale --path=$Path --skip-content
