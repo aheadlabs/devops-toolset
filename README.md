@@ -1,13 +1,14 @@
 # DevOps Toolset
-![Build status](https://img.shields.io/azure-devops/build/aheadlabs/DevOps-toolset/6)
-![Repo size](https://img.shields.io/github/repo-size/aheadlabs/devops-toolset)
-![Top language](https://img.shields.io/github/languages/top/aheadlabs/devops-toolset)
-![License](https://img.shields.io/github/license/aheadlabs/devops-toolset)  
-![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)
-![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)  
-![Liberapay](https://img.shields.io/liberapay/receives/ahead-labs?logo=liberapay)
-![Liberapay button](https://liberapay.com/assets/widgets/donate.svg)
-<br>
+[![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)](https://github.com/aheadlabs/devops-toolset/commits/)
+[![Build status](https://img.shields.io/azure-devops/build/aheadlabs/DevOps-toolset/6)](https://dev.azure.com/aheadlabs/DevOps-toolset/_build?definitionId=6&_a=summary)
+[![Release](https://img.shields.io/azure-devops/release/aheadlabs/1485b494-712b-4941-9b9a-d177484d1727/1/1)](https://dev.azure.com/aheadlabs/DevOps-toolset/_release?_a=releases&view=mine&definitionId=1)  
+[![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset/tags)
+[![Repo size](https://img.shields.io/github/repo-size/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset)
+[![Top language](https://img.shields.io/github/languages/top/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset)
+[![License](https://img.shields.io/github/license/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE)  
+[![Liberapay](https://img.shields.io/liberapay/receives/ahead-labs?logo=liberapay)](https://es.liberapay.com/ahead-labs/)
+[![Donate Liberapay](https://img.shields.io/badge/donate-Liberapay-yellow)](https://liberapay.com/ahead-labs/donate)
+[![Donate PayPal](https://img.shields.io/badge/donate-PayPal-yellow.svg)](https://www.paypal.me/aheadlabs)  
 
 General purpose DevOps-related scripts and tools.<br><br>
 ![Logo](.media/devops-toolset-logo.png)
