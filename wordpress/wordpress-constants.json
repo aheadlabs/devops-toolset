@@ -1,0 +1,10 @@
+{
+    "defaults":{
+        "version":"latest",
+        "locale":"en_US"        
+    },
+    "paths":{
+        "database":"/database",
+        "wordpress":"/wordpress"
+    }
+}

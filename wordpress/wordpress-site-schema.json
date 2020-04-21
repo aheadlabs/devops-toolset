@@ -16,7 +16,16 @@
                 "name":{"type":"string"},
                 "user":{"type":"string"},
                 "prefix":{"type":"string"},
-                "skip_check":{"type":"boolean"}
+                "skip_check":{"type":"boolean"},
+                "dumps":{
+                    "type":"object",
+                    "properties": {
+                        "core":{"type":"string"},
+                        "theme":{"type":"string"},
+                        "plugins":{"type":"string"}
+                    },
+                    "required": ["core","theme","plugins"]
+                }
             },
             "required": ["host","name","user","prefix","skip-check"]
         },
@@ -32,9 +41,10 @@
                     "type":"object",
                     "properties": {
                         "user":{"type":"string"},
-                        "email":{"type":"string"}
+                        "email":{"type":"string"},
+                        "skip_email":{"type":"boolean"}
                     },
-                    "required": ["user","email"]
+                    "required": ["user","email","skip_email"]
                 },
                 "content_url":{"type":"string","format":"uri"},
                 "plugin_url":{"type":"string","format":"uri"},

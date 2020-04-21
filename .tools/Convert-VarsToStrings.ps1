@@ -2,6 +2,7 @@
     Converts variable values to specific strings
 
 #>
+
 function Convert-WpCliConfigCreateSkipCheck {
     [CmdletBinding()]
     param (
@@ -48,17 +49,34 @@ function Convert-WpCliConfigCreateAutoUpdateCore {
     }
 }
 
+function Convert-WpCliCoreInstallAdminPassword {
+    [CmdletBinding()]
+    param (
+        # E-mail
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$AdminPwd
+    )
+
+    if ($AdminPwd) {
+        return "--admin_password=`"$AdminPwd`""
+    }
+    else {
+        return ""
+    }
+}
+
 function Convert-WpCliCoreInstallSkipEmail {
     [CmdletBinding()]
     param (
         # E-mail
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [bool]$AdminPassword
+        [bool]$SkipEmail
     )
 
-    if ($AdminPassword) {
-        return "--admin-password=`"$AdminPassword`" --skip-email"
+    if ($SkipEmail) {
+        return "--skip-email"
     }
     else {
         return ""
@@ -68,33 +86,43 @@ function Convert-WpCliCoreInstallSkipEmail {
 function Get-WpCliCoreDownloadVersion {
     [CmdletBinding()]
     param (
-        # Version (latest by default)
+        # Version
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [bool]$Version
+        [string]$Version,
+
+        # Default version
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$DefaultVersion
     )
     
     if ($Version) {
         return "$Version"
     }
     else {
-        return "latest"
+        return "$DefaultVersion"
     }
 }
 
 function Get-WpCliCoreDownloadLocale {
     [CmdletBinding()]
     param (
-        # Locale (en_US by default)
+        # Locale
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [bool]$Locale
+        [string]$Locale,
+
+        # Default locale
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$DefaultLocale
     )
     
     if ($Locale) {
         return "$Locale"
     }
     else {
-        return "en_US"
+        return "$DefaultLocale"
     }
 }
