@@ -24,9 +24,11 @@
                         "theme":{"type":"string"},
                         "plugins":{"type":"string"}
                     },
+                    "additionalProperties": false,
                     "required": ["core","theme","plugins"]
                 }
             },
+            "additionalProperties": false,
             "required": ["host","name","user","prefix","skip-check"]
         },
         "settings": {
@@ -44,6 +46,7 @@
                         "email":{"type":"string"},
                         "skip_email":{"type":"boolean"}
                     },
+                    "additionalProperties": false,
                     "required": ["user","email","skip_email"]
                 },
                 "content_url":{"type":"string","format":"uri"},
@@ -76,5 +79,6 @@
             "type":"object"
         }
     },
+    "additionalProperties": false,
     "required": ["multisite","database","settings","themes","plugins"]
 }

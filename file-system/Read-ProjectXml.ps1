@@ -10,11 +10,11 @@ Param(
     [String] $DevOpsPlatformCode
 )
 
+# Set variables
 $ProjectFile = "project.xml"
 
-# Find project root and project file
-."$PSScriptRoot\Get-ProjectRoot.ps1"
-$ProjectRoot = Get-ProjectRoot -File $ProjectFile
+# Get project root
+$ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 
 # Add tools
 ."$ProjectRoot\.tools\Convert-ToJson.ps1"
