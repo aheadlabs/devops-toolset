@@ -1,4 +1,8 @@
 <project>
     <name>devops-toolset</name>
+<<<<<<< HEAD
     <version>0.7.3</version>
+=======
+    <version>0.7.2</version>
+>>>>>>> fdcb374bf4f73ff1009cae26beda7fb01ab2ffd5
 </project>
