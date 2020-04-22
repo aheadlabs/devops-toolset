@@ -17,11 +17,11 @@ Param(
 $ProjectFile = "project.xml"
 
 # Get project root
-if ($ProjectRootPath) {
-    $ProjectRoot = $ProjectRootPath
+if ([string]::IsNullOrEmpty($ProjectRootPath)) {
+    $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 }
 else {
-    $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+    $ProjectRoot = $ProjectRootPath
 }
 
 # Add tools
