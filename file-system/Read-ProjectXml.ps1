@@ -17,7 +17,7 @@ Param(
 $ProjectFile = "project.xml"
 
 # Get project root
-if ($ProjectRootPath) {
+if ([string]::IsNullOrEmpty($ProjectRootPath)) {
     $ProjectRoot = $ProjectRootPath
 }
 else {
