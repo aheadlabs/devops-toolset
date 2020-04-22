@@ -7,14 +7,23 @@ Param(
     # DevOps platform code (see \.devops-platform-specific\README.md)
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [String] $DevOpsPlatformCode
+    [String] $DevOpsPlatformCode,
+
+    # Project root (defaults to this project's root path if $null)
+    [Parameter (Mandatory=$true)]
+    [String] $ProjectRootPath
 )
 
 # Set variables
 $ProjectFile = "project.xml"
 
 # Get project root
-$ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+if ($ProjectRootPath) {
+    $ProjectRoot = $ProjectRootPath
+}
+else {
+    $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+}
 
 # Add tools
 ."$ProjectRoot\.tools\Convert-ToJson.ps1"
