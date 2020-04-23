@@ -14,6 +14,8 @@ Param(
 )
 
 # Set variables
+Write-Host "LOG => ProjectRootPath value is: $ProjectRootPath"
+Write-Host "LOG => PSScriptRoot value is: $PSScriptRoot"
 $ProjectFile = "project.xml"
 
 # Get project root
@@ -23,6 +25,7 @@ if ([string]::IsNullOrEmpty($ProjectRootPath)) {
 else {
     $ProjectRoot = $ProjectRootPath
 }
+Write-Host "LOG => ProjectRoot value is: $ProjectRoot"
 
 # Add tools
 ."$ProjectRoot\.tools\Convert-ToJson.ps1"

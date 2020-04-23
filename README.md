@@ -11,7 +11,7 @@
 [![Donate PayPal](https://img.shields.io/badge/donate-PayPal-yellow.svg)](https://www.paypal.me/aheadlabs)  
 
 General purpose DevOps-related scripts and tools.<br><br>
-![Logo](.media/devops-toolset-logo.png)
+![Logo](.media/devops-toolset-logo-216x100px.png)
 
 # Getting Started
 Reference the package in your pipeline to have these tools available:<br>
