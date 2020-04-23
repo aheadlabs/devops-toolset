@@ -4,6 +4,11 @@
 
 [CmdletBinding()]
 Param(
+    # DevOps platform code (see \.devops-platform-specific\README.md)
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $DevOpsPlatformCode,
+    
     # Path to site.json file
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
