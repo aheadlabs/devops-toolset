@@ -14,13 +14,15 @@ Param(
 )
 
 # Set variables
+$DevOpsToolsetPath = ((Get-Item $PSScriptRoot).Parent).FullName
+$ProjectFile = "project.xml"
 Write-Host "LOG => ProjectRootPath value is: $ProjectRootPath"
 Write-Host "LOG => PSScriptRoot value is: $PSScriptRoot"
-$ProjectFile = "project.xml"
+Write-Host "LOG => DevOpsToolsetPath value is: $DevOpsToolsetPath"
 
 # Get project root
 if ([string]::IsNullOrEmpty($ProjectRootPath)) {
-    $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+    $ProjectRoot = $DevOpsToolsetPath
 }
 else {
     $ProjectRoot = $ProjectRootPath
@@ -28,10 +30,10 @@ else {
 Write-Host "LOG => ProjectRoot value is: $ProjectRoot"
 
 # Add tools
-."$ProjectRoot\.tools\Convert-ToJson.ps1"
+."$DevOpsToolsetPath\.tools\Convert-ToJson.ps1"
 
 # Add platform specific logic
-."$ProjectRoot\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
+."$DevOpsToolsetPath\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
 
 # Read the project file
 [XML]$Content = (Get-Content -Path "$ProjectRoot\$ProjectFile" -Raw)
