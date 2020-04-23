@@ -28,7 +28,8 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 ."$ProjectRoot\.devops-platform-specific\Add-EnvironmentVariables-$DevOpsPlatformCode.ps1"
 
 # Parse site configuration
-$SiteConfigJson = Get-Content -Path $Path -Raw | ConvertTo-Json -Compress
+[string]$SiteConfigJson = Get-Content -Path $Path -Raw
+$SiteConfigJson = $SiteConfigJson | ConvertTo-Json -Compress
 
 # Create key-value pairs
 $EnvironmentVariables = [System.Collections.Generic.List[hashtable]]::new()
