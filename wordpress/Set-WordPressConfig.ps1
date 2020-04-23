@@ -4,37 +4,38 @@
 
 [CmdletBinding()]
 Param(
-    # Root path of the WordPress implementation
+    # Root project
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [String] $Path,
+    [string] $RootPath,
     
-    # WordPress site config in JSON string format
+    # Path to the WordPress site JSON config file
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [String] $SiteConfig,
+    [string] $SiteConfigPath,
     
     # WordPress database user password (better pass this value from an environment variable)
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [String] $DbUserPwd
+    [string] $DbUserPwd
 )
-
-# Parse site configuration
-$SiteConfigJson = ConvertFrom-Json $SiteConfig
 
 # Get project root
 $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 
 # Add tools
+."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
 
 # Add constants
 $Constants = Get-Content ".\wordpress-constants.json" | ConvertFrom-Json
 
+# Parse site configuration
+$SiteConfigJson = Import-JsonFile $SiteConfigPath
+
 # Set/expand variables before using WP CLI
 $TextInfo = (Get-Culture).TextInfo
-$_wordpress_path = $Path + $Constants.paths.wordpress
+$_wordpress_path = $RootPath + $Constants.paths.wordpress
 $_host = $SiteConfigJson.database.host
 $_name = $SiteConfigJson.database.name
 $_user = $SiteConfigJson.database.user
