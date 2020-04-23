@@ -28,7 +28,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
 
 # Add constants
-$Constants = Get-Content ".\wordpress-constants.json" | ConvertFrom-Json
+$Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | ConvertFrom-Json
 
 # Parse site configuration
 $SiteConfigJson = Import-JsonFile $SiteConfigPath
