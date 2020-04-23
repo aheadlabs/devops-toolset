@@ -16,9 +16,6 @@ Param(
 # Set variables
 $DevOpsToolsetPath = ((Get-Item $PSScriptRoot).Parent).FullName
 $ProjectFile = "project.xml"
-Write-Host "LOG => ProjectRootPath value is: $ProjectRootPath"
-Write-Host "LOG => PSScriptRoot value is: $PSScriptRoot"
-Write-Host "LOG => DevOpsToolsetPath value is: $DevOpsToolsetPath"
 
 # Get project root
 if ([string]::IsNullOrEmpty($ProjectRootPath)) {
@@ -27,7 +24,6 @@ if ([string]::IsNullOrEmpty($ProjectRootPath)) {
 else {
     $ProjectRoot = $ProjectRootPath
 }
-Write-Host "LOG => ProjectRoot value is: $ProjectRoot"
 
 # Add tools
 ."$DevOpsToolsetPath\.tools\Convert-ToJson.ps1"
