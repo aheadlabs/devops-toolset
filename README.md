@@ -32,6 +32,9 @@ i.e.: /wordpress/SetConfigValues.ps1 for /code/wordpress/SetConfigValues.ps1
 | /\<category\> | Contains scripts and tools in different formats, grouped by categories |
 | /project.xml | Project description and project version |
 
+# WordPress tools
+This repository relies on WP CLI for WordPress automation. Please refer to [WP-CLI handbook](https://make.wordpress.org/cli/handbook/) for more information and installation instructions.
+
 # Troubleshooting
 | Problem | Solution |
 | -- | -- |
