@@ -10,21 +10,24 @@ Param(
     # Root path of the WordPress implementation
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [string] $Path,
+    [string] $RootPath,
     
     # WordPress site config in JSON string format
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [string] $SiteConfig,
+    [string] $SiteConfigPath,
     
-    # WordPress admin password
+    # WordPress admin password (better pass this value from an environment variable)
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
     [string] $AdminPwd
 )
 
+# Add tools
+."$ProjectRoot\.tools\Import-Files.ps1"
+
 # Parse site configuration
-$SiteConfigJson = ConvertFrom-Json $SiteConfig
+$SiteConfigJson = Import-JsonFile $SiteConfigPath
 
 # Get project root
 $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
@@ -36,8 +39,8 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 $Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | ConvertFrom-Json
 
 # Set/expand variables before using WP CLI
-$_wordpress_path = $Path + $Constants.paths.wordpress
-$_database_path = $Path + $Constants.paths.database
+$_wordpress_path = $RootPath + $Constants.paths.wordpress
+$_database_path = $RootPath + $Constants.paths.database
 $_database_core_dump_path = $_database_path + "/" + $SiteConfigJson.database.dumps.core
 $_title = $SiteConfigJson.settings.title
 $_description = $SiteConfigJson.settings.description
