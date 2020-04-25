@@ -73,7 +73,12 @@
                 "force_ssl_admin","http_block_external","auto_update_core","image_edit_overwrite"]
         },
         "themes": {
-            "type":"object"
+            "type":"object",
+            "properties": {
+                "source_type":{"enum": ["local","wordpress","url"]},
+                "source":{"type":"string"},
+                "has_child":{"type":"boolean"}
+            }
         },
         "plugins": {
             "type":"object"

@@ -1,10 +1,15 @@
 {
+    "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json",
     "defaults":{
         "version":"latest",
         "locale":"en_US"        
     },
     "paths":{
         "database":"/database",
-        "wordpress":"/wordpress"
+        "wordpress":"/wordpress",
+        "content":{
+            "themes":"/content/themes",
+            "plugins":"/content/plugins"
+        }
     }
 }
