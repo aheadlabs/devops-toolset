@@ -75,7 +75,7 @@
         "themes": {
             "type":"object",
             "properties": {
-                "source_type":{"enum": ["local","wordpress","url"]},
+                "source_type":{"enum": ["zip","wordpress","url"]},
                 "source":{"type":"string"},
                 "has_child":{"type":"boolean"}
             }

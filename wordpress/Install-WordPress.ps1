@@ -55,4 +55,6 @@ wp db drop --yes --path=$_wordpress_path
 wp db create --path=$_wordpress_path
 wp core install --path=$_wordpress_path --url=$_site_url --title=$_title --admin_user=$_admin_user --admin_email=$_admin_email $_admin_password $_skip_email
 wp option update blogdescription $_description --path=$_wordpress_path
+
+# Backup database
 wp db export $_database_core_dump_path --extended-insert=false --path=$_wordpress_path
