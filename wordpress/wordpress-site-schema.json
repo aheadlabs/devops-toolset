@@ -78,7 +78,9 @@
                 "source_type":{"enum": ["zip","wordpress","url"]},
                 "source":{"type":"string"},
                 "has_child":{"type":"boolean"}
-            }
+            },
+            "additionalProperties": false,
+            "required": ["source_type","source","has_child"]
         },
         "plugins": {
             "type":"object"
