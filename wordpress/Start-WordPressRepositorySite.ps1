@@ -50,3 +50,6 @@ Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Set-WordPressConfig.ps1
 
 # Install WordPress
 Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPress.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath -AdminPwd $AdminPwd"
+
+# Install WordPress theme
+Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPressTheme.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath"
