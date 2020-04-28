@@ -5,6 +5,7 @@
         "locale":"en_US"        
     },
     "paths":{
+        "devops":"/.devops",
         "database":"/database",
         "wordpress":"/wordpress",
         "content":{

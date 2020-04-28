@@ -18,6 +18,7 @@
         "paths": {
             "type":"object",
             "properties": {
+                "devops":{"type":"string"},
                 "database":{"type":"string"},
                 "wordpress":{"type":"string"},
                 "content":{
@@ -32,7 +33,7 @@
             },
             "additionalProperties": false,
             "additionalItems": false,
-            "required": ["database","wordpress","content"]
+            "required": ["devops","database","wordpress","content"]
         }
     },
     "additionalProperties": false,
