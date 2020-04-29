@@ -12,10 +12,12 @@ Param(
     [ValidateNotNullOrEmpty()]
     [string] $RootPath,
     
-    # WordPress site config in JSON string format
+    # Environment configuration
+    #   - Environment JSON configuration file path
+    #   - Environment to be applied
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [string] $SiteConfigPath,
+    [array] $EnvironmentConfig,
     
     # WordPress admin password (better pass this value from an environment variable)
     [Parameter (Mandatory=$true)]
@@ -25,9 +27,10 @@ Param(
 
 # Add tools
 ."$ProjectRoot\.tools\Import-Files.ps1"
+."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
 
 # Parse site configuration
-$SiteConfigJson = Import-JsonFile $SiteConfigPath
+$SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig $EnvironmentConfig
 
 # Get project root
 $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName

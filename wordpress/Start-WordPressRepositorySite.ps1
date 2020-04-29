@@ -14,10 +14,12 @@ Param(
     [ValidateNotNullOrEmpty()]
     [string] $RootPath,
 
-    # Path to the WordPress site JSON config file
+    # Environment configuration
+    #   - Environment JSON configuration file path
+    #   - Environment to be applied
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [string] $SiteConfigPath,
+    [array] $EnvironmentConfig,
 
     # WordPress database user password (better pass this value from an environment variable)
     [Parameter (Mandatory=$true)]
@@ -43,13 +45,13 @@ $_wordpress_path = $RootPath + $Constants.paths.wordpress
 Remove-Item "$_wordpress_path\*" -Recurse -Force
 
 # Download WordPress
-Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Get-WordPressCoreFiles.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath"
+Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Get-WordPressCoreFiles.ps1 -RootPath $RootPath -EnvironmentConfig $EnvironmentConfig"
 
 # Set configuration (wp-config.php)
-Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Set-WordPressConfig.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath -DbUserPwd $DbUserPwd"
+Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Set-WordPressConfig.ps1 -RootPath $RootPath -EnvironmentConfig $EnvironmentConfig -DbUserPwd $DbUserPwd"
 
 # Install WordPress
-Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPress.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath -AdminPwd $AdminPwd"
+Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPress.ps1 -RootPath $RootPath -EnvironmentConfig $EnvironmentConfig -AdminPwd $AdminPwd"
 
 # Install WordPress theme
-Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPressTheme.ps1 -RootPath $RootPath -SiteConfigPath $SiteConfigPath"
+Invoke-Expression -Command "$DevopsToolsetPath\wordpress\Install-WordPressTheme.ps1 -RootPath $RootPath -EnvironmentConfig $EnvironmentConfig"

@@ -9,10 +9,12 @@ Param(
     [ValidateNotNullOrEmpty()]
     [string] $RootPath,
     
-    # Path to the WordPress site JSON config file
+    # Environment configuration
+    #   - Environment JSON configuration file path
+    #   - Environment to be applied
     [Parameter (Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [string] $SiteConfigPath,
+    [array] $EnvironmentConfig,
     
     # WordPress database user password (better pass this value from an environment variable)
     [Parameter (Mandatory=$true)]
@@ -26,12 +28,13 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 # Add tools
 ."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
+."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
 
 # Add constants
 $Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | ConvertFrom-Json
 
 # Parse site configuration
-$SiteConfigJson = Import-JsonFile $SiteConfigPath
+$SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig $EnvironmentConfig
 
 # Set/expand variables before using WP CLI
 $TextInfo = (Get-Culture).TextInfo
