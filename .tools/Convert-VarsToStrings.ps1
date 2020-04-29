@@ -126,3 +126,20 @@ function Get-WpCliCoreDownloadLocale {
         return "$DefaultLocale"
     }
 }
+
+function Convert-WpCliCoreDownloadSkipContent {
+    [CmdletBinding()]
+    param (
+        # Content
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$SkipContent
+    )
+
+    if ($SkipContent) {
+        return "--skip-content"
+    }
+    else {
+        return ""
+    }
+}
