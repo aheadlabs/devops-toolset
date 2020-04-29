@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json",
+    "title": "WordPress site environments",
+    "description": "WordPress site environments to be generated and deployed automatically",
+
+    "definitions": {
+        "environment": {
+            "type": "object",
+            "properties": {
+                "name": {"type":"string"},
+                "type": {"enum": ["development","integration","qa","staging","production"]},
+                "default": {"type":"boolean"},
+                "configuration_file": {"type":"string"}
+            },
+            "additionalProperties": false,
+            "required": ["name","type","default","configuration_file"]
+        }
+    },
+
+    "type": "object",
+
+    "properties": {
+        "environments": {
+            "type":"array",
+            "items": { "$ref": "#/definitions/environment" },
+            "minItems": 1,
+            "uniqueItems": true
+        }
+    },
+    "additionalProperties": false,
+    "required": ["environments"]
+}
