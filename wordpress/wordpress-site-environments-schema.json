@@ -9,7 +9,7 @@
             "type": "object",
             "properties": {
                 "name": {"type":"string"},
-                "type": {"enum": ["development","integration","qa","staging","production"]},
+                "type": {"enum": ["development","devops","integration","qa","staging","production"]},
                 "default": {"type":"boolean"},
                 "configuration_file": {"type":"string"}
             },
