@@ -36,6 +36,7 @@ $SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig 
 $Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | ConvertFrom-Json
 
 # Set/expand variables before using WP CLI
+$_debug_info = Convert-WpCliDebug -DebugInfo $SiteConfigJson.wp_cli.debug
 $_themes_source_type = $SiteConfigJson.themes.source_type
 $_themes_source = $SiteConfigJson.themes.source
 $_themes_has_child = $SiteConfigJson.themes.has_child
@@ -45,11 +46,11 @@ $_themes_path = $RootPath + $Constants.paths.content.themes + "/" + $_themes_sou
 $_database_theme_dump_path = $_database_path + "/" + $SiteConfigJson.database.dumps.theme
 
 # Install and activate WordPress theme
-wp theme install $_themes_path --path=$_wordpress_path --activate
+wp theme install $_themes_path --path=$_wordpress_path --activate $_debug_info
 if ($_themes_has_child) {
     $_child_theme_path = [IO.Path]::GetDirectoryName($_themes_path) + "/" + [IO.Path]::GetFileNameWithoutExtension($_themes_path) + "-child" + [IO.Path]::GetExtension($_themes_path)
-    wp theme install $_child_theme_path --path=$_wordpress_path --activate
+    wp theme install $_child_theme_path --path=$_wordpress_path --activate $_debug_info
 }
 
 # Backup database
-wp db export $_database_theme_dump_path --extended-insert --path=$_wordpress_path
+wp db export $_database_theme_dump_path --extended-insert --path=$_wordpress_path $_debug_info

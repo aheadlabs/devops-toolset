@@ -38,6 +38,7 @@ $SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig 
 
 # Set/expand variables before using WP CLI
 $TextInfo = (Get-Culture).TextInfo
+$_debug_info = Convert-WpCliDebug -DebugInfo $SiteConfigJson.wp_cli.debug
 $_wordpress_path = $RootPath + $Constants.paths.wordpress
 $_host = $SiteConfigJson.database.host
 $_name = $SiteConfigJson.database.name
@@ -63,22 +64,22 @@ $_image_edit_overwrite = $SiteConfigJson.settings.image_edit_overwrite
 
 # Create wp-config.php file
 # More info at https://wordpress.org/support/article/editing-wp-config-php/
-wp config create --path=$_wordpress_path --dbhost=$_host --dbname=$_name --dbuser=$_user --dbpass=$DbUserPwd --dbprefix=$_prefix --force $_skip_check
-wp config set WP_SITEURL $_site_url --type=constant --path=$_wordpress_path
-wp config set WP_HOME $_site_url --type=constant --path=$_wordpress_path
-wp config set WP_CONTENT_URL $_content_url --type=constant --path=$_wordpress_path
-wp config set WP_PLUGIN_URL $_plugin_url --type=constant --path=$_wordpress_path
-wp config set NOBLOGREDIRECT $_noblogredirect_url --type=constant --path=$_wordpress_path
-wp config set WP_DISABLE_FATAL_ERROR_HANDLER $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path
-wp config set WP_DEBUG_DISPLAY $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path
-wp config set WP_DEBUG $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path
-wp config set WP_CACHE $TextInfo.ToLower("$_cache") --raw --type=constant --path=$_wordpress_path
-wp config set SAVEQUERIES $TextInfo.ToLower("$_save_queries") --raw --type=constant --path=$_wordpress_path
-wp config set EMPTY_TRASH_DAYS $_empty_trash_days --raw --type=constant --path=$_wordpress_path
-wp config set DISALLOW_FILE_EDIT $TextInfo.ToLower("$_disallow_file_edit") --raw --type=constant --path=$_wordpress_path
-wp config set DISALLOW_FILE_MODS $TextInfo.ToLower("$_disallow_file_mods") --raw --type=constant --path=$_wordpress_path
-wp config set FORCE_SSL_ADMIN $TextInfo.ToLower("$_force_ssl_admin") --raw --type=constant --path=$_wordpress_path
-wp config set WP_HTTP_BLOCK_EXTERNAL $TextInfo.ToLower("$_http_block_external") --raw --type=constant --path=$_wordpress_path
-wp config set WP_ACCESSIBLE_HOSTS $TextInfo.ToLower($_accessible_hosts) --type=constant --path=$_wordpress_path
-wp config set WP_AUTO_UPDATE_CORE $TextInfo.ToLower($_auto_update_core) --type=constant --path=$_wordpress_path
-wp config set IMAGE_EDIT_OVERWRITE $TextInfo.ToLower("$_image_edit_overwrite") --raw --type=constant --path=$_wordpress_path
+wp config create --path=$_wordpress_path --dbhost=$_host --dbname=$_name --dbuser=$_user --dbpass=$DbUserPwd --dbprefix=$_prefix --force $_skip_check $_debug_info
+wp config set WP_SITEURL $_site_url --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_HOME $_site_url --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_CONTENT_URL $_content_url --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_PLUGIN_URL $_plugin_url --type=constant --path=$_wordpress_path $_debug_info
+wp config set NOBLOGREDIRECT $_noblogredirect_url --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_DISABLE_FATAL_ERROR_HANDLER $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_DEBUG_DISPLAY $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_DEBUG $TextInfo.ToLower("$_disable_fatal_error_handler_and_debug_display") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_CACHE $TextInfo.ToLower("$_cache") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set SAVEQUERIES $TextInfo.ToLower("$_save_queries") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set EMPTY_TRASH_DAYS $_empty_trash_days --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set DISALLOW_FILE_EDIT $TextInfo.ToLower("$_disallow_file_edit") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set DISALLOW_FILE_MODS $TextInfo.ToLower("$_disallow_file_mods") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set FORCE_SSL_ADMIN $TextInfo.ToLower("$_force_ssl_admin") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_HTTP_BLOCK_EXTERNAL $TextInfo.ToLower("$_http_block_external") --raw --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_ACCESSIBLE_HOSTS $TextInfo.ToLower($_accessible_hosts) --type=constant --path=$_wordpress_path $_debug_info
+wp config set WP_AUTO_UPDATE_CORE $TextInfo.ToLower($_auto_update_core) --type=constant --path=$_wordpress_path $_debug_info
+wp config set IMAGE_EDIT_OVERWRITE $TextInfo.ToLower("$_image_edit_overwrite") --raw --type=constant --path=$_wordpress_path $_debug_info

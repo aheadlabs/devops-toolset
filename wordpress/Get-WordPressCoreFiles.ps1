@@ -32,11 +32,12 @@ $Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | Con
 $SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig $EnvironmentConfig
 
 # Set/expand variables before using WP CLI
+$_debug_info = Convert-WpCliDebug -DebugInfo $SiteConfigJson.wp_cli.debug
 $_wordpress_path = $RootPath + $Constants.paths.wordpress
 $_version = Get-WpCliCoreDownloadVersion $SiteConfigJson.settings.version $Constants.defaults.version
 $_locale = Get-WpCliCoreDownloadLocale $SiteConfigJson.settings.locale $Constants.defaults.locale
 $_skip_content = Convert-WpCliCoreDownloadSkipContent $SiteConfigJson.settings.skip_content_download
 
 # Download WordPress without the default themes and plugins and delete .gitkeep file
-wp core download --version=$_version --locale=$_locale --path=$_wordpress_path $_skip_content
+wp core download --version=$_version --locale=$_locale --path=$_wordpress_path $_skip_content $_debug_info
 if (Test-Path "$_wordpress_path/.gitkeep") { Remove-Item "$_wordpress_path/.gitkeep" -Force }

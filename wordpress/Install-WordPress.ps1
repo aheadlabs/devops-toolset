@@ -42,6 +42,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 $Constants = Get-Content "$ProjectRoot\wordpress\wordpress-constants.json" | ConvertFrom-Json
 
 # Set/expand variables before using WP CLI
+$_debug_info = Convert-WpCliDebug -DebugInfo $SiteConfigJson.wp_cli.debug
 $_wordpress_path = $RootPath + $Constants.paths.wordpress
 $_database_path = $RootPath + $Constants.paths.database
 $_database_core_dump_path = $_database_path + "/" + $SiteConfigJson.database.dumps.core
@@ -54,10 +55,10 @@ $_admin_password = Convert-WpCliCoreInstallAdminPassword $AdminPwd
 $_skip_email = Convert-WpCliCoreInstallSkipEmail $SiteConfigJson.settings.admin.skip_email
 
 # Install WordPress
-wp db drop --yes --path=$_wordpress_path
-wp db create --path=$_wordpress_path
-wp core install --path=$_wordpress_path --url=$_site_url --title=$_title --admin_user=$_admin_user --admin_email=$_admin_email $_admin_password $_skip_email
-wp option update blogdescription $_description --path=$_wordpress_path
+wp db drop --yes --path=$_wordpress_path $_debug_info
+wp db create --path=$_wordpress_path $_debug_info
+wp core install --path=$_wordpress_path --url=$_site_url --title=$_title --admin_user=$_admin_user --admin_email=$_admin_email $_admin_password $_skip_email $_debug_info
+wp option update blogdescription $_description --path=$_wordpress_path $_debug_info
 
 # Backup database
-wp db export $_database_core_dump_path --extended-insert=false --path=$_wordpress_path
+wp db export $_database_core_dump_path --extended-insert=false --path=$_wordpress_path $_debug_info
