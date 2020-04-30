@@ -28,6 +28,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 # Add tools
 ."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
+."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
 
 # Parse site configuration
 $SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig $EnvironmentConfig
