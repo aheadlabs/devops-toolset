@@ -25,6 +25,9 @@ Param(
     [string] $AdminPwd
 )
 
+# Get project root
+$ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
+
 # Add tools
 ."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
