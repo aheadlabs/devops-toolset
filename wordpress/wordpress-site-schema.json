@@ -6,8 +6,13 @@
     "type": "object",
 
     "properties": {
-        "multisite": {
-            "type":"object"
+        "wp_cli": {
+            "type": "object",
+            "properties": {
+                "debug": {"type":"boolean"}
+            },
+            "additionalProperties": false,
+            "required": ["debug"]
         },
         "database": {
             "type":"object",
@@ -73,6 +78,9 @@
                 "concatenate_scripts","cache","save_queries","empty_trash_days","disallow_file_edit",
                 "disallow_file_mods","force_ssl_admin","http_block_external","auto_update_core","image_edit_overwrite"]
         },
+        "multisite": {
+            "type":"object"
+        },
         "themes": {
             "type":"object",
             "properties": {
@@ -88,5 +96,5 @@
         }
     },
     "additionalProperties": false,
-    "required": ["multisite","database","settings","themes","plugins"]
+    "required": ["wp_cli","database","settings","multisite","themes","plugins"]
 }
