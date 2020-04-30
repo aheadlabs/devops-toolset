@@ -143,3 +143,20 @@ function Convert-WpCliCoreDownloadSkipContent {
         return ""
     }
 }
+
+function Convert-WpCliDebug {
+    [CmdletBinding()]
+    param (
+        # Content
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [bool]$DebugInfo
+    )
+
+    if ($DebugInfo) {
+        return "--debug"
+    }
+    else {
+        return ""
+    }
+}
