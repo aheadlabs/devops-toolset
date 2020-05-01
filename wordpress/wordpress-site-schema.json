@@ -21,6 +21,8 @@
                 "name":{"type":"string"},
                 "user":{"type":"string"},
                 "prefix":{"type":"string"},
+                "charset":{"type":"string"},
+                "collate":{"type":"string"},
                 "skip_check":{"type":"boolean"},
                 "dumps":{
                     "type":"object",
@@ -34,7 +36,7 @@
                 }
             },
             "additionalProperties": false,
-            "required": ["host","name","user","prefix","skip-check"]
+            "required": ["host","name","user","prefix","charset","collate","skip-check","dumps"]
         },
         "settings": {
             "type":"object",
