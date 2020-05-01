@@ -26,7 +26,6 @@ Param(
 $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 
 # Add tools
-."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
 
@@ -45,7 +44,6 @@ $_name = $SiteConfigJson.database.name
 $_user = $SiteConfigJson.database.user
 $_prefix = $SiteConfigJson.database.prefix
 $_skip_check = Convert-WpCliConfigCreateSkipCheck ($SiteConfigJson.database.skip_check)
-$_prefix = $SiteConfigJson.database.prefix
 $_site_url = $SiteConfigJson.settings.site_url
 $_content_url = $SiteConfigJson.settings.content_url
 $_plugin_url = $SiteConfigJson.settings.plugin_url
