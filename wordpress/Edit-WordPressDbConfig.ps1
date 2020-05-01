@@ -42,6 +42,8 @@ $_host = $SiteConfigJson.database.host
 $_name = $SiteConfigJson.database.name
 $_user = $SiteConfigJson.database.user
 $_prefix = $SiteConfigJson.database.prefix
+$_charset = $SiteConfigJson.database.charset
+$_collate = $SiteConfigJson.database.collate
 
 # Edit database parameters
 # More info at https://wordpress.org/support/article/editing-wp-config-php/
@@ -49,4 +51,6 @@ wp config set DB_HOST $_host --type=constant --path=$_wordpress_path $_debug_inf
 wp config set DB_NAME $_name --type=constant --path=$_wordpress_path $_debug_info
 wp config set DB_USER $_user --type=constant --path=$_wordpress_path $_debug_info
 wp config set DB_PASSWORD $DbUserPwd --type=constant --path=$_wordpress_path $_debug_info
+wp config set DB_CHARSET $_charset --type=constant --path=$_wordpress_path $_debug_info
+wp config set DB_COLLATE $_collate --type=constant --path=$_wordpress_path $_debug_info
 wp config set table_prefix $_prefix --type=variable --path=$_wordpress_path $_debug_info

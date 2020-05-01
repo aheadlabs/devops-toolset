@@ -43,6 +43,8 @@ $_host = $SiteConfigJson.database.host
 $_name = $SiteConfigJson.database.name
 $_user = $SiteConfigJson.database.user
 $_prefix = $SiteConfigJson.database.prefix
+$_charset = $SiteConfigJson.database.charset
+$_collate = $SiteConfigJson.database.collate
 $_skip_check = Convert-WpCliConfigCreateSkipCheck ($SiteConfigJson.database.skip_check)
 $_site_url = $SiteConfigJson.settings.site_url
 $_content_url = $SiteConfigJson.settings.content_url
@@ -62,7 +64,7 @@ $_image_edit_overwrite = $SiteConfigJson.settings.image_edit_overwrite
 
 # Create wp-config.php file
 # More info at https://wordpress.org/support/article/editing-wp-config-php/
-wp config create --path=$_wordpress_path --dbhost=$_host --dbname=$_name --dbuser=$_user --dbpass=$DbUserPwd --dbprefix=$_prefix --force $_skip_check $_debug_info
+wp config create --path=$_wordpress_path --dbhost=$_host --dbname=$_name --dbuser=$_user --dbpass=$DbUserPwd --dbprefix=$_prefix --dbcharset=$_charset --dbcollate=$_collate --force $_skip_check $_debug_info
 wp config set WP_SITEURL $_site_url --type=constant --path=$_wordpress_path $_debug_info
 wp config set WP_HOME $_site_url --type=constant --path=$_wordpress_path $_debug_info
 wp config set WP_CONTENT_URL $_content_url --type=constant --path=$_wordpress_path $_debug_info
