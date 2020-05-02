@@ -36,7 +36,7 @@
                 }
             },
             "additionalProperties": false,
-            "required": ["host","name","user","prefix","charset","collate","skip-check","dumps"]
+            "required": ["host","name","user","prefix","charset","collate","skip_check","dumps"]
         },
         "settings": {
             "type":"object",
