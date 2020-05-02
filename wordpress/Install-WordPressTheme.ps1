@@ -54,4 +54,4 @@ if ($_themes_has_child) {
 }
 
 # Backup database
-wp db export $_database_theme_dump_path --extended-insert --path=$_wordpress_path $_debug_info
+wp db export $_database_theme_dump_path --extended-insert=false --path=$_wordpress_path $_debug_info
