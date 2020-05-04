@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
+    "title": "Project structure",
+    "description": "Directories and files for new projects",
+
+    "definitions": {
+        "item": {
+            "type": "object",
+            "properties": {
+                "name": {"type":"string"},
+                "type": {"enum": ["file", "directory"]},
+                "default_content": {"type": "string"},
+                "children": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/item" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "additionalItems": false
+                }
+            },
+            "additionalProperties": false,
+            "required": ["name","type"]
+        }
+    },
+
+    "type": "object",
+
+    "properties": {
+        "items": {
+            "type":"array",
+            "items": { "$ref": "#/definitions/item" },
+            "minItems": 1,
+            "uniqueItems": true,
+            "additionalItems": false
+        }
+    },
+    "additionalProperties": false,
+    "required": ["items"]
+}

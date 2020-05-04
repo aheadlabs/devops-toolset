@@ -1,0 +1,51 @@
+{
+    "$schema": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
+    "items": [
+        {
+            "name": ".devops", "type": "directory",
+            "children": [
+                { "name": ".gitkeep", "type": "file" }
+            ]
+        },
+        {
+            "name": ".media", "type": "directory",
+            "children": [
+                { "name": ".gitkeep", "type": "file" }
+            ]
+        },
+        {
+            "name": "content", "type": "directory",
+            "children": [
+                {
+                    "name": "themes", "type": "directory", 
+                    "children": [
+                        { "name": ".gitkeep", "type": "file" }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "database", "type": "directory",
+            "children": [
+                { "name": ".gitkeep", "type": "file" }
+            ]
+        },
+        {
+            "name": "wordpress", "type": "directory",
+            "children": [
+                { "name": ".gitkeep", "type": "file" }
+            ]
+        },
+        {
+            "name": ".gitignore", "type": "file"
+        },
+        {
+            "name": "project.xml", "type": "file",
+            "default_content": "<project><name>my-project-name</name><version>0.1.0</version><organization>my-organization</organization></project>"
+        },
+        {
+            "name": "README.md", "type": "file",
+            "default_content": "# Update this README file"
+        }
+    ]
+}
