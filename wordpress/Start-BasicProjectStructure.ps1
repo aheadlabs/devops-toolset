@@ -30,7 +30,7 @@ function Add-Item {
     $local:Path = [IO.Path]::Combine($Item.path, $Item.name)
 
     # Create item
-    New-Item -Path $local:Path -ItemType $Item.type
+    New-Item -Path $local:Path -ItemType $Item.type | Out-Null
     
     # Add default content if applies
     if ($Item.default_content) {
