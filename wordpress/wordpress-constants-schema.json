@@ -34,8 +34,14 @@
             "additionalProperties": false,
             "additionalItems": false,
             "required": ["devops","database","wordpress","content"]
+        },
+        "packages": {
+            "type": "object",
+            "properties": {
+                "devops_toolset":{"type":"string","format": "hostname"}
+            }
         }
     },
     "additionalProperties": false,
-    "required": ["defaults","paths"]
+    "required": ["defaults","paths","packages"]
 }

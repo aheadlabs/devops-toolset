@@ -1,10 +1,10 @@
 {
     "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json",
-    "defaults":{
+    "defaults": {
         "version":"latest",
         "locale":"en_US"        
     },
-    "paths":{
+    "paths": {
         "devops":"/.devops",
         "database":"/database",
         "wordpress":"/wordpress",
@@ -12,5 +12,8 @@
             "themes":"/content/themes",
             "plugins":"/content/plugins"
         }
+    },
+    "packages": {
+        "devops_toolset": "https://github.com/aheadlabs/devops-toolset/archive/master.zip"
     }
 }
