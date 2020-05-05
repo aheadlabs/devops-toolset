@@ -41,7 +41,7 @@
         "disallow_file_mods": false,
         "force_ssl_admin": false,
         "http_block_external": true,
-        "accessible_hosts": [],
+        "accessible_hosts": ["localhost"],
         "auto_update_core": "minor",
         "image_edit_overwrite": true
     },
