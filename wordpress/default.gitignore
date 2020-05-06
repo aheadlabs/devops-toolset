@@ -1,0 +1,7 @@
+.devops/devops-toolset*
+.devops/wordpress-baseline*
+wordpress/wp*
+wordpress/xmlrpc.php
+wordpress/readme.html
+wordpress/license.txt
+wordpress/index.php

@@ -37,15 +37,16 @@
             ]
         },
         {
-            "name": ".gitignore", "type": "file"
+            "name": ".gitignore", "type": "file",
+            "default_content_from_file" : "./wordpress/default.gitignore"
         },
         {
             "name": "project.xml", "type": "file",
-            "default_content": "<project><name>my-project-name</name><version>0.1.0</version><organization>my-organization</organization></project>"
+            "default_content_from_file": "./wordpress/default-project.xml"
         },
         {
             "name": "README.md", "type": "file",
-            "default_content": "# Update this README file"
+            "default_content_from_file" : "./wordpress/default-README.md"
         }
     ]
 }
