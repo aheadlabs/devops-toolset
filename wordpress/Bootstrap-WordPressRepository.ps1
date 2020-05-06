@@ -26,7 +26,6 @@ Write-Host ""
 
 # Get repository root
 $RepositoryRoot = (Get-Item $PSScriptRoot).FullName
-$RepositoryRoot = "D:\Source\_aheadlabs\wordpress-bared-repo" # TODO Remove this
 
 # Download devops-toolset
 Write-Host "Downloading and expanding devops-toolset from GitHub..."
