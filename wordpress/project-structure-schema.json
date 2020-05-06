@@ -11,6 +11,7 @@
                 "name": {"type":"string"},
                 "type": {"enum": ["file", "directory"]},
                 "default_content": {"type": "string"},
+                "default_content_from_file": {"type": "string"},
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/definitions/item" },
@@ -19,6 +20,10 @@
                     "additionalItems": false
                 }
             },
+            "anyOf": [
+            {"not": {"required": ["default_content"]}},
+            {"not": {"required": ["default_content_from_file"]}}
+      ],
             "additionalProperties": false,
             "required": ["name","type"]
         }
