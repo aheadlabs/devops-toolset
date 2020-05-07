@@ -1,7 +1,13 @@
-.devops/devops-toolset*
-.devops/wordpress-baseline*
-wordpress/wp*
-wordpress/xmlrpc.php
-wordpress/readme.html
-wordpress/license.txt
+# WordPress core
+wordpress/wp-admin/*
+wordpress/wp-includes/*
+wordpress/wp*.php
 wordpress/index.php
+wordpress/license.txt
+wordpress/readme.html
+wordpress/xmlrpc.php
+
+# devops-toolset
+.devops/devops-toolset*
+
+# Installed theme (child theme not excluded)
