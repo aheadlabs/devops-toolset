@@ -24,4 +24,5 @@ After the automatic generation you customize your child theme, add your plugins 
 4. Place your theme and child-theme in the your repository root if it is in zip format (you will need a custom `site.json` file for that).
 5. Call the `Bootstrap-WordPressRepository.ps1` script and follow the on-screen instructions.
 6. Update `.gitignore` according to your needs.
-7. Update `README.md` files according to your needs.
+7. Update `project.xml` to match your project values.
+8. Update `README.md` files according to your needs.
