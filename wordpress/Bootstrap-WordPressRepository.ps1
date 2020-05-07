@@ -16,7 +16,7 @@ param (
 )
 
 # Reminders. Press any key.
-Read-Host "Please place your localhost-site.json and site-environments.json files in the root path before continuing (localhost environment must be present). Press any key..."
+Read-Host "Please place your *site.json, *site-environments.json and *project-structure.json files in the root path before continuing (localhost environment must be present). Press any key..."
 Read-Host "Please install MySql and create the database specified in the config file. Press any key..."
 
 # Ask for using the default ones defined in devops-toolset instead => yes/no
@@ -34,15 +34,6 @@ Write-Host "Downloading and expanding devops-toolset from GitHub..."
 Rename-Item "$RepositoryRoot/devops-toolset-master" "$RepositoryRoot/devops-toolset"
 Remove-Item "$RepositoryRoot/devops-toolset-master.zip"
 
-# Create basic project structure
-Write-Host "Creating project basic structure..."
-Invoke-Expression -Command "$RepositoryRoot/devops-toolset/wordpress/Start-BasicProjectStructure.ps1 -RootPath $RepositoryRoot -ProjectStructurePath $RepositoryRoot/devops-toolset/wordpress/wordpress-project-structure.json"
-
-# Move devops-toolset to /.devops
-Write-Host "Moving devops-toolset inside /.devops..."
-Move-Item "$RepositoryRoot/devops-toolset" "$RepositoryRoot/.devops/devops-toolset"
-Remove-Item "$RepositoryRoot/.devops/.gitkeep"
-
 # Download default site.json and site-environments.json if needed
 if ($local:key_pressed.Character -eq "y"){
     Write-Host "Getting default config files from GitHub..."
@@ -54,15 +45,30 @@ if ($local:key_pressed.Character -eq "y"){
     $local:site_config_path = "$RepositoryRoot/default-localhost-site.json"
     $local:site_config_request = Invoke-WebRequest "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-localhost-site.json"
     Set-Content $local:site_config_path $local:site_config_request.Content
+
+    $local:project_structure_path = "$RepositoryRoot/default-wordpress-project-structure.json"
+    $local:project_structure_request = Invoke-WebRequest "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-wordpress-project-structure.json"
+    Set-Content $local:project_structure_path $local:project_structure_request.Content
 }
 
-# Moved site.json and site-environments.json to /.devops
-Write-Host "Moving configuration (*site*.json) files inside /.devops..."
+# Create basic project structure
+Write-Host "Creating project basic structure..."
+Invoke-Expression -Command "$RepositoryRoot/devops-toolset/wordpress/Start-BasicProjectStructure.ps1 -RootPath $RepositoryRoot -ProjectStructurePath $local:project_structure_path"
+
+# Moved *site.json and *site-environments.json and *project-structure.json files to /.devops
+Write-Host "Moving configuration (*site*.json and *project-structure.json) files inside /.devops..."
 Move-Item "$RepositoryRoot/*site*.json" "$RepositoryRoot/.devops"
+Move-Item "$RepositoryRoot/*project-structure.json" "$RepositoryRoot/.devops"
 
 # set JSON file paths
 $local:site_environments_path = (Get-Item "$RepositoryRoot/.devops/*-site-environments.json").FullName
 $local:site_config_path = (Get-Item "$RepositoryRoot/.devops/*-site.json").FullName
+$local:project_structure_path = (Get-Item "$RepositoryRoot/.devops/*project-structure.json").FullName
+
+# Move devops-toolset to /.devops
+Write-Host "Moving devops-toolset inside /.devops..."
+Move-Item "$RepositoryRoot/devops-toolset" "$RepositoryRoot/.devops/devops-toolset"
+Remove-Item "$RepositoryRoot/.devops/.gitkeep"
 
 # Download core files, configure site, install site, install theme and install plugins
 Write-Host "Downloading WordPress core files..."

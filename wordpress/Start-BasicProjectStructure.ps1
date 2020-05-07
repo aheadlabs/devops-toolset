@@ -22,18 +22,19 @@ function Get-DefaultContent {
         [psobject] $Item
     )
 
-    #Check if default_content or _default_content_from_file is present.
     if (Get-Member -InputObject $Item -Name "default_content" -MemberType NoteProperty) {
         return $Item.default_content
     }
-    else {
-        if (Get-Member -InputObject $Item -Name "default_content_from_file" -MemberType NoteProperty) {
-            return Get-Content -Path $Item.default_content_from_file
-        }
-       
-        return $null        
+
+    if (Get-Member -InputObject $Item -Name "default_content_from_file" -MemberType NoteProperty) {
+        return Get-Content -Path $Item.default_content_from_file
     }
 
+    if (Get-Member -InputObject $Item -Name "default_content_from_url" -MemberType NoteProperty) {
+        return (Invoke-WebRequest $Item.default_content_from_url).Content
+    }
+
+    return $null
 }
 function Add-Item {
     [CmdletBinding()]
@@ -53,7 +54,9 @@ function Add-Item {
     New-Item -Path $local:Path -ItemType $Item.type | Out-Null
     
     # Add default content if applies
-    Get-DefaultContent $Item | Where-Object { $_ -ne $null } | Set-Content -Path $local:Path
+    if ($Item.type -eq "file") {
+        Get-DefaultContent $Item | Where-Object { $_ -ne $null } | Set-Content -Path $local:Path
+    }
     
     # Iterate through children if any
     if (Get-Member -InputObject $Item -Name "children" -MemberType NoteProperty){
