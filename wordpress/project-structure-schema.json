@@ -12,6 +12,7 @@
                 "type": {"enum": ["file", "directory"]},
                 "default_content": {"type": "string"},
                 "default_content_from_file": {"type": "string"},
+                "default_content_from_url": {"type": "string"},
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/definitions/item" },
@@ -22,7 +23,8 @@
             },
             "anyOf": [
             {"not": {"required": ["default_content"]}},
-            {"not": {"required": ["default_content_from_file"]}}
+            {"not": {"required": ["default_content_from_file"]}},
+            {"not": {"required": ["default_content_from_url"]}}
       ],
             "additionalProperties": false,
             "required": ["name","type"]

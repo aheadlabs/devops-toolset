@@ -38,15 +38,15 @@
         },
         {
             "name": ".gitignore", "type": "file",
-            "default_content_from_file" : "./wordpress/default.gitignore"
+            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default.gitignore"
         },
         {
             "name": "project.xml", "type": "file",
-            "default_content_from_file": "./wordpress/default-project.xml"
+            "default_content_from_url": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-project.xml"
         },
         {
             "name": "README.md", "type": "file",
-            "default_content_from_file" : "./wordpress/default-README.md"
+            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-README.md"
         }
     ]
 }
