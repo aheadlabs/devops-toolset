@@ -28,6 +28,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 # Add tools
 ."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
+."$ProjectRoot\wordpress\Use-WordPressThemes.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
 ."$ProjectRoot\.tools\Use-Git.ps1"
 
