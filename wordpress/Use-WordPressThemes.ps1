@@ -81,7 +81,3 @@ function Get-ThemesDirectoryRelativePath {
     $local:themes_directory_relative_path = "$local:themes_directory_relative_path".Replace("//","/")
     return $local:themes_directory_relative_path    
 }
-
-$_constants = Get-Content "D:\Source\_aheadlabs\devops-toolset\wordpress\wordpress-constants.json" | ConvertFrom-Json
-$_config = Get-Content "D:\Source\_tecdev\tecdev.es\.devops\localhost-tecdev-site.json" | ConvertFrom-Json
-Get-ThemesDirectoryRelativePath "D:\Source\_tecdev\tecdev.es\wordpress" $_constants $_config "theblogger"
