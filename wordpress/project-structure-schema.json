@@ -1,18 +1,23 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
     "title": "Project structure",
     "description": "Directories and files for new projects",
 
     "definitions": {
+        "default_content": {
+          "type": "object" ,
+          "properties": {
+              "source": {"enum":["raw", "from_file", "from_url"]},
+              "value": {"type":"string"}
+        },
+        "additionalProperties": false
+        },
         "item": {
             "type": "object",
             "properties": {
                 "name": {"type":"string"},
                 "type": {"enum": ["file", "directory"]},
-                "default_content": {"type": "string"},
-                "default_content_from_file": {"type": "string"},
-                "default_content_from_url": {"type": "string"},
+                "default_content": {"$ref": "#/definitions/default_content"},
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/definitions/item" },
@@ -21,11 +26,6 @@
                     "additionalItems": false
                 }
             },
-            "anyOf": [
-            {"not": {"required": ["default_content"]}},
-            {"not": {"required": ["default_content_from_file"]}},
-            {"not": {"required": ["default_content_from_url"]}}
-      ],
             "additionalProperties": false,
             "required": ["name","type"]
         }

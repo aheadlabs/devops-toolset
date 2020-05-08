@@ -38,15 +38,16 @@
         },
         {
             "name": ".gitignore", "type": "file",
-            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default.gitignore"
+            "default_content" : {"source":"from_url", "value":"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default.gitignore"}
         },
         {
             "name": "project.xml", "type": "file",
-            "default_content_from_url": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-project.xml"
+            "default_content": {"source":"from_url", "value":"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-project.xml"}
         },
         {
             "name": "README.md", "type": "file",
-            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-README.md"
+            "default_content" : {"source":"from_url", "value":"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-README.md"}
         }
     ]
 }
+
