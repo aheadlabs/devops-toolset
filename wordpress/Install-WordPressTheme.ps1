@@ -29,6 +29,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 ."$ProjectRoot\.tools\Import-Files.ps1"
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
+."$ProjectRoot\.tools\Use-Git.ps1"
 
 # Parse site configuration
 $SiteConfigJson = Get-WordPressSiteConfigFileFromEnvironment -EnvironmentConfig $EnvironmentConfig
@@ -48,6 +49,8 @@ $_database_theme_dump_path = $_database_path + "/" + $SiteConfigJson.database.du
 
 # Install and activate WordPress theme
 wp theme install $_themes_path --path=$_wordpress_path --activate $_debug_info
+$local:themes_directory_relative_path = Get-ThemesDirectoryRelativePath $RootPath $Constants $SiteConfigJson (Get-ParentWordPressThemeName (Get-ActiveWordPressThemeName $RootPath))
+Add-GitExclusion $RootPath $local:themes_directory_relative_path
 if ($_themes_has_child) {
     $_child_theme_path = [IO.Path]::GetDirectoryName($_themes_path) + "/" + [IO.Path]::GetFileNameWithoutExtension($_themes_path) + "-child" + [IO.Path]::GetExtension($_themes_path)
     wp theme install $_child_theme_path --path=$_wordpress_path --activate $_debug_info

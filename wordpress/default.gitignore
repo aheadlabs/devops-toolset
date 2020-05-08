@@ -10,4 +10,7 @@ wordpress/xmlrpc.php
 # devops-toolset
 .devops/devops-toolset*
 
+# Powershell scripts in root
+*.ps1
+
 # Installed theme (child theme not excluded)
