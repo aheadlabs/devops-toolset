@@ -29,7 +29,7 @@ function Import-JsonFile {
     )
 
     # Parse JSON file
-    $Json = Get-Content -Path $Path -Raw | ConvertFrom-Json
+    $Json = Get-Content -Path $Path -Raw -Encoding UTF8 | ConvertFrom-Json
 
     # Return JSON
     return $Json
