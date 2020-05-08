@@ -50,7 +50,7 @@ $_database_theme_dump_path = $_database_path + "/" + $SiteConfigJson.database.du
 
 # Install and activate WordPress theme
 wp theme install $_themes_path --path=$_wordpress_path --activate $_debug_info
-$local:themes_directory_relative_path = Get-ThemesDirectoryRelativePath $RootPath $Constants $SiteConfigJson (Get-ParentWordPressThemeName (Get-ActiveWordPressThemeName $RootPath))
+$local:themes_directory_relative_path = Get-ThemesDirectoryRelativePath $RootPath $Constants $SiteConfigJson (Get-ParentWordPressThemeName (Get-ActiveWordPressThemeName $_wordpress_path))
 Add-GitExclusion $RootPath $local:themes_directory_relative_path
 if ($_themes_has_child) {
     $_child_theme_path = [IO.Path]::GetDirectoryName($_themes_path) + "/" + [IO.Path]::GetFileNameWithoutExtension($_themes_path) + "-child" + [IO.Path]::GetExtension($_themes_path)
