@@ -2,51 +2,84 @@
     "$schema": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
     "items": [
         {
-            "name": ".devops", "type": "directory",
-            "children": [
-                { "name": ".gitkeep", "type": "file" }
-            ]
-        },
-        {
-            "name": ".media", "type": "directory",
-            "children": [
-                { "name": ".gitkeep", "type": "file" }
-            ]
-        },
-        {
-            "name": "content", "type": "directory",
+            "name": ".devops",
+            "type": "directory",
             "children": [
                 {
-                    "name": "themes", "type": "directory", 
+                    "name": ".gitkeep",
+                    "type": "file"
+                }
+            ]
+        },
+        {
+            "name": ".media",
+            "type": "directory",
+            "children": [
+                {
+                    "name": ".gitkeep",
+                    "type": "file"
+                }
+            ]
+        },
+        {
+            "name": "content",
+            "type": "directory",
+            "children": [
+                {
+                    "name": "themes",
+                    "type": "directory",
                     "children": [
-                        { "name": ".gitkeep", "type": "file" }
+                        {
+                            "name": ".gitkeep",
+                            "type": "file"
+                        }
                     ]
                 }
             ]
         },
         {
-            "name": "database", "type": "directory",
+            "name": "database",
+            "type": "directory",
             "children": [
-                { "name": ".gitkeep", "type": "file" }
+                {
+                    "name": ".gitkeep",
+                    "type": "file"
+                }
             ]
         },
         {
-            "name": "wordpress", "type": "directory",
+            "name": "wordpress",
+            "type": "directory",
             "children": [
-                { "name": ".gitkeep", "type": "file" }
+                {
+                    "name": ".gitkeep",
+                    "type": "file"
+                }
             ]
         },
         {
-            "name": ".gitignore", "type": "file",
-            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default.gitignore"
+            "name": ".gitignore",
+            "type": "file",
+            "default_content": {
+                "source": "from_url",
+                "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default.gitignore"
+            }
         },
         {
-            "name": "project.xml", "type": "file",
-            "default_content_from_url": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-project.xml"
+            "name": "project.xml",
+            "type": "file",
+            "default_content": {
+                "source": "from_url",
+                "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-project.xml"
+            }
         },
         {
-            "name": "README.md", "type": "file",
-            "default_content_from_url" : "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-README.md"
+            "name": "README.md",
+            "type": "file",
+            "default_content": {
+                "source": "from_url",
+                "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-README.md"
+            }
         }
     ]
 }

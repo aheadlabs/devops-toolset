@@ -1,7 +1,17 @@
-.devops/devops-toolset*
-.devops/wordpress-baseline*
-wordpress/wp*
-wordpress/xmlrpc.php
-wordpress/readme.html
-wordpress/license.txt
+# WordPress core with default twentytwenty theme installed (to be replaced)
+wordpress/wp-admin/
+wordpress/wp-content/themes/twentytwenty/
+wordpress/wp-content/upgrade/
+wordpress/wp-content/uploads/
+wordpress/wp-includes/
+wordpress/wp*.php
 wordpress/index.php
+wordpress/license.txt
+wordpress/readme.html
+wordpress/xmlrpc.php
+
+# devops-toolset
+.devops/devops-toolset/
+
+# Powershell scripts in root
+*.ps1
