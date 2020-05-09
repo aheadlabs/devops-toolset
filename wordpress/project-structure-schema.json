@@ -5,12 +5,12 @@
 
     "definitions": {
         "default_content": {
-          "type": "object" ,
-          "properties": {
-              "source": {"enum":["raw", "from_file", "from_url"]},
-              "value": {"type":"string"}
-        },
-        "additionalProperties": false
+            "type": "object" ,
+            "properties": {
+                "source": {"enum":["raw", "from_file", "from_url"]},
+                "value": {"type":"string"}
+            },
+            "additionalProperties": false
         },
         "item": {
             "type": "object",

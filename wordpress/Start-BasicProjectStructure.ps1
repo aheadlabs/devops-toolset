@@ -36,6 +36,7 @@ function Get-DefaultContent {
 
     return $null
 }
+
 function Add-Item {
     [CmdletBinding()]
     param (
