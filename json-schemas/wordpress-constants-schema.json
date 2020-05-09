@@ -1,0 +1,84 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json",
+    "title": "WordPress site constants",
+    "description": "WordPress site constants to generate and deploy a site automatically",
+    "type": "object",
+    "properties": {
+        "defaults": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "version",
+                "locale"
+            ]
+        },
+        "paths": {
+            "type": "object",
+            "properties": {
+                "devops": {
+                    "type": "string"
+                },
+                "database": {
+                    "type": "string"
+                },
+                "wordpress": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "object",
+                    "properties": {
+                        "themes": {
+                            "type": "string"
+                        },
+                        "plugins": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "themes",
+                        "plugins"
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "additionalItems": false,
+            "required": [
+                "devops",
+                "database",
+                "wordpress",
+                "content"
+            ]
+        },
+        "packages": {
+            "type": "object",
+            "properties": {
+                "devops_toolset": {
+                    "type": "string",
+                    "format": "uri-template"
+                }
+            }
+        },
+        "regex_base64": {
+            "type": "array",
+            "items": { "$ref": "http://dev.aheadlabs.com/schemas/json/keyvaluepair-schema.json" },
+            "uniqueItems": true
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "defaults",
+        "paths",
+        "packages",
+        "regex_base64"
+    ]
+}
