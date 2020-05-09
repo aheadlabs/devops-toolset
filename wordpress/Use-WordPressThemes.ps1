@@ -4,7 +4,7 @@
 function Get-ActiveWordPressThemeName {
     param (
         # Root path of the WordPress site
-        [Parameter (Mandatory=$true)]
+        [Parameter (Mandatory=$true, ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
         [string] $RootPath
     )
@@ -22,7 +22,7 @@ function Get-ActiveWordPressThemeName {
 function Get-ParentWordPressThemeName {
     param (
         # Theme slug (parent or child)
-        [Parameter (Mandatory=$true)]
+        [Parameter (Mandatory=$true, ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
         [string] $ThemeSlug
     )
