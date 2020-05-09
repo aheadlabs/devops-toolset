@@ -30,6 +30,7 @@ $ProjectRoot = ((Get-Item $PSScriptRoot).Parent).FullName
 ."$ProjectRoot\wordpress\Get-WordPressSiteConfigFileFromEnvironment.ps1"
 ."$ProjectRoot\wordpress\Use-WordPressThemes.ps1"
 ."$ProjectRoot\.tools\Convert-VarsToStrings.ps1"
+."$ProjectRoot\.tools\Use-Base64.ps1"
 ."$ProjectRoot\.tools\Use-Git.ps1"
 
 # Parse site configuration
@@ -47,11 +48,12 @@ $_wordpress_path = $RootPath + $Constants.paths.wordpress
 $_database_path = $RootPath + $Constants.paths.database
 $_themes_path = $RootPath + $Constants.paths.content.themes + "/" + $_themes_source
 $_database_theme_dump_path = $_database_path + "/" + $SiteConfigJson.database.dumps.theme
+$_regex_wordpress_theme = ($Constants.regex_base64 | Where-Object { $_.key -eq "wordpress-theme" }).value | ConvertFrom-Base64
 
 # Install and activate WordPress theme
 wp theme install $_themes_path --path=$_wordpress_path --activate $_debug_info
 $local:themes_directory_relative_path = Get-ThemesDirectoryRelativePath $RootPath $Constants $SiteConfigJson (Get-ParentWordPressThemeName (Get-ActiveWordPressThemeName $_wordpress_path))
-Add-GitExclusion $RootPath $local:themes_directory_relative_path
+Update-GitExclusion $RootPath $_regex_wordpress_theme (Get-ActiveWordPressThemeName $_wordpress_path | Get-ParentWordPressThemeName)
 if ($_themes_has_child) {
     $_child_theme_path = [IO.Path]::GetDirectoryName($_themes_path) + "/" + [IO.Path]::GetFileNameWithoutExtension($_themes_path) + "-child" + [IO.Path]::GetExtension($_themes_path)
     wp theme install $_child_theme_path --path=$_wordpress_path --activate $_debug_info
