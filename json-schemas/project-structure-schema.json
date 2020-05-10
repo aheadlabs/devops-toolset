@@ -2,46 +2,74 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "title": "Project structure",
     "description": "Directories and files for new projects",
-
     "definitions": {
         "default_content": {
-            "type": "object" ,
+            "type": "object",
             "properties": {
-                "source": {"enum":["raw", "from_file", "from_url"]},
-                "value": {"type":"string"}
+                "source": {
+                    "enum": [
+                        "raw",
+                        "from_file",
+                        "from_url"
+                    ]
+                },
+                "value": {
+                    "type": "string"
+                }
             },
             "additionalProperties": false
         },
         "item": {
             "type": "object",
             "properties": {
-                "name": {"type":"string"},
-                "type": {"enum": ["file", "directory"]},
-                "default_content": {"$ref": "#/definitions/default_content"},
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "file",
+                        "directory"
+                    ]
+                },
+                "condition": {
+                    "enum": [
+                        "when-parent-not-empty"
+                    ]
+                },
+                "default_content": {
+                    "$ref": "#/definitions/default_content"
+                },
                 "children": {
                     "type": "array",
-                    "items": { "$ref": "#/definitions/item" },
+                    "items": {
+                        "$ref": "#/definitions/item"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "additionalItems": false
                 }
             },
             "additionalProperties": false,
-            "required": ["name","type"]
+            "required": [
+                "name",
+                "type"
+            ]
         }
     },
-
     "type": "object",
-
     "properties": {
         "items": {
-            "type":"array",
-            "items": { "$ref": "#/definitions/item" },
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/item"
+            },
             "minItems": 1,
             "uniqueItems": true,
             "additionalItems": false
         }
     },
     "additionalProperties": false,
-    "required": ["items"]
+    "required": [
+        "items"
+    ]
 }
