@@ -20,7 +20,7 @@ Read-Host "Please place your *site.json, *site-environments.json and *project-st
 Read-Host "Please install MySql and create the database specified in the config file. Press any key..."
 
 # Ask for using the default ones defined in devops-toolset instead => yes/no
-Write-Host "Do you want me to use the default ones instead? (y or n)"
+Write-Host -ForegroundColor Blue "Do you want me to use the default ones instead? (y or n)"
 $local:key_pressed = $Host.UI.RawUI.ReadKey()
 Write-Host ""
 
@@ -28,7 +28,7 @@ Write-Host ""
 $RepositoryRoot = (Get-Item $PSScriptRoot).FullName
 
 # Download devops-toolset
-Write-Host "Downloading and expanding devops-toolset from GitHub..."
+Write-Host -ForegroundColor DarkYellow "Downloading and expanding devops-toolset from GitHub..."
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/aheadlabs/devops-toolset/archive/master.zip", "$RepositoryRoot/devops-toolset-master.zip")
 [IO.Compression.ZipFile]::ExtractToDirectory("$RepositoryRoot/devops-toolset-master.zip", $RepositoryRoot)
 Rename-Item "$RepositoryRoot/devops-toolset-master" "$RepositoryRoot/devops-toolset"
@@ -36,7 +36,7 @@ Remove-Item "$RepositoryRoot/devops-toolset-master.zip"
 
 # Download default site.json and site-environments.json if needed
 if ($local:key_pressed.Character -eq "y"){
-    Write-Host "Getting default config files from GitHub..."
+    Write-Host -ForegroundColor DarkYellow "Getting default config files from GitHub..."
 
     $local:site_environments_path = "$RepositoryRoot/default-site-environments.json"
     $local:site_environments_request = Invoke-WebRequest "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/default-site-environments.json"
@@ -60,16 +60,16 @@ $local:project_structure_path = (Get-Item "$RepositoryRoot/*project-structure.js
 $local:site_config_json = Get-Content -Path $local:site_config_path -Raw | ConvertFrom-Json
 
 # Create basic project structure
-Write-Host "Creating project basic structure..."
+Write-Host -ForegroundColor DarkYellow "Creating project basic structure..."
 Invoke-Expression -Command "$RepositoryRoot/devops-toolset/wordpress/Start-BasicProjectStructure.ps1 -RootPath $RepositoryRoot -ProjectStructurePath $local:project_structure_path"
 
 # Move devops-toolset to /.devops
-Write-Host "Moving devops-toolset inside /.devops..."
+Write-Host -ForegroundColor DarkYellow "Moving devops-toolset inside /.devops..."
 Move-Item "$RepositoryRoot/devops-toolset" "$RepositoryRoot/.devops/devops-toolset"
 Remove-Item "$RepositoryRoot/.devops/.gitkeep"
-
+ 
 # Moving themes to /content/themes
-Write-Host "Moving themes (<theme>*.zip) to /content/themes..."
+Write-Host -ForegroundColor DarkYellow "Moving themes (<theme>*.zip) to /content/themes..."
 if ($local:site_config_json.themes.source_type -eq "zip") {
     $local:theme_with_no_extension = [IO.Path]::GetFileNameWithoutExtension($local:site_config_json.themes.source)
     Move-Item "$RepositoryRoot/$local:theme_with_no_extension*.zip" "$RepositoryRoot/content/themes"
@@ -77,20 +77,25 @@ if ($local:site_config_json.themes.source_type -eq "zip") {
 }
 
 # Download core files, configure site, install site, install theme and install plugins
-Write-Host "Downloading WordPress core files..."
+Write-Host -ForegroundColor DarkYellow "Downloading WordPress core files..."
 Invoke-Expression -Command "$RepositoryRoot/.devops/devops-toolset/wordpress/Get-WordPressCoreFiles.ps1 -RootPath $RepositoryRoot -EnvironmentConfig '$local:site_environments_path','localhost'"
-Write-Host "Creating wp-config.php..."
+Write-Host -ForegroundColor DarkYellow "Creating wp-config.php..."
 Invoke-Expression -Command "$RepositoryRoot/.devops/devops-toolset/wordpress/Set-WordPressConfig.ps1 -RootPath $RepositoryRoot -EnvironmentConfig '$local:site_environments_path','localhost' -DbUserPwd $DbUserPwd"
-Write-Host "Installing WordPress..."
+Write-Host -ForegroundColor DarkYellow "Installing WordPress..."
 Invoke-Expression -Command "$RepositoryRoot/.devops/devops-toolset/wordpress/Install-WordPress.ps1 -RootPath $RepositoryRoot -EnvironmentConfig '$local:site_environments_path','localhost' -AdminPwd $AdminPwd"
 Remove-Item "$RepositoryRoot/database/.gitkeep"
-Write-Host "Installing WordPress theme..."
+Write-Host -ForegroundColor DarkYellow "Installing WordPress theme..."
 Invoke-Expression -Command "$RepositoryRoot/.devops/devops-toolset/wordpress/Install-WordPressTheme.ps1 -RootPath $RepositoryRoot -EnvironmentConfig '$local:site_environments_path','localhost'"
 
 # Moved *site.json and *site-environments.json and *project-structure.json files to /.devops
-Write-Host "Moving configuration (*site*.json and *project-structure.json) files inside /.devops..."
+Write-Host -ForegroundColor DarkYellow "Moving configuration (*site*.json and *project-structure.json) files inside /.devops..."
 Move-Item "$RepositoryRoot/*site*.json" "$RepositoryRoot/.devops"
 Move-Item "$RepositoryRoot/*project-structure.json" "$RepositoryRoot/.devops"
 
+# TODO Download Bootstrap-ExistingWordPressRepository.ps1 to /.devops
+
 # Delete this script or remind to delete it manually
 Read-Host "Remember to delete this script manually. Press any key to finish..."
+# TODO Delete myself
+#Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
+Write-Host -BackgroundColor DarkGreen -ForegroundColor Black "DONE!!"
