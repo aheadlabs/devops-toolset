@@ -13,5 +13,6 @@ wordpress/xmlrpc.php
 # devops-toolset
 .devops/devops-toolset/
 
-# Powershell scripts in root
+# scripts in root
 *.ps1
+*.py
