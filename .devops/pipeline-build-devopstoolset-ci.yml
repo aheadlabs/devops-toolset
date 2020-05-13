@@ -27,6 +27,23 @@ jobs:
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
+    - task: SonarCloudPrepare@1
+      displayName: Prepare SonarCloud analysis
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'ahead-labs'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'devops-toolset'
+        cliProjectName: 'devops-toolset'
+        cliProjectVersion: 
+        cliSources: '.'
+    - task: SonarCloudAnalyze@1
+      displayName: Run SonarCloud analysis
+    - task: SonarCloudPublish@1
+      displayName: Publish SonarCloud quality gate results
+      inputs:
+        pollingTimeoutSec: '300'
     - task: CopyFiles@2
       displayName: Copy files to artifact folder
       inputs:
