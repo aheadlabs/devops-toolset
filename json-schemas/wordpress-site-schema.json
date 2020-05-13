@@ -29,10 +29,11 @@
                     "properties": {
                         "core":{"type":"string"},
                         "theme":{"type":"string"},
-                        "plugins":{"type":"string"}
+                        "plugins":{"type":"string"},
+                        "regular":{"type":"string"}
                     },
                     "additionalProperties": false,
-                    "required": ["core","theme","plugins"]
+                    "required": ["core","theme","plugins","regular"]
                 }
             },
             "additionalProperties": false,

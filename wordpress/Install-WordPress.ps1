@@ -58,8 +58,7 @@ $_admin_password = Convert-WpCliCoreInstallAdminPassword $AdminPwd
 $_skip_email = Convert-WpCliCoreInstallSkipEmail $SiteConfigJson.settings.admin.skip_email
 
 # Install WordPress
-wp db drop --yes --path=$_wordpress_path $_debug_info
-wp db create --path=$_wordpress_path $_debug_info
+wp db reset --path=$_wordpress_path --yes $_debug_info
 wp core install --path=$_wordpress_path --url=$_site_url --title=$_title --admin_user=$_admin_user --admin_email=$_admin_email $_admin_password $_skip_email $_debug_info
 wp option update blogdescription $_description --path=$_wordpress_path $_debug_info
 
