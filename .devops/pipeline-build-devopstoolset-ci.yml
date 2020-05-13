@@ -41,6 +41,7 @@ jobs:
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis
     - task: SonarCloudPublish@1
+      displayName: Publish SonarCloud quality gate results
       inputs:
         pollingTimeoutSec: '300'
     - task: CopyFiles@2
