@@ -12,9 +12,10 @@
         "collate": "utf8_unicode_ci",
         "skip_check": true,
         "dumps":{
-            "core":"db.core.sql",
-            "theme":"db.theme.sql",
-            "plugins":"db.plugins.sql"
+            "core":"[date]-db.core.sql",
+            "theme":"[date]-db.theme.sql",
+            "plugins":"[date]-db.plugins.sql",
+            "regular": "[date]-db.sql"
         }
     },
     "settings": {
