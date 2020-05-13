@@ -33,11 +33,8 @@ jobs:
         SonarCloud: 'SonarCloud'
         organization: 'ahead-labs'
         scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'devops-toolset'
-        cliProjectName: 'devops-toolset'
-        cliProjectVersion: 
-        cliSources: '.'
+        configMode: 'file'
+        configFile: '.devops/sonar-project.properties'
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis
     - task: SonarCloudPublish@1
