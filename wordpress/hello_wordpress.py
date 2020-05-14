@@ -1,1 +1,0 @@
-print("Hello WordPress, Python talking...")
