@@ -66,3 +66,8 @@ jobs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
         ArtifactName: 'devops-toolset'
         publishLocation: 'Container'
+    - task: Visual Studio IntelliCode Team Model Training@0
+      displayName: Train IntelliCode model
+      inputs:
+        branch: '*'
+        intelliCodeServiceEndpoint: 'IntelliCode'
