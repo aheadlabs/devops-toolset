@@ -88,5 +88,5 @@ jobs:
       displayName: Train IntelliCode model
       enabled: false
       inputs:
-        branch: 'refs/heads/feature/pythonization'
+        branch: 'feature/pythonization'
         intelliCodeServiceEndpoint: 'IntelliCode'
