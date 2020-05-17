@@ -15,7 +15,7 @@ pr:
       - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 name: CI-$(date:yyyyMMdd)$(rev:.r)
 jobs:
@@ -41,7 +41,7 @@ jobs:
         script: |
           pip install pytest
           pip install pytest-cov
-          pytest --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+          pytest --cov-branch --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
     - task: PublishTestResults@2
       displayName: Publish unit test results
       inputs:
