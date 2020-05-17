@@ -1,3 +1,5 @@
+"""Unit tests for the paths file"""
+
 import pathlib
 import pytest
 from unittest.mock import patch
@@ -10,7 +12,7 @@ def test_get_filepath_in_tree_ascending_given_file_name_when_exists_then_returns
     # Arrange
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = True
-        with patch("filesystem.paths.__file__", f"{filenames.path}/{filenames.test_file}"):
+        with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
     # Act
             result = sut.get_filepath_in_tree(filenames.file)
@@ -25,7 +27,7 @@ def test_get_filepath_in_tree_ascending_given_file_name_when_not_exist_then_retu
     # Arrange
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = False
-        with patch("filesystem.paths.__file__", f"{filenames.path}/{filenames.test_file}"):
+        with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
     # Act
             result = sut.get_filepath_in_tree(filenames.file)
@@ -41,7 +43,7 @@ def test_get_filepath_descending_in_tree_given_file_name_when_exists_then_return
         exists.return_value = True
         with patch.object(pathlib.Path, "rglob") as rglob:
             rglob.return_value = filenames.paths
-            with patch("filesystem.paths.__file__", f"{filenames.deep_path}/{filenames.test_file}"):
+            with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
 
     # Act
                 result = sut.get_filepath_in_tree(filenames.file, Directions.DESDENDING)
@@ -57,7 +59,7 @@ def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exis
         exits.return_value = False
         with patch.object(pathlib.Path, "rglob") as rglob:
             rglob.return_value = filenames.no_paths
-            with patch("filesystem.paths.__file__", f"{filenames.path}/{filenames.test_file}"):
+            with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
     # Act
                 result = sut.get_filepath_in_tree(filenames.file, Directions.DESDENDING)
