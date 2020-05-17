@@ -22,8 +22,7 @@ Reference the package in your pipeline to have these tools available:<br>
 ![Connect to feed](.media/connect-to-feed.png)
 2. Unzip the package to a directory<br>
 e.g.: /devops-toolset
-3. Call the scripts taking /code as the base path.<br>
-i.e.: /wordpress/SetConfigValues.ps1 for /code/wordpress/SetConfigValues.ps1
+3. Add this directory to the PYTHONPATH environment variable.
 
 # File structure
 | Directory / file | Description |
