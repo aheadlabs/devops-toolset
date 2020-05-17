@@ -30,6 +30,8 @@ def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING
             if pathlib.Path(guess_path).exists():
                 path_to_file = pathlib.Path(guess_path).parent
                 break
+            else:
+                path_to_file = None
 
     return path_to_file
 
@@ -44,4 +46,4 @@ def get_project_root() -> str:
 
 
 if __name__ == "__main__":
-    print(get_project_root())
+    print(f"Project root is {get_project_root()}")

@@ -8,6 +8,10 @@ omit =
     **/conftest.py
     **/*_testskip.py
 
+[report]
+exclude_lines =
+    if __name__ == "__main__":
+
 [html]
 directory = .pytest/htmlcov/
 extra_css = .devops/coverage-report.css

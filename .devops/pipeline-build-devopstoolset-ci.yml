@@ -86,6 +86,7 @@ jobs:
         publishLocation: 'Container'
     - task: Visual Studio IntelliCode Team Model Training@0
       displayName: Train IntelliCode model
+      enabled: false
       inputs:
         branch: 'refs/heads/feature/pythonization'
         intelliCodeServiceEndpoint: 'IntelliCode'
