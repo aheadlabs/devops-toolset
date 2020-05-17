@@ -1,0 +1,20 @@
+# Configuration file for coverage.py and pytest-cov
+
+[run]
+branch = true
+data_file = .pytest/.coverage
+omit = 
+    **/__init__.py
+    **/conftest.py
+    **/*_testskip.py
+
+[html]
+directory = .pytest/htmlcov/
+extra_css = .devops/coverage-report.css
+
+[xml]
+output = .pytest/coverage.xml
+
+[json]
+output = .pytest/coverage.json
+pretty_print = true

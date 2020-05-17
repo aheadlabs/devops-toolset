@@ -36,12 +36,12 @@ jobs:
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
     - task: CmdLine@2
-      displayName: Unit tests with pytest
+      displayName: Unit test with pytest
       inputs:
         script: |
           pip install pytest
           pip install pytest-cov
-          pytest --cov-branch --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+          pytest --junitxml=.pytest/test-results.xml --cov=. --cov-report=xml --cov-report=html
     - task: PublishTestResults@2
       displayName: Publish unit test results
       inputs:
