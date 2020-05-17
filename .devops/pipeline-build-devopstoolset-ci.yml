@@ -87,5 +87,5 @@ jobs:
     - task: Visual Studio IntelliCode Team Model Training@0
       displayName: Train IntelliCode model
       inputs:
-        branch: 'refs/heads/feature/pythonization'
+        branch: 'feature/pythonization'
         intelliCodeServiceEndpoint: 'IntelliCode'
