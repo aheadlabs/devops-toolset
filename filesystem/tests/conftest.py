@@ -1,6 +1,10 @@
 """Test configuration file for filesystem module.
 
-Add here whatever you want to pass as a fixture in your texts"""
+Add here whatever you want to pass as a fixture in your texts.
+
+    ie: (see FileNames example)
+        - Add a class that contains what you want to pass as a fixture in your tests.
+        - Create a fixture with that same lowered name that returns an instance to that class."""
 
 import pytest
 
