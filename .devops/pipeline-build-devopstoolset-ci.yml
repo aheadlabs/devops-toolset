@@ -39,6 +39,7 @@ jobs:
       displayName: Unit test with pytest
       inputs:
         script: |
+          pip install wheel
           pip install pytest
           pip install pytest-cov
           pytest --junitxml=.pytest/test-results.xml --cov=. --cov-report=xml --cov-report=html
