@@ -31,9 +31,9 @@ jobs:
       displayName: Install Python packages
       inputs:
         script: |
-          pip install wheel
-          pip install pytest
-          pip install pytest-cov
+          pip install wheel --upgrade
+          pip install pytest --upgrade
+          pip install pytest-cov --upgrade
     - task: UsePythonVersion@0
       displayName: Change to Python 3.x
       inputs:
