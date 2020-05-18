@@ -27,17 +27,16 @@ jobs:
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
-    - task: SonarCloudPrepare@1
-      displayName: Prepare SonarCloud analysis
+    - task: UsePythonVersion@0
+      displayName: Change to Python 3.x
       inputs:
-        SonarCloud: 'SonarCloud'
-        organization: 'ahead-labs'
-        scannerMode: 'CLI'
-        configMode: 'file'
-        configFile: '.devops/sonar-project.properties'
-    - task: CmdLine@2
+        versionSpec: '3.x'
+        addToPath: true
+        architecture: 'x64'
+    - task: PythonScript@0
       displayName: Unit test with pytest
       inputs:
+        scriptSource: 'inline'
         script: |
           pip install wheel
           pip install pytest
@@ -54,6 +53,14 @@ jobs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/.pytest/coverage.xml'
         reportDirectory: '$(System.DefaultWorkingDirectory)/.pytest/htmlcov'
+    - task: SonarCloudPrepare@1
+      displayName: Prepare SonarCloud analysis
+      inputs:
+        SonarCloud: 'SonarCloud'
+        organization: 'ahead-labs'
+        scannerMode: 'CLI'
+        configMode: 'file'
+        configFile: '.devops/sonar-project.properties'
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis
     - task: SonarCloudPublish@1
