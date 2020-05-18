@@ -28,24 +28,13 @@ jobs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
     - task: CmdLine@2
-      displayName: Install Python packages
+      displayName: Unit test with pytest
       inputs:
         script: |
           pip install wheel --upgrade
           pip install pytest --upgrade
           pip install pytest-cov --upgrade
-    - task: UsePythonVersion@0
-      displayName: Change to Python 3.x
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-        architecture: 'x64'
-    - task: PythonScript@0
-      displayName: Unit test with pytest
-      inputs:
-        scriptSource: 'inline'
-        script: |
-          python -m pytest --junitxml=".pytest/test-results.xml" --cov="." --cov-report="xml" --cov-report="html"
+          pytest --junitxml=".pytest/test-results.xml" --cov="." --cov-report="xml" --cov-report="html"
     - task: PublishTestResults@2
       displayName: Publish unit test results
       inputs:
