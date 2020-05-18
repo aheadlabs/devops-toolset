@@ -31,6 +31,8 @@ jobs:
       displayName: Unit test with pytest
       inputs:
         script: |
+          pip list
+          pip install –-upgrade pip
           pip install wheel --upgrade
           pip install pytest --upgrade
           pip install pytest-cov --upgrade
