@@ -1,8 +1,9 @@
 """Unit tests for the git file"""
 
+import io
 import pathlib
 import pytest
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 import tools.git as sut
 import filesystem.paths as paths
 from filesystem.constants import Directions, FileNames
@@ -47,5 +48,27 @@ def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(filenames
 
     # Assert
     target.assert_called_with(filenames.file, Directions.ASCENDING)
+
+# endregion
+
+# region add_gitignore_exclusion()
+
+def test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusion(filenames, tmp_path):
+    """Given a path, when the file opens, the exclusion is appended"""
+
+    # Arrange
+    test_gitignore_path = pathlib.Path.joinpath(tmp_path, FileNames.GITIGNORE_FILE)
+    with open(test_gitignore_path, "w") as test_gitignore:
+        test_gitignore.write(".pytest/")
+    exclusion = "exclusion/"
+    expected_gitignore = io.StringIO(f".pytest/\n{exclusion}\n")
+
+    # Act
+    sut.add_gitignore_exclusion(test_gitignore_path, exclusion)
+
+    # Assert
+    with open(test_gitignore_path, "r") as test_gitignore:
+        content = test_gitignore.read()
+        assert content == expected_gitignore.read()
 
 # endregion

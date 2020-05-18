@@ -39,7 +39,9 @@ def add_gitignore_exclusion(path: str, exclusion: str):
         path: Path to the .gitignore file.
         exclusion: Exclusion to be added (whole line must be passed).
     """
-    pass
+
+    with open(path,"a") as gitignore:
+        gitignore.write(f"\n{exclusion}\n")
 
 
 def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
@@ -54,6 +56,10 @@ def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
     Returns:
         True if the exclusion is found, False otherwise.
     """
+
+    # Open .gitignore for reading, read the file
+
+    # Find exclusion and return True, otherwise False
     pass
 
 
@@ -69,6 +75,10 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
     """
 
     # Check if the RegEx has more than 1 capture group and throw an exception (update docstring then)
+
+    # Open .gitignore for reading/writing, read the file
+
+    # Try to match RegEx and replace capture group it in that case
     pass
 
 
