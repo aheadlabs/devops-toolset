@@ -31,13 +31,13 @@ jobs:
       displayName: Unit test with pytest
       inputs:
         script: |
-          pip list
-          pip install –-upgrade pip
-          pip install wheel --upgrade
-          pip install pytest --upgrade
-          pip install pytest-cov --upgrade
-          pip list
-          pytest --junitxml=".pytest/test-results.xml" --cov="." --cov-report="xml" --cov-report="html"
+          python3 -m pip list
+          python3 -m pip install –-upgrade pip
+          python3 -m pip install wheel --upgrade
+          python3 -m pip install pytest --upgrade
+          python3 -m pip install pytest-cov --upgrade
+          python3 -m pip list
+          python3 -m pytest --junitxml=".pytest/test-results.xml" --cov="." --cov-report="xml" --cov-report="html"
     - task: PublishTestResults@2
       displayName: Publish unit test results
       inputs:
