@@ -1,7 +1,7 @@
 """Test configuration file for devops-toolset package.
 
 This code is executed once per unit test session.
-Add here whatever you want to pass as a fixture in your texts.
+Add here whatever you want to pass as a fixture in your tests.
 
     ie: (see FileNames example)
         - Add a class that contains what you want to pass as a fixture in your tests.

@@ -3,6 +3,8 @@
 #! python
 
 import pathlib
+import re
+from tools.constants import Literals
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
 
@@ -40,8 +42,8 @@ def add_gitignore_exclusion(path: str, exclusion: str):
         exclusion: Exclusion to be added (whole line must be passed).
     """
 
-    with open(path,"a") as gitignore:
-        gitignore.write(f"\n{exclusion}\n")
+    with open(path,"a") as _gitignore:
+        _gitignore.write(f"\n{exclusion}\n")
 
 
 def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
@@ -51,16 +53,17 @@ def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
 
     Args:
         path: Path to the .gitignore file.
-        exclusion: Exclusion to find (whole line must be passed).
+        exclusion: Exclusion to find (whole line must be passed not including
+            newline).
 
     Returns:
         True if the exclusion is found, False otherwise.
     """
 
-    # Open .gitignore for reading, read the file
+    with open(path, "r") as _gitignore:
+        index = _gitignore.read().find(f"{exclusion}\n")
 
-    # Find exclusion and return True, otherwise False
-    pass
+    return index > -1
 
 
 def update_gitignore_exclusion(path: str, regex: str, value: str):
@@ -72,15 +75,28 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
         path: Path to the .gitignore file.
         regex: RegEx with only 1 capturing group, whose content will be replaced.
         value: String that will replace the RegEx capture group.
+    Raises:
+        ValueError: When regex has no capture groups or more than one
     """
 
-    # Check if the RegEx has more than 1 capture group and throw an exception (update docstring then)
+    cregex = re.compile(regex)
 
-    # Open .gitignore for reading/writing, read the file
+    if cregex.groups != 1:
+        raise ValueError(Literals.lit_regex_value_error)
 
-    # Try to match RegEx and replace capture group it in that case
-    pass
+    with open(path, "r+") as _gitignore:
+        content = _gitignore.read()
 
+    from_index = 0
+    iterations = len(cregex.findall(content))
+    while iterations > 0:
+        match = cregex.search(content, from_index)
+        content = content[:match.regs[1][0]] + value + content[match.regs[1][1]:]
+        from_index = match.regs[1][1]
+        iterations -= 1
+
+    with open(path, "w") as _gitignore:
+        _gitignore.write(content)
 
 if __name__ == "__main__":
     get_gitignore_path()
