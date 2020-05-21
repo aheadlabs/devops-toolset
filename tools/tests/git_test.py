@@ -147,7 +147,7 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitig
 
 
 @patch("builtins.open", new_callable=mock_open, read_data = GitignoreData.file_contents)
-def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitignore(open, filenames):
+def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_gitignore(open, filenames):
     """Given a RegEx, when it has 1 capture group, it writes the .gitignore
     file after editing it"""
 
