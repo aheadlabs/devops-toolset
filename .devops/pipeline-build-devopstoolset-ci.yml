@@ -28,6 +28,11 @@ jobs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
     - task: CmdLine@2
+      displayName: Compile .po files
+      inputs:
+        script: |
+          python3 $(System.DefaultWorkingDirectory)/locales/tools.py
+    - task: CmdLine@2
       displayName: Unit test with pytest
       inputs:
         script: |
