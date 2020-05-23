@@ -1,3 +1,5 @@
+"""Logging configuration"""
+
 import logging as logger
 from os import path as os_path
 
