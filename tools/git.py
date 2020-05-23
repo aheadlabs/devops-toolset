@@ -2,9 +2,9 @@
 
 #! python
 
+import locales.loader
 import pathlib
 import re
-from tools.constants import Literals
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
 
@@ -82,7 +82,7 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
     cregex = re.compile(regex)
 
     if cregex.groups != 1:
-        raise ValueError(Literals.lit_regex_value_error)
+        raise ValueError(_("RegEx must have 1 capture group. No less, no more."))
 
     with open(path, "r+") as _gitignore:
         content = _gitignore.read()
