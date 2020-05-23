@@ -18,6 +18,7 @@ class FileNames(object):
     no_paths = []
     file = ".gitignore"
     file__path = "filesystem.paths.__file__"
+    glob_no_match = "**/no_match.file"
 
 @pytest.fixture
 def filenames():

@@ -7,4 +7,10 @@
 **/__pycache__
 
 # Coverage files
-.pytest/
+.pytest*/
+
+# gettext compiled files
+locales/**/*.mo
+
+# logs
+logs/*

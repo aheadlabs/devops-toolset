@@ -6,7 +6,7 @@ import pathlib
 from filesystem.constants import FileNames, Directions
 
 def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> str:
-    """Gets path to the  directory containing the file.
+    """Gets path to the directory containing the file.
 
     Args:
         file: File name (not path to file) that should be found.
@@ -34,6 +34,25 @@ def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING
                 path_to_file = None
 
     return path_to_file
+
+
+def get_filepaths_in_tree(starting_path: str, glob: str) -> str:
+    """Gets a list with the paths to the descendant files that match the glob pattern.
+
+    Args:
+        starting_path: Path to start the seek from.
+        glob: glob pattern to match the files that should be found.
+
+    Returns:
+        List with the paths to the files that match.
+    """
+
+    paths = []
+
+    for guess_path in pathlib.Path(starting_path).rglob(glob):
+        paths.append(guess_path)
+
+    return paths
 
 
 def get_project_root() -> str:

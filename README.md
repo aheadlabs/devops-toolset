@@ -3,6 +3,7 @@
 [![Build status](https://img.shields.io/azure-devops/build/aheadlabs/DevOps-toolset/6)](https://dev.azure.com/aheadlabs/DevOps-toolset/_build?definitionId=6&_a=summary)
 [![Release](https://img.shields.io/azure-devops/release/aheadlabs/1485b494-712b-4941-9b9a-d177484d1727/1/1)](https://dev.azure.com/aheadlabs/DevOps-toolset/_release?_a=releases&view=mine&definitionId=1)  
 [![Sonar quality gate](https://img.shields.io/sonar/quality_gate/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=devops-toolset)
+[![Sonar coverage](https://img.shields.io/sonar/coverage/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)](https://img.shields.io/sonar/coverage/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)
 [![Sonar tech debt](https://img.shields.io/sonar/tech_debt/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?id=devops-toolset&metric=sqale_index&view=list)
 [![Sonar violations](https://img.shields.io/sonar/violations/devops-toolset?format=long&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=devops-toolset)<!--[![Sonar documented API density](https://img.shields.io/sonar/public_documented_api_density/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)]()-->  
 [![GitHub SemVer tag](https://img.shields.io/github/v/tag/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset/tags)

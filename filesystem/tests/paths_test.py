@@ -96,6 +96,39 @@ def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exis
 
 # endregion
 
+# region get_filepaths_in_tree()
+
+def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
+    """Given a starting path and a glob, when there are no matching paths, it
+    returns an empty list."""
+    
+    # Arrange
+    with patch.object(pathlib.Path, "rglob") as rglob:
+        rglob.return_value = filenames.no_paths
+
+    # Act
+        result = sut.get_filepaths_in_tree(filenames.path, filenames.glob_no_match)
+
+    # Assert
+    assert result == []
+
+
+def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_list(filenames):
+    """Given a starting path and a glob, when there are matching paths, it
+    returns a list with those paths."""
+    
+    # Arrange
+    with patch.object(pathlib.Path, "rglob") as rglob:
+        rglob.return_value = filenames.paths
+
+    # Act
+        result = sut.get_filepaths_in_tree(filenames.path, filenames.glob_no_match)
+
+    # Assert
+    assert result == filenames.paths
+
+# endregion
+
 # region get_project_root()
 
 def test_get_project_root_then_calls_get_file_path_in_tree_with_project_file():
