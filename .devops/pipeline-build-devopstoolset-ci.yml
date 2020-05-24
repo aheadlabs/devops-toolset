@@ -28,6 +28,12 @@ jobs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
     - task: CmdLine@2
+      displayName: Tree /usr/bin
+      inputs:
+        script: |
+          sudo apt-get install tree
+          tree /usr/bin
+    - task: CmdLine@2
       displayName: Compile .po files
       inputs:
         script: |
