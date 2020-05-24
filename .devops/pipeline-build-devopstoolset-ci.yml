@@ -31,6 +31,7 @@ jobs:
       displayName: --DEBUG--
       inputs:
         script: |
+          sudo apt-get install gettext
           msgfmt --help
     - task: CmdLine@2
       displayName: Compile .po files
