@@ -28,11 +28,12 @@ jobs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
     - task: CmdLine@2
-      displayName: Tree /usr/bin
+      displayName: --DEBUG--
       inputs:
         script: |
-          sudo apt-get install tree
-          tree /usr/bin
+          pip list
+          pip install pygettext
+          pip list
     - task: CmdLine@2
       displayName: Compile .po files
       inputs:
