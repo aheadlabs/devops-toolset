@@ -31,9 +31,7 @@ jobs:
       displayName: --DEBUG--
       inputs:
         script: |
-          pip list
-          pip install pygettext
-          pip list
+          msgfmt --help
     - task: CmdLine@2
       displayName: Compile .po files
       inputs:
