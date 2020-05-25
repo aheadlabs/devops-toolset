@@ -2,11 +2,13 @@
 
 #! python
 
-import locales.loader
+import core.app
 import pathlib
 import re
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
+
+app: core.app.App = core.app.App()
 
 def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCENDING) -> str:
     """Gets the path to the .gitignore file.
@@ -23,7 +25,7 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
     Returns:
         The path to the closest/root .gitignore file
     """
-    if path == None:
+    if path is None:
         gitignore_path = pathlib.Path.joinpath(get_project_root(), FileNames.GITIGNORE_FILE)
         if not pathlib.Path(gitignore_path).exists():
             raise FileNotFoundError
@@ -33,7 +35,7 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
 
 
 def add_gitignore_exclusion(path: str, exclusion: str):
-    """Adds an excusion in a .gitignore file.
+    """Adds an exclusion in a .gitignore file.
 
     It adds the exclusion at the end of the file.
 
@@ -97,6 +99,7 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
 
     with open(path, "w") as _gitignore:
         _gitignore.write(content)
+
 
 if __name__ == "__main__":
     get_gitignore_path()

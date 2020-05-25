@@ -9,6 +9,7 @@ Add here whatever you want to pass as a fixture in your tests.
 
 import pytest
 
+
 class FileNames(object):
     """Class used to create the filenames fixture"""
     test_file = "test.py"
@@ -19,6 +20,7 @@ class FileNames(object):
     file = ".gitignore"
     file__path = "filesystem.paths.__file__"
     glob_no_match = "**/no_match.file"
+
 
 @pytest.fixture
 def filenames():
