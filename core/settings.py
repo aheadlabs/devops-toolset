@@ -9,11 +9,14 @@ class Settings(object):
     """Application settings"""
 
     _LOCALES: str = "locales"
+    _CORE: str = "core"
+    _CONFIG_SETTINGS_FILE_NAME: str = "logging-config.json"
     _CURRENT_PATH: str = os.path.dirname(os.path.realpath(__file__))
 
     # defaults
     root_path: pathlib.Path = pathlib.Path(_CURRENT_PATH).parent.absolute()
     locales_path: pathlib.Path = pathlib.Path.joinpath(root_path, _LOCALES).absolute()
+    log_config_file_path: pathlib.Path = pathlib.Path.joinpath(root_path, _CORE, _CONFIG_SETTINGS_FILE_NAME).absolute()
     language: str = "en"
 
     def __init__(self):
