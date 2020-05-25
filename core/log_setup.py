@@ -1,24 +1,26 @@
 """Logging configuration"""
 
 import logging as logger
-from os import path as os_path
+import core.app
+
+app: core.app.App = core.app.App()
+
 
 def configure(filepath):
     """Configures the Python logging using a dictionary from a json file and adding a default
     fallback configuration with the basics
 
     Args:
-        filename: Path of the file which contains the configuration
+        filepath: Path of the file which contains the configuration
         (See https://docs.python.org/2/library/logging.config.html#logging-config-api)
     """
 
-    import json
-    from logging.config import dictConfig
     try:
         configure_by_file(filepath)
     except Exception as err:
-        logger.error(f"Couldn't configure logger: {format(err)}")
+        logger.error(f"Cannot configure logger: {format(err)}")
         configure_by_default(logger.INFO)
+
 
 def configure_by_default(loglevel):
     """ Configures a root logger using a default configuration
@@ -29,13 +31,14 @@ def configure_by_default(loglevel):
     log = logger.getLogger()
     log.setLevel(loglevel)
     log.addHandler(logger.StreamHandler())
-    log.info("Default configuration loaded succesfully.")
+    log.info("Default configuration loaded successfully.")
+
 
 def configure_by_file(filepath):
     """Configures the Python logging using a dictionary from a json file
 
     Args:
-        filename: Path of the file which contains the configuration
+        filepath: Path of the file which contains the configuration
         (See https://docs.python.org/2/library/logging.config.html#logging-config-api)
 
     Raises:
@@ -52,5 +55,4 @@ def configure_by_file(filepath):
 
 
 if __name__ == "__main__":
-    import core.log_setup
-    configure("./core/logging-config.json")
+    configure(app.settings.log_config_file_path)
