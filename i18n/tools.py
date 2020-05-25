@@ -13,13 +13,13 @@ import pathlib
 import core.app
 from filesystem.paths import get_file_paths_in_tree
 
-app: core.app.App = core.app.App()
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--py", action="store_true")
 parser.add_argument("--generate-pot", action="store_true")
 parser.add_argument("--compile", action="store_true")
 args, args_unknown = parser.parse_known_args()
+
+app: core.app.App = core.app.App()
 
 if not pathlib.Path(app.settings.locales_path).is_dir():
     raise ValueError("locale_path parameter must be a directory. Check app settings.")
