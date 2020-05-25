@@ -6,6 +6,8 @@ import filesystem.paths as sut
 from filesystem.constants import Directions, FileNames
 
 # region get_filepath_in_tree() ASCENDING
+
+
 def test_get_filepath_in_tree_ascending_given_file_name_when_exists_then_returns_path(filenames):
     """Given a file, when it exists in a child directory, should return its
     path"""
@@ -96,7 +98,7 @@ def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exis
 
 # endregion
 
-# region get_filepaths_in_tree()
+# region get_file_paths_in_tree()
 
 def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
     """Given a starting path and a glob, when there are no matching paths, it
@@ -107,7 +109,7 @@ def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_retur
         rglob.return_value = filenames.no_paths
 
     # Act
-        result = sut.get_filepaths_in_tree(filenames.path, filenames.glob_no_match)
+        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
 
     # Assert
     assert result == []
@@ -122,7 +124,7 @@ def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_
         rglob.return_value = filenames.paths
 
     # Act
-        result = sut.get_filepaths_in_tree(filenames.path, filenames.glob_no_match)
+        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
 
     # Assert
     assert result == filenames.paths
