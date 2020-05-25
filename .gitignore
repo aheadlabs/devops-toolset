@@ -13,4 +13,4 @@
 locales/**/*.mo
 
 # logs
-logs/*
+logs/*.log*
