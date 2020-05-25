@@ -37,7 +37,7 @@ jobs:
       displayName: Compile .po files
       inputs:
         script: |
-          python3 $(System.DefaultWorkingDirectory)/locales/tools.py
+          python3 $(System.DefaultWorkingDirectory)/i18n/tools.py
     - task: CmdLine@2
       displayName: Unit test with pytest
       inputs:
