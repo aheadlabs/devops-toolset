@@ -3,6 +3,7 @@
 #! python
 
 import pathlib
+from typing import List
 from filesystem.constants import FileNames, Directions
 
 
@@ -37,7 +38,7 @@ def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING
     return path_to_file
 
 
-def get_file_paths_in_tree(starting_path: str, glob: str) -> str:
+def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
     """Gets a list with the paths to the descendant files that match the glob pattern.
 
     Args:
