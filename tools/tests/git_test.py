@@ -8,6 +8,7 @@ from filesystem.constants import Directions, FileNames
 from tools.tests.conftest import GitignoreData
 import tools.git as sut
 
+
 # region get_gitignore_path()
 def test_get_gitignore_path_given_none_when_exists_then_returns_root_gitignore_path(filenames):
     """Given no file, when it exists, should return path to root .gitignore"""
@@ -114,6 +115,7 @@ def test_find_gitignore_exclusion_given_path_when_exclusion_exists_then_returns_
 
 # region update_gitignore_exclusion()
 
+
 def test_update_gitignore_exclusion_given_regex_when_more_than_1_capture_group_raises_valueerror():
     """Given a RegEx, when it has more than 1 capture group, then raises
     ValueError"""
@@ -126,7 +128,7 @@ def test_update_gitignore_exclusion_given_regex_when_more_than_1_capture_group_r
     # Act
     with pytest.raises(ValueError):
 
-    # Assert
+        # Assert
         sut.update_gitignore_exclusion(path, regex, value)
 
 

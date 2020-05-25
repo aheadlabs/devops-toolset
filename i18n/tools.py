@@ -22,7 +22,7 @@ parser.add_argument("--compile", action="store_true")
 args, args_unknown = parser.parse_known_args()
 
 if not pathlib.Path(app.settings.locales_path).is_dir():
-    raise ValueError(_("locale_path parameter must be a directory. Check app settings."))
+    raise ValueError("locale_path parameter must be a directory. Check app settings.")
 
 
 # TODO(ivan.sainz) Tests pending
@@ -50,7 +50,7 @@ def generate_pot_file():
     pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
 
     if pathlib.Path(pot_file).exists():
-        os.remove(pot_file)
+        os.remove(str(pot_file))
 
     files = get_file_paths_in_tree(str(app.settings.root_path), "**/*.py")
 

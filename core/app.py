@@ -8,7 +8,7 @@ from core.settings import Settings
 import i18n.loader
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--skip-i18n", action="store_false")
+parser.add_argument("--skip-i18n", action="store_true")
 args, args_unknown = parser.parse_known_args()
 
 

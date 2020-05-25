@@ -10,6 +10,7 @@ from filesystem.paths import get_project_root, get_filepath_in_tree
 
 app: core.app.App = core.app.App()
 
+
 def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCENDING) -> str:
     """Gets the path to the .gitignore file.
 
@@ -81,18 +82,18 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
         ValueError: When regex has no capture groups or more than one
     """
 
-    cregex = re.compile(regex)
+    compiled_regex = re.compile(regex)
 
-    if cregex.groups != 1:
+    if compiled_regex.groups != 1:
         raise ValueError(_("RegEx must have 1 capture group. No less, no more."))
 
     with open(path, "r+") as _gitignore:
         content = _gitignore.read()
 
     from_index = 0
-    iterations = len(cregex.findall(content))
+    iterations = len(compiled_regex.findall(content))
     while iterations > 0:
-        match = cregex.search(content, from_index)
+        match = compiled_regex.search(content, from_index)
         content = content[:match.regs[1][0]] + value + content[match.regs[1][1]:]
         from_index = match.regs[1][1]
         iterations -= 1
