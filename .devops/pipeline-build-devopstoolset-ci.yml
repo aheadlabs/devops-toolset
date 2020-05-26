@@ -72,6 +72,7 @@ jobs:
       condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         SonarCloud: 'SonarCloud'
+        organization: 'ahead-labs'
         scannerMode: 'CLI'
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
@@ -82,6 +83,7 @@ jobs:
       condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
       inputs:
         SonarCloud: 'SonarCloud'
+        organization: 'ahead-labs'
         scannerMode: 'CLI'
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
