@@ -67,6 +67,14 @@ jobs:
       displayName: Publish SonarCloud quality gate results
       inputs:
         pollingTimeoutSec: '300'
+    - task: PythonScript@0
+      displayName: Get quality gate status from SonarCloud
+      inputs:
+        scriptSource: 'inline'
+        script: |
+          import devops.sonarx
+          get_quality_gate_status("$(System.DefaultWorkingDirectory)/.devops/sonar-project.properties", $(SONAR_TOKEN))
+        failOnStderr: true
     - task: CopyFiles@2
       displayName: Copy files to artifact folder
       inputs:
