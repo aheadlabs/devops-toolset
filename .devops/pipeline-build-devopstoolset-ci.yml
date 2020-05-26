@@ -28,6 +28,10 @@ jobs:
         versionSpec: '>=3.8'
         addToPath: true
         architecture: 'x64'
+    - task: CmdLine@2
+      displayName: Show current branch
+      inputs:
+        script: 'echo $(Build.SourceBranch)'
     - task: PowerShell@2
       displayName: Parse project.xml
       inputs:
