@@ -33,6 +33,8 @@ jobs:
       inputs:
         script: |
           echo $(Build.SourceBranch)
+          echo $(Build.SourceBranch)
+          echo $(Build.Reason)
           echo $(Build.Reason)
     - task: PowerShell@2
       displayName: Parse project.xml
