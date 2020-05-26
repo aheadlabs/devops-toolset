@@ -22,6 +22,12 @@ jobs:
   - job: Package
     displayName: Package job
     steps:
+    - task: UsePythonVersion@0
+      displayName: Set Python version
+      inputs:
+        versionSpec: '>=3.8'
+        addToPath: true
+        architecture: 'x64'
     - task: PowerShell@2
       displayName: Parse project.xml
       inputs:
