@@ -30,14 +30,6 @@ jobs:
         versionSpec: '>=3.8'
         addToPath: true
         architecture: 'x64'
-    - task: CmdLine@2
-      displayName: Show current branch (temp)
-      inputs:
-        script: |
-          echo $(Build.SourceBranch)
-          echo $(Build.SourceBranch)
-          echo $(Build.Reason)
-          echo $(Build.Reason)
     - task: PowerShell@2
       displayName: Parse project.xml
       inputs:
@@ -70,14 +62,31 @@ jobs:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/.pytest/coverage.xml'
+    - task: PowerShell@2
+      displayName: Get current branch
+      inputs:
+        filePath: '$(System.DefaultWorkingDirectory)/tools/GetCurrentBranch.ps1'
+        arguments: '$(Build.SourceBranch)'
     - task: SonarCloudPrepare@1
-      displayName: Prepare SonarCloud analysis
+      displayName: Prepare SonarCloud analysis (NON PR)
+        condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         SonarCloud: 'SonarCloud'
-        organization: 'ahead-labs'
         scannerMode: 'CLI'
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
+        extraProperties: |
+          sonar.branch.name=$(CurrentBranch)
+    - task: SonarCloudPrepare@1
+      displayName: Prepare SonarCloud analysis (PR)
+        condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+      inputs:
+        SonarCloud: 'SonarCloud'
+        scannerMode: 'CLI'
+        configMode: 'file'
+        configFile: '.devops/sonar-project.properties'
+        extraProperties: |
+          sonar.pullrequest.branch=$(CurrentBranch)
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis
     - task: SonarCloudPublish@1
