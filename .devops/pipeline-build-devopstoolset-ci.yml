@@ -30,6 +30,7 @@ jobs:
         architecture: 'x64'
     - task: CmdLine@2
       displayName: Show current branch (temp)
+      inputs:
         script: |
           echo $(Build.SourceBranch)
           echo $(Build.Reason)
