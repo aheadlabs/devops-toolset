@@ -67,4 +67,4 @@ def get_project_root() -> str:
 
 
 if __name__ == "__main__":
-    print(f"Project root is {get_project_root()}")
+    help(__name__)

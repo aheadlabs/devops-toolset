@@ -103,4 +103,4 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
 
 
 if __name__ == "__main__":
-    get_gitignore_path()
+    help(__name__)

@@ -4,6 +4,8 @@ If called with no arguments it compiles .po files to .mo format using Linux gett
 
 Args:
     --py: If present it will use Python pygettext.py and msgfmt.py instead of Linux's
+    --generate-pot: If present it generates the .pot file
+    --compile: If present it compiles .po files to .mo format
 """
 
 import argparse
