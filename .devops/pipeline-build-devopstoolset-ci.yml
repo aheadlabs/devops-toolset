@@ -29,7 +29,7 @@ jobs:
         addToPath: true
         architecture: 'x64'
     - task: CmdLine@2
-      displayName: Show current branch
+      displayName: Show current branch (temp)
         script: |
           echo $(Build.SourceBranch)
           echo $(Build.Reason)
