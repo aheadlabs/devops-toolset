@@ -13,6 +13,8 @@ pr:
   branches:
     include:
       - master
+      - dev
+      - feature/*
 
 pool:
   vmImage: 'ubuntu-latest'
