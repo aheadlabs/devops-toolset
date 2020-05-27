@@ -29,7 +29,7 @@ def create_environment_variables(key_value_pairs: dict):
         sys.stdout.write(f"##vso[task.setvariable variable={key}]{value}\n")
 
 
-def end_task(result_type: ResultType, description: str):
+def end_task(result_type: ResultType):
     """Ends the current task
 
     Args:
@@ -37,7 +37,7 @@ def end_task(result_type: ResultType, description: str):
         description: Explanation for task ending
     """
 
-    sys.stdout.write(f"##vso[task.complete result={result_type.value};]{description}\n")
+    sys.stdout.write(f"##vso[task.complete result={result_type.value};]DONE\n")
 
 
 if __name__ == "__main__":

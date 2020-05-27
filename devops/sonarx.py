@@ -35,7 +35,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     logging.info(str(message).format(pull_request=pull_request))
     branch_segment = generate_branch_segment(branch, pull_request)
 
-    message = _("Using {file} as the sonar-project.properties configuration file.")
+    message = _("Using {file} as the Sonar* configuration file.")
     logging.info(str(message).format(file=properties_file_path))
     sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
 
@@ -47,7 +47,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     if quality_gate_data["projectStatus"]["status"] == "OK":
         print(_("Quality gate succeeded"))
     else:
-        platform_specific.end_task(platform_specific.ResultType.fail, _("Quality gate status failed"))
+        platform_specific.end_task(platform_specific.ResultType.fail)
 
         for condition in quality_gate_data["projectStatus"]["conditions"]:
 

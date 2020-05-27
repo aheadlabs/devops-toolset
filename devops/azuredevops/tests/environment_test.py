@@ -50,12 +50,11 @@ def test_end_task_given_type_and_description_writes_to_stdout(mock_stdout_write,
 
     # Arrange
     result_type = sut.ResultType.fail
-    description = platformdata.description
 
     # Act
-    sut.end_task(result_type, description)
+    sut.end_task(result_type)
 
     # Assert
-    mock_stdout_write.assert_called_with(f"##vso[task.complete result={result_type.value};]{description}\n")
+    mock_stdout_write.assert_called_with(f"##vso[task.complete result={result_type.value};]DONE\n")
 
 # endregion
