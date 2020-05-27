@@ -164,3 +164,67 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_giti
     open.assert_any_call(filenames.path, "w")
 
 # endregion
+
+# region simplify_branch_name()
+
+
+def test_simplify_branch_name_given_branch_when_root_then_returns_simplified(branchesdata):
+    """Given a branch name, when it is a PR branch, then it is returned
+    simplified"""
+
+    # Arrange
+    long_branch = branchesdata.long_master_branch
+    expected = branchesdata.simple_master_branch
+
+    # Act
+    result = sut.simplify_branch_name(long_branch)
+
+    # Assert
+    assert result == expected
+
+
+def test_simplify_branch_name_given_branch_when_feature_then_returns_simplified(branchesdata):
+    """Given a branch name, when it is a PR branch, then it is returned
+    simplified"""
+
+    # Arrange
+    long_branch = branchesdata.long_feature_branch
+    expected = branchesdata.simple_feature_branch
+
+    # Act
+    result = sut.simplify_branch_name(long_branch)
+
+    # Assert
+    assert result == expected
+
+
+def test_simplify_branch_name_given_branch_when_pr_then_returns_simplified(branchesdata):
+    """Given a branch name, when it is a PR branch, then it is returned
+    simplified"""
+
+    # Arrange
+    long_branch = branchesdata.long_pr_branch
+    expected = branchesdata.simple_pr_branch
+
+    # Act
+    result = sut.simplify_branch_name(long_branch)
+
+    # Assert
+    assert result == expected
+
+
+def test_simplify_branch_name_given_branch_when_other_then_returns_orignal(branchesdata):
+    """Given a branch name, when it is a PR branch, then it is returned
+    simplified"""
+
+    # Arrange
+    long_branch = branchesdata.other_branch
+    expected = branchesdata.other_branch
+
+    # Act
+    result = sut.simplify_branch_name(long_branch)
+
+    # Assert
+    assert result == expected
+
+# endregion

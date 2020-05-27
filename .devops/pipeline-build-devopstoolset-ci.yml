@@ -31,6 +31,20 @@ jobs:
         addToPath: true
         architecture: 'x64'
     - task: PowerShell@2
+      displayName: Get current branch
+      enabled: false
+      inputs:
+        filePath: '$(System.DefaultWorkingDirectory)/tools/GetCurrentBranch.ps1'
+        arguments: '$(Build.SourceBranch)'
+    - task: PythonScript@0
+      displayName: Get current branch
+      inputs:
+        scriptSource: 'inline'
+        script: |
+          import tools.git
+          tools.git.set_current_branch_simplified($(Build.SourceBranch), "CURRENT_BRANCH")
+        failOnStderr: true
+    - task: PowerShell@2
       displayName: Parse project.xml
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
@@ -62,11 +76,6 @@ jobs:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/.pytest/coverage.xml'
-    - task: PowerShell@2
-      displayName: Get current branch
-      inputs:
-        filePath: '$(System.DefaultWorkingDirectory)/tools/GetCurrentBranch.ps1'
-        arguments: '$(Build.SourceBranch)'
     - task: SonarCloudPrepare@1
       displayName: Prepare SonarCloud analysis (NON PR)
       condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
@@ -77,7 +86,7 @@ jobs:
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
         extraProperties: |
-          sonar.branch.name=$(CurrentBranch)
+          sonar.branch.name=$(CURRENT_BRANCH)
           sonar.branch.target=dev
     - task: SonarCloudPrepare@1
       displayName: Prepare SonarCloud analysis (PR)
@@ -89,7 +98,7 @@ jobs:
         configMode: 'file'
         configFile: '.devops/sonar-project.properties'
         extraProperties: |
-          sonar.pullrequest.branch=$(CurrentBranch)
+          sonar.pullrequest.branch=$(CURRENT_BRANCH)
           sonar.pullrequest.base=dev
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis

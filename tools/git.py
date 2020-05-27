@@ -5,10 +5,12 @@
 import core.app
 import pathlib
 import re
+import importlib.util
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
 
 app: core.app.App = core.app.App()
+platform_specific = app.load_platform_specific("environment")
 
 
 def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCENDING) -> str:
@@ -100,6 +102,42 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
 
     with open(path, "w") as _gitignore:
         _gitignore.write(content)
+
+
+def simplify_branch_name(branch: str):
+    """Simplifies a branch name.
+
+    e.g:
+        refs/heads/master => master
+        refs/heads/feature/name => feature/name
+        refs/pull/1/merge => pull/1
+
+    If none of these cases the original branch name is returned.
+
+    Args:
+        branch: Long name of the branch to be simplified
+    """
+
+    if branch.startswith("refs/heads/"):
+        return branch.replace("refs/heads/", "")
+    elif branch.startswith("refs/pull/"):
+        return branch.replace("refs/", "").replace("/merge", "")
+    else:
+        return branch
+
+
+def set_current_branch_simplified(branch: str, environment_variable_name: str):
+    """Creates an environment variable from a branch name (simplified)
+
+    Args:
+        branch: Git branch name to be simplified and stored in an environment
+            variable
+        environment_variable_name: name of the environment variable to be
+            created
+    """
+
+    simplified_branch_name = simplify_branch_name(branch)
+    platform_specific.create_environment_variables({environment_variable_name: simplified_branch_name})
 
 
 if __name__ == "__main__":

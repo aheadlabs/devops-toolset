@@ -6,6 +6,7 @@ import requests
 import configparser
 from tools.xcoding64 import encode
 from devops.constants import Urls
+from tools.git import simplify_branch_name
 
 app: App = App()
 
@@ -40,7 +41,6 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     else:
         for condition in quality_gate_data["projectStatus"]["conditions"]:
             if condition["status"] == "ERROR":
-                # sys.stderr.write(_(f"Invalid metric value for {condition['metricKey']}: {condition['actualValue']}"))
                 error = _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")
                 sys.stderr.write(str(error + "\n").format(
                     metricKey=condition["metricKey"],
@@ -87,7 +87,7 @@ def generate_branch_segment(branch: str = None, pull_request: bool = False):
         branch = "master"
 
     if pull_request:
-        branch = branch.replace("pull/", "").replace("/merge", "")
+        branch = simplify_branch_name(branch)
         return f"&pullRequest={branch}"
     else:
         return f"&branch={branch}"

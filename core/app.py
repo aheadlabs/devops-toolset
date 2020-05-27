@@ -4,6 +4,8 @@ Args:
 """
 
 import argparse
+import importlib.util
+import pathlib
 from core.settings import Settings
 import i18n.loader
 
@@ -22,3 +24,11 @@ class App(object):
         # Load gettext
         if not args.skip_i18n:
             i18n.loader.setup(self.settings)
+
+    # TODO(ivan.sainz) Tests pending
+    def load_platform_specific(self, name: str):
+        module_path = pathlib.Path.joinpath(self.settings.platform_specific_path, f"{name}.py")
+        spec = importlib.util.spec_from_file_location(name, module_path)
+        platform_specific = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(platform_specific)
+        return platform_specific
