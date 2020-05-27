@@ -9,6 +9,7 @@ from devops.constants import Urls
 from tools.git import simplify_branch_name
 
 app: App = App()
+platform_specific = app.load_platform_specific("environment")
 
 
 def get_quality_gate_status(properties_file_path: str, token: str, branch: str = None, pull_request: bool = False):
@@ -40,6 +41,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
         print(_("Quality gate succeeded"))
     else:
         for condition in quality_gate_data["projectStatus"]["conditions"]:
+
             if condition["status"] == "ERROR":
                 error = _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")
                 sys.stderr.write(str(error + "\n").format(
@@ -47,6 +49,8 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
                     actualValue=condition["actualValue"],
                     comparator=condition["comparator"],
                     errorThreshold=condition["errorThreshold"]))
+
+        platform_specific.end_task(platform_specific.ResultType.fail, _("Quality gate status failed"))
 
 
 def read_sonar_properties_file(path: str):
