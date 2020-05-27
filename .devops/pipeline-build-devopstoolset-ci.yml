@@ -30,12 +30,6 @@ jobs:
         versionSpec: '>=3.8'
         addToPath: true
         architecture: 'x64'
-    - task: PowerShell@2
-      displayName: Get current branch
-      enabled: false
-      inputs:
-        filePath: '$(System.DefaultWorkingDirectory)/tools/GetCurrentBranch.ps1'
-        arguments: '$(Build.SourceBranch)'
     - task: CmdLine@2
       displayName: Compile .po files
       inputs:
@@ -50,11 +44,14 @@ jobs:
           import tools.git
           tools.git.set_current_branch_simplified("$(Build.SourceBranch)", "CURRENT_BRANCH")
         failOnStderr: true
-    - task: PowerShell@2
+    - task: PythonScript@0
       displayName: Parse project.xml
       inputs:
-        filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
-        arguments: '-DevOpsPlatformCode ADO'
+        scriptSource: 'inline'
+        script: |
+          import filesystem.paths
+          filesystem.paths.get_project_xml_data()
+        failOnStderr: true
     - task: CmdLine@2
       displayName: Unit test with pytest
       inputs:

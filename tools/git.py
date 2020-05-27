@@ -5,7 +5,6 @@
 import core.app
 import pathlib
 import re
-import importlib.util
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
 
