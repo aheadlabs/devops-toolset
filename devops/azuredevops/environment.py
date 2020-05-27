@@ -2,6 +2,7 @@
 
 from core.app import App
 import sys
+import logging
 from enum import Enum
 
 app: App = App()
@@ -21,8 +22,11 @@ def create_environment_variables(key_value_pairs: dict):
         key_value_pairs: Key-value pair dictionary
     """
 
+    message = _("Created environment variable {key} with value {value}")
+
     for key, value in key_value_pairs.items():
         sys.stdout.write(f"##vso[task.setvariable variable={key}]{value}\n")
+        logging.info(str(message).format(key=key, value=value))
 
 
 def end_task(result_type: ResultType, description: str):

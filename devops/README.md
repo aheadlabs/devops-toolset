@@ -1,5 +1,5 @@
 # Platform specific scripts
-In the subdirectories, like `azure-devops`, you can find scripts that are designed specifically for a determined DevOps platform.<br>
+In the subdirectories, like `azuredevops`, you can find scripts that are designed specifically for a determined DevOps platform.<br>
 Feel free to add your platform's directory and specific scripts.
 
 ## Settings

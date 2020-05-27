@@ -26,9 +26,9 @@ class App(object):
         # Load gettext
         if not args.skip_i18n:
             i18n.loader.setup(self.settings)
+
         # Configure logging
         configure(self.settings.log_config_file_path)
-        logging.info(_("Logger configured successfully."))
 
     # TODO(ivan.sainz) Tests pending
     def load_platform_specific(self, name: str):
@@ -38,3 +38,6 @@ class App(object):
         spec.loader.exec_module(platform_specific)
         return platform_specific
 
+
+if __name__ == "__main__":
+    help(__name__)
