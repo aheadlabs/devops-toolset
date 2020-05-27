@@ -103,7 +103,7 @@ def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exis
 def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
     """Given a starting path and a glob, when there are no matching paths, it
     returns an empty list."""
-    
+
     # Arrange
     with patch.object(pathlib.Path, "rglob") as rglob:
         rglob.return_value = filenames.no_paths
@@ -118,7 +118,7 @@ def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_retur
 def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_list(filenames):
     """Given a starting path and a glob, when there are matching paths, it
     returns a list with those paths."""
-    
+
     # Arrange
     with patch.object(pathlib.Path, "rglob") as rglob:
         rglob.return_value = filenames.paths
