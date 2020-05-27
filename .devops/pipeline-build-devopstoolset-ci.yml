@@ -48,7 +48,7 @@ jobs:
         scriptSource: 'inline'
         script: |
           import tools.git
-          tools.git.set_current_branch_simplified($(Build.SourceBranch), "CURRENT_BRANCH")
+          tools.git.set_current_branch_simplified("$(Build.SourceBranch)", "CURRENT_BRANCH")
         failOnStderr: true
     - task: PowerShell@2
       displayName: Parse project.xml
