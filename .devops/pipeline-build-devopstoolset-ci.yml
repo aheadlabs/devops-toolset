@@ -109,7 +109,7 @@ jobs:
         scriptSource: 'inline'
         script: |
           import devops.sonarx
-          devops.sonarx.get_quality_gate_status("$(System.DefaultWorkingDirectory)/.devops/sonar-project.properties", "$(SONAR_TOKEN)")
+          devops.sonarx.get_quality_gate_status("$(System.DefaultWorkingDirectory)/.devops/sonar-project.properties", "$(SONAR_TOKEN)", "$(CURRENT_BRANCH)", $(Build.Reason) == "PullRequest")
         failOnStderr: true
     - task: CopyFiles@2
       displayName: Copy files to artifact folder

@@ -4,6 +4,7 @@ from core.app import App
 import sys
 import requests
 import configparser
+import logging
 from tools.xcoding64 import encode
 from devops.constants import Urls
 from tools.git import simplify_branch_name
@@ -28,8 +29,14 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     basic_auth_token = f"Basic {token_base64}"
     headers = {"Authorization": basic_auth_token}
 
+    message = _("Getting quality gate for branch {branch} (original name).")
+    logging.info(str(message).format(branch=branch))
+    message = _("Pull request mode: {pull_request}")
+    logging.info(str(message).format(pull_request=pull_request))
     branch_segment = generate_branch_segment(branch, pull_request)
 
+    message = _("Using {file} as the sonar-project.properties configuration file.")
+    logging.info(str(message).format(file=properties_file_path))
     sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
 
     url = f"{sonar_url}{Urls.SONAR_QUALITY_GATE_PARTIAL_URL}{sonar_project_key}{branch_segment}"
