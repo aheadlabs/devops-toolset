@@ -5,14 +5,14 @@
       "console": {
         "class": "logging.StreamHandler",
         "formatter": "default",
-        "stream": "ext://sys.stdout"
+        "stream": "ext://sys.stdout",
+        "level": "INFO"
       },
-      "file": {
-        "class": "logging.handlers.TimedRotatingFileHandler",
-        "when": "midnight",
+      "console-error": {
+        "class": "logging.StreamHandler",
         "formatter": "default",
-        "filename": "./logs/app.log",
-        "backupCount": 10
+        "stream": "ext://sys.stderr",
+        "level": "ERROR"
       }
     },
     "formatters": {
@@ -27,7 +27,7 @@
     "root": {
       "handlers": [
         "console",
-        "file"
+        "console-error"
       ],
       "level": "INFO"
     }

@@ -20,3 +20,6 @@ msgstr "RegEx debe tener 1 capture group. Ni más, ni menos."
 
 msgid "hello world"
 msgstr "hola mundo"
+
+msgid "Logger configured successfully."
+msgstr "Logger se ha configurado correctamente."

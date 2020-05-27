@@ -6,8 +6,10 @@ Args:
 import argparse
 import importlib.util
 import pathlib
+import logging
 from core.settings import Settings
 import i18n.loader
+from core.log_setup import configure
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-i18n", action="store_true")
@@ -24,6 +26,9 @@ class App(object):
         # Load gettext
         if not args.skip_i18n:
             i18n.loader.setup(self.settings)
+        # Configure logging
+        configure(self.settings.log_config_file_path)
+        logging.info(_("Logger configured successfully."))
 
     # TODO(ivan.sainz) Tests pending
     def load_platform_specific(self, name: str):
@@ -32,3 +37,4 @@ class App(object):
         platform_specific = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(platform_specific)
         return platform_specific
+

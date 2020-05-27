@@ -1,9 +1,7 @@
 """Logging configuration"""
 
 import logging as logger
-import core.app
-
-app: core.app.App = core.app.App()
+import core.settings as settings
 
 
 def configure(filepath):
@@ -17,6 +15,7 @@ def configure(filepath):
 
     try:
         configure_by_file(filepath)
+        add_filter_to_console_handler(logger.WARNING)
     except Exception as err:
         logger.error(f"Cannot configure logger: {format(err)}")
         configure_by_default(logger.INFO)
@@ -54,5 +53,34 @@ def configure_by_file(filepath):
         dictConfig(config["logging"])
 
 
+def add_filter_to_console_handler(loglevel):
+    """Adds a filter to the console in order to drop messages above desired loglevel
+
+    Args:
+        loglevel: Logging.loglevel that indicates messages below this level will be logged on this handler
+
+    """
+    log = logger.getLogger()
+    handler = log.handlers[0]
+    handler.addFilter(lambda record: record.levelno <= loglevel)
+
+
+def add_time_rotated_time_handler(backupcount=10, filepath=None, when='midnight'):
+    """Adds a filter to the console in order to drop messages above desired loglevel
+
+     Args:
+        backupcount: Number of backup files on rotation (10 files or days by default)
+        filepath: Path of the file used to log in.
+        when: Defines when to rotate
+        (see https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler)
+
+    Raises: FileNotFoundError: When passed filepath doesn't exist
+    """
+    import logging.handlers
+    log = logger.getLogger()
+    filehandler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
+    log.addHandler(filehandler)
+
+
 if __name__ == "__main__":
-    configure(app.settings.log_config_file_path)
+    configure(settings.log_config_file_path)
