@@ -36,6 +36,12 @@ jobs:
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/tools/GetCurrentBranch.ps1'
         arguments: '$(Build.SourceBranch)'
+    - task: CmdLine@2
+      displayName: Compile .po files
+      inputs:
+        script: |
+          sudo apt-get install gettext
+          python3 $(System.DefaultWorkingDirectory)/i18n/tools.py --generate-pot --compile --skip-i18n
     - task: PythonScript@0
       displayName: Get current branch
       inputs:
@@ -49,12 +55,6 @@ jobs:
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
         arguments: '-DevOpsPlatformCode ADO'
-    - task: CmdLine@2
-      displayName: Compile .po files
-      inputs:
-        script: |
-          sudo apt-get install gettext
-          python3 $(System.DefaultWorkingDirectory)/i18n/tools.py --generate-pot --compile --skip-i18n
     - task: CmdLine@2
       displayName: Unit test with pytest
       inputs:
