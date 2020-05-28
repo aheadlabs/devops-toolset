@@ -124,7 +124,6 @@ def simplify_branch_name(branch: str):
     else:
         return branch
 
-
 def set_current_branch_simplified(branch: str, environment_variable_name: str):
     """Creates an environment variable from a branch name (simplified)
 

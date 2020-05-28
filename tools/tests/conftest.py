@@ -27,6 +27,7 @@ class BranchesData(object):
     long_pr_branch = "refs/pull/1/merge"
     simple_pr_branch = "pull/1"
     other_branch = "dev"
+    environment_variable_name = "env_variable"
 
 
 @pytest.fixture

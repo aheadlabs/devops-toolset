@@ -228,3 +228,23 @@ def test_simplify_branch_name_given_branch_when_other_then_returns_orignal(branc
     assert result == expected
 
 # endregion
+
+# region set_current_branch_simplified()
+
+
+def test_set_current_branch_simplified_given_branch_and_environment_variable_creates_environment_variable(branchesdata):
+    """Given a branch name and a environment variable, calls platform_specific's create_
+    environment_variables method"""
+
+    # Arrange
+    branch = branchesdata.other_branch
+    environment_variable_name = branchesdata.environment_variable_name
+
+    # Act
+    with patch.object(sut, "platform_specific") as platform_specific_mock:
+        with patch.object(platform_specific_mock, "create_environment_variables") as create_env_vars_mock:
+            sut.set_current_branch_simplified(branch, environment_variable_name)
+            # Assert
+            create_env_vars_mock.assert_called_once_with({environment_variable_name: branch})
+
+# endregion
