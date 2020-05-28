@@ -156,10 +156,7 @@ def test_add_time_rotated_file_handler_given_filepath_adds_handler_to_the_log():
     import logging.handlers
 
     # Arrange
-    backupcount = Fixture.default_backup_count
     filepath = Fixture.default_filepath
-    when = Fixture.default_when
-    filehandler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
     log = logging.getLogger()
     with patch.object(logging, "getLogger") as get_logger_mock:
         get_logger_mock.return_value = log

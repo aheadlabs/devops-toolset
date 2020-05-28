@@ -22,7 +22,7 @@ class CoreTestsFixture(object):
     fake_config_data_file_content = r'{"logging": {"foo": "foo"}}'
     file_open_patch = "builtins.open"
     default_backup_count = 10
-    default_filepath = "./core/tests/foo_log.log"
+    default_filepath = pathlib.Path.joinpath(root_path, "foo_log.log").__str__()
     default_when = "midnight"
 
 
