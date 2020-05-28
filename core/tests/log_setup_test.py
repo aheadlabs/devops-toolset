@@ -124,3 +124,48 @@ def test_configure_by_file_calls_dict_config():
         # Assert
         dict_config_mock.assert_called_once()
 # endregion
+
+# region add_filter_to_console_handler
+
+
+def test_add_filter_to_console_handler_given_loglevel_calls_add_filter():
+    """ Given a loglevel, gets the console handler and adds a new filter"""
+    from logging import NullHandler
+
+    # Arrange
+    handler: logging.Handler = NullHandler()
+    loglevel = Fixture.default_loglevel
+    log = logging.getLogger()
+    log.handlers[0] = handler
+    with patch.object(logging, "getLogger") as get_logger_mock:
+        get_logger_mock.return_value = log
+        with patch.object(log.handlers[0], "addFilter") as add_filter_mock:
+            # Act
+            sut.add_filter_to_console_handler(loglevel)
+            # Assert
+            add_filter_mock.assert_called_once
+
+
+# endregion
+
+# region add_time_rotated_time_handler
+
+def test_add_time_rotated_file_handler_given_filepath_adds_handler_to_the_log():
+    """Given a filepath, adds a TimeRotatingFileHandler with default data and filepath
+    to the root logger"""
+    import logging.handlers
+
+    # Arrange
+    backupcount = Fixture.default_backup_count
+    filepath = Fixture.default_filepath
+    when = Fixture.default_when
+    filehandler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
+    log = logging.getLogger()
+    with patch.object(logging, "getLogger") as get_logger_mock:
+        get_logger_mock.return_value = log
+        with patch.object(log, "addHandler") as add_handler_mock:
+            # Act
+            sut.add_time_rotated_file_handler(filepath=filepath)
+            # Assert
+            add_handler_mock.assert_called_once
+# endregion

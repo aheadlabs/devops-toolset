@@ -53,11 +53,11 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
 
             if condition["status"] == "ERROR":
                 error = _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")
-                sys.stderr.write(str(error + "\n").format(
-                    metricKey=condition["metricKey"],
-                    actualValue=condition["actualValue"],
-                    comparator=condition["comparator"],
-                    errorThreshold=condition["errorThreshold"]))
+                # sys.stderr.write(str(error + "\n").format(
+                # metricKey=condition["metricKey"],
+                # actualValue=condition["actualValue"],
+                # comparator=condition["comparator"],
+                # errorThreshold=condition["errorThreshold"]))
 
 
 def read_sonar_properties_file(path: str):

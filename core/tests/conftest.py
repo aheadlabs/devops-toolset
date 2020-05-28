@@ -21,6 +21,9 @@ class CoreTestsFixture(object):
     default_configure_success = "Default configuration loaded successfully."
     fake_config_data_file_content = r'{"logging": {"foo": "foo"}}'
     file_open_patch = "builtins.open"
+    default_backup_count = 10
+    default_filepath = "./foo_log.log"
+    default_when = "midnight"
 
 
 @pytest.fixture

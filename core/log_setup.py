@@ -65,7 +65,7 @@ def add_filter_to_console_handler(loglevel):
     handler.addFilter(lambda record: record.levelno <= loglevel)
 
 
-def add_time_rotated_time_handler(backupcount=10, filepath=None, when='midnight'):
+def add_time_rotated_file_handler(backupcount=10, filepath=".", when='midnight'):
     """Adds a filter to the console in order to drop messages above desired loglevel
 
      Args:
