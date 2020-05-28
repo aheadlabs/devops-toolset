@@ -14,3 +14,4 @@ locales/**/*.mo
 
 # logs
 logs/*.log*
+core/tests/*.log*
