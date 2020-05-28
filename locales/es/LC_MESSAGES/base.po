@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-05-21 22:48+0200\n"
+"POT-Creation-Date: 2020-05-29 00:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,24 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
+msgid "Getting quality gate for branch {branch} (original name)."
+msgstr ""
+
+msgid "Pull request mode: {pull_request}"
+msgstr ""
+
+msgid "Using {file} as the Sonar* configuration file."
+msgstr ""
+
+msgid "Quality gate succeeded"
+msgstr ""
+
+msgid "Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}"
+msgstr ""
+
+msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
 msgid "RegEx must have 1 capture group. No less, no more."
-msgstr "RegEx debe tener 1 capture group. Ni más, ni menos."
+msgstr ""
 
-msgid "hello world"
-msgstr "hola mundo"
-
-msgid "Logger configured successfully."
-msgstr "Logger se ha configurado correctamente."

@@ -3,12 +3,15 @@
 #! python
 
 import core.app
+from core.LiteralsCore import LiteralsCore
+from tools.Literals import Literals as ToolsLiterals
 import pathlib
 import re
 from filesystem.constants import FileNames, Directions
 from filesystem.paths import get_project_root, get_filepath_in_tree
 
 app: core.app.App = core.app.App()
+literals = LiteralsCore([ToolsLiterals])
 platform_specific = app.load_platform_specific("environment")
 
 
@@ -86,7 +89,7 @@ def update_gitignore_exclusion(path: str, regex: str, value: str):
     compiled_regex = re.compile(regex)
 
     if compiled_regex.groups != 1:
-        raise ValueError(_("RegEx must have 1 capture group. No less, no more."))
+        raise ValueError(literals.get("git_regex1cg"))
 
     with open(path, "r+") as _gitignore:
         content = _gitignore.read()

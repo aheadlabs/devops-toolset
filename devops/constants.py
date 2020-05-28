@@ -1,3 +1,6 @@
+"""Constants for the devops module"""
+
+
 class Urls(object):
     """URL constants"""
     GITHUB_RAW_CONTENT = "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/"

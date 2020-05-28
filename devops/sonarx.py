@@ -1,7 +1,8 @@
 """sonarcloud.io / SonarQube tools"""
 
 from core.app import App
-import sys
+from core.LiteralsCore import LiteralsCore
+from devops.Literals import Literals as DevopsLiterals
 import requests
 import configparser
 import logging
@@ -10,6 +11,7 @@ from devops.constants import Urls
 from tools.git import simplify_branch_name
 
 app: App = App()
+literals = LiteralsCore([DevopsLiterals])
 platform_specific = app.load_platform_specific("environment")
 
 
@@ -29,14 +31,11 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     basic_auth_token = f"Basic {token_base64}"
     headers = {"Authorization": basic_auth_token}
 
-    message = _("Getting quality gate for branch {branch} (original name).")
-    logging.info(str(message).format(branch=branch))
-    message = _("Pull request mode: {pull_request}")
-    logging.info(str(message).format(pull_request=pull_request))
+    logging.info(literals.get("sonar_getting_qg").format(branch=branch))
+    logging.info(literals.get("sonar_pr_mode").format(pull_request=pull_request))
     branch_segment = generate_branch_segment(branch, pull_request)
 
-    message = _("Using {file} as the Sonar* configuration file.")
-    logging.info(str(message).format(file=properties_file_path))
+    logging.info(literals.get("sonar_config_file").format(file=properties_file_path))
     sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
 
     url = f"{sonar_url}{Urls.SONAR_QUALITY_GATE_PARTIAL_URL}{sonar_project_key}{branch_segment}"
@@ -45,13 +44,11 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     quality_gate_data = response.json()
 
     if quality_gate_data["projectStatus"]["status"] == "OK":
-        print(_("Quality gate succeeded"))
+        logging.info(literals.get("sonar_qg_ok"))
     else:
         for condition in quality_gate_data["projectStatus"]["conditions"]:
-
             if condition["status"] == "ERROR":
-                error = _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")
-                sys.stdout.write(str(error + "\n").format(
+                logging.error(literals.get("sonar_invalid_metric").format(
                     metricKey=condition["metricKey"],
                     actualValue=condition["actualValue"],
                     comparator=condition["comparator"],

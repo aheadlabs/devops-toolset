@@ -6,7 +6,6 @@ Args:
 import argparse
 import importlib.util
 import pathlib
-import logging
 from core.settings import Settings
 import i18n.loader
 from core.log_setup import configure
@@ -30,7 +29,6 @@ class App(object):
         # Configure logging
         configure(self.settings.log_config_file_path)
 
-    # TODO(ivan.sainz) Tests pending
     def load_platform_specific(self, name: str):
         module_path = pathlib.Path.joinpath(self.settings.platform_specific_path, f"{name}.py")
         spec = importlib.util.spec_from_file_location(name, module_path)

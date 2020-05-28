@@ -12,7 +12,7 @@ app: App = App()
 platform_specific = app.load_platform_specific("environment")
 
 
-def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> str:
+def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
     """Gets path to the directory containing the file.
 
     Args:

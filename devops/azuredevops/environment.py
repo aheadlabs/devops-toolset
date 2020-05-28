@@ -1,11 +1,14 @@
 """Environment-related functionality for Azure DevOps"""
 
 from core.app import App
+from core.LiteralsCore import LiteralsCore
+from devops.azuredevops.Literals import Literals as AzureDevOpsLiterals
 import sys
 import logging
 from enum import Enum
 
 app: App = App()
+literals = LiteralsCore([AzureDevOpsLiterals])
 
 
 class ResultType(Enum):
@@ -22,10 +25,8 @@ def create_environment_variables(key_value_pairs: dict):
         key_value_pairs: Key-value pair dictionary
     """
 
-    message = _("Created environment variable {key} with value {value}")
-
     for key, value in key_value_pairs.items():
-        logging.info(str(message).format(key=key, value=value))
+        logging.info(literals.get("platform_created_ev").format(key=key, value=value))
         sys.stdout.write(f"##vso[task.setvariable variable={key}]{value}\n")
 
 
