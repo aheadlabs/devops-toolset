@@ -47,8 +47,6 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     if quality_gate_data["projectStatus"]["status"] == "OK":
         print(_("Quality gate succeeded"))
     else:
-        # platform_specific.end_task(platform_specific.ResultType.fail)
-
         for condition in quality_gate_data["projectStatus"]["conditions"]:
 
             if condition["status"] == "ERROR":
@@ -58,6 +56,8 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
                     actualValue=condition["actualValue"],
                     comparator=condition["comparator"],
                     errorThreshold=condition["errorThreshold"]))
+
+        platform_specific.end_task(platform_specific.ResultType.fail)
 
 
 def read_sonar_properties_file(path: str):
