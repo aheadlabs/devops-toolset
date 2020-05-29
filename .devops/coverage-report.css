@@ -1,3 +1,65 @@
 body{
-    background-color: white;
+    background-color:#333;
+    color: #aaa
+}
+#header{
+    background-color: #333;
+}
+.stats span.run{
+    background-color: mediumseagreen;
+    color: #fff
+}
+.stats span.exc.show_exc{
+    background-color: #444;
+    color: #fff
+}
+.stats span.mis.show_mis{
+    background-color: #ac2222;
+    color:#fff
+}
+.stats span.par.show_par{
+    background-color: #660;
+    color:#fff
+}
+a.nav, #index td.name a{
+    color: #880
+}
+#index th{
+    color: #bd4444;
+}
+#index th:hover{
+    background-color: #222;
+}
+#index tr.file:hover{
+    background-color: #222;
+}
+#index th.headerSortDown, #index th.headerSortUp{
+    background-color: #222;
+}
+#source p .t .str, #source p .t .com{
+    color: mediumseagreen;
+}
+#source p.mis.show_mis .t {
+    background-color: #ac2222;
+    color:#fff
+}
+#source p.mis.show_mis .t:hover{
+    background-color: #222;
+}
+#source p.par.show_par .t{
+    background-color: #660;
+    color:#fff
+}
+#source p.par.show_par .t:hover{
+    background-color: #222;
+}
+#source p.exc.show_exc .t{
+    background-color: #444;
+    color: #fff
+}
+#source p.exc.show_exc .t:hover{
+    background-color: #222;
+}
+#source p .t:hover{
+    background-color: #222;
 }
