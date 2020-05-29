@@ -13,6 +13,7 @@ import pytest
 class FileNames(object):
     """Class used to create the filenames fixture"""
     test_file = "test.py"
+    test_file2 = "test2.py"
     path = "/pathto"
     deep_path = "/deep/pathto"
     paths = ["/pathto/file1", "/pathto/file2"]
