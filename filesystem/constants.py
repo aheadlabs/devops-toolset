@@ -17,4 +17,4 @@ class Directions(Enum):
     """Defines sorting and finding directions"""
 
     ASCENDING = 1,
-    DESDENDING = 2
+    DESCENDING = 2

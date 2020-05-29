@@ -56,7 +56,7 @@ def test_get_filepath_descending_in_tree_given_file_name_when_exists_then_return
             with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
 
     # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESDENDING)
+                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
 
     # Assert
     assert result.as_posix() == filenames.path
@@ -74,7 +74,7 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
             with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
 
     # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESDENDING)
+                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
 
     # Assert
     assert result is None
@@ -92,7 +92,7 @@ def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exis
             with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
     # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESDENDING)
+                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
 
     # Assert
     assert result is None
