@@ -79,7 +79,7 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
                 # Act
                 sut.compile_po_files()
     # Assert
-    os_remove_mock.assert_called_once_with(pathlib.WindowsPath(expected_mo_deleted_file))
+    os_remove_mock.assert_called_once_with(pathlib.PurePath(expected_mo_deleted_file))
 
 # endregion
 
@@ -108,7 +108,7 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
         with pygettext.py and all py files and calls it """
     # Arrange
     expected_pot_file = "foo1.pot"
-    expected_path_list = [pathlib.WindowsPath(filenames.test_file), pathlib.WindowsPath(filenames.test_file)]
+    expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file)]
     expected_command = f"pygettext.py -d base -o {expected_pot_file} {' '.join(map(str, expected_path_list))}"
 
     with mock.patch.object(sut, "args") as sut_args_mock:
@@ -126,12 +126,12 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
 
 
 @mock.patch.object(sut, "call_subprocess")
-def test_generate_pot_file_given_path_when_args_not_contain_py_then_calls_subprocess_with_xgettext(subprocess_mock):
+def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xgettext(subprocess_mock, filenames):
     """ Given a locale path, when args not contain the py arg, then iterates on files and compounds the command
         with xgettext and all py files and calls it """
     # Arrange
     expected_pot_file = "foo1.pot"
-    expected_path_list = [pathlib.WindowsPath("foo1.py"), pathlib.WindowsPath("foo2.py")]
+    expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
     expected_command = f"xgettext -d base -o {expected_pot_file} {' '.join(map(str, expected_path_list))}"
 
     with mock.patch.object(sut, "get_files") as file_paths:
@@ -146,11 +146,11 @@ def test_generate_pot_file_given_path_when_args_not_contain_py_then_calls_subpro
 
 
 @mock.patch.object(os, "remove")
-def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_remove_mock):
+def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_remove_mock, filenames):
     """ Given a locale path, when a pot file already exists, should remove it first """
     # Arrange
     expected_pot_deleted_file = "foo.pot"
-    expected_path_list = [pathlib.WindowsPath("foo1.py"), pathlib.WindowsPath("foo2.py")]
+    expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
 
     with mock.patch.object(sut, "call_subprocess"):
         with mock.patch.object(pathlib.Path, "joinpath") as joinpath_mock:
