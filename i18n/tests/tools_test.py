@@ -11,7 +11,7 @@ def test_compile_po_files_given_path_then_calls_get_file_paths_in_tree(filenames
     paths"""
 
     # Arrange
-    with patch.object(sut, "get_file_paths_in_tree") as file_paths:
+    with patch.object(sut, "get_files") as file_paths:
         file_paths.return_value = filenames.paths
 
     # Act
