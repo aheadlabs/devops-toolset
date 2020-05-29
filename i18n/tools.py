@@ -78,7 +78,7 @@ def compile_po_files():
 
 def merge_pot_file():
     """Merges a .pot file with existing .po files"""
-    # TODO(ivan-sainz) Implement me! Hint: PoLib
+    # TODO(ivansainz) Implement me! Hint: PoLib
     # msgmerge
     # https://www.gnu.org/software/gettext/manual/html_node/msgmerge-Invocation.html#msgmerge-Invocation
     pass
