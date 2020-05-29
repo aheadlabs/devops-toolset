@@ -14,6 +14,7 @@ import os
 import subprocess
 import pathlib
 import core.app
+import logging
 
 app: core.app.App = core.app.App()
 
@@ -77,7 +78,7 @@ def compile_po_files():
 
 def merge_pot_file():
     """Merges a .pot file with existing .po files"""
-
+    # TODO(ivan-sainz) Implement me! Hint: PoLib
     # msgmerge
     # https://www.gnu.org/software/gettext/manual/html_node/msgmerge-Invocation.html#msgmerge-Invocation
     pass
@@ -86,10 +87,11 @@ def merge_pot_file():
 def call_subprocess(command: str):
     """Calls a subprocess"""
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    for line in process.stdout.readlines():
-        print(line.strip())
-    for line in process.stderr.readlines():
-        print(line.decode("utf-8").strip())
+    out, err = process.communicate()
+    if out:
+        logging.info(out)
+    if err:
+        logging.error(err)
 
 
 if __name__ == "__main__":
