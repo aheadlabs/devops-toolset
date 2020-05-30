@@ -23,7 +23,7 @@ def test_app_given_no_parameters_loads_gettext_engine(i18n_loader_setup, log_set
 
 @patch("core.log_setup.configure")
 @patch("i18n.loader.setup")
-def test_app_given_no_parameters_loads_gettext_engine(i18n_loader_setup, log_setup_configure):
+def test_app_given_skip_i18n_parameter_does_not_load_gettext_engine(i18n_loader_setup, log_setup_configure):
     """Given the --skip-i18n parameter, gettext engine must not be loaded"""
 
     # Arrange
