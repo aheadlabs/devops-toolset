@@ -9,7 +9,8 @@ app: App = App()
 
 
 def main():
-    logging.info("Getting WordPress core files")
+    """Main thread"""
+    pass
 
 
 if __name__ == "__main__":
