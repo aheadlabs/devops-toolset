@@ -83,7 +83,7 @@ def read_sonar_properties_file(path: str):
     return sonar_url, sonar_project_key, sonar_organization
 
 
-def generate_branch_segment(branch: str = None, pull_request: bool = False):
+def generate_branch_segment(branch: str = "master", pull_request: bool = False):
     """Generates the branch segment or the URL used to request the quality gate
     status
 
@@ -92,11 +92,9 @@ def generate_branch_segment(branch: str = None, pull_request: bool = False):
         pull_request: True if the analysis was originated by a pull request
     """
 
-    if branch is None:
-        branch = "master"
+    branch = simplify_branch_name(branch)
 
     if pull_request:
-        branch = simplify_branch_name(branch)
         return f"&pullRequest={branch}"
     else:
         return f"&branch={branch}"
