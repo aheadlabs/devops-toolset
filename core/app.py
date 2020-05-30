@@ -23,8 +23,7 @@ class App(object):
 
     def __init__(self):
         # Load gettext
-        if not args.skip_i18n:
-            i18n.loader.setup(self.settings)
+        i18n.loader.setup(self.settings)
 
         # Configure logging
         configure(self.settings.log_config_file_path)
