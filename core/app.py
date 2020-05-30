@@ -10,10 +10,6 @@ from core.settings import Settings
 import i18n.loader
 from core.log_setup import configure
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--skip-i18n", action="store_true")
-args, args_unknown = parser.parse_known_args()
-
 
 class App(object):
     """App object"""
