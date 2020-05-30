@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-05-29 11:49+0200\n"
+"POT-Creation-Date: 2020-05-30 23:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,6 +25,12 @@ msgid "Using {file} as the Sonar* configuration file."
 msgstr ""
 
 msgid "Quality gate succeeded"
+msgstr ""
+
+msgid ""
+"This is the JSON data returned by Sonar*:\n"
+"\n"
+"{json}"
 msgstr ""
 
 msgid "Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}"
