@@ -10,6 +10,10 @@ from core.settings import Settings
 import i18n.loader
 from core.log_setup import configure
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--skip-i18n", action="store_true")
+args, args_unknown = parser.parse_known_args()
+
 
 class App(object):
     """App object"""
@@ -19,7 +23,8 @@ class App(object):
 
     def __init__(self):
         # Load gettext
-        i18n.loader.setup(self.settings)
+        if not args.skip_i18n:
+            i18n.loader.setup(self.settings)
 
         # Configure logging
         configure(self.settings.log_config_file_path)
