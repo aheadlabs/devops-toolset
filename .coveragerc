@@ -10,10 +10,12 @@ omit =
 [report]
 exclude_lines =
     if __name__ == "__main__":
+skip_covered = true
 
 [html]
 directory = .pytest/htmlcov/
 extra_css = .devops/coverage-report.css
+title = devops-toolset unit test coverage report
 
 [xml]
 output = .pytest/coverage.xml
