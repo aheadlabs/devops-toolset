@@ -14,7 +14,8 @@ class Literals(LiteralsBase):
         "sonar_getting_qg": _("Getting quality gate for branch {branch} (original name)."),
         "sonar_pr_mode": _("Pull request mode: {pull_request}"),
         "sonar_config_file": _("Using {file} as the Sonar* configuration file."),
-        "sonar_qg_ok": _("Quality gate succeeded")
+        "sonar_qg_ok": _("Quality gate succeeded"),
+        "sonar_qg_json": _("This is the JSON data returned by Sonar*:\n\n{json}")
     }
     _errors = {
         "sonar_invalid_metric": _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")

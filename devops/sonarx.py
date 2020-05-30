@@ -42,6 +42,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
 
     response = requests.get(url, headers=headers)
     quality_gate_data = response.json()
+    logging.info(literals.get("sonar_qg_json").format(json=quality_gate_data))
 
     if quality_gate_data["projectStatus"]["status"] == "OK":
         logging.info(literals.get("sonar_qg_ok"))
