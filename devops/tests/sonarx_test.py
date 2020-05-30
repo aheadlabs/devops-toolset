@@ -1,6 +1,7 @@
 """Unit tests for the sonarx file"""
+
 import pathlib
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import devops.sonarx as sut
 from devops.tests.conftest import mocked_requests_get
 from core.LiteralsCore import LiteralsCore

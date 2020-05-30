@@ -1,33 +1,34 @@
 """Bootstraps everything
+
 Args:
     --skip-i18n: If present it will skip loading gettext
 """
 
-import argparse
 import importlib.util
 import pathlib
 from core.settings import Settings
 import i18n.loader
-from core.log_setup import configure
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--skip-i18n", action="store_true")
-args, args_unknown = parser.parse_known_args()
+import core.log_setup
 
 
 class App(object):
-    """App object"""
+    """App object that contains core settings and functionalities."""
 
     # Initialize settings
     settings: Settings = Settings()
 
-    def __init__(self):
+    def __init__(self, skip_i18n: bool = False):
+        """
+        Args:
+            skip_i18n: If True it does not load the gettext engine
+        """
+
         # Load gettext
-        if not args.skip_i18n:
+        if not skip_i18n:
             i18n.loader.setup(self.settings)
 
         # Configure logging
-        configure(self.settings.log_config_file_path)
+        core.log_setup.configure(self.settings.log_config_file_path)
 
     def load_platform_specific(self, name: str):
         module_path = pathlib.Path.joinpath(self.settings.platform_specific_path, f"{name}.py")

@@ -16,13 +16,14 @@ import pathlib
 import core.app
 import logging
 
-app: core.app.App = core.app.App()
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--py", action="store_true")
 parser.add_argument("--generate-pot", action="store_true")
 parser.add_argument("--compile", action="store_true")
+parser.add_argument("--skip-i18n", action="store_true")
 args, args_unknown = parser.parse_known_args()
+
+app: core.app.App = core.app.App(args.skip_i18n)
 
 if not pathlib.Path(app.settings.locales_path).is_dir():
     raise ValueError("locale_path parameter must be a directory. Check app settings.")
