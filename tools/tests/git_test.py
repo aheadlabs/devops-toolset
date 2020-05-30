@@ -58,6 +58,7 @@ def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(filenames
 
 # region add_gitignore_exclusion()
 
+
 def test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusion(filenames, tmp_path):
     """Given a path, when the file opens, the exclusion is appended"""
 
@@ -79,6 +80,7 @@ def test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusi
 # endregion
 
 # region find_gitignore_exclusion()
+
 
 def test_find_gitignore_exclusion_given_path_when_exclusion_exists_then_returns_true(filenames, tmp_path):
     """Given a path, when the exclusion is found on it, then returns True"""
@@ -133,7 +135,7 @@ def test_update_gitignore_exclusion_given_regex_when_more_than_1_capture_group_r
 
 
 @patch("builtins.open", new_callable=mock_open, read_data = GitignoreData.file_contents)
-def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitignore(open, filenames):
+def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitignore(mocked_open, filenames):
     """Given a RegEx, when it has 1 capture group, it reads the .gitignore file
     passed in path"""
 
@@ -145,11 +147,11 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitig
     sut.update_gitignore_exclusion(filenames.path, regex, value)
 
     # Assert
-    open.assert_any_call(filenames.path, "r+")
+    mocked_open.assert_any_call(filenames.path, "r+")
 
 
 @patch("builtins.open", new_callable=mock_open, read_data = GitignoreData.file_contents)
-def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_gitignore(open, filenames):
+def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_gitignore(mocked_open, filenames):
     """Given a RegEx, when it has 1 capture group, it writes the .gitignore
     file after editing it"""
 
@@ -161,7 +163,7 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_giti
     sut.update_gitignore_exclusion(filenames.path, regex, value)
 
     # Assert
-    open.assert_any_call(filenames.path, "w")
+    mocked_open.assert_any_call(filenames.path, "w")
 
 # endregion
 
@@ -190,21 +192,6 @@ def test_simplify_branch_name_given_branch_when_feature_then_returns_simplified(
     # Arrange
     long_branch = branchesdata.long_feature_branch
     expected = branchesdata.simple_feature_branch
-
-    # Act
-    result = sut.simplify_branch_name(long_branch)
-
-    # Assert
-    assert result == expected
-
-
-def test_simplify_branch_name_given_branch_when_pr_then_returns_simplified(branchesdata):
-    """Given a branch name, when it is a PR branch, then it is returned
-    simplified"""
-
-    # Arrange
-    long_branch = branchesdata.long_pr_branch
-    expected = branchesdata.simple_pr_branch
 
     # Act
     result = sut.simplify_branch_name(long_branch)
