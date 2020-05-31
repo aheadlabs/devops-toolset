@@ -20,7 +20,7 @@ def test_install_wp_cli_given_path_downloads_files(wordpressdata):
 
 
     # Act
-    result = sut.install_wp_cli(wordpressdata.wp_cli_install_path)
+    sut.install_wp_cli(wordpressdata.wp_cli_install_path)
 
     # Assert
     assert True
