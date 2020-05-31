@@ -11,6 +11,7 @@ class WordPressData(object):
     environment_path = "/pathto/environment"
     environment_name = "environment1"
     site_config_path = "/pathto/site-config"
+    site_config_file_name = "default-localhost-site.json"
     site_config_content = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json\"," \
                           "\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\",\"name\":" \
                           "\"my_wordpress_site\",\"user\":\"wp_db_user\",\"prefix\":\"wp_\",\"charset\":\"utf8\"," \
@@ -30,6 +31,16 @@ class WordPressData(object):
                           "[\"localhost\"],\"auto_update_core\":\"minor\",\"image_edit_overwrite\":true}," \
                           "\"multisite\":{},\"themes\":{\"source_type\":\"wordpress\",\"source\":\"twentytwenty\"," \
                           "\"has_child\":false},\"plugins\":{}}"
+    constants_file_name = "wordpress-constants.json"
+    constants_file_content = "{\"$schema\":" \
+                             "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
+                             "\"defaults\":{\"version\":\"latest\",\"locale\":\"en_US\"},\"paths\":{\"devops\":" \
+                             "\"/.devops\",\"database\":\"/database\",\"wordpress\":\"/wordpress\",\"content\":" \
+                             "{\"themes\":\"/content/themes\",\"plugins\":\"/content/plugins\"}},\"packages\":" \
+                             "{\"devops_toolset\":" \
+                             "\"https://github.com/aheadlabs/devops-toolset/archive/master.zip\"},\"regex_base64\":" \
+                             "[{\"key\":\"wordpress-theme\",\"value\":" \
+                             "\"d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8=\"}]}"
 
 
 @pytest.fixture

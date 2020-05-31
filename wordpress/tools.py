@@ -1,6 +1,7 @@
 """Contains several tools for WordPress"""
 
 from core.app import App
+import json
 import logging
 
 app: App = App()
@@ -18,7 +19,11 @@ def get_constants(path: str) -> dict:
     Returns:
         All the constants in a dict object.
     """
-    pass
+
+    with open(path, "r") as constants:
+        data = json.loads(constants.read())
+
+    return data
 
 
 def get_project_structure(path: str) -> dict:
