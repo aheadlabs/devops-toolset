@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-05-31 00:36+0200\n"
+"POT-Creation-Date: 2020-05-31 02:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,5 +40,14 @@ msgid "Created environment variable {key} with value {value}"
 msgstr ""
 
 msgid "RegEx must have 1 capture group. No less, no more."
+msgstr ""
+
+msgid "wordpress-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "environment-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "environment-name is a mandatory parameter. I cannot continue."
 msgstr ""
 
