@@ -41,6 +41,7 @@ class WordPressData(object):
                              "\"https://github.com/aheadlabs/devops-toolset/archive/master.zip\"},\"regex_base64\":" \
                              "[{\"key\":\"wordpress-theme\",\"value\":" \
                              "\"d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8=\"}]}"
+    wp_cli_install_path = "/pathto/wp-cli"
 
 
 @pytest.fixture
