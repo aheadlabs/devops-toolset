@@ -134,7 +134,7 @@ def test_update_gitignore_exclusion_given_regex_when_more_than_1_capture_group_r
         sut.update_gitignore_exclusion(path, regex, value)
 
 
-@patch("builtins.open", new_callable=mock_open, read_data = GitignoreData.file_contents)
+@patch("builtins.open", new_callable=mock_open, read_data=GitignoreData.file_contents)
 def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitignore(mocked_open, filenames):
     """Given a RegEx, when it has 1 capture group, it reads the .gitignore file
     passed in path"""
@@ -150,7 +150,7 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_reads_gitig
     mocked_open.assert_any_call(filenames.path, "r+")
 
 
-@patch("builtins.open", new_callable=mock_open, read_data = GitignoreData.file_contents)
+@patch("builtins.open", new_callable=mock_open, read_data=GitignoreData.file_contents)
 def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_gitignore(mocked_open, filenames):
     """Given a RegEx, when it has 1 capture group, it writes the .gitignore
     file after editing it"""
@@ -171,7 +171,7 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_giti
 
 
 def test_simplify_branch_name_given_branch_when_root_then_returns_simplified(branchesdata):
-    """Given a branch name, when it is a PR branch, then it is returned
+    """Given a branch name, when it is a root branch, then it is returned
     simplified"""
 
     # Arrange
@@ -186,7 +186,7 @@ def test_simplify_branch_name_given_branch_when_root_then_returns_simplified(bra
 
 
 def test_simplify_branch_name_given_branch_when_feature_then_returns_simplified(branchesdata):
-    """Given a branch name, when it is a PR branch, then it is returned
+    """Given a branch name, when it is a feature branch, then it is returned
     simplified"""
 
     # Arrange
@@ -200,8 +200,23 @@ def test_simplify_branch_name_given_branch_when_feature_then_returns_simplified(
     assert result == expected
 
 
-def test_simplify_branch_name_given_branch_when_other_then_returns_orignal(branchesdata):
+def test_simplify_branch_name_given_branch_when_pr_then_returns_simplified(branchesdata):
     """Given a branch name, when it is a PR branch, then it is returned
+    simplified"""
+
+    # Arrange
+    long_branch = branchesdata.long_pr_branch
+    expected = branchesdata.simple_pr_branch
+
+    # Act
+    result = sut.simplify_branch_name(long_branch)
+
+    # Assert
+    assert result == expected
+
+
+def test_simplify_branch_name_given_branch_when_other_then_returns_original(branchesdata):
+    """Given a branch name, when it is non-defined branch, then it is returned
     simplified"""
 
     # Arrange
