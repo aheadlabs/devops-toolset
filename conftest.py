@@ -14,6 +14,7 @@ class FileNames(object):
     """Class used to create the filenames fixture"""
     test_file = "test.py"
     test_file2 = "test2.py"
+    test_pot_file = "test.pot"
     path = "/pathto"
     deep_path = "/deep/pathto"
     paths = ["/pathto/file1", "/pathto/file2"]

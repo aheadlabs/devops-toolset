@@ -132,7 +132,7 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
     """ Given a pot file path, when args contain the py arg, then compounds the command
         with pygettext.py and all py files and calls it """
     # Arrange
-    expected_pot_file = "foo1.pot"
+    expected_pot_file = filenames.test_pot_file
     expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file)]
     expected_command = f"pygettext.py -d base -o {expected_pot_file} {' '.join(map(str, expected_path_list))}"
 
@@ -156,7 +156,7 @@ def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xge
         with xgettext and all py files and calls it """
 
     # Arrange
-    expected_pot_file = "foo1.pot"
+    expected_pot_file = filenames.test_pot_file
     expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
     expected_command = f"xgettext -d base -o {expected_pot_file} {' '.join(map(str, expected_path_list))}"
 
@@ -177,7 +177,7 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
     """ Given a locale path, when a pot file already exists, should remove it first """
 
     # Arrange
-    expected_pot_deleted_file = "foo.pot"
+    expected_pot_deleted_file = filenames.test_pot_file
     expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
 
     with mock.patch.object(sut, "call_subprocess"):
@@ -204,7 +204,7 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
 def test_merge_pot_file_given_pot_file_should_call_msgmerge_command(subprocess_mock, filenames):
     """ Given a pot file and a locale path, should call an str command """
     # Arrange
-    expected_pot_file = "foo1.pot"
+    expected_pot_file = filenames.test_pot_file
     expected_po_files_list = [pathlib.PurePath(filenames.test_file)]
     expected_command = f"msgmerge -U {expected_po_files_list[0]} {expected_pot_file}"
     with mock.patch.object(pathlib.Path, "joinpath") as joinpath_mock:
