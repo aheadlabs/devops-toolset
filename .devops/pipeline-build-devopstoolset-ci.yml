@@ -33,7 +33,7 @@ jobs:
       inputs:
         script: |
           sudo apt-get install gettext
-          python3 $(System.DefaultWorkingDirectory)/i18n/tools.py --generate-pot --compile --skip-i18n
+          python3 $(System.DefaultWorkingDirectory)/i18n/utils.py --generate-pot --compile --skip-i18n
     - task: PythonScript@0
       displayName: Get current branch
       inputs:
