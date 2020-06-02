@@ -9,7 +9,7 @@ Args:
 """
 
 from typing import List
-import tools.cli as tools
+import tools.cli as tools_cli
 import argparse
 import os
 import pathlib
@@ -53,7 +53,7 @@ def generate_pot_file():
     script = "pygettext.py" if args.py else "xgettext"
     command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
 
-    tools.call_subprocess(command)
+    tools_cli.call_subprocess(command)
 
 
 def compile_po_files():
@@ -71,7 +71,7 @@ def compile_po_files():
         py = ".py" if args.py else ""
         command = f"msgfmt{py} -o {mo_file} {file}"
 
-        tools.call_subprocess(command)
+        tools_cli.call_subprocess(command)
 
 
 def merge_pot_file():
@@ -87,7 +87,7 @@ def merge_pot_file():
     for file in paths:
         po_file = pathlib.Path(file)
         command = f"msgmerge -U {po_file} {pot_file}"
-        tools.call_subprocess(command)
+        tools_cli.call_subprocess(command)
 
 
 if __name__ == "__main__":
