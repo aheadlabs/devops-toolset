@@ -25,9 +25,6 @@ args, args_unknown = parser.parse_known_args()
 
 app: core.app.App = core.app.App(args.skip_i18n)
 
-if not pathlib.Path(app.settings.locales_path).is_dir():
-    raise ValueError("locale_path parameter must be a directory. Check app settings.")
-
 
 def get_files(starting_path: str, glob: str) -> List[pathlib.Path]:
     """Gets a list with the paths to the descendant files that match the glob pattern.
@@ -97,6 +94,8 @@ def call_subprocess(command: str):
 
 
 if __name__ == "__main__":
+    if not pathlib.Path(app.settings.locales_path).is_dir():
+        raise ValueError("locale_path parameter must be a directory. Check app settings.")
     if args.generate_pot:
         generate_pot_file()
     if args.compile:

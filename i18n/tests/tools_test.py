@@ -7,6 +7,26 @@ import os
 import subprocess
 import logging
 
+
+# region get_files()
+
+
+@mock.patch.object(pathlib.Path, "rglob")
+def test_get_files_given_starting_path_and_glob_should_return_list_pathlib_rglob(rglob_mock, filenames):
+    """ Given a starting_path and a glob, should call pathlib.rglob with arguments and return a list"""
+    # Arrange
+    starting_path = filenames.path
+    test_glob = "*.*"
+    expected_result = filenames.paths
+    rglob_mock.return_value = expected_result
+    # Act
+    result = sut.get_files(starting_path, test_glob)
+    # Assert
+    assert expected_result == result
+
+
+# endregion get_files()
+
 # region compile_po_files()
 
 
@@ -83,8 +103,8 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
                 # Act
                 sut.compile_po_files()
 
-    # Assert
-    os_remove_mock.assert_called_once_with(pathlib.PurePath(expected_mo_deleted_file))
+                # Assert
+                os_remove_mock.assert_called_once_with(pathlib.PurePath(expected_mo_deleted_file))
 
 # endregion
 
@@ -153,7 +173,7 @@ def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xge
 
 
 @mock.patch.object(os, "remove")
-def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_remove_mock, filenames):
+def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(os_remove_mock, filenames):
     """ Given a locale path, when a pot file already exists, should remove it first """
 
     # Arrange
