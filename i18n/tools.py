@@ -21,6 +21,7 @@ parser.add_argument("--py", action="store_true")
 parser.add_argument("--generate-pot", action="store_true")
 parser.add_argument("--compile", action="store_true")
 parser.add_argument("--skip-i18n", action="store_true")
+parser.add_argument("--merge", action="store_true")
 args, args_unknown = parser.parse_known_args()
 
 app: core.app.App = core.app.App(args.skip_i18n)
@@ -75,11 +76,19 @@ def compile_po_files():
 
 
 def merge_pot_file():
-    """Merges a .pot file with existing .po files"""
-    # TODO(ivansainz) Implement me! Hint: PoLib
-    # msgmerge
-    # https://www.gnu.org/software/gettext/manual/html_node/msgmerge-Invocation.html#msgmerge-Invocation
-    pass
+    """Merges a .pot file with existing .po files
+    # https://www.gnu.org/software/gettext/manual/html_node/msgmerge-Invocation.html#msgmerge-Invocation """
+
+    paths = get_files(str(app.settings.locales_path), "**/*.po")
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+
+    if not pathlib.Path(pot_file).exists():
+        generate_pot_file()
+
+    for file in paths:
+        po_file = pathlib.Path(file)
+        command = f"msgmerge -U {po_file} {pot_file}"
+        call_subprocess(command)
 
 
 # TODO(ivan.sainz) Migrate calls to this function to the one at tools/cli.py
@@ -100,3 +109,5 @@ if __name__ == "__main__":
         generate_pot_file()
     if args.compile:
         compile_po_files()
+    if args.merge:
+        merge_pot_file()

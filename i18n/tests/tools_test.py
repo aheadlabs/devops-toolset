@@ -197,7 +197,45 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
 
 # endregion
 
+# region merge_pot_file()
+
+
+@mock.patch.object(sut, "call_subprocess")
+def test_merge_pot_file_given_pot_file_should_call_msgmerge_command(subprocess_mock, filenames):
+    """ Given a pot file and a locale path, should call an str command """
+    # Arrange
+    expected_pot_file = "foo1.pot"
+    expected_po_files_list = [pathlib.PurePath(filenames.test_file)]
+    expected_command = f"msgmerge -U {expected_po_files_list[0]} {expected_pot_file}"
+    with mock.patch.object(pathlib.Path, "joinpath") as joinpath_mock:
+        joinpath_mock.return_value = pathlib.PurePath(expected_pot_file)
+        with mock.patch.object(sut, "get_files") as file_paths:
+            file_paths.return_value = expected_po_files_list
+            with mock.patch.object(pathlib.Path, "exists") as path_exists_mock:
+                path_exists_mock.return_value = True
+
+                # Act
+                sut.merge_pot_file()
+
+    subprocess_mock.assert_called_once_with(expected_command)
+
+
+@mock.patch.object(sut, "generate_pot_file")
+@mock.patch.object(pathlib.Path, "exists")
+def test_merge_pot_file_given_pot_file_when_not_exist_should_call_generate_pot_file(path_exists_mock, sut_mock):
+    """ Given a pot file and a locale path, if pot_file doesn't exist,
+    should call generate_pot_file """
+    # Arrange
+    path_exists_mock.return_value = False
+    with mock.patch.object(sut, "call_subprocess"):
+        # Act
+        sut.merge_pot_file()
+        # Assert
+    sut_mock.assert_called_once()
+# endregion
+
 # region call_subprocess(str)
+
 
 @mock.patch.object(subprocess, "Popen")
 def test_call_subprocess_given_command_srt_then_calls_popens_with_command(subprocess_mock):
