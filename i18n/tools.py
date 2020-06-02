@@ -85,6 +85,7 @@ def merge_pot_file():
     pass
 
 
+# TODO(ivan.sainz) Migrate calls to this function to the one at tools/cli.py
 def call_subprocess(command: str):
     """Calls a subprocess"""
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

@@ -1,10 +1,18 @@
 """Contains wrappers for WP CLI commands"""
 
 from core.app import App
+from core.LiteralsCore import LiteralsCore
+from wordpress.Literals import Literals as WordpressLiterals
+from tools.cli import call_subprocess, Commands
 import logging
+import requests
+import os
+import stat
+import pathlib
 from enum import Enum
 
 app: App = App()
+literals = LiteralsCore([WordpressLiterals])
 
 
 class ValueType(Enum):
@@ -24,7 +32,26 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
         install_path: Path where WP-CLI will be installed. It must be in the
             PATH/BIN of the operating system.
     """
-    pass
+
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
+    install_path = pathlib.Path(install_path)
+    file_path = pathlib.Path.joinpath(install_path, wp_cli_phar)
+
+    if not pathlib.Path.is_dir(install_path):
+        raise ValueError(literals.get("wp_not_dir"))
+
+    logging.info(literals.get("wp_wpcli_downloading").format(url=wp_cli_download_url))
+    response = requests.get(wp_cli_download_url)
+
+    with open(file_path, "wb") as wp_cli:
+        wp_cli.write(response.content)
+
+    file_stat = os.stat(file_path)
+    os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
+
+    # TODO(ivan.sainz) Migrate to the literal's approach
+    call_subprocess(Commands._wp_cli.get("wp_info"))
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):

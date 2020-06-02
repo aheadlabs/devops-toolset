@@ -14,7 +14,8 @@
         }
     },
     "packages": {
-        "devops_toolset": "https://github.com/aheadlabs/devops-toolset/archive/master.zip"
+        "devops_toolset": "https://github.com/aheadlabs/devops-toolset/archive/master.zip",
+        "wp_cli": "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
     },
     "regex_base64": [
         {
