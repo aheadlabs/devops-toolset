@@ -34,3 +34,16 @@ class BranchesData(object):
 def branchesdata():
     """Sample branch names for testing"""
     return BranchesData()
+
+
+class CliData(object):
+    """ Class used to create CliData fixture containing test data"""
+    sample_command = "sample command"
+    sample_log_message_info = "Operation completed successfully."
+    sample_log_message_error = "Something went wrong."
+
+
+@pytest.fixture()
+def clidata():
+    """ Sample command line interface data """
+    return CliData()

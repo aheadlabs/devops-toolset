@@ -1,11 +1,10 @@
 """Unit tests for the tools file"""
 import unittest.mock as mock
 import i18n.tools as sut
+import tools.cli as tools_cli
 import argparse
 import pathlib
 import os
-import subprocess
-import logging
 
 
 # region get_files()
@@ -30,7 +29,7 @@ def test_get_files_given_starting_path_and_glob_should_return_list_pathlib_rglob
 # region compile_po_files()
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_compile_po_files_given_path_then_calls_get_files(filenames):
     """Given a locale path, it should call get_file_paths_in_tree() to get the
     paths"""
@@ -46,7 +45,7 @@ def test_compile_po_files_given_path_then_calls_get_files(filenames):
     file_paths.assert_called()
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_compile_po_files_given_path_when_args_contain_py_then_calls_subprocess_with_dot_py(subprocess_mock):
     """ Given a locale path, when args contain the py arg, then compounds the command
         with msgfmt.py and files and calls it """
@@ -67,7 +66,7 @@ def test_compile_po_files_given_path_when_args_contain_py_then_calls_subprocess_
     subprocess_mock.assert_called_once_with(expected_command)
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_compile_po_files_given_path_when_args_not_contain_py_then_calls_subprocess_without_dot_py(subprocess_mock):
     """ Given a locale path, when args contain the py arg, then compounds the command
         with msgfmt and po/mo files and calls it """
@@ -94,7 +93,7 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
     expected_files = ["foo3.po"]
     expected_mo_deleted_file = "foo3.mo"
 
-    with mock.patch.object(sut, "call_subprocess"):
+    with mock.patch.object(tools_cli, "call_subprocess"):
         with mock.patch.object(sut, "get_files") as file_paths:
             file_paths.return_value = expected_files
             with mock.patch.object(pathlib.Path, "exists") as path_exists_mock:
@@ -111,7 +110,7 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
 # region generate_po_files()
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_then_calls_get_files(filenames):
     """Given a locale path, it should call get_file_paths_in_tree() to get the
     paths"""
@@ -127,7 +126,7 @@ def test_generate_pot_file_given_path_then_calls_get_files(filenames):
     file_paths.assert_called()
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with_pygettext(subprocess_mock, filenames):
     """ Given a pot file path, when args contain the py arg, then compounds the command
         with pygettext.py and all py files and calls it """
@@ -150,7 +149,7 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
     subprocess_mock.assert_called_once_with(expected_command)
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xgettext(subprocess_mock, filenames):
     """ Given a locale path, when args not contain the py arg, then iterates on files and compounds the command
         with xgettext and all py files and calls it """
@@ -180,7 +179,7 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
     expected_pot_deleted_file = filenames.test_pot_file
     expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
 
-    with mock.patch.object(sut, "call_subprocess"):
+    with mock.patch.object(tools_cli, "call_subprocess"):
         with mock.patch.object(pathlib.Path, "joinpath") as joinpath_mock:
             joinpath_mock.return_value = pathlib.PurePath(expected_pot_deleted_file)
             with mock.patch.object(sut, "get_files") as file_paths:
@@ -200,7 +199,7 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
 # region merge_pot_file()
 
 
-@mock.patch.object(sut, "call_subprocess")
+@mock.patch.object(tools_cli, "call_subprocess")
 def test_merge_pot_file_given_pot_file_should_call_msgmerge_command(subprocess_mock, filenames):
     """ Given a pot file and a locale path, should call an str command """
     # Arrange
@@ -227,68 +226,10 @@ def test_merge_pot_file_given_pot_file_when_not_exist_should_call_generate_pot_f
     should call generate_pot_file """
     # Arrange
     path_exists_mock.return_value = False
-    with mock.patch.object(sut, "call_subprocess"):
+    with mock.patch.object(tools_cli, "call_subprocess"):
         # Act
         sut.merge_pot_file()
         # Assert
     sut_mock.assert_called_once()
 # endregion
 
-# region call_subprocess(str)
-
-
-@mock.patch.object(subprocess, "Popen")
-def test_call_subprocess_given_command_srt_then_calls_popens_with_command(subprocess_mock):
-    """ Given an str command, then calls subprocess. Popen with that command"""
-
-    # Arrange
-    foo_command = "test-command"
-    expected_out = "Some out"
-    shell = True
-    stdout = subprocess.PIPE
-    stderr = subprocess.PIPE
-    subprocess_mock.return_value.return_code = 0
-    subprocess_mock.return_value.communicate.return_value = (expected_out, expected_out)
-
-    # Act
-    sut.call_subprocess(foo_command)
-
-    # Assert
-    subprocess_mock.assert_called_once_with(foo_command, shell=shell, stdout=stdout, stderr=stderr)
-
-
-@mock.patch.object(subprocess, "Popen")
-def test_call_subprocess_given_command_srt_when_stdout_has_lines_then_log_info(subprocess_mock):
-    """ Given an str command, then calls subprocess.Popen and must log stdout as info"""
-
-    # Arrange
-    foo_command = "test-command"
-    expected_log_message = "Info message on stdout"
-    subprocess_mock.return_value.return_code = 0
-    subprocess_mock.return_value.communicate.return_value = (expected_log_message, "")
-
-    # Act
-    with mock.patch.object(logging, "info") as logging_mock:
-        sut.call_subprocess(foo_command)
-        # Assert
-        logging_mock.assert_called_once_with(expected_log_message)
-
-
-@mock.patch.object(subprocess, "Popen")
-def test_call_subprocess_given_command_srt_when_stderr_has_lines_then_log_error(subprocess_mock):
-    """ Given an str command, then calls subprocess.Popen and must log stderr as error"""
-
-    # Arrange
-    foo_command = "test-command"
-    expected_log_message = "Error message on stderr"
-    subprocess_mock.return_value.return_code = 0
-    subprocess_mock.return_value.communicate.return_value = ("", expected_log_message)
-
-    # Act
-    with mock.patch.object(logging, "error") as logging_mock:
-        sut.call_subprocess(foo_command)
-
-        # Assert
-        logging_mock.assert_called_once_with(expected_log_message)
-
-# endregion call_subprocess(str)

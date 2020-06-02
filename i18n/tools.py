@@ -9,12 +9,11 @@ Args:
 """
 
 from typing import List
+import tools.cli as tools
 import argparse
 import os
-import subprocess
 import pathlib
 import core.app
-import logging
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--py", action="store_true")
@@ -54,7 +53,7 @@ def generate_pot_file():
     script = "pygettext.py" if args.py else "xgettext"
     command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
 
-    call_subprocess(command)
+    tools.call_subprocess(command)
 
 
 def compile_po_files():
@@ -72,7 +71,7 @@ def compile_po_files():
         py = ".py" if args.py else ""
         command = f"msgfmt{py} -o {mo_file} {file}"
 
-        call_subprocess(command)
+        tools.call_subprocess(command)
 
 
 def merge_pot_file():
@@ -88,18 +87,7 @@ def merge_pot_file():
     for file in paths:
         po_file = pathlib.Path(file)
         command = f"msgmerge -U {po_file} {pot_file}"
-        call_subprocess(command)
-
-
-# TODO(ivan.sainz) Migrate calls to this function to the one at tools/cli.py
-def call_subprocess(command: str):
-    """Calls a subprocess"""
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = process.communicate()
-    if out:
-        logging.info(out)
-    if err:
-        logging.error(err)
+        tools.call_subprocess(command)
 
 
 if __name__ == "__main__":
