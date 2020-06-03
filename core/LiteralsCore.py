@@ -1,17 +1,17 @@
 """Literals for the package."""
 
-from core.LiteralsBase import LiteralsBase
+from core.ValueDictsBase import ValueDictsBase
 from core.app import App
 
 app: App = App()
 
 
-class LiteralsCore(LiteralsBase):
+class LiteralsCore(ValueDictsBase):
     """Core literals for the package.
 
 
     1. Create an instance of the LiteralsCore class (this class).
-    2. Pass as a parameter list all Literal classes you want to include.
+    2. Pass as a parameter list all Literals classes you want to include.
 
         from core.LiteralsCore import LiteralsCore
         from wordpress.Literals import Literals as WpLiterals

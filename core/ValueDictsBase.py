@@ -1,25 +1,25 @@
-"""Base class for Literals"""
+"""Base class for ValueDicts"""
 
 import inspect
 from typing import List
 
 
-class LiteralsBase(object):
-    """Base class for Literals"""
+class ValueDictsBase(object):
+    """Base class for ValueDicts"""
 
-    def __init__(self, literals_list: List = None):
-        """Plains all literals from all the dictionaries passed as a parameter
+    def __init__(self, value_list: List = None):
+        """Plains all values from all the dictionaries passed as a parameter
         plus the ones defined in the instanced class.
 
         Args:
-            literals_list: List of class types where literals should be found.
+            value_list: List of class types where values should be found.
         """
 
         self._all_dictionaries = self.get_dicts()
 
-        if literals_list:
-            for literals in literals_list:
-                _external = literals()
+        if value_list:
+            for values in value_list:
+                _external = values()
                 self._all_dictionaries += _external.get_dicts()
 
         self.all = {}
@@ -30,7 +30,7 @@ class LiteralsBase(object):
         """Gets a literal from a given key.
 
         Args:
-            key: used for getting the message
+            key: used for getting the value
         """
 
         return str(self.all[key])

@@ -1,13 +1,13 @@
 """devops module literals."""
 
-from core.LiteralsBase import LiteralsBase
+from core.ValueDictsBase import ValueDictsBase
 from core.app import App
 
 app: App = App()
 
 
-class Literals(LiteralsBase):
-    """Literals for the devops module."""
+class Literals(ValueDictsBase):
+    """ValueDicts for the devops module."""
 
     # Add your core literal dictionaries here
     _info = {

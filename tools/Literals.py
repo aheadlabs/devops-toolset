@@ -1,13 +1,13 @@
 """tools module literals."""
 
-from core.LiteralsBase import LiteralsBase
+from core.ValueDictsBase import ValueDictsBase
 from core.app import App
 
 app: App = App()
 
 
-class Literals(LiteralsBase):
-    """Literals for the tools module."""
+class Literals(ValueDictsBase):
+    """ValueDicts for the tools module."""
 
     # Add your core literal dictionaries here
     _info = {}
