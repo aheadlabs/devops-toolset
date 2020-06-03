@@ -1,8 +1,8 @@
 """Unit tests for the sonarx file"""
 
 import pathlib
-from unittest.mock import patch
 import devops.sonarx as sut
+from unittest.mock import patch
 from devops.tests.conftest import mocked_requests_get
 from core.LiteralsCore import LiteralsCore
 from devops.Literals import Literals as DevopsLiterals
@@ -106,7 +106,7 @@ def test_read_sonar_properties_given_file_returns_tuple(sonarxdata, tmp_path):
         properties_file.write(sonarxdata.properties_file_data)
 
     # Act
-    result = sut.read_sonar_properties_file(properties_file_path)
+    result = sut.read_sonar_properties_file(str(properties_file_path))
 
     # Assert
     assert result == (sonarxdata.sonar_url, sonarxdata.sonar_project_key, sonarxdata.sonar_organization)

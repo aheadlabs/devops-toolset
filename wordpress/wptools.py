@@ -1,8 +1,7 @@
 """Contains several tools for WordPress"""
 
-from core.app import App
 import json
-import logging
+from core.app import App
 
 app: App = App()
 

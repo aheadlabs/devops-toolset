@@ -1,12 +1,10 @@
 """Unit tests for the wordpress.tools file"""
 
-import pytest
-from unittest.mock import patch
 import json
 import pathlib
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
-import wordpress.tools as sut
+import wordpress.wptools as sut
 
 literals = LiteralsCore([WordpressLiterals])
 

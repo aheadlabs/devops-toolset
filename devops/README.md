@@ -19,6 +19,6 @@ e.g.:
 
 If it is not possible to create any functionality in the new platform, please create the related functions anyway and log to the stdout why it can't be implemented.
 
-## Literals
+## ValueDicts
 
-Literals are stored as dictionaries inside a Literals*.py file in every module root. Yo can use `/devops/LiteralsCore.py` as an example.
+ValueDicts are stored as dictionaries inside a ValueDicts*.py file in every module root. Yo can use `/devops/LiteralsCore.py` as an example.

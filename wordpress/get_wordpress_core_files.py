@@ -2,7 +2,7 @@
 
 import argparse
 from core.app import App
-import wordpress.tools
+import wordpress.wptools
 import wordpress.wp_cli
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
@@ -30,9 +30,9 @@ def main(wordpress_path: str = None, environment_path: str = None, environment_n
         raise ValueError(literals.get("wp_environment_name_mandatory"))
 
     site_configuration_path: str = \
-        wordpress.tools.get_site_configuration_path_from_environment(environment_path, environment_name)
+        wordpress.wptools.get_site_configuration_path_from_environment(environment_path, environment_name)
 
-    site_configuration: dict = wordpress.tools.get_site_configuration(site_configuration_path)
+    site_configuration: dict = wordpress.wptools.get_site_configuration(site_configuration_path)
 
     wordpress.wp_cli.download_wordpress(site_configuration, wordpress_path)
 

@@ -31,12 +31,12 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
         The path to the closest/root .gitignore file
     """
     if path is None:
-        gitignore_path = pathlib.Path.joinpath(get_project_root(), FileNames.GITIGNORE_FILE)
+        gitignore_path = pathlib.Path.joinpath(pathlib.Path(get_project_root()), FileNames.GITIGNORE_FILE)
         if not pathlib.Path(gitignore_path).exists():
             raise FileNotFoundError
         return gitignore_path
     else:
-        return get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction)
+        return str(get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
 
 
 def add_gitignore_exclusion(path: str, exclusion: str):
@@ -126,6 +126,7 @@ def simplify_branch_name(branch: str):
         return branch.replace("refs/", "").replace("/merge", "")
     else:
         return branch
+
 
 def set_current_branch_simplified(branch: str, environment_variable_name: str):
     """Creates an environment variable from a branch name (simplified)

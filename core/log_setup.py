@@ -78,8 +78,8 @@ def add_time_rotated_file_handler(backupcount=10, filepath=".", when='midnight')
     """
     import logging.handlers
     log = logger.getLogger()
-    filehandler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
-    log.addHandler(filehandler)
+    file_handler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
+    log.addHandler(file_handler)
 
 
 if __name__ == "__main__":
