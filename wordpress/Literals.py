@@ -13,7 +13,7 @@ class Literals(ValueDictsBase):
     _info = {
         "wp_wpcli_downloading": _("Downloading WP-CLI from {url}"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
-        "wp_wpcli_info": _("Here is the WP-CLI information:")
+        "wp_wpcli_info": _("Here is the WP-CLI information:"),
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system.")
     }
     _errors = {
