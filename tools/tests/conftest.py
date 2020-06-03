@@ -39,8 +39,8 @@ def branchesdata():
 class CliData(object):
     """ Class used to create CliData fixture containing test data"""
     sample_command = "sample command"
-    sample_log_message_info = "Operation completed successfully."
-    sample_log_message_error = "Something went wrong."
+    sample_log_message_info = b"Operation completed successfully."
+    sample_log_message_error = b"Something went wrong."
 
 
 @pytest.fixture()

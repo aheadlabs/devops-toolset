@@ -221,4 +221,3 @@ def install_theme_from_configuration_file(site_configuration: dict, wordpress_pa
 
 if __name__ == "__main__":
     help(__name__)
-    install_wp_cli(r"C:\Users\i3an\Downloads\temp")
