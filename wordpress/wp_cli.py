@@ -1,18 +1,21 @@
 """Contains wrappers for WP CLI commands"""
 
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
-from tools.cli import call_subprocess, Commands
 import logging
 import requests
 import os
 import stat
 import pathlib
+import tools.cli as cli
+from core.app import App
+from core.LiteralsCore import LiteralsCore
+from wordpress.Literals import Literals as WordpressLiterals
+from core.CommandsCore import CommandsCore
+from wordpress.Commands import Commands as WordpressCommands
 from enum import Enum
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
+commands = CommandsCore([WordpressCommands])
 
 
 class ValueType(Enum):
@@ -50,8 +53,8 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     file_stat = os.stat(file_path)
     os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
 
-    # TODO(ivan.sainz) Migrate to the literal's approach
-    call_subprocess(Commands._wp_cli.get("wp_info"))
+    cli.call_subprocess(commands.get("wpcli_info"),
+                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")])
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):
@@ -217,3 +220,4 @@ def install_theme_from_configuration_file(site_configuration: dict, wordpress_pa
 
 if __name__ == "__main__":
     help(__name__)
+    install_wp_cli(r"C:\Users\i3an\Downloads\temp")

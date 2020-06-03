@@ -2,25 +2,39 @@
 
 import subprocess
 import logging
+import core.log_tools
+from typing import List
 
 
-def call_subprocess(command: str):
-    """Calls a subprocess"""
+def call_subprocess(command: str,
+                    log_before_out: List[str] = None, log_after_out: List[str] = None,
+                    log_before_err: List[str] = None, log_after_err: List[str] = None):
+    """Calls a subprocess.
+
+    Args:
+        command: Command to be executed.
+        log_before_out: List of strings to log as info before the stdout, if
+            no errors.
+        log_after_out: List of strings to log as info after the stdout, if
+            no errors.
+        log_before_err: List of strings to log as error before the stderr, if
+            errors.
+        log_after_err: List of strings to log as error after the stderr, if
+            errors.
+    """
+
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
     if out:
-        logging.info(out)
+        core.log_tools.log_list(log_before_out, core.log_tools.LogLevel.info)
+        for line in out.splitlines():
+            logging.info(line.decode("utf-8"))
+        core.log_tools.log_list(log_after_out, core.log_tools.LogLevel.info)
     if err:
-        logging.error(err)
-
-
-class Commands(object):
-    """Common command line commands :)"""
-
-    # TODO(ivan.sainz) Do something like what is done in Literals and move this dict to /wordpress
-    _wp_cli = {
-        "wp_info": "wp --info"
-    }
+        core.log_tools.log_list(log_before_err, core.log_tools.LogLevel.error)
+        for line in err.splitlines():
+            logging.error(line.decode("utf-8"))
+        core.log_tools.log_list(log_after_err, core.log_tools.LogLevel.error)
 
 
 if __name__ == "__main__":
