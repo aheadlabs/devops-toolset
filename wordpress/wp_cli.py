@@ -54,7 +54,8 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
 
     cli.call_subprocess(commands.get("wpcli_info"),
-                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")])
+                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],
+                        log_after_out=[literals.get("wp_wpcli_add_ev")])
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):
