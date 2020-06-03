@@ -27,13 +27,11 @@ def call_subprocess(command: str,
     out, err = process.communicate()
     if out:
         core.log_tools.log_list(log_before_out, core.log_tools.LogLevel.info)
-        for line in out.splitlines():
-            logging.info(line.decode("utf-8"))
+        core.log_tools.log_stdouterr(out, core.log_tools.LogLevel.info)
         core.log_tools.log_list(log_after_out, core.log_tools.LogLevel.info)
     if err:
         core.log_tools.log_list(log_before_err, core.log_tools.LogLevel.error)
-        for line in err.splitlines():
-            logging.error(line.decode("utf-8"))
+        core.log_tools.log_stdouterr(err, core.log_tools.LogLevel.error)
         core.log_tools.log_list(log_after_err, core.log_tools.LogLevel.error)
 
 
