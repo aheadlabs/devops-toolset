@@ -1,7 +1,6 @@
 """Contains tools for working with the command line"""
 
 import subprocess
-import logging
 import core.log_tools
 from typing import List
 
