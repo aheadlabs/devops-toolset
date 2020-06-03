@@ -59,8 +59,8 @@ def test_main_given_no_environment_name_raises_valueerror(environment_name, word
 
 
 @patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.tools.get_site_configuration")
-@patch("wordpress.tools.get_site_configuration_path_from_environment")
+@patch("wordpress.wptools.get_site_configuration")
+@patch("wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_get_site_configuration_path_from_environment(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
@@ -80,8 +80,8 @@ def test_main_given_parameters_must_call_get_site_configuration_path_from_enviro
 
 
 @patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.tools.get_site_configuration")
-@patch("wordpress.tools.get_site_configuration_path_from_environment")
+@patch("wordpress.wptools.get_site_configuration")
+@patch("wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_get_site_configuration(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
@@ -101,8 +101,8 @@ def test_main_given_parameters_must_call_get_site_configuration(
 
 
 @patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.tools.get_site_configuration")
-@patch("wordpress.tools.get_site_configuration_path_from_environment")
+@patch("wordpress.wptools.get_site_configuration")
+@patch("wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_download_wordpress(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
