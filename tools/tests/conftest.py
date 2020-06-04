@@ -47,3 +47,14 @@ class CliData(object):
 def clidata():
     """ Sample command line interface data """
     return CliData()
+
+
+class Paths(object):
+    """Class used to create paths fixture"""
+    invalid_path = "/invalidpath"
+
+
+@pytest.fixture()
+def paths():
+    """Sample paths for testing"""
+    return Paths()

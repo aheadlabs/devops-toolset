@@ -10,46 +10,47 @@ import tools.git as sut
 
 
 # region get_gitignore_path()
-def test_get_gitignore_path_given_none_when_exists_then_returns_root_gitignore_path(filenames):
+
+@patch("filesystem.paths.get_project_root")
+def test_get_gitignore_path_given_none_when_exists_then_returns_root_gitignore_path(target, filenames):
     """Given no file, when it exists, should return path to root .gitignore"""
 
     # Arrange
-    with patch.object(sut, "get_project_root") as target:
-        target.return_value = pathlib.Path(f"{filenames.path}")
-        with patch.object(pathlib.Path, "exists") as exits:
-            exits.return_value = True
+    target.return_value = pathlib.Path(f"{filenames.path}")
+    with patch.object(pathlib.Path, "exists") as exits:
+        exits.return_value = True
 
     # Act
-            result = sut.get_gitignore_path()
+        result = sut.get_gitignore_path()
 
     # Assert
     assert result == pathlib.Path(f"{filenames.path}/{FileNames.GITIGNORE_FILE}")
 
 
-def test_get_gitignore_path_given_none_when_not_exist_then_raises_filenotfounderror(filenames):
+@patch("filesystem.paths.get_project_root")
+def test_get_gitignore_path_given_none_when_not_exist_then_raises_filenotfounderror(target, filenames):
     """Given no file, when it doesn't exist, should raise FileNotFoundError"""
 
     # Arrange
-    with patch.object(sut, "get_project_root") as target:
-        target.return_value = pathlib.Path(f"{filenames.path}")
-        with patch.object(pathlib.Path, "exists") as exits:
-            exits.return_value = False
+    target.return_value = pathlib.Path(f"{filenames.path}")
+    with patch.object(pathlib.Path, "exists") as exits:
+        exits.return_value = False
 
     # Act
-            with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError):
 
-    # Assert
-                sut.get_gitignore_path()
+            # Assert
+            sut.get_gitignore_path()
 
 
-def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(filenames):
+@patch("filesystem.paths.get_filepath_in_tree")
+def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(target, filenames):
     """Given a file, should call get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction)"""
 
     # Arrange
-    with patch.object(sut, "get_filepath_in_tree") as target:
 
     # Act
-        sut.get_gitignore_path(filenames.file, Directions.ASCENDING)
+    sut.get_gitignore_path(filenames.file, Directions.ASCENDING)
 
     # Assert
     target.assert_called_with(filenames.file, Directions.ASCENDING)
@@ -248,5 +249,61 @@ def test_set_current_branch_simplified_given_branch_and_environment_variable_cre
             sut.set_current_branch_simplified(branch, environment_variable_name)
             # Assert
             create_env_vars_mock.assert_called_once_with({environment_variable_name: branch})
+
+# endregion
+
+# region purge_gitkeep()
+
+
+def test_purge_gitkeep_when_invalid_path_raises_valueerror(paths):
+    """Given an invalid path, raises ValueError"""
+
+    # Arrange
+    path = paths.invalid_path
+
+    # Act
+    with pytest.raises(ValueError):
+
+        # Assert
+        sut.purge_gitkeep(path)
+
+
+@patch("logging.info")
+@patch("os.remove")
+def test_purge_gitkeep_when_no_additional_files_remove_not_called(os_remove, logging_info, tmp_path):
+    """Given a directory with a .gitkeep file, when directory is empty, do
+    nothing"""
+
+    # Arrange
+    guess_gitkeep_file = pathlib.Path.joinpath(tmp_path, ".gitkeep")
+    with open(str(guess_gitkeep_file), "w") as gitkeep:
+        gitkeep.write("")
+
+    # Act
+    sut.purge_gitkeep(str(tmp_path))
+
+    # Assert
+    os_remove.assert_not_called()
+
+
+@patch("logging.info")
+@patch("os.remove")
+def test_purge_gitkeep_when_directory_not_empty_remove_called(os_remove, logging_info, tmp_path):
+    """Given a directory with a .gitkeep file, when directory not empty, call
+    os.remove()"""
+
+    # Arrange
+    guess_gitkeep_file = pathlib.Path.joinpath(tmp_path, ".gitkeep")
+    other_file = pathlib.Path.joinpath(tmp_path, "other_file.txt")
+    with open(str(guess_gitkeep_file), "w") as gitkeep:
+        gitkeep.write("")
+    with open(str(other_file), "w") as file:
+        file.write("hello world!")
+
+    # Act
+    sut.purge_gitkeep(str(tmp_path))
+
+    # Assert
+    os_remove.assert_called_once_with(guess_gitkeep_file)
 
 # endregion

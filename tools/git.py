@@ -3,12 +3,14 @@
 #! python
 
 import core.app
-from core.LiteralsCore import LiteralsCore
-from tools.Literals import Literals as ToolsLiterals
+import os
 import pathlib
 import re
+import filesystem.paths
+import logging
+from core.LiteralsCore import LiteralsCore
+from tools.Literals import Literals as ToolsLiterals
 from filesystem.constants import FileNames, Directions
-from filesystem.paths import get_project_root, get_filepath_in_tree
 
 app: core.app.App = core.app.App()
 literals = LiteralsCore([ToolsLiterals])
@@ -31,12 +33,13 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
         The path to the closest/root .gitignore file
     """
     if path is None:
-        gitignore_path = pathlib.Path.joinpath(pathlib.Path(get_project_root()), FileNames.GITIGNORE_FILE)
+        gitignore_path = pathlib.Path.joinpath(
+            pathlib.Path(filesystem.paths.get_project_root()), FileNames.GITIGNORE_FILE)
         if not pathlib.Path(gitignore_path).exists():
             raise FileNotFoundError
         return gitignore_path
     else:
-        return str(get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
+        return str(filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
 
 
 def add_gitignore_exclusion(path: str, exclusion: str):
@@ -140,6 +143,19 @@ def set_current_branch_simplified(branch: str, environment_variable_name: str):
 
     simplified_branch_name = simplify_branch_name(branch)
     platform_specific.create_environment_variables({environment_variable_name: simplified_branch_name})
+
+
+def purge_gitkeep(path: str = None):
+    """Deletes .gitkeep file if exists and there are more files in the path."""
+
+    if not filesystem.paths.is_valid_path(path):
+        raise ValueError(literals.get("git_non_valid_dir_path"))
+
+    path_object = pathlib.Path(path)
+    guess_gitkeep_file = pathlib.Path.joinpath(path_object, ".gitkeep")
+    if len(os.listdir(path)) > 1 and guess_gitkeep_file.exists():
+        logging.info(literals.get("git_purging_gitkeep").format(path=path))
+        os.remove(guess_gitkeep_file)
 
 
 if __name__ == "__main__":
