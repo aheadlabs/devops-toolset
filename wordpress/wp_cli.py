@@ -7,6 +7,8 @@ import stat
 import pathlib
 import tools.cli as cli
 import wordpress.wptools as wptools
+import filesystem.paths
+import tools.git
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
@@ -72,6 +74,9 @@ def download_wordpress(site_configuration: dict, destination_path: str):
         destination_path: Path where WP-CLI will be downloaded.
     """
 
+    if not filesystem.paths.is_valid_path(destination_path):
+        raise ValueError(literals.get("wp_non_valid_dir_path"))
+
     version = site_configuration["settings"]["version"]
     locale = site_configuration["settings"]["locale"]
     skip_content = wptools.convert_wp_parameter_skip_content(site_configuration["settings"]["skip_content_download"])
@@ -84,7 +89,7 @@ def download_wordpress(site_configuration: dict, destination_path: str):
         path=destination_path,
         skip_content=skip_content,
         debug_info=debug_info
-    ), log_before_out=[
+    ), log_before_process=[
         literals.get("wp_wpcli_downloading_wordpress").format(version=version, locale=locale, content=content),
         literals.get("wp_wpcli_downloading_path").format(path=destination_path),
         literals.get("wp_wpcli_downloading_content").format(content=content)],
@@ -93,6 +98,8 @@ def download_wordpress(site_configuration: dict, destination_path: str):
         log_after_err=[
             literals.get("wp_wpcli_downloading_wordpress_err")]
     )
+
+    tools.git.purge_gitkeep(destination_path)
 
 
 def install_wordpress(site_configuration: dict, wordpress_path: str, wordpress_admin_password: str):

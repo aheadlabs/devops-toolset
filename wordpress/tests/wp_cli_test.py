@@ -1,25 +1,22 @@
 """Unit tests for the wordpress.wp_cli file"""
 import os
 import stat
-from unittest.mock import patch
-from unittest.mock import mock_open
 import pytest
 import pathlib
+import json
+import wordpress.wp_cli as sut
 from core.app import App
+from unittest.mock import patch
+from unittest.mock import mock_open
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
 from wordpress.Commands import Commands as WordpressCommands
-import wordpress.wp_cli as sut
 from wordpress.tests.conftest import mocked_requests_get
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
-
-# region get_constants()
-
-# endregion
 
 # region install_wp_cli()
 
@@ -118,5 +115,40 @@ def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_
                         log_before_out=[expected_before_out_message1, expected_before_out_message2],
                         log_after_out=[expected_after_out_message]
                     )
+
+# endregion
+
+# region download_wordpress()
+
+
+def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
+    """Given an invalid path, raises ValueError"""
+
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    path = wordpressdata.wordpress_path_err
+
+    # Act
+    with pytest.raises(ValueError):
+
+        # Assert
+        sut.download_wordpress(site_configuration, path)
+
+
+@patch("tools.git.purge_gitkeep")
+@patch("tools.cli.call_subprocess")
+def test_download_wordpress_given_valid_arguments_calls_subprocess(subprocess, purge_gitkeep, wordpressdata):
+    """Given valid arguments, calls subprocess"""
+
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    path = wordpressdata.wordpress_path
+
+    # Act
+    sut.download_wordpress(site_configuration, path)
+
+    # Assert
+    subprocess.assert_called_once()
+    purge_gitkeep.assert_called_once()
 
 # endregion

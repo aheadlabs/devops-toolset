@@ -13,6 +13,7 @@ from unittest import mock
 class WordPressData(object):
     """Class used to create the wordpressdata fixture"""
     wordpress_path = "/pathto/wordpress"
+    wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
     environment_name = "environment1"
     site_config_path = "/pathto/site-config"

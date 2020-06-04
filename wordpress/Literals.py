@@ -25,6 +25,7 @@ class Literals(ValueDictsBase):
         "wp_environment_path_mandatory": _("environment-path is a mandatory parameter. I cannot continue."),
         "wp_environment_name_mandatory": _("environment-name is a mandatory parameter. I cannot continue."),
         "wp_not_dir": _("Path must be a dir, not a file."),
+        "wp_non_valid_dir_path": _("Path must be an existent dir."),
         "wp_env_not_found": _("Environment not found in the environments JSON file."),
         "wp_env_gt1": _("There are more than 1 matching environments in the environments JSON file."),
         "wp_wpcli_downloading_wordpress_err": _("WordPress core files could not be downloaded.")
