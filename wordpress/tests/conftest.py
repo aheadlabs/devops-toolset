@@ -1,8 +1,13 @@
 """Test configuration file for wordpress module.
 
 Add here whatever you want to pass as a fixture in your texts."""
+import pathlib
 
 import pytest
+import requests
+
+import tools.cli as tools_cli
+from unittest import mock
 
 
 class WordPressData(object):
@@ -42,9 +47,46 @@ class WordPressData(object):
                              "[{\"key\":\"wordpress-theme\",\"value\":" \
                              "\"d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8=\"}]}"
     wp_cli_install_path = "/pathto/wp-cli"
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_file_path = pathlib.Path.joinpath(pathlib.Path(wp_cli_install_path), wp_cli_phar)
+    builtins_open = 'builtins.open'
+
+    # Mocks
+    tools_cli_call_subprocess_mock = mock.patch.object(tools_cli, "call_subprocess").start()
+    requests_get_mock = mock.patch.object(requests, "get").start()
 
 
 @pytest.fixture
 def wordpressdata():
     """Sample data for testing"""
-    return WordPressData()
+    yield WordPressData()
+    # Below code is executed as a TearDown
+    WordPressData.tools_cli_call_subprocess_mock.stop()
+    WordPressData.requests_get_mock.stop()
+    print("Teardown finished.")
+
+
+def mocked_requests_get(url: str, *args, **kwargs):
+    """Mock to replace requests.get()"""
+
+    # Default values
+    status_code = 200
+    bytes_content = b"sample response in bytes"
+
+    # Return instance
+    return MockResponse(bytes_content, status_code)
+
+
+class MockResponse(object):
+    """This is the mocked Response object returned by requests.get()"""
+    def __init__(self, content, status_code):
+        self.content = content
+        self.status_code = status_code
+
+    def content(self):
+        """When they call <mock>.content() this will be returned"""
+        return self.content
+
+    def status(self):
+        """When they call <mock>.status() this will be returned"""
+        return self.status_code

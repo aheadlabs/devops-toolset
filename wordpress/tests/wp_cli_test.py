@@ -1,28 +1,122 @@
 """Unit tests for the wordpress.wp_cli file"""
-
-import pytest
+import os
+import stat
 from unittest.mock import patch
-import json
+from unittest.mock import mock_open
+import pytest
 import pathlib
+from core.app import App
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
+from core.CommandsCore import CommandsCore
+from wordpress.Commands import Commands as WordpressCommands
 import wordpress.wp_cli as sut
+from wordpress.tests.conftest import mocked_requests_get
 
+app: App = App()
 literals = LiteralsCore([WordpressLiterals])
+commands = CommandsCore([WordpressCommands])
 
 # region get_constants()
 
+# endregion
 
-def test_install_wp_cli_given_path_downloads_files(wordpressdata):
-    """Given a file path, downloads WP-CLI files."""
+# region install_wp_cli()
+
+
+@patch("pathlib.Path")
+def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_mock, wordpressdata):
+    """Given a file path, raises ValueError when install_path is not a dir."""
 
     # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    expected_exception_message = literals.get("wp_not_dir")
+    with patch.object(pathlib.Path, "is_dir", return_value=False):
+        # Act
+        with pytest.raises(ValueError) as exceptionInfo:
+            sut.install_wp_cli(install_path)
+        # Assert
+        assert expected_exception_message == str(exceptionInfo.value)
 
-    # Act
-    # TODO(alberto_carbonell) Complete this test
-    # sut.install_wp_cli(wordpressdata.wp_cli_install_path)
 
+@patch("pathlib.Path")
+def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(pathlib_mock, wordpressdata):
+    """ Given a file path, when path is a dir, then downloads from download url """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
+    with patch(wordpressdata.builtins_open, mock_open()):
+        with patch.object(os, "stat"):
+            with patch.object(os, "chmod"):
+                # Act
+                sut.install_wp_cli(install_path)
     # Assert
-    assert True
+    wordpressdata.requests_get_mock.assert_called_once_with(wp_cli_download_url)
+
+
+@patch("pathlib.Path")
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(pathlib_mock, wordpressdata):
+    """ Given a file path, when path is a dir, then writes response content to file_path """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    expected_content = b"sample response in bytes"
+    m = mock_open()
+    with patch(wordpressdata.builtins_open, m, create=True):
+            with patch.object(os, "stat"):
+                with patch.object(os, "chmod"):
+                    # Act
+                    sut.install_wp_cli(install_path)
+                # Assert
+                handler = m()
+                handler.write.assert_called_once_with(expected_content)
+
+
+def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wordpressdata):
+    """ Given a file path, when path is a dir, then does chmod with S_IEXEC """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+
+    with patch.object(pathlib.Path, "is_dir", return_value=True):
+        with patch(wordpressdata.builtins_open, mock_open()):
+            with patch.object(os, "stat") as file_stat_mock:
+                file_stat_mock.return_value = os.stat(install_path)
+                with patch.object(os, "chmod") as chmod_mock:
+                    # Act
+                    sut.install_wp_cli(install_path)
+                    # Assert
+                    chmod_mock.assert_called_once_with(wordpressdata.wp_cli_file_path,
+                                                       file_stat_mock.return_value.st_mode | stat.S_IEXEC)
+
+
+def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(wordpressdata):
+    """ Given a file path, when path is a dir, then calls cli's subprocess with wpcli command """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    expected_command = commands.get("wpcli_info")
+    expected_before_out_message1 = literals.get("wp_wpcli_install_ok")
+    expected_before_out_message2 = literals.get("wp_wpcli_info")
+    expected_after_out_message = literals.get("wp_wpcli_add_ev")
+
+    with patch.object(pathlib.Path, "is_dir", return_value=True):
+        with patch(wordpressdata.builtins_open, mock_open()):
+            with patch.object(os, "stat") as file_stat_mock:
+                file_stat_mock.return_value = os.stat(install_path)
+                with patch.object(os, "chmod"):
+                    # Act
+                    sut.install_wp_cli(install_path)
+                    # Assert
+                    wordpressdata.tools_cli_call_subprocess_mock.assert_called_with(
+                        expected_command,
+                        log_before_out=[expected_before_out_message1, expected_before_out_message2],
+                        log_after_out=[expected_after_out_message]
+                    )
 
 # endregion
