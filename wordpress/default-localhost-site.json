@@ -29,7 +29,7 @@
             "email": "you@example.com",
             "skip_email": true
         },
-        "skip_content_download": false,
+        "skip_content_download": true,
         "content_url": "http://localhost/my-wordpress-site/wp-content",
         "plugin_url": "http://localhost/my-wordpress-site/wp-content/plugins",
         "noblogredirect_url": "http://localhost/my-wordpress-site",

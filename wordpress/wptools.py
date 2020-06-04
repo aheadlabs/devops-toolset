@@ -1,9 +1,14 @@
 """Contains several tools for WordPress"""
 
 import json
+import pathlib
+
 from core.app import App
+from core.LiteralsCore import LiteralsCore
+from wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
+literals = LiteralsCore([WordpressLiterals])
 
 
 def get_constants(path: str) -> dict:
@@ -67,7 +72,9 @@ def get_site_configuration(path: str) -> dict:
     Returns:
         Site configuration in a dict object.
     """
-    pass
+
+    with open(path, "r") as config_file:
+        return json.loads(config_file.read())
 
 
 def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
@@ -85,7 +92,22 @@ def get_site_configuration_path_from_environment(environment_path: str, environm
     Returns:
         Site configuration path.
     """
-    pass
+
+    with open(environment_path, "r") as environment_file:
+        json_data = json.loads(environment_file.read())
+
+    matching_environments = list(filter(lambda e: e["name"] == environment_name, json_data["environments"]))
+
+    if len(matching_environments) == 0:
+        raise ValueError(literals.get("wp_env_not_found"))
+
+    if len(matching_environments) > 1:
+        raise ValueError(literals.get("wp_env_gt1"))
+
+    directory = pathlib.Path(environment_path).parent
+    file_path = pathlib.Path.joinpath(directory, matching_environments[0]["configuration_file"])
+
+    return str(file_path)
 
 
 def create_project_structure(project_structure: dict):
@@ -98,6 +120,27 @@ def create_project_structure(project_structure: dict):
         project_structure: Parsed WordPress project structure file.
     """
     pass
+
+
+def convert_wp_parameter_skip_content(value: bool):
+    """Converts a boolean value to a --skip-content string."""
+    if value:
+        return "--skip-content"
+    return ""
+
+
+def convert_wp_parameter_debug(value: bool):
+    """Converts a boolean value to a --debug string."""
+    if value:
+        return "--debug"
+    return ""
+
+
+def convert_wp_parameter_content(value: bool):
+    """Converts a boolean value to a yes/no string."""
+    if not value:
+        return "yes"
+    return "no"
 
 
 if __name__ == "__main__":

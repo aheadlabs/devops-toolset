@@ -1,9 +1,10 @@
 """Downloads the last version of WordPress core files"""
 
 import argparse
-from core.app import App
 import wordpress.wptools
 import wordpress.wp_cli
+import filesystem.paths
+from core.app import App
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 
@@ -20,10 +21,10 @@ literals = LiteralsCore([WordpressLiterals])
 def main(wordpress_path: str = None, environment_path: str = None, environment_name: str = None):
     """Downloads the last version of WordPress core files"""
 
-    if not wordpress_path or wordpress_path.strip() == "":
+    if not filesystem.paths.is_valid_path(wordpress_path):
         raise ValueError(literals.get("wp_wordpress_path_mandatory"))
 
-    if not environment_path or environment_path.strip() == "":
+    if not filesystem.paths.is_valid_path(environment_path):
         raise ValueError(literals.get("wp_environment_path_mandatory"))
 
     if not environment_name or environment_name.strip() == "":

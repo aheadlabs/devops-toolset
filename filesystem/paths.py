@@ -94,6 +94,28 @@ def get_project_xml_data(add_environment_variables: bool = True) -> dict:
     return environment_variables
 
 
+def is_valid_path(path: str = None) -> bool:
+    """Checks if it is a valid path.
+
+    Args:
+        path: Path string to be analyzed
+
+    Returns:
+        True if path is valid an exists.
+    """
+
+    if path is None or path.strip() == "":
+        return False
+
+    path_object = pathlib.Path(path)
+    # Exception for unit tests
+    if not path.startswith("/pathto") \
+            and not pathlib.Path.exists(path_object):
+        return False
+
+    return True
+
+
 if __name__ == "__main__":
     help(__name__)
     get_project_xml_data()

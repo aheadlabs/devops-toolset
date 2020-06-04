@@ -11,5 +11,7 @@ class Commands(ValueDictsBase):
 
     # Add your core literal dictionaries here
     _commands = {
-        "wpcli_info": "wp --info"
+        "wpcli_info": "wp --info",
+        "wpcli_core_download": "wp core download --version={version} --locale={locale} --path={path} "
+                               "{skip_content} {debug_info}"
     }
