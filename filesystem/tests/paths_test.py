@@ -179,4 +179,29 @@ def test_get_project_xml_data_when_add_environment_variables_is_true_then_call_c
                 create_env_vars_mock.assert_called_once_with(expected_result)
 
 
+def test_is_valid_path_given_test_path_returns_true(paths):
+    """Given a test path, returns true"""
+
+    # Arrange
+    path = paths.test_path
+
+    # Act
+    result = sut.is_valid_path(path)
+
+    # Assert
+    assert result
+
+
+def test_is_valid_path_given_non_existent_path_returns_false(paths):
+    """Given a non existent path, returns false"""
+
+    # Arrange
+    path = paths.non_existent_path
+
+    # Act
+    result = sut.is_valid_path(path)
+
+    # Assert
+    assert not result
+
 # endregion

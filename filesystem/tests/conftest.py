@@ -12,6 +12,8 @@ class Paths(object):
     current_path = os.path.dirname(os.path.realpath(__file__))
     root_path = pathlib.Path(current_path).absolute()
     file_foo_xml_project_path = pathlib.Path.joinpath(root_path, 'foo_project.xml').__str__()
+    test_path = "/pathto/foo"
+    non_existent_path = "/nonexistentpath"
 
 
 @pytest.fixture
