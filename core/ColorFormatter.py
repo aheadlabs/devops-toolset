@@ -13,7 +13,6 @@ class ColorFormatter(logging.Formatter):
         red = Fore.RED
         bold_red = Fore.LIGHTRED_EX
         reset = Style.RESET_ALL
-        format_str = format_str
 
         self.FORMATS = {
             logging.DEBUG: grey + format_str + reset,
