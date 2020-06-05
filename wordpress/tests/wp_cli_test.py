@@ -59,7 +59,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
 
 @patch("pathlib.Path")
 @patch("tools.cli.call_subprocess")
-def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock, wordpressdata):
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock,
+                                                                            wordpressdata):
     """ Given a file path, when path is a dir, then writes response content to file_path """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
