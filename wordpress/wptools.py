@@ -74,7 +74,8 @@ def get_site_configuration(path: str) -> dict:
     """
 
     with open(path, "r") as config_file:
-        return json.loads(config_file.read())
+        data = config_file.read()
+        return json.loads(data)
 
 
 def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
