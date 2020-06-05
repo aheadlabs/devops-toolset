@@ -26,10 +26,19 @@ jobs:
       displayName: Hello world!
       inputs:
         script: |
-          echo "Hello world!"
+          touch $(System.DefaultWorkingDirectory)/file1.txt
+          sudo apt-get install tree
+          tree $(System.DefaultWorkingDirectory)
   - job: Package
     displayName: Package job
     steps:
+    - task: CmdLine@2
+      displayName: Hello world!
+      inputs:
+        script: |
+          touch $(System.DefaultWorkingDirectory)/file2.txt
+          sudo apt-get install tree
+          tree $(System.DefaultWorkingDirectory)
     - task: UsePythonVersion@0
       displayName: Set Python version
       inputs:
