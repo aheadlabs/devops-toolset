@@ -6,7 +6,6 @@ import pathlib
 import pytest
 import requests
 
-import tools.cli as tools_cli
 from unittest import mock
 
 
@@ -53,7 +52,6 @@ class WordPressData(object):
     builtins_open = 'builtins.open'
 
     # Mocks
-    tools_cli_call_subprocess_mock = mock.patch.object(tools_cli, "call_subprocess").start()
     requests_get_mock = mock.patch.object(requests, "get").start()
 
 
@@ -62,7 +60,6 @@ def wordpressdata():
     """Sample data for testing"""
     yield WordPressData()
     # Below code is executed as a TearDown
-    WordPressData.tools_cli_call_subprocess_mock.stop()
     WordPressData.requests_get_mock.stop()
     print("Teardown finished.")
 

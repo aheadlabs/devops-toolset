@@ -38,7 +38,9 @@ def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_m
 
 
 @patch("pathlib.Path")
-def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(pathlib_mock, wordpressdata):
+@patch("tools.cli.call_subprocess")
+def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(subprocess_mock, pathlib_mock,
+                                                                                    wordpressdata):
     """ Given a file path, when path is a dir, then downloads from download url """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
@@ -56,7 +58,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
 
 
 @patch("pathlib.Path")
-def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(pathlib_mock, wordpressdata):
+@patch("tools.cli.call_subprocess")
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock, wordpressdata):
     """ Given a file path, when path is a dir, then writes response content to file_path """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
@@ -65,16 +68,17 @@ def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(path
     expected_content = b"sample response in bytes"
     m = mock_open()
     with patch(wordpressdata.builtins_open, m, create=True):
-            with patch.object(os, "stat"):
-                with patch.object(os, "chmod"):
-                    # Act
-                    sut.install_wp_cli(install_path)
+        with patch.object(os, "stat"):
+            with patch.object(os, "chmod"):
+                # Act
+                sut.install_wp_cli(install_path)
                 # Assert
                 handler = m()
                 handler.write.assert_called_once_with(expected_content)
 
 
-def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wordpressdata):
+@patch("tools.cli.call_subprocess")
+def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(subprocess_mock, wordpressdata):
     """ Given a file path, when path is a dir, then does chmod with S_IEXEC """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
@@ -92,7 +96,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wor
                                                        file_stat_mock.return_value.st_mode | stat.S_IEXEC)
 
 
-def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(wordpressdata):
+@patch("tools.cli.call_subprocess")
+def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(subprocess_mock, wordpressdata):
     """ Given a file path, when path is a dir, then calls cli's subprocess with wpcli command """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
@@ -110,7 +115,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_
                     # Act
                     sut.install_wp_cli(install_path)
                     # Assert
-                    wordpressdata.tools_cli_call_subprocess_mock.assert_called_with(
+                    subprocess_mock.assert_called_with(
                         expected_command,
                         log_before_out=[expected_before_out_message1, expected_before_out_message2],
                         log_after_out=[expected_after_out_message]
