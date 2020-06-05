@@ -19,6 +19,14 @@ pool:
 
 name: CI-$(date:yyyyMMdd)$(rev:.r)
 jobs:
+  - job: Testing
+    displayName: Testing job
+    steps:
+    - task: CmdLine@2
+      displayName: Hello world!
+      inputs:
+        script: |
+          echo "Hello world!"
   - job: Package
     displayName: Package job
     steps:
