@@ -58,6 +58,7 @@ jobs:
           python3 -m pip install wheel --upgrade
           python3 -m pip install pytest --upgrade
           python3 -m pip install pytest-cov --upgrade
+          python3 -m pip install pylint --upgrade
           python3 -m pip install requests --upgrade
           python3 -m pip list
           python3 -m pytest --junitxml=".pytest/test-results.xml" --cov="." --cov-report="xml" --cov-report="html"
