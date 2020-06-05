@@ -102,6 +102,39 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     tools.git.purge_gitkeep(destination_path)
 
 
+def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+    """Creates the wp-config-php WordPress configuration file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/config/create/
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        database_user_password: Password for the database user configured in at
+            the wp-config.php file.
+    """
+    pass
+
+
+def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
+    """Creates or updates a value (constant or variable) at the wp-config-php
+    WordPress configuration file using WP-CLI.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/config/set/
+
+    Args:
+        name: Name for the constant or variable.
+        value: Value for the constant or variable.
+        value_type: Type to be created (constant or value).
+        wordpress_path: Path to WordPress files.
+    """
+    pass
+
+
 def install_wordpress(site_configuration: dict, wordpress_path: str, wordpress_admin_password: str):
     """Installs WordPress core files using WP-CLI.
 
@@ -179,39 +212,6 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
         site_configuration: parsed site configuration.
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to the destination dump file.
-    """
-    pass
-
-
-def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
-    """Creates the wp-config-php WordPress configuration file using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/config/create/
-
-    Args:
-        site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
-        database_user_password: Password for the database user configured in at
-            the wp-config.php file.
-    """
-    pass
-
-
-def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
-    """Creates or updates a value (constant or variable) at the wp-config-php
-    WordPress configuration file using WP-CLI.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/config/set/
-
-    Args:
-        name: Name for the constant or variable.
-        value: Value for the constant or variable.
-        value_type: Type to be created (constant or value).
-        wordpress_path: Path to WordPress files.
     """
     pass
 
