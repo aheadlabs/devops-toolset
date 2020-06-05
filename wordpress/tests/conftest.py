@@ -14,7 +14,18 @@ class WordPressData(object):
     wordpress_path = "/pathto/wordpress"
     wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
-    environment_name = "environment1"
+    environment_name = "localhost"
+    environment_name_fake = "notfoundhost"
+    environment_file_content = \
+        "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json\"," \
+        "\"environments\":[{\"name\":\"localhost\",\"type\":\"development\",\"default\":true,\"configuration_file\":" \
+        "\"default-localhost-site.json\"}]}"
+    environment_file_content_duplicated_environment = \
+        "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json\"," \
+        "\"environments\":[{\"name\":\"localhost\",\"type\":\"development\",\"default\":true,\"configuration_file\":" \
+        "\"default-localhost-site.json\"},{\"name\":\"localhost\",\"type\":\"development\",\"default\":true," \
+        "\"configuration_file\":\"default-localhost-site.json\"}]}"
+    site_config_path_from_json = "/pathto/default-localhost-site.json"
     site_config_path = "/pathto/site-config"
     site_config_file_name = "default-localhost-site.json"
     site_config_content = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json\"," \
