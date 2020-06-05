@@ -3,10 +3,11 @@
 import io
 import pathlib
 import pytest
+import tools.git as sut
 from unittest.mock import patch, mock_open
 from filesystem.constants import Directions, FileNames
 from tools.tests.conftest import GitignoreData
-import tools.git as sut
+from tools.tests.conftest import BranchesData
 
 
 # region get_gitignore_path()
@@ -171,13 +172,14 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_giti
 # region simplify_branch_name()
 
 
-def test_simplify_branch_name_given_branch_when_root_then_returns_simplified(branchesdata):
+@pytest.mark.parametrize("long_branch, expected", [
+    (BranchesData.long_master_branch, BranchesData.simple_master_branch),
+    (BranchesData.long_pr_branch, BranchesData.simple_pr_branch)])
+def test_simplify_branch_name_given_branch_when_root_then_returns_simplified(long_branch, expected):
     """Given a branch name, when it is a root branch, then it is returned
     simplified"""
 
     # Arrange
-    long_branch = branchesdata.long_master_branch
-    expected = branchesdata.simple_master_branch
 
     # Act
     result = sut.simplify_branch_name(long_branch)
@@ -193,21 +195,6 @@ def test_simplify_branch_name_given_branch_when_feature_then_returns_simplified(
     # Arrange
     long_branch = branchesdata.long_feature_branch
     expected = branchesdata.simple_feature_branch
-
-    # Act
-    result = sut.simplify_branch_name(long_branch)
-
-    # Assert
-    assert result == expected
-
-
-def test_simplify_branch_name_given_branch_when_pr_then_returns_simplified(branchesdata):
-    """Given a branch name, when it is a PR branch, then it is returned
-    simplified"""
-
-    # Arrange
-    long_branch = branchesdata.long_pr_branch
-    expected = branchesdata.simple_pr_branch
 
     # Act
     result = sut.simplify_branch_name(long_branch)
