@@ -1,7 +1,12 @@
 """Logging configuration"""
 
 import logging as logger
+import logging.handlers
+from logging.config import dictConfig
+from core.ColorFormatter import ColorFormatter
 import core.settings as settings
+
+import json
 
 
 def configure(filepath):
@@ -16,6 +21,7 @@ def configure(filepath):
     try:
         configure_by_file(filepath)
         add_filter_to_console_handler(logger.WARNING)
+        add_colored_formatter_to_console_handlers()
     except Exception as err:
         logger.error(f"Cannot configure logger: {format(err)}")
         configure_by_default(logger.INFO)
@@ -45,11 +51,8 @@ def configure_by_file(filepath):
         OSError: If filepath cannot be opened.
         AttributeError: If json config file content is not well-formed
     """
-    import json
-    from logging.config import dictConfig
-
-    with open(filepath, "r") as configFile:
-        config = json.load(configFile)
+    with open(filepath, "r") as config_file:
+        config = json.load(config_file)
         dictConfig(config["logging"])
 
 
@@ -76,10 +79,17 @@ def add_time_rotated_file_handler(backupcount=10, filepath=".", when='midnight')
 
     Raises: FileNotFoundError: When passed filepath doesn't exist
     """
-    import logging.handlers
     log = logger.getLogger()
     file_handler = logging.handlers.TimedRotatingFileHandler(filename=filepath, when=when, backupCount=backupcount)
     log.addHandler(file_handler)
+
+
+def add_colored_formatter_to_console_handlers():
+    """ Adds a custom colored formatter to the current console handler """
+    log = logger.getLogger()
+    for handler in log.handlers:
+        color_formatter = ColorFormatter(handler.formatter._fmt)
+        handler.setFormatter(color_formatter)
 
 
 if __name__ == "__main__":

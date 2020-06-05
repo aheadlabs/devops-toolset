@@ -1,6 +1,7 @@
 """Unit tests for the log_setup file"""
 
 import logging
+from logging import config
 from unittest.mock import patch, mock_open
 import core.log_setup as sut
 from core.tests.conftest import CoreTestsFixture as Fixture
@@ -50,6 +51,19 @@ def test_configure_given_filepath_then_configure_by_file():
         sut.configure(filepath)
         # Assert
         configure_by_file_mock.assert_called_once()
+
+
+@patch.object(sut, "add_colored_formatter_to_console_handlers")
+@patch.object(sut, "configure_by_file")
+def test_configure_given_filepath_then_add_colored_formatter(add_colored_formatter_mock, configure_by_file_mock):
+    """Given a filepath to configure logging, then adds the colored formatter on every console handler"""
+
+    # Arrange
+    filepath = Fixture.fake_config_file_path
+    # Act
+    sut.configure(filepath)
+    # Assert
+    add_colored_formatter_mock.assert_called_once()
 
 # endregion
 
@@ -103,9 +117,8 @@ def test_configure_by_default_logs_info(get_logger_mock):
 def test_configure_by_file_opens_filepath_in_read_mode(open_file_mock):
     """Given a filepath, should call open with read privileges."""
     # Arrange
-    from logging import config
     filepath = Fixture.fake_config_file_path
-    with patch.object(config, "dictConfig") as dict_config_mock:
+    with patch.object(sut, "dictConfig") as dict_config_mock:
         dict_config_mock.return_value = None
         # Act
         sut.configure_by_file(filepath)
@@ -115,10 +128,9 @@ def test_configure_by_file_opens_filepath_in_read_mode(open_file_mock):
 
 def test_configure_by_file_calls_dict_config():
     """Given a filepath, should load the config content using json module ."""
-    from logging import config
     # Arrange
     filepath = Fixture.fake_config_file_path
-    with patch.object(config, "dictConfig") as dict_config_mock:
+    with patch.object(sut, "dictConfig") as dict_config_mock:
         # Act
         sut.configure_by_file(filepath)
         # Assert
