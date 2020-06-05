@@ -50,7 +50,7 @@ jobs:
           import filesystem.paths
           filesystem.paths.get_project_xml_data()
         failOnStderr: true
-    - task:
+    - task: CmdLine@2
       displayName: Install pip packages
       inputs:
         script: |
