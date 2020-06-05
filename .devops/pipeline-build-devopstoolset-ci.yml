@@ -37,6 +37,17 @@ jobs:
         addToPath: true
         architecture: 'x64'
     - task: CmdLine@2
+      displayName: Install pip packages
+      inputs:
+        script: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade wheel
+          python3 -m pip install --upgrade pytest
+          python3 -m pip install --upgrade pytest-cov
+          python3 -m pip install --upgrade requests
+          python3 -m pip install --upgrade colorama
+          python3 -m pip list
+    - task: CmdLine@2
       displayName: Compile .po files
       inputs:
         script: |
@@ -58,17 +69,6 @@ jobs:
           import filesystem.paths
           filesystem.paths.get_project_xml_data()
         failOnStderr: true
-    - task: CmdLine@2
-      displayName: Install pip packages
-      inputs:
-        script: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install –-upgrade pip
-          python3 -m pip install --upgrade wheel
-          python3 -m pip install --upgrade pytest
-          python3 -m pip install --upgrade pytest-cov
-          python3 -m pip install --upgrade requests
-          python3 -m pip list
     - task: CmdLine@2
       displayName: Unit test with pytest
       inputs:
