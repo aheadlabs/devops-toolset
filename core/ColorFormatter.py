@@ -11,7 +11,6 @@ class ColorFormatter(logging.Formatter):
         grey = Fore.WHITE
         yellow = Fore.YELLOW
         red = Fore.RED
-        bold_red = Fore.LIGHTRED_EX
         reset = Style.RESET_ALL
 
         self.FORMATS = {
