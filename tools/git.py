@@ -2,12 +2,12 @@
 
 #! python
 
-import core.app
+import logging
 import os
 import pathlib
 import re
 import filesystem.paths
-import logging
+import core.app
 from core.LiteralsCore import LiteralsCore
 from tools.Literals import Literals as ToolsLiterals
 from filesystem.constants import FileNames, Directions
@@ -38,8 +38,8 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
         if not pathlib.Path(gitignore_path).exists():
             raise FileNotFoundError
         return gitignore_path
-    else:
-        return str(filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
+
+    return str(filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
 
 
 def add_gitignore_exclusion(path: str, exclusion: str):
@@ -52,7 +52,7 @@ def add_gitignore_exclusion(path: str, exclusion: str):
         exclusion: Exclusion to be added (whole line must be passed).
     """
 
-    with open(path,"a") as _gitignore:
+    with open(path, "a") as _gitignore:
         _gitignore.write(f"\n{exclusion}\n")
 
 
@@ -125,10 +125,11 @@ def simplify_branch_name(branch: str):
 
     if branch.startswith("refs/heads/"):
         return branch.replace("refs/heads/", "")
-    elif branch.startswith("refs/pull/"):
+
+    if branch.startswith("refs/pull/"):
         return branch.replace("refs/", "").replace("/merge", "")
-    else:
-        return branch
+
+    return branch
 
 
 def set_current_branch_simplified(branch: str, environment_variable_name: str):
@@ -152,7 +153,7 @@ def purge_gitkeep(path: str = None):
         raise ValueError(literals.get("git_non_valid_dir_path"))
 
     path_object = pathlib.Path(path)
-    guess_gitkeep_file = pathlib.Path.joinpath(path_object, ".gitkeep")
+    guess_gitkeep_file = pathlib.Path(pathlib.Path.joinpath(path_object, ".gitkeep"))
     if len(os.listdir(path)) > 1 and guess_gitkeep_file.exists():
         logging.info(literals.get("git_purging_gitkeep").format(path=path))
         os.remove(guess_gitkeep_file)

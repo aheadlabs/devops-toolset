@@ -19,8 +19,8 @@ pool:
 
 name: CI-$(date:yyyyMMdd)$(rev:.r)
 jobs:
-  - job: Package
-    displayName: Package job
+  - job: Main
+    displayName: Main job
     steps:
     - template: pipeline-template-python-setup.yml
     - template: pipeline-template-i18n.yml

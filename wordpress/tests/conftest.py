@@ -9,7 +9,7 @@ import requests
 from unittest import mock
 
 
-class WordPressData(object):
+class WordPressData:
     """Class used to create the wordpressdata fixture"""
     wordpress_path = "/pathto/wordpress"
     wordpress_path_err = "/nonexistentpath"
@@ -86,16 +86,16 @@ def mocked_requests_get(url: str, *args, **kwargs):
     return MockResponse(bytes_content, status_code)
 
 
-class MockResponse(object):
+class MockResponse:
     """This is the mocked Response object returned by requests.get()"""
     def __init__(self, content, status_code):
-        self.content = content
-        self.status_code = status_code
+        self._content = content
+        self._status_code = status_code
 
     def content(self):
         """When they call <mock>.content() this will be returned"""
-        return self.content
+        return self._content
 
     def status(self):
         """When they call <mock>.status() this will be returned"""
-        return self.status_code
+        return self._status_code
