@@ -1,0 +1,7 @@
+steps:
+  - task: CmdLine@2
+    displayName: Compile .po files
+    inputs:
+      script: |
+        sudo apt-get install gettext
+        python3 $(System.DefaultWorkingDirectory)/i18n/utils.py --generate-pot --compile --skip-i18n
