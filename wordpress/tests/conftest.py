@@ -79,23 +79,14 @@ def mocked_requests_get(url: str, *args, **kwargs):
     """Mock to replace requests.get()"""
 
     # Default values
-    status_code = 200
     bytes_content = b"sample response in bytes"
 
     # Return instance
-    return MockResponse(bytes_content, status_code)
+    return MockResponse(bytes_content)
 
 
 class MockResponse:
     """This is the mocked Response object returned by requests.get()"""
-    def __init__(self, content, status_code):
-        self._content = content
-        self._status_code = status_code
+    def __init__(self, content):
+        self.content = content
 
-    def content(self):
-        """When they call <mock>.content() this will be returned"""
-        return self._content
-
-    def status(self):
-        """When they call <mock>.status() this will be returned"""
-        return self._status_code

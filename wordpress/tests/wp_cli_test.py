@@ -57,25 +57,25 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
     wordpressdata.requests_get_mock.assert_called_once_with(wp_cli_download_url)
 
 
-# @patch("pathlib.Path")
-# @patch("tools.cli.call_subprocess")
-# def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock,
-#                                                                             wordpressdata):
-#     """ Given a file path, when path is a dir, then writes response content to file_path """
-#     # Arrange
-#     install_path = wordpressdata.wp_cli_install_path
-#     pathlib_mock.return_value = install_path
-#     wordpressdata.requests_get_mock.side_effect = mocked_requests_get
-#     expected_content = b"sample response in bytes"
-#     m = mock_open()
-#     with patch(wordpressdata.builtins_open, m, create=True):
-#         with patch.object(os, "stat"):
-#             with patch.object(os, "chmod"):
-#                 # Act
-#                 sut.install_wp_cli(install_path)
-#                 # Assert
-#                 handler = m()
-#                 handler.write.assert_called_once_with(expected_content)
+@patch("pathlib.Path")
+@patch("tools.cli.call_subprocess")
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock,
+                                                                            wordpressdata):
+    """ Given a file path, when path is a dir, then writes response content to file_path """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    expected_content = b"sample response in bytes"
+    m = mock_open()
+    with patch(wordpressdata.builtins_open, m, create=True):
+        with patch.object(os, "stat"):
+            with patch.object(os, "chmod"):
+                # Act
+                sut.install_wp_cli(install_path)
+                # Assert
+                handler = m()
+                handler.write.assert_called_once_with(expected_content)
 
 
 @patch("tools.cli.call_subprocess")
