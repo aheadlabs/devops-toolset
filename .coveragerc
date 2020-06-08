@@ -6,6 +6,7 @@ data_file = .pytest/.coverage
 omit = 
     **/__init__.py
     **/conftest.py
+    setup.py
 
 [report]
 exclude_lines =

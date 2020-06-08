@@ -1,4 +1,12 @@
-"""Downloads the last version of WordPress core files"""
+"""Downloads the last version of WordPress core files.
+
+Args:
+    --wordpress-path: Path to the WordPress installation.
+    --environment-path: Path to the environment JSON file.
+    --environment-name: Environment name.
+"""
+
+#! python
 
 import argparse
 import wordpress.wptools
