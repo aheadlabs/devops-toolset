@@ -14,6 +14,7 @@ class WordPressData:
     wordpress_path = "/pathto/wordpress"
     wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
+    project_structure_path = "/pathto/structure"
     environment_name = "localhost"
     environment_name_fake = "notfoundhost"
     environment_file_content = \
