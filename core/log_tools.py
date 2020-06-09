@@ -39,3 +39,18 @@ def log_stdouterr(output: bytes, level: LogLevel):
 
     for line in output.splitlines():
         logging.log(level.value[0], line.decode("utf-8"))
+
+
+def log_indented_list(header: str, list_values: List[str], level: LogLevel):
+    """Logs an indented list with a not indented header.
+
+    Args:
+        header: String being logged first, not indented.
+        list_values: List of values to be logged, intented.
+        level: Logging level.
+    """
+
+    logging.log(level.value[0], header)
+
+    for value in list_values:
+        logging.log(level.value[0], f"\t{value}")
