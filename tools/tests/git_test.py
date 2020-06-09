@@ -4,6 +4,7 @@ import io
 import pathlib
 import pytest
 import tools.git as sut
+import filesystem.paths as path_tools
 from unittest.mock import patch, mock_open
 from filesystem.constants import Directions, FileNames
 from tools.tests.conftest import GitignoreData
@@ -257,7 +258,11 @@ def test_purge_gitkeep_when_invalid_path_raises_valueerror(paths):
 
 @patch("logging.info")
 @patch("os.remove")
-def test_purge_gitkeep_when_no_additional_files_remove_not_called(os_remove, logging_info, tmp_path):
+@patch.object(path_tools, "is_empty_dir", return_value=True)
+def test_purge_gitkeep_when_no_additional_files_remove_not_called(is_empty_dir_mock,
+                                                                  os_remove,
+                                                                  logging_info,
+                                                                  tmp_path):
     """Given a directory with a .gitkeep file, when directory is empty, do
     nothing"""
 

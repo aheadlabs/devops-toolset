@@ -8,6 +8,7 @@ import pathlib
 import re
 import filesystem.paths
 import core.app
+import filesystem.paths as path_tools
 from core.LiteralsCore import LiteralsCore
 from tools.Literals import Literals as ToolsLiterals
 from filesystem.constants import FileNames, Directions
@@ -154,7 +155,7 @@ def purge_gitkeep(path: str = None):
 
     path_object = pathlib.Path(path)
     guess_gitkeep_file = pathlib.Path(pathlib.Path.joinpath(path_object, ".gitkeep"))
-    if len(os.listdir(path)) > 1 and guess_gitkeep_file.exists():
+    if not path_tools.is_empty_dir(path) and guess_gitkeep_file.exists():
         logging.info(literals.get("git_purging_gitkeep").format(path=path))
         os.remove(guess_gitkeep_file)
 
