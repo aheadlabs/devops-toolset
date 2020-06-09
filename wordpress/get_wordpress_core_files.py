@@ -9,6 +9,7 @@ Args:
 #! python
 
 import argparse
+import tools.argument_validators
 import wordpress.wptools
 import wordpress.wp_cli
 from core.app import App
@@ -32,8 +33,9 @@ def main(wordpress_path, environment_path, environment_name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--wordpress-path", required=True)
-    parser.add_argument("--environment-path", required=True)
-    parser.add_argument("--environment-name", required=True)
+    parser.add_argument("wordpress-path", action=tools.argument_validators.PathValidator)
+    parser.add_argument("environment-path", action=tools.argument_validators.PathValidator)
+    parser.add_argument("environment-name")
     args, args_unknown = parser.parse_known_args()
+
     main(args.wordpress_path, args.environment_path, args.environment_name)
