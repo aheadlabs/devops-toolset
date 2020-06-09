@@ -1,4 +1,5 @@
 """Unit tests for the tools file"""
+
 import unittest.mock as mock
 import tools.cli as sut
 import subprocess

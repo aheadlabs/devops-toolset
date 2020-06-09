@@ -1,9 +1,11 @@
 """Unit tests for the paths file"""
 
-import pathlib
-from unittest.mock import patch
 import filesystem.paths as sut
+import pathlib
+import pytest
+from conftest import FileNames as FileNameFixtures
 from filesystem.constants import Directions, FileNames
+from unittest.mock import patch
 
 # region get_filepath_in_tree() ASCENDING
 
@@ -33,7 +35,7 @@ def test_get_filepath_in_tree_ascending_given_file_name_when_not_exist_then_retu
         exits.return_value = False
         with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
-    # Act
+            # Act
             result = sut.get_filepath_in_tree(filenames.file)
 
     # Assert
@@ -55,14 +57,17 @@ def test_get_filepath_descending_in_tree_given_file_name_when_exists_then_return
             rglob.return_value = filenames.paths
             with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
 
-    # Act
+                # Act
                 result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
 
     # Assert
     assert result.as_posix() == filenames.path
 
 
-def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_paths_then_returns_path(filenames):
+@pytest.mark.parametrize("rglob_return, path", [
+    (FileNameFixtures.paths, FileNameFixtures.deep_path), (FileNameFixtures.no_paths, FileNameFixtures.path)])
+def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_paths_then_returns_path(
+        rglob_return, path, filenames):
     """Given a file, when it does not exist in a child directory but paths are
     returned, should return None"""
 
@@ -70,32 +75,15 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
     with patch.object(pathlib.Path, "exists") as exists:
         exists.return_value = False
         with patch.object(pathlib.Path, "rglob") as rglob:
-            rglob.return_value = filenames.paths
-            with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
+            rglob.return_value = rglob_return
+            with patch(filenames.file__path, f"{path}/{filenames.test_file}"):
 
-    # Act
+                # Act
                 result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
 
     # Assert
     assert result is None
 
-
-def test_get_filepath_descending_in_tree_ascending_given_file_name_when_not_exist_no_paths_then_returns_none(filenames):
-    """Given a file, when does not exist in a child directory and no paths
-    are returned, should return None"""
-
-    # Arrange
-    with patch.object(pathlib.Path, "exists") as exits:
-        exits.return_value = False
-        with patch.object(pathlib.Path, "rglob") as rglob:
-            rglob.return_value = filenames.no_paths
-            with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
-
-    # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
-
-    # Assert
-    assert result is None
 
 # endregion
 
@@ -133,6 +121,7 @@ def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_
 # endregion
 
 # region get_project_root()
+
 
 def test_get_project_root_then_calls_get_file_path_in_tree_with_project_file():
     """Then calls get_filepath_in_tree() with project file as a parameter"""
