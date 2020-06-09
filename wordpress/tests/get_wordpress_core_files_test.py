@@ -10,54 +10,6 @@ import wordpress.get_wordpress_core_files as sut
 literals = LiteralsCore([WordpressLiterals])
 
 
-@pytest.mark.parametrize("wordpress_path", [None, "", " "])
-def test_main_given_no_wordpress_path_raises_valueerror(wordpress_path, wordpressdata):
-    """Given no wordpress-path parameter, it raises a value error."""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.main(wordpress_path, environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_wordpress_path_mandatory")
-
-
-@pytest.mark.parametrize("environment_path", [None, "", " "])
-def test_main_given_no_environment_path_raises_valueerror(environment_path, wordpressdata):
-    """Given no environment-path parameter, it raises a value error."""
-
-    # Arrange
-    wordpress_path = wordpressdata.wordpress_path
-    environment_name = wordpressdata.environment_name
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.main(wordpress_path, environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_environment_path_mandatory")
-
-
-@pytest.mark.parametrize("environment_name", [None, "", " "])
-def test_main_given_no_environment_name_raises_valueerror(environment_name, wordpressdata):
-    """Given no environment-name parameter, it raises a value error."""
-
-    # Arrange
-    wordpress_path = wordpressdata.wordpress_path
-    environment_path = wordpressdata.environment_path
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.main(wordpress_path, environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_environment_name_mandatory")
-
-
 @patch("wordpress.wp_cli.download_wordpress")
 @patch("wordpress.wptools.get_site_configuration")
 @patch("wordpress.wptools.get_site_configuration_path_from_environment")
