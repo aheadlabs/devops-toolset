@@ -4,6 +4,7 @@
 
 import pathlib
 import xml.etree.ElementTree as ElementTree
+import os
 from typing import List
 from core.app import App
 from filesystem.constants import FileNames, Directions
@@ -114,6 +115,26 @@ def is_valid_path(path: str = None) -> bool:
         return False
 
     return True
+
+
+def is_empty_dir(path: str = None) -> bool:
+    # TODO (alberto.carbonell) Cover this method with tests
+    """Checks if it the current path is an empty dir
+
+       Args:
+           path: Path string to be analyzed
+
+       Returns:
+           True if path is an empty dir
+       """
+
+    path_object = pathlib.Path(path)
+    files_inside_path = filter(lambda x: pathlib.Path.is_dir(pathlib.Path(x)) is False, os.listdir(path_object))
+    try:
+        min(files_inside_path)
+    except ValueError:
+        return True
+    return False
 
 
 if __name__ == "__main__":

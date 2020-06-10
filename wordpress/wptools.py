@@ -42,7 +42,9 @@ def get_project_structure(path: str) -> dict:
     Returns:
         Project structure in a dict object.
     """
-    pass
+    with open(path, "r") as project_structure_file:
+        data = project_structure_file.read()
+        return json.loads(data)
 
 
 def get_site_environments(path: str) -> dict:
