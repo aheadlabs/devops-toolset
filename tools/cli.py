@@ -2,7 +2,14 @@
 
 import subprocess
 import core.log_tools
+from pyfiglet import Figlet
 from typing import List
+
+
+def print_title(text: str):
+    """Prints a title in the console"""
+    f = Figlet()
+    print(f.renderText(text))
 
 
 def call_subprocess(command: str, log_before_process: List[str] = None,
