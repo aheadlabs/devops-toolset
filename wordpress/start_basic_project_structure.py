@@ -17,6 +17,19 @@ def main(root_path, project_structure_path):
         add_item(item, root_path)
 
 
+def condition_met(item, base_path):
+    """ Returns the result (True of False) of the condition contained on the item
+
+    Args:
+        item: the item inspected for conditions
+        base_path: parent dir to check
+    """
+    if "condition" in item and item["condition"] == "when-parent-not-empty":
+        return path_tools.is_empty_dir(base_path)
+    # Default behaviour
+    return True
+
+
 def add_item(item, base_path_str):
     """ Creates the item (file or dir) in the current filesystem
 
@@ -30,10 +43,7 @@ def add_item(item, base_path_str):
     final_path = pathlib.Path.joinpath(base_path, item["name"])
     local_condition = True
     if "children" in item:
-        children = item["children"][0]
-        if "condition" in children:
-            if children["condition"] == "when-parent-not-empty":
-                local_condition = path_tools.is_empty_dir(base_path_str)
+        local_condition = condition_met(item["children"][0], base_path_str)
     # Only if the item DOES NOT exist and condition is met
     if not path_tools.is_valid_path(str(final_path)) and local_condition:
         # Create item
