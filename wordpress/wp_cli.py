@@ -8,6 +8,7 @@ import pathlib
 import tools.cli as cli
 import wordpress.wptools as wptools
 import filesystem.paths
+import sys
 import tools.git
 from core.app import App
 from core.LiteralsCore import LiteralsCore
@@ -26,6 +27,21 @@ class ValueType(Enum):
 
     CONSTANT = 1,
     VARIABLE = 2
+
+
+def create_wp_cli_bat_file(phar_path: str):
+    """Creates a .bat file for WP-CLI.
+
+    Args:
+        phar_path: Path to the .phar file.
+    """
+
+    path = pathlib.Path(phar_path)
+    bat_path = pathlib.Path.joinpath(path.parent, "wp.bat")
+
+    with open(bat_path, "w") as bat:
+        bat.write("@ECHO OFF\n")
+        bat.write(f"php \"{phar_path}\" %*")
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
@@ -55,6 +71,9 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
 
     file_stat = os.stat(file_path)
     os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
+
+    if sys.platform == "win32":
+        create_wp_cli_bat_file(file_path)
 
     cli.call_subprocess(commands.get("wpcli_info"),
                         log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],

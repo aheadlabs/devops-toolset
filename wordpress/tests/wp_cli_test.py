@@ -18,6 +18,28 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
 
+# region create_wp_cli_bat_file()
+
+
+def test_create_wp_cli_bat_file_given_phar_path_creates_bat_file_with_specific_content(tmp_path):
+    """Given a .phar path, then creates a .bat file with specific content"""
+
+    # Arrange
+    phar_path = str(pathlib.Path.joinpath(tmp_path, "wp-cli.phar"))
+    bat_path = str(pathlib.Path.joinpath(tmp_path, "wp.bat"))
+    expected_content = f"@ECHO OFF\nphp \"{phar_path}\" %*"
+
+    # Act
+    sut.create_wp_cli_bat_file(phar_path)
+
+    # Assert
+    with open(bat_path, "r") as bat:
+        file_content = bat.read()
+    assert file_content == expected_content
+
+
+# endregion
+
 # region install_wp_cli()
 
 
@@ -38,9 +60,10 @@ def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_m
 
 
 @patch("pathlib.Path")
+@patch("wordpress.wp_cli.create_wp_cli_bat_file")
 @patch("tools.cli.call_subprocess")
-def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(subprocess_mock, pathlib_mock,
-                                                                                    wordpressdata):
+def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(
+        subprocess_mock, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
     """ Given a file path, when path is a dir, then downloads from download url """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
@@ -58,9 +81,10 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
 
 
 @patch("pathlib.Path")
+@patch("wordpress.wp_cli.create_wp_cli_bat_file")
 @patch("tools.cli.call_subprocess")
-def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(subprocess_mock, pathlib_mock,
-                                                                            wordpressdata):
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
+        subprocess_mock, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
     """ Given a file path, when path is a dir, then writes response content to file_path """
     # Arrange
     install_path = wordpressdata.wp_cli_install_path
