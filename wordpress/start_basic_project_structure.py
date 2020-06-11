@@ -47,16 +47,15 @@ def add_item(item, base_path_str):
     else:
         child_condition = True
     # Only if the item DOES NOT exist and condition is met
-    if not path_tools.is_valid_path(str(final_path)) and child_condition:
+    if not path_tools.is_valid_path(str(final_path)) and child_condition and "type" in item:
         # Create item
-        if "type" in item:
-            if item["type"] == "directory":
-                os.mkdir(final_path)
-            elif item["type"] == "file":
-                with open(final_path, "a") as new_file:
-                    # Add default content if applies
-                    if "default_content" in item:
-                        new_file.write(get_default_content(item["default_content"]))
+        if item["type"] == "directory":
+            os.mkdir(final_path)
+        elif item["type"] == "file":
+            with open(final_path, "a") as new_file:
+                # Add default content if applies
+                if "default_content" in item:
+                    new_file.write(get_default_content(item["default_content"]))
 
     # Iterate through children if any
     if has_children:
