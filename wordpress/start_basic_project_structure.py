@@ -41,11 +41,13 @@ def add_item(item, base_path_str):
     # Set paths
     base_path = pathlib.Path(base_path_str)
     final_path = pathlib.Path.joinpath(base_path, item["name"])
-    local_condition = True
-    if "children" in item:
-        local_condition = condition_met(item["children"][0], base_path_str)
+    has_children = "children" in item
+    if has_children:
+        child_condition = condition_met(item["children"][0], base_path_str)
+    else:
+        child_condition = True
     # Only if the item DOES NOT exist and condition is met
-    if not path_tools.is_valid_path(str(final_path)) and local_condition:
+    if not path_tools.is_valid_path(str(final_path)) and child_condition and "type" in item:
         # Create item
         if item["type"] == "directory":
             os.mkdir(final_path)
@@ -56,7 +58,7 @@ def add_item(item, base_path_str):
                     new_file.write(get_default_content(item["default_content"]))
 
     # Iterate through children if any
-    if "children" in item:
+    if has_children:
         for child in item["children"]:
             add_item(child, final_path)
 
@@ -74,6 +76,7 @@ def get_default_content(item):
             return default_content_file.read()
     elif item["source"] == "from_url":
         response = requests.get(item["value"])
+
         return response.text
 
 
