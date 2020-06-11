@@ -62,6 +62,8 @@ class WordPressData:
     wp_cli_phar = "wp-cli.phar"
     wp_cli_file_path = pathlib.Path.joinpath(pathlib.Path(wp_cli_install_path), wp_cli_phar)
     builtins_open = 'builtins.open'
+    parent_not_empty_value = 'when_parent_not_empty'
+    condition_key = 'condition'
 
     # Mocks
     requests_get_mock = mock.patch.object(requests, "get").start()
