@@ -126,37 +126,3 @@ function Get-WpCliCoreDownloadLocale {
         return "$DefaultLocale"
     }
 }
-
-function Convert-WpCliCoreDownloadSkipContent {
-    [CmdletBinding()]
-    param (
-        # Content
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [bool]$SkipContent
-    )
-
-    if ($SkipContent) {
-        return "--skip-content"
-    }
-    else {
-        return ""
-    }
-}
-
-function Convert-WpCliDebug {
-    [CmdletBinding()]
-    param (
-        # Content
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [bool]$DebugInfo
-    )
-
-    if ($DebugInfo) {
-        return "--debug"
-    }
-    else {
-        return ""
-    }
-}
