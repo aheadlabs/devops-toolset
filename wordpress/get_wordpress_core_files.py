@@ -24,11 +24,14 @@ literals = LiteralsCore([WordpressLiterals])
 def main(wordpress_path, environment_path, environment_name):
     """Downloads the last version of WordPress core files"""
 
+    # Get path to site configuration file from the environment file
     site_configuration_path: str = \
         wordpress.wptools.get_site_configuration_path_from_environment(environment_path, environment_name)
 
+    # Get site configuration from file
     site_configuration: dict = wordpress.wptools.get_site_configuration(site_configuration_path)
 
+    # Download WordPress core files based on site configuration
     wordpress.wp_cli.download_wordpress(site_configuration, wordpress_path)
 
 
