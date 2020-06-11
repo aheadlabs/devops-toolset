@@ -14,6 +14,10 @@ class Paths(object):
     file_foo_xml_project_path = pathlib.Path.joinpath(root_path, 'foo_project.xml').__str__()
     test_path = "/pathto/foo"
     non_existent_path = "/nonexistentpath"
+    file_name = "filename.txt"
+    url = f"https://example.com/{file_name}"
+    directory_path = "/pathto"
+    file_name_list = ["file1.txt", "file2.txt"]
 
 
 @pytest.fixture

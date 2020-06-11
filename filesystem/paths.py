@@ -2,15 +2,96 @@
 
 #! python
 
+import os
 import pathlib
 import xml.etree.ElementTree as ElementTree
-import os
-from typing import List
 from core.app import App
 from filesystem.constants import FileNames, Directions
+from typing import List, Tuple
+from urllib.parse import urlparse
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")
+
+
+def files_exist(path: str, file_names: List[str]) -> List[Tuple[str, bool]]:
+    """Determines if every file path in the list exists in the specified path.
+
+    Args:
+        path: Path where files will be checked.
+        file_names: List of file names to be checked.
+
+    Returns:
+         List of tuples where each element contains the path evaluated (glob if
+         not found) and a boolean value: True if path exists; False if it
+         doesn't.
+    """
+
+    result = []
+
+    for file_name in file_names:
+        files = sorted(pathlib.Path(path).rglob(file_name))
+        if len(files) == 0 or len(files) > 1:
+            result.append((file_name, False))
+        else:
+            result.append((files[0], True))
+
+    return result
+
+
+def files_exist_filtered(path: str, filter_by: bool, file_names: List[str]) -> List[str]:
+    """Returns a filtered list, only with values that meet the condition.
+
+    Args:
+        path: Path where files will be checked.
+        filter_by: Returns the value[0] that meets the criteria on value[1].
+        file_names: List of file names to be checked.
+
+    Returns:
+        List of strings that meet the filter.
+    """
+
+    unfiltered_list = files_exist(path, file_names)
+
+    filtered_list = []
+    for value in unfiltered_list:
+        if filter_by == value[1]:
+            filtered_list.append(value[0])
+
+    return filtered_list
+
+
+def get_file_name_from_url(url: str) -> str:
+    """Returns the file name from a URL.
+
+    Args:
+        url: URL to be parsed.
+
+    Returns:
+        File name.
+    """
+
+    parsed = urlparse(url)
+    return os.path.basename(parsed.path)
+
+
+def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
+    """Gets a list with the paths to the descendant files that match the glob pattern.
+
+    Args:
+        starting_path: Path to start the seek from.
+        glob: glob pattern to match the files that should be found.
+
+    Returns:
+        List with the paths to the files that match.
+    """
+
+    paths = []
+
+    for guess_path in pathlib.Path(starting_path).rglob(glob):
+        paths.append(guess_path)
+
+    return paths
 
 
 def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
@@ -42,25 +123,6 @@ def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING
                 path_to_file = None
 
     return path_to_file
-
-
-def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
-    """Gets a list with the paths to the descendant files that match the glob pattern.
-
-    Args:
-        starting_path: Path to start the seek from.
-        glob: glob pattern to match the files that should be found.
-
-    Returns:
-        List with the paths to the files that match.
-    """
-
-    paths = []
-
-    for guess_path in pathlib.Path(starting_path).rglob(glob):
-        paths.append(guess_path)
-
-    return paths
 
 
 def get_project_root() -> str:
@@ -95,6 +157,26 @@ def get_project_xml_data(add_environment_variables: bool = True) -> dict:
     return environment_variables
 
 
+def is_empty_dir(path: str = None) -> bool:
+    # TODO (alberto.carbonell) Cover this method with tests
+    """Checks if it the current path is an empty dir
+
+       Args:
+           path: Path string to be analyzed
+
+       Returns:
+           True if path is an empty dir
+       """
+
+    path_object = pathlib.Path(path)
+    files_inside_path = filter(lambda x: pathlib.Path.is_dir(pathlib.Path(x)) is False, os.listdir(path_object))
+    try:
+        min(files_inside_path)
+    except ValueError:
+        return True
+    return False
+
+
 def is_valid_path(path: str = None) -> bool:
     """Checks if it is a valid path.
 
@@ -117,26 +199,5 @@ def is_valid_path(path: str = None) -> bool:
     return True
 
 
-def is_empty_dir(path: str = None) -> bool:
-    # TODO (alberto.carbonell) Cover this method with tests
-    """Checks if it the current path is an empty dir
-
-       Args:
-           path: Path string to be analyzed
-
-       Returns:
-           True if path is an empty dir
-       """
-
-    path_object = pathlib.Path(path)
-    files_inside_path = filter(lambda x: pathlib.Path.is_dir(pathlib.Path(x)) is False, os.listdir(path_object))
-    try:
-        min(files_inside_path)
-    except ValueError:
-        return True
-    return False
-
-
 if __name__ == "__main__":
     help(__name__)
-    get_project_xml_data()
