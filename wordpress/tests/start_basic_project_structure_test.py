@@ -151,7 +151,6 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_
     expected_file = "foo_file"
     item = {"type": "file", "name": expected_file, "children": [{"name": expected_file}]}
     base_path = wordpressdata.wordpress_path
-    expected_final_path = pathlib.Path.joinpath(pathlib.Path(base_path), expected_file)
     with patch.object(path_tools, "is_valid_path", return_value=False):
         # Act
         sut.add_item(item, base_path)
