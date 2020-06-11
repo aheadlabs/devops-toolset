@@ -33,9 +33,7 @@ def test_main_given_parameters_must_call_wptools_get_project_structure(get_proje
 
 @patch.object(wp_tools, "get_project_structure")
 @patch.object(sut, "add_item")
-def test_main_given_parameters_must_call_wptools_get_project_structure(add_item_mock,
-                                                                       get_project_structure_mock,
-                                                                       wordpressdata):
+def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
     """Given arguments, must call get_project_structure with passed project_path"""
     # Arrange
     project_structure_path = wordpressdata.project_structure_path
