@@ -84,13 +84,14 @@ def test_condition_met_given_parameters_should_call_is_empty_dir_result(is_empty
 
 
 @patch.object(sut, "condition_met", return_value=False)
-def test_add_item_given_parameters_should_call_condition_met_when_item_has_children_object(condition_met_mock
-                                                                                           ,wordpressdata):
+def test_add_item_given_parameters_should_call_condition_met_when_item_has_children_object(
+        condition_met_mock
+        , wordpressdata):
     """ Given an item and base_path should call condition_met when has children inside item """
     # Arrange
     item = {"type": "directory", "name": "foo_directory"}
     base_path = wordpressdata.wordpress_path
-    with patch.object(path_tools, "is_valid_path", return_value=False):
+    with patch.object(path_tools, "is_valid_path", return_value=True):
         # Act
         sut.add_item(item, base_path)
         # Assert
@@ -108,7 +109,7 @@ def test_add_item_given_parameters_when_child_condition_is_false_and_have_childr
     base_path = wordpressdata.wordpress_path
     expected_path_1 = str(pathlib.Path.joinpath(pathlib.Path(base_path), "foo_directory"))
     expected_path_2 = str(pathlib.Path.joinpath(pathlib.Path(expected_path_1), "foo_file"))
-    with patch.object(path_tools, "is_valid_path", return_value=False) as is_valid_path_mock:
+    with patch.object(path_tools, "is_valid_path", return_value=True) as is_valid_path_mock:
         # Act
         sut.add_item(item, base_path)
         # Assert
