@@ -11,6 +11,60 @@ from wordpress.tests.conftest import WordPressData
 
 literals = LiteralsCore([WordpressLiterals])
 
+# region convert_wp_parameter_content
+
+
+@pytest.mark.parametrize("value, expected", [(True, "no"), (False, "yes")])
+def test_convert_wp_parameter_content(value, expected):
+    """When True, returns a "no" string.
+    When False, returns a "yes" string."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_content(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region convert_wp_parameter_debug
+
+
+@pytest.mark.parametrize("value, expected", [(True, "--debug"), (False, "")])
+def test_convert_wp_parameter_debug(value, expected):
+    """When True, returns a --debug string.
+    When False, returns an empty string."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_debug(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region convert_wp_parameter_skip_content
+
+
+@pytest.mark.parametrize("value, expected", [(True, "--skip-content"), (False, "")])
+def test_convert_wp_parameter_skip_content(value, expected):
+    """When True, returns a --skip-content string.
+    When False, returns an empty string."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_skip_content(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
 # region get_constants()
 
 
@@ -106,57 +160,3 @@ def test_get_site_configuration_path_from_environment_when_more_than_1_environme
     assert str(value_error.value) == literals.get("wp_env_gt1")
 
 # endregion convert_wp_parameter_skip_content()
-
-# region convert_wp_parameter_skip_content
-
-
-@pytest.mark.parametrize("value, expected", [(True, "--skip-content"), (False, "")])
-def test_convert_wp_parameter_skip_content(value, expected):
-    """When True, returns a --skip-content string.
-    When False, returns an empty string."""
-
-    # Arrange
-
-    # Act
-    result = sut.convert_wp_parameter_skip_content(value)
-
-    # Assert
-    assert result == expected
-
-# endregion
-
-# region convert_wp_parameter_debug
-
-
-@pytest.mark.parametrize("value, expected", [(True, "--debug"), (False, "")])
-def test_convert_wp_parameter_debug(value, expected):
-    """When True, returns a --debug string.
-    When False, returns an empty string."""
-
-    # Arrange
-
-    # Act
-    result = sut.convert_wp_parameter_debug(value)
-
-    # Assert
-    assert result == expected
-
-# endregion
-
-# region convert_wp_parameter_content
-
-
-@pytest.mark.parametrize("value, expected", [(True, "no"), (False, "yes")])
-def test_convert_wp_parameter_content(value, expected):
-    """When True, returns a "no" string.
-    When False, returns a "yes" string."""
-
-    # Arrange
-
-    # Act
-    result = sut.convert_wp_parameter_content(value)
-
-    # Assert
-    assert result == expected
-
-# endregion

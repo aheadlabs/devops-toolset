@@ -25,6 +25,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
+        "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
     }
     _errors = {
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),

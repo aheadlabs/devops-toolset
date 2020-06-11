@@ -1,14 +1,48 @@
 """Contains several tools for WordPress"""
 
+import filesystem.paths as paths
 import json
 import pathlib
-
 from core.app import App
 from core.LiteralsCore import LiteralsCore
+from typing import List, Tuple
 from wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
+
+
+def convert_wp_parameter_content(value: bool):
+    """Converts a boolean value to a yes/no string."""
+    if not value:
+        return "yes"
+    return "no"
+
+
+def convert_wp_parameter_debug(value: bool):
+    """Converts a boolean value to a --debug string."""
+    if value:
+        return "--debug"
+    return ""
+
+
+def convert_wp_parameter_skip_content(value: bool):
+    """Converts a boolean value to a --skip-content string."""
+    if value:
+        return "--skip-content"
+    return ""
+
+
+def create_project_structure(project_structure: dict):
+    """Creates the project structure from a site configuration file.
+
+    For more information see:
+        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+
+    Args:
+        project_structure: Parsed WordPress project structure file.
+    """
+    pass
 
 
 def get_constants(path: str) -> dict:
@@ -47,19 +81,27 @@ def get_project_structure(path: str) -> dict:
         return json.loads(data)
 
 
-def get_site_environments(path: str) -> dict:
-    """Gets the site environments from a WordPress site environment file.
-
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
+def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tuple:
+    """Returns file paths in a tuple from the file name patterns.
 
     Args:
-        path: Full path to the WordPress project structure file.
+        path: Where to look for the files.
+        required_file_patterns: glob patterns of the file names to be found.
 
     Returns:
-        Site environments in a dict object.
+        Tuple with the file paths in the following order:
+        - site configuration JSON file
+        - site environments JSON file
+        - project structure JSON file
     """
-    pass
+
+    required_file_patterns = required_file_patterns
+
+    result = []
+    for required_file_pattern in required_file_patterns:
+        result.append(paths.get_file_path_from_pattern(path, required_file_pattern))
+
+    return tuple(result)
 
 
 def get_site_configuration(path: str) -> dict:
@@ -113,37 +155,19 @@ def get_site_configuration_path_from_environment(environment_path: str, environm
     return str(file_path)
 
 
-def create_project_structure(project_structure: dict):
-    """Creates the project structure from a site configuration file.
+def get_site_environments(path: str) -> dict:
+    """Gets the site environments from a WordPress site environment file.
 
     For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
 
     Args:
-        project_structure: Parsed WordPress project structure file.
+        path: Full path to the WordPress project structure file.
+
+    Returns:
+        Site environments in a dict object.
     """
     pass
-
-
-def convert_wp_parameter_skip_content(value: bool):
-    """Converts a boolean value to a --skip-content string."""
-    if value:
-        return "--skip-content"
-    return ""
-
-
-def convert_wp_parameter_debug(value: bool):
-    """Converts a boolean value to a --debug string."""
-    if value:
-        return "--debug"
-    return ""
-
-
-def convert_wp_parameter_content(value: bool):
-    """Converts a boolean value to a yes/no string."""
-    if not value:
-        return "yes"
-    return "no"
 
 
 if __name__ == "__main__":

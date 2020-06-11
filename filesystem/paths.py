@@ -7,7 +7,7 @@ import pathlib
 import xml.etree.ElementTree as ElementTree
 from core.app import App
 from filesystem.constants import FileNames, Directions
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from urllib.parse import urlparse
 
 app: App = App()
@@ -73,6 +73,24 @@ def get_file_name_from_url(url: str) -> str:
 
     parsed = urlparse(url)
     return os.path.basename(parsed.path)
+
+
+def get_file_path_from_pattern(path: str, pattern: str) -> Union[str, None]:
+    """Gets the file path from a file name pattern.
+
+    Args:
+        path: Where to look for.
+        pattern: glob pattern of the file name to be found.
+
+    Returns:
+        None if no file or more than one is found, path to file if one found.
+    """
+
+    files = sorted(pathlib.Path(path).rglob(pattern))
+    if len(files) == 0 or len(files) > 1:
+        return None
+    else:
+        return str(files[0])
 
 
 def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
