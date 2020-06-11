@@ -7,6 +7,117 @@ from conftest import FileNames as FileNameFixtures
 from filesystem.constants import Directions, FileNames
 from unittest.mock import patch
 
+# region files_exist()
+
+
+def test_files_exist_given_empty_list_returns_empty_list(paths):
+    """Given an empty list, returns an empty list"""
+
+    # Arrange
+    path = paths.directory_path
+    file_names = []
+
+    # Act
+    result = sut.files_exist(path, file_names)
+
+    # Assert
+    assert result == []
+
+
+@patch("pathlib.Path.rglob")
+@pytest.mark.parametrize("rglob_response, expected", [
+    ([], [("file1.txt", False), ("file2.txt", False)]),
+    (["file1.txt"], [("file1.txt", True), ("file1.txt", True)])
+])
+def test_files_exist_given_list_returns_list_tuple(rglob_mock, rglob_response, expected, paths):
+    """Given a list, returns a list of tuples with boolean values"""
+
+    # Arrange
+    path = paths.directory_path
+    file_names = ["file1.txt", "file2.txt"]
+    rglob_mock.return_value = rglob_response
+
+    # Act
+    result = sut.files_exist(path, file_names)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region files_exist_filtered()
+
+
+@patch("filesystem.paths.files_exist")
+@pytest.mark.parametrize("filter_by, expected", [(True, ["file1.txt"]), (False, ["file2.txt"])])
+def test_files_exist_filtered(files_exist, filter_by, expected, paths):
+    """Given, when, then"""
+
+    # Arrange
+    path = paths.directory_path
+    file_names = []
+    file_list_tuple = [("file1.txt", True), ("file2.txt", False)]
+    files_exist.return_value = file_list_tuple
+
+    # Act
+    result = sut.files_exist_filtered(path, filter_by, file_names)
+
+    # Assert
+    assert result == expected
+
+
+# endregion
+
+# region get_file_name_from_url()
+
+
+def test_get_file_name_from_url_given_url_returns_file_name(paths):
+    """Given a URL, returns the file name"""
+
+    # Arrange
+    url = paths.url
+
+    # Act
+    result = sut.get_file_name_from_url(url)
+
+    # Assert
+    assert result == paths.file_name
+
+# endregion
+
+# region get_file_paths_in_tree()
+
+def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
+    """Given a starting path and a glob, when there are no matching paths, it
+    returns an empty list."""
+
+    # Arrange
+    with patch.object(pathlib.Path, "rglob") as rglob:
+        rglob.return_value = filenames.no_paths
+
+    # Act
+        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
+
+    # Assert
+    assert result == []
+
+
+def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_list(filenames):
+    """Given a starting path and a glob, when there are matching paths, it
+    returns a list with those paths."""
+
+    # Arrange
+    with patch.object(pathlib.Path, "rglob") as rglob:
+        rglob.return_value = filenames.paths
+
+    # Act
+        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
+
+    # Assert
+    assert result == filenames.paths
+
+# endregion
+
 # region get_filepath_in_tree() ASCENDING
 
 
@@ -87,100 +198,6 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
 
 # endregion
 
-# region get_file_paths_in_tree()
-
-def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
-    """Given a starting path and a glob, when there are no matching paths, it
-    returns an empty list."""
-
-    # Arrange
-    with patch.object(pathlib.Path, "rglob") as rglob:
-        rglob.return_value = filenames.no_paths
-
-    # Act
-        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
-
-    # Assert
-    assert result == []
-
-
-def test_get_filepaths_in_tree_given_starting_path_glob_when_paths_then_returns_list(filenames):
-    """Given a starting path and a glob, when there are matching paths, it
-    returns a list with those paths."""
-
-    # Arrange
-    with patch.object(pathlib.Path, "rglob") as rglob:
-        rglob.return_value = filenames.paths
-
-    # Act
-        result = sut.get_file_paths_in_tree(filenames.path, filenames.glob_no_match)
-
-    # Assert
-    assert result == filenames.paths
-
-# endregion
-
-# region files_exist()
-
-
-def test_files_exist_given_empty_list_returns_empty_list(paths):
-    """Given an empty list, returns an empty list"""
-
-    # Arrange
-    path = paths.directory_path
-    file_names = []
-
-    # Act
-    result = sut.files_exist(path, file_names)
-
-    # Assert
-    assert result == []
-
-
-@patch("pathlib.Path.rglob")
-@pytest.mark.parametrize("rglob_response, expected", [
-    ([], [("file1.txt", False), ("file2.txt", False)]),
-    (["file1.txt"], [("file1.txt", True), ("file1.txt", True)])
-])
-def test_files_exist_given_list_returns_list_tuple(rglob_mock, rglob_response, expected, paths):
-    """Given a list, returns a list of tuples with boolean values"""
-
-    # Arrange
-    path = paths.directory_path
-    file_names = ["file1.txt", "file2.txt"]
-    rglob_mock.return_value = rglob_response
-
-    # Act
-    result = sut.files_exist(path, file_names)
-
-    # Assert
-    assert result == expected
-
-# endregion
-
-# region files_exist()
-
-
-@patch("filesystem.paths.files_exist")
-@pytest.mark.parametrize("filter_by, expected", [(True, ["file1.txt"]), (False, ["file2.txt"])])
-def test_files_exist_filtered(files_exist, filter_by, expected, paths):
-    """Given, when, then"""
-
-    # Arrange
-    path = paths.directory_path
-    file_names = []
-    file_list_tuple = [("file1.txt", True), ("file2.txt", False)]
-    files_exist.return_value = file_list_tuple
-
-    # Act
-    result = sut.files_exist_filtered(path, filter_by, file_names)
-
-    # Assert
-    assert result == expected
-
-
-# endregion
-
 # region get_project_root()
 
 
@@ -253,22 +270,5 @@ def test_is_valid_path_given_non_existent_path_returns_false(paths):
 
     # Assert
     assert not result
-
-# endregion
-
-# region get_file_name_from_url()
-
-
-def test_get_file_name_from_url_given_url_returns_file_name(paths):
-    """Given a URL, returns the file name"""
-
-    # Arrange
-    url = paths.url
-
-    # Act
-    result = sut.get_file_name_from_url(url)
-
-    # Assert
-    assert result == paths.file_name
 
 # endregion

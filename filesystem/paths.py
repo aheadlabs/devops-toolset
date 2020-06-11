@@ -14,56 +14,6 @@ app: App = App()
 platform_specific = app.load_platform_specific("environment")
 
 
-def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
-    """Gets path to the directory containing the file.
-
-    Args:
-        file: File name (not path to file) that should be found.
-        direction: The direction of the seek (ascending by default).
-
-    Returns:
-        Path to the directory or None if path not found.
-    """
-
-    current_path = pathlib.Path(__file__)
-    path_to_file = None
-
-    if direction == Directions.ASCENDING:
-        for i in range(len(current_path.parents)):
-            guess_path = pathlib.Path.joinpath(current_path.parents[i], file)
-            if pathlib.Path(guess_path).exists():
-                path_to_file = pathlib.Path(guess_path).parent
-                break
-    else:
-        for guess_path in current_path.parent.rglob(file):
-            if pathlib.Path(guess_path).exists():
-                path_to_file = pathlib.Path(guess_path).parent
-                break
-            else:
-                path_to_file = None
-
-    return path_to_file
-
-
-def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
-    """Gets a list with the paths to the descendant files that match the glob pattern.
-
-    Args:
-        starting_path: Path to start the seek from.
-        glob: glob pattern to match the files that should be found.
-
-    Returns:
-        List with the paths to the files that match.
-    """
-
-    paths = []
-
-    for guess_path in pathlib.Path(starting_path).rglob(glob):
-        paths.append(guess_path)
-
-    return paths
-
-
 def files_exist(path: str, file_names: List[str]) -> List[Tuple[str, bool]]:
     """Determines if every file path in the list exists in the specified path.
 
@@ -111,6 +61,70 @@ def files_exist_filtered(path: str, filter_by: bool, file_names: List[str]) -> L
     return filtered_list
 
 
+def get_file_name_from_url(url: str) -> str:
+    """Returns the file name from a URL.
+
+    Args:
+        url: URL to be parsed.
+
+    Returns:
+        File name.
+    """
+
+    parsed = urlparse(url)
+    return os.path.basename(parsed.path)
+
+
+def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
+    """Gets a list with the paths to the descendant files that match the glob pattern.
+
+    Args:
+        starting_path: Path to start the seek from.
+        glob: glob pattern to match the files that should be found.
+
+    Returns:
+        List with the paths to the files that match.
+    """
+
+    paths = []
+
+    for guess_path in pathlib.Path(starting_path).rglob(glob):
+        paths.append(guess_path)
+
+    return paths
+
+
+def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
+    """Gets path to the directory containing the file.
+
+    Args:
+        file: File name (not path to file) that should be found.
+        direction: The direction of the seek (ascending by default).
+
+    Returns:
+        Path to the directory or None if path not found.
+    """
+
+    current_path = pathlib.Path(__file__)
+    path_to_file = None
+
+    if direction == Directions.ASCENDING:
+        for i in range(len(current_path.parents)):
+            guess_path = pathlib.Path.joinpath(current_path.parents[i], file)
+            if pathlib.Path(guess_path).exists():
+                path_to_file = pathlib.Path(guess_path).parent
+                break
+    else:
+        for guess_path in current_path.parent.rglob(file):
+            if pathlib.Path(guess_path).exists():
+                path_to_file = pathlib.Path(guess_path).parent
+                break
+            else:
+                path_to_file = None
+
+    return path_to_file
+
+
 def get_project_root() -> str:
     """Gets the project root directory path.
 
@@ -143,28 +157,6 @@ def get_project_xml_data(add_environment_variables: bool = True) -> dict:
     return environment_variables
 
 
-def is_valid_path(path: str = None) -> bool:
-    """Checks if it is a valid path.
-
-    Args:
-        path: Path string to be analyzed
-
-    Returns:
-        True if path is valid an exists.
-    """
-
-    if path is None or path.strip() == "":
-        return False
-
-    path_object = pathlib.Path(path)
-    # Exception for unit tests
-    if not path.startswith("/pathto") \
-            and not pathlib.Path.exists(path_object):
-        return False
-
-    return True
-
-
 def is_empty_dir(path: str = None) -> bool:
     # TODO (alberto.carbonell) Cover this method with tests
     """Checks if it the current path is an empty dir
@@ -185,18 +177,26 @@ def is_empty_dir(path: str = None) -> bool:
     return False
 
 
-def get_file_name_from_url(url: str) -> str:
-    """Returns the file name from a URL.
+def is_valid_path(path: str = None) -> bool:
+    """Checks if it is a valid path.
 
     Args:
-        url: URL to be parsed.
+        path: Path string to be analyzed
 
     Returns:
-        File name.
+        True if path is valid an exists.
     """
 
-    parsed = urlparse(url)
-    return os.path.basename(parsed.path)
+    if path is None or path.strip() == "":
+        return False
+
+    path_object = pathlib.Path(path)
+    # Exception for unit tests
+    if not path.startswith("/pathto") \
+            and not pathlib.Path.exists(path_object):
+        return False
+
+    return True
 
 
 if __name__ == "__main__":
