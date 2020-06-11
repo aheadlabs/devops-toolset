@@ -95,8 +95,6 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
         - project structure JSON file
     """
 
-    required_file_patterns = required_file_patterns
-
     result = []
     for required_file_pattern in required_file_patterns:
         result.append(paths.get_file_path_from_pattern(path, required_file_pattern))

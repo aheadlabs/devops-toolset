@@ -41,7 +41,8 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     # Initialize a local Git repository?
     init_git = prompt.yn(literals.get("wp_init_git_repo"))
     if init_git:
-        pass  # TODO(ivan.sainz) Call this functionality
+        # TODO(ivan.sainz) Call this functionality
+        pass
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_file_patterns = ["*site.json", "*site-environments.json", "*project-structure.json"]
@@ -111,10 +112,8 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("project-path", action=tools.argument_validators.PathValidator)
-    # parser.add_argument("environment-path", action=tools.argument_validators.PathValidator)
-    # parser.add_argument("environment-name")
-    # parser.add_argument("--db-user-password", required=True)
-    # parser.add_argument("--db-admin-password", required=True)
+    parser.add_argument("--db-user-password", required=True)
+    parser.add_argument("--db-admin-password", required=True)
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_wordpress_new_repo"))
