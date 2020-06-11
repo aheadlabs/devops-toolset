@@ -108,6 +108,8 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     # Commit git repository
     # TODO(ivan.sainz) Commit git repository
 
+    # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
