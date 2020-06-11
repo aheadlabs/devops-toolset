@@ -6,8 +6,7 @@ import pathlib
 import json
 import wordpress.wp_cli as sut
 from core.app import App
-from unittest.mock import patch
-from unittest.mock import mock_open
+from unittest.mock import patch, mock_open, call
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
@@ -77,7 +76,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
                 # Act
                 sut.install_wp_cli(install_path)
     # Assert
-    wordpressdata.requests_get_mock.assert_called_once_with(wp_cli_download_url)
+    calls = [call(wp_cli_download_url)]
+    wordpressdata.requests_get_mock.assert_has_calls(calls, any_order=True)
 
 
 @patch("pathlib.Path")

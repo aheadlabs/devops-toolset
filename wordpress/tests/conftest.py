@@ -83,13 +83,14 @@ def mocked_requests_get(url: str, *args, **kwargs):
 
     # Default values
     bytes_content = b"sample response in bytes"
+    text_content = "sample text response"
 
     # Return instance
-    return MockResponse(bytes_content)
+    return MockResponse(bytes_content, text_content)
 
 
 class MockResponse:
     """This is the mocked Response object returned by requests.get()"""
-    def __init__(self, content):
-        self.content = content
-
+    def __init__(self, b_content, text_content):
+        self.content = b_content
+        self.text = text_content

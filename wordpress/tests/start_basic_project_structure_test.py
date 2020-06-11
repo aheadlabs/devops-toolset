@@ -3,12 +3,14 @@ import os
 from unittest.mock import patch, call, mock_open
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
+from wordpress.tests.conftest import mocked_requests_get
 
 import filesystem.paths as path_tools
 import pathlib
 import pytest
 import wordpress.wptools as wp_tools
 import wordpress.start_basic_project_structure as sut
+
 
 literals = LiteralsCore([WordpressLiterals])
 
@@ -189,27 +191,22 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_
 # region get_default_content()
 
 
-def test_get_default_content_given_item_when_source_is_raw_then_return_value():
+@pytest.mark.parametrize('item, expected_value', [
+    ({"source": "raw", "value": "some_raw_value"}, "some_raw_value"),
+    ({"source": "from_file", "value": "file"}, "some_from_file_value"),
+    ({"source": "from_url", "value": "url_resource"}, "sample text response")])
+@patch('builtins.open', new_callable=mock_open, read_data="some_from_file_value")
+def test_get_default_content_given_item_when_source_then_return_corresponding_value(
+        file_mock
+        , item
+        , expected_value
+        , wordpressdata):
     """Given item when source has value raw, then return value content"""
     # Arrange
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
     # Act
+    result = sut.get_default_content(item)
     # Assert
-    pass
-
-
-def test_get_default_content_given_item_when_source_is_from_file_then_return_content_file_read():
-    """Given item when source has value from file then should call content file read()"""
-    # Arrange
-    # Act
-    # Assert
-    pass
-
-
-def test_get_default_content_given_item_when_source_is_from_url_then_return_requests_get_item_value():
-    """Given item when source has value from url then should call requests get at value """
-    # Arrange
-    # Act
-    # Assert
-    pass
+    assert result == expected_value
 
 # endregion get_default_content()

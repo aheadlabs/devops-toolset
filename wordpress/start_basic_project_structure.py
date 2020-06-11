@@ -76,7 +76,6 @@ def get_default_content(item):
             return default_content_file.read()
     elif item["source"] == "from_url":
         response = requests.get(item["value"])
-
         return response.text
 
 
