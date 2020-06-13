@@ -16,3 +16,8 @@ wordpress/xmlrpc.php
 # scripts in root
 *.ps1
 *.py
+
+# IDEs
+**/.idea/
+**/.vscode/
+**/.vs/
