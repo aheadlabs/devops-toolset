@@ -18,12 +18,34 @@ General purpose DevOps-related scripts and tools.<br><br>
 ![Logo](.media/devops-toolset-logo-216x100px.png)
 
 # Getting Started
+
+### Prerequisites
+
+You need Python 3.8.2+ installed on your machine. Please follow the instructions on the [Python web site](https://www.python.org/downloads/).
+
+### How to use
+
 Reference the package in your pipeline to have these tools available:<br>
 1. Download the package from the [feed](https://dev.azure.com/aheadlabs/DevOps-toolset/_packaging?_a=feed&feed=devops-toolset). Click on "Connect to feed" for more information<br>
 ![Connect to feed](.media/connect-to-feed.png)
 2. Unzip the package to a directory<br>
 e.g.: /devops-toolset
 3. Add this directory to the PYTHONPATH environment variable.
+
+## Running the tests
+
+### Unit tests
+
+To run the unit tests you need to install [pytest from PyPI](https://pypi.org/project/pytest/). You can do so by executing the following command:
+
+```
+pip install pytest
+```
+
+Then, run the tests using the following command at the project's root path:
+```
+pytest
+```
 
 # File structure
 | Directory / file | Description |
