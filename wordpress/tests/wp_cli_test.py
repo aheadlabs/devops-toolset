@@ -10,7 +10,7 @@ from unittest.mock import patch, mock_open, call
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
-from wordpress.Commands import Commands as WordpressCommands
+from wordpress.commands import Commands as WordpressCommands
 from wordpress.tests.conftest import mocked_requests_get
 
 app: App = App()

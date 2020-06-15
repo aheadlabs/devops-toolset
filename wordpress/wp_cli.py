@@ -14,7 +14,7 @@ from core.app import App
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
-from wordpress.Commands import Commands as WordpressCommands
+from wordpress.commands import Commands as WordpressCommands
 from enum import Enum
 
 app: App = App()
