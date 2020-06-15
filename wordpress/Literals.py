@@ -13,6 +13,7 @@ class Literals(ValueDictsBase):
     _titles = {
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
+        "wp_title_wordpress_rollback_db": _("WordPress\nrollback db"),
     }
     _info = {
         "wp_wpcli_downloading": _("Downloading WP-CLI from {url}"),
