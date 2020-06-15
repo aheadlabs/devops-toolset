@@ -115,6 +115,7 @@ def test_get_file_path_from_pattern(rglob_mock, rglob_response, expected, paths)
 
 # region get_file_paths_in_tree()
 
+
 def test_get_filepaths_in_tree_given_starting_path_glob_when_no_paths_then_returns_empty_list(filenames):
     """Given a starting path and a glob, when there are no matching paths, it
     returns an empty list."""
