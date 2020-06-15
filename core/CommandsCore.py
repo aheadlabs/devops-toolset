@@ -14,7 +14,7 @@ class CommandsCore(ValueDictsBase):
     2. Pass as a parameter list all Commands classes you want to include.
 
         from core.CommandsCore import CommandsCore
-        from wordpress.Commands import Commands as WpCommands
+        from wordpress.commands import Commands as WpCommands
 
         commands = CommandsCore([WpCommands])
 
