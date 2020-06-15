@@ -84,6 +84,39 @@ def test_get_constants_given_path_returns_data(tmp_path, wordpressdata):
 
 # endregion
 
+# region get_project_structure()
+
+
+@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.structure_file_content)
+def test_get_project_structure_given_path_reads_and_parses_content(open_file_mock, wordpressdata):
+    """Given a path, reads the file and parses the JSON content."""
+
+    # Arrange
+    path = wordpressdata.project_structure_path
+
+    # Act
+    result = sut.get_project_structure(path)
+
+    # Assert
+    assert result == json.loads(WordPressData.structure_file_content)
+
+# endregion
+
+# region get_required_file_paths()
+
+
+def test_get_required_file_paths():
+    """Given, when, then"""
+
+    # Arrange
+
+    # Act
+
+    # Assert
+    assert False
+
+# endregion
+
 # region get_site_configuration()
 
 

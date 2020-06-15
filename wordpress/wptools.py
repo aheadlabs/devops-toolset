@@ -3,6 +3,7 @@
 import filesystem.paths as paths
 import json
 import pathlib
+import wordpress.constants
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
@@ -94,6 +95,11 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
         - site environments JSON file
         - project structure JSON file
     """
+
+    # required_file_patterns = wordpress.constants.required_files_suffixes
+    #
+    # for required_file_pattern in required_file_patterns:
+    #     if required_file_pattern.endswith()
 
     result = []
     for required_file_pattern in required_file_patterns:

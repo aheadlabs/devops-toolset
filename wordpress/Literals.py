@@ -12,7 +12,7 @@ class Literals(ValueDictsBase):
     # Add your core literal dictionaries here
     _titles = {
         "wp_title_wordpress_files": _("WordPress core"),
-        "wp_title_wordpress_new_repo": _("WordPress\nnew repo"),
+        "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
     }
     _info = {
         "wp_wpcli_downloading": _("Downloading WP-CLI from {url}"),
