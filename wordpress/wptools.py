@@ -4,6 +4,7 @@ import filesystem.paths as paths
 import json
 import pathlib
 import wordpress.constants
+from wordpress.BasicStructureStarter import BasicStructureStarter
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
@@ -32,18 +33,6 @@ def convert_wp_parameter_skip_content(value: bool):
     if value:
         return "--skip-content"
     return ""
-
-
-def create_project_structure(project_structure: dict):
-    """Creates the project structure from a site configuration file.
-
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
-
-    Args:
-        project_structure: Parsed WordPress project structure file.
-    """
-    pass
 
 
 def get_constants(path: str) -> dict:
@@ -174,5 +163,21 @@ def get_site_environments(path: str) -> dict:
     pass
 
 
+def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
+    """ Creates a basic structure of a wordpress project based on the project-structure.json
+
+    Args:
+        root_path: Full path where the structure will be created
+        project_structure_path: Full path to the json containing the structure
+    """
+    # Parse project structure configuration
+    project_structure = get_project_structure(project_structure_path)
+    project_starter = BasicStructureStarter()
+    # Iterate through every item recursively
+    for item in project_structure["items"]:
+        project_starter.add_item(item, root_path)
+
+
 if __name__ == "__main__":
+    start_basic_project_structure("D:/temp", "default-wordpress-project-structure.json")
     help(__name__)

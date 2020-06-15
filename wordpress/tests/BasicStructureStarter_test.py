@@ -8,45 +8,10 @@ from wordpress.tests.conftest import mocked_requests_get
 import filesystem.paths as path_tools
 import pathlib
 import pytest
-import wordpress.wptools as wp_tools
-import wordpress.start_basic_project_structure as sut
+from wordpress.BasicStructureStarter import BasicStructureStarter
 
 
 literals = LiteralsCore([WordpressLiterals])
-
-
-# region main
-
-
-@patch.object(wp_tools, "get_project_structure")
-def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_project_structure with passed project_path"""
-    # Arrange
-    project_structure_path = wordpressdata.project_structure_path
-    root_path = wordpressdata.wordpress_path
-    get_project_structure_mock.return_value = {"items": {}}
-    # Act
-    sut.main(root_path, project_structure_path)
-    # Assert
-    get_project_structure_mock.assert_called_once_with(project_structure_path)
-
-
-@patch.object(wp_tools, "get_project_structure")
-@patch.object(sut, "add_item")
-def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_project_structure with passed project_path"""
-    # Arrange
-    project_structure_path = wordpressdata.project_structure_path
-    root_path = wordpressdata.wordpress_path
-    items_data = {"items": {'foo_item': 'foo_value'}}
-    get_project_structure_mock.return_value = items_data
-    # Act
-    sut.main(root_path, project_structure_path)
-    # Assert
-    add_item_mock.assert_called_once_with('foo_item', root_path)
-
-
-# endregion main
 
 # region condition_met()
 
@@ -62,7 +27,7 @@ def test_condition_met_should_return_true_when_cond_not_in_item_or_condition_not
     # Arrange
     base_path = wordpressdata.wordpress_path
     # Act
-    result = sut.condition_met(item, base_path)
+    result = BasicStructureStarter.condition_met(item, base_path)
     # Assert
     assert result == expected
 
@@ -74,7 +39,7 @@ def test_condition_met_given_parameters_should_call_is_empty_dir_result(is_empty
     item = {"condition": "when-parent-not-empty"}
     base_path = wordpressdata.wordpress_path
     # Act
-    sut.condition_met(item, base_path)
+    BasicStructureStarter.condition_met(item, base_path)
     # Assert
     is_empty_dir_mock.assert_called_once_with(base_path)
 
@@ -83,7 +48,7 @@ def test_condition_met_given_parameters_should_call_is_empty_dir_result(is_empty
 # region add_item()
 
 
-@patch.object(sut, "condition_met", return_value=False)
+@patch.object(BasicStructureStarter, "condition_met", return_value=False)
 def test_add_item_given_parameters_should_call_condition_met_when_item_has_children_object(
         condition_met_mock
         , wordpressdata):
@@ -93,12 +58,12 @@ def test_add_item_given_parameters_should_call_condition_met_when_item_has_child
     base_path = wordpressdata.wordpress_path
     with patch.object(path_tools, "is_valid_path", return_value=True):
         # Act
-        sut.add_item(item, base_path)
+        BasicStructureStarter().add_item(item, base_path)
         # Assert
         condition_met_mock.assert_not_called
 
 
-@patch.object(sut, "condition_met", return_value=False)
+@patch.object(BasicStructureStarter, "condition_met", return_value=False)
 def test_add_item_given_parameters_when_child_condition_is_false_and_have_children_then_calls_recursive_add_item(
         condition_met_mock
         , wordpressdata):
@@ -111,14 +76,14 @@ def test_add_item_given_parameters_when_child_condition_is_false_and_have_childr
     expected_path_2 = str(pathlib.Path.joinpath(pathlib.Path(expected_path_1), "foo_file"))
     with patch.object(path_tools, "is_valid_path", return_value=True) as is_valid_path_mock:
         # Act
-        sut.add_item(item, base_path)
+        BasicStructureStarter().add_item(item, base_path)
         # Assert
         calls = [call(expected_path_1),
                  call(expected_path_2)]
         is_valid_path_mock.assert_has_calls(calls, any_order=True)
 
 
-@patch.object(sut, "condition_met", return_value=True)
+@patch.object(BasicStructureStarter, "condition_met", return_value=True)
 @patch.object(os, "mkdir")
 def test_add_item_given_parameters_when_child_condition_and_type_is_directory_should_call_os_mkdir(
         os_mkdir_mock
@@ -133,14 +98,14 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_directory_sh
     expected_final_path = pathlib.Path.joinpath(pathlib.Path(base_path), "foo_directory")
     with patch.object(path_tools, "is_valid_path", return_value=False):
         # Act
-        sut.add_item(item, base_path)
+        BasicStructureStarter().add_item(item, base_path)
         # Assert
         os_mkdir_mock.assert_called_once_with(expected_final_path)
 
 
-@patch.object(sut, "condition_met", return_value=True)
+@patch.object(BasicStructureStarter, "condition_met", return_value=True)
 @patch("builtins.open", new_callable=mock_open)
-@patch.object(sut, "get_default_content")
+@patch.object(BasicStructureStarter, "get_default_content")
 def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_create_empty_file(
         get_default_content_mock
         , file_mock
@@ -154,13 +119,13 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_
     base_path = wordpressdata.wordpress_path
     with patch.object(path_tools, "is_valid_path", return_value=False):
         # Act
-        sut.add_item(item, base_path)
+        BasicStructureStarter().add_item(item, base_path)
         # Assert
         get_default_content_mock.assert_not_called()
 
 
-@patch.object(sut, "condition_met", return_value=True)
-@patch.object(sut, "get_default_content", return_value="")
+@patch.object(BasicStructureStarter, "condition_met", return_value=True)
+@patch.object(BasicStructureStarter, "get_default_content", return_value="")
 def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_create_content_file(
         get_default_content_mock
         , condition_met_mock
@@ -177,11 +142,11 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_
     m = mock_open()
     with patch(wordpressdata.builtins_open, m, create=True):
         with patch.object(path_tools, "is_valid_path", return_value=False):
-        # Act
-            sut.add_item(item, base_path)
-        # Assert
-        handler = m()
-        handler.write.assert_called_once_with("")
+            # Act
+            BasicStructureStarter().add_item(item, base_path)
+            # Assert
+            handler = m()
+            handler.write.assert_called_once_with("")
 
 
 # endregion add_item()
@@ -203,7 +168,7 @@ def test_get_default_content_given_item_when_source_then_return_corresponding_va
     # Arrange
     wordpressdata.requests_get_mock.side_effect = mocked_requests_get
     # Act
-    result = sut.get_default_content(item)
+    result = BasicStructureStarter.get_default_content(item)
     # Assert
     assert result == expected_value
 
