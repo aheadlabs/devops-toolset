@@ -41,7 +41,7 @@ literals = LiteralsCore([WordpressLiterals, ToolsLiterals])
 commands = CommandsCore([ToolsCommands])
 
 
-def main(project_path: str = None, db_user_password: str = None, db_admin_password: str = None):
+def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
 
     # Initialize a local Git repository?
