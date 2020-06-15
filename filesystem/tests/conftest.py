@@ -18,6 +18,12 @@ class Paths(object):
     url = f"https://example.com/{file_name}"
     directory_path = "/pathto"
     file_name_list = ["file1.txt", "file2.txt"]
+    file_pattern = "*.json"
+    path_to_file_1 = f"{directory_path}/file1.json"
+    path_to_file_2 = f"{directory_path}/file2.json"
+    rglob_result_0 = []
+    rglob_result_1 = [path_to_file_1]
+    rglob_result_many = [path_to_file_1, path_to_file_2]
 
 
 @pytest.fixture

@@ -4,6 +4,7 @@ import filesystem.paths as sut
 import pathlib
 import pytest
 from conftest import FileNames as FileNameFixtures
+from filesystem.tests.conftest import Paths
 from filesystem.constants import Directions, FileNames
 from unittest.mock import patch
 
@@ -27,7 +28,8 @@ def test_files_exist_given_empty_list_returns_empty_list(paths):
 @patch("pathlib.Path.rglob")
 @pytest.mark.parametrize("rglob_response, expected", [
     ([], [("file1.txt", False), ("file2.txt", False)]),
-    (["file1.txt"], [("file1.txt", True), ("file1.txt", True)])
+    (["file1.txt"], [("file1.txt", True), ("file1.txt", True)]),
+    (["file1.txt", "file1.txt"], [("file1.txt", True), ("file1.txt", True), ("file1.txt", True), ("file1.txt", True)])
 ])
 def test_files_exist_given_list_returns_list_tuple(rglob_mock, rglob_response, expected, paths):
     """Given a list, returns a list of tuples with boolean values"""
@@ -82,6 +84,32 @@ def test_get_file_name_from_url_given_url_returns_file_name(paths):
 
     # Assert
     assert result == paths.file_name
+
+# endregion
+
+# region get_file_path_from_pattern()
+
+
+@patch("pathlib.Path.rglob")
+@pytest.mark.parametrize("rglob_response, expected", [
+    (Paths.rglob_result_0, None),
+    (Paths.rglob_result_1, "/pathto/file1.json"),
+    (Paths.rglob_result_many, None)
+])
+def test_get_file_path_from_pattern(rglob_mock, rglob_response, expected, paths):
+    """Given a pattern, then returns None if result has more than one results,
+    and the full path if one is found"""
+
+    # Arrange
+    path = paths.directory_path
+    pattern = paths.file_pattern
+    rglob_mock.return_value = rglob_response
+
+    # Act
+    result = sut.get_file_path_from_pattern(path, pattern)
+
+    # Assert
+    assert result == expected
 
 # endregion
 
@@ -270,5 +298,20 @@ def test_is_valid_path_given_non_existent_path_returns_false(paths):
 
     # Assert
     assert not result
+
+# endregion
+
+# region is_empty_dir()
+
+
+def test_is_empty_dir(paths):
+    """Given a directory path, when it is empty, returns True"""
+
+    # Arrange
+
+    # Act
+
+    # Assert
+    assert True
 
 # endregion

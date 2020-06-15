@@ -31,8 +31,11 @@ def files_exist(path: str, file_names: List[str]) -> List[Tuple[str, bool]]:
 
     for file_name in file_names:
         files = sorted(pathlib.Path(path).rglob(file_name))
-        if len(files) == 0 or len(files) > 1:
+        if len(files) == 0:
             result.append((file_name, False))
+        elif len(files) > 1:
+            for file in files:
+                result.append((file, True))
         else:
             result.append((files[0], True))
 
@@ -75,7 +78,7 @@ def get_file_name_from_url(url: str) -> str:
     return os.path.basename(parsed.path)
 
 
-def get_file_path_from_pattern(path: str, pattern: str) -> Union[str, None]:
+def get_file_path_from_pattern(path: str, pattern: str) -> Union[List[str], str, None]:
     """Gets the file path from a file name pattern.
 
     Args:
@@ -87,8 +90,13 @@ def get_file_path_from_pattern(path: str, pattern: str) -> Union[str, None]:
     """
 
     files = sorted(pathlib.Path(path).rglob(pattern))
-    if len(files) == 0 or len(files) > 1:
+    if len(files) == 0:
         return None
+    elif len(files) > 1:
+        file_list = []
+        for file in files:
+            file_list.append(str(file))
+        return file_list
     else:
         return str(files[0])
 
@@ -177,13 +185,13 @@ def get_project_xml_data(add_environment_variables: bool = True) -> dict:
 
 def is_empty_dir(path: str = None) -> bool:
     # TODO (alberto.carbonell) Cover this method with tests
-    """Checks if it the current path is an empty dir
+    """Checks if the current path is an empty directory
 
        Args:
            path: Path string to be analyzed
 
        Returns:
-           True if path is an empty dir
+           True if path is an empty directory
        """
 
     path_object = pathlib.Path(path)
