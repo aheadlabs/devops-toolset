@@ -58,6 +58,25 @@ class WordPressData:
                              "\"https://github.com/aheadlabs/devops-toolset/archive/master.zip\"},\"regex_base64\":" \
                              "[{\"key\":\"wordpress-theme\",\"value\":" \
                              "\"d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8=\"}]}"
+    structure_file_content = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/project-structure-schema.json\"," \
+                             "\"items\":[{\"name\":\".devops\",\"type\":\"directory\",\"children\":[{\"name\":" \
+                             "\".gitkeep\",\"type\":\"file\",\"condition\":\"when-parent-not-empty\"}]},{\"name\":" \
+                             "\".media\",\"type\":\"directory\",\"children\":[{\"name\":\".gitkeep\",\"type\":" \
+                             "\"file\",\"condition\":\"when-parent-not-empty\"}]},{\"name\":\"content\",\"type\":" \
+                             "\"directory\",\"children\":[{\"name\":\"themes\",\"type\":\"directory\",\"children\":" \
+                             "[{\"name\":\".gitkeep\",\"type\":\"file\",\"condition\":\"when-parent-not-empty\"}]}]}" \
+                             ",{\"name\":\"database\",\"type\":\"directory\",\"children\":[{\"name\":\".gitkeep\"," \
+                             "\"type\":\"file\",\"condition\":\"when-parent-not-empty\"}]},{\"name\":\"wordpress\"," \
+                             "\"type\":\"directory\",\"children\":[{\"name\":\".gitkeep\",\"type\":\"file\"," \
+                             "\"condition\":\"when-parent-not-empty\"}]},{\"name\":\".gitignore\",\"type\":\"file\"," \
+                             "\"default_content\":{\"source\":\"from_url\",\"value\":" \
+                             "\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/" \
+                             "default.gitignore\"}},{\"name\":\"project.xml\",\"type\":\"file\",\"default_content\":" \
+                             "{\"source\":\"from_url\",\"value\":" \
+                             "\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/" \
+                             "default-project.xml\"}},{\"name\":\"README.md\",\"type\":\"file\",\"default_content\":" \
+                             "{\"source\":\"from_url\",\"value\":\"https://raw.githubusercontent.com/aheadlabs/" \
+                             "devops-toolset/master/wordpress/default-README.md\"}}]}"
     wp_cli_install_path = "/pathto/wp-cli"
     wp_cli_phar = "wp-cli.phar"
     wp_cli_file_path = pathlib.Path.joinpath(pathlib.Path(wp_cli_install_path), wp_cli_phar)

@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("wordpress-path", action=tools.argument_validators.PathValidator)
     parser.add_argument("environment-path", action=tools.argument_validators.PathValidator)
-    parser.add_argument("environment-name")
+    parser.add_argument("environment_name")
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_wordpress_files"))

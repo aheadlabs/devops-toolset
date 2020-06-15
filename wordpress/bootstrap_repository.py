@@ -24,7 +24,9 @@ import pathlib
 import requests
 import tools.argument_validators
 import tools.cli
+import wordpress.constants as constants
 import wordpress.wptools
+import wordpress.start_basic_project_structure
 from clint.textui import prompt
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
@@ -46,16 +48,15 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     """Generates a WordPress Git repository for local development."""
 
     # Initialize a local Git repository?
-    init_git = prompt.yn(literals.get("wp_init_git_repo"))
-    if init_git:
-        tools.cli.call_subprocess(commands.get("git_init").format(path=project_path),
-                                  log_before_process=[toolsLiterals.get("log_before_process")],
-                                  log_after_err=[toolsLiterals.get("log_after_err")],
-                                  log_after_out=[toolsLiterals.get("log_after_out")])
+    if not args.skip_git:
+        init_git = prompt.yn(literals.get("wp_init_git_repo"))
+        if init_git:
+            # TODO(ivan.sainz) Call this functionality
+            pass
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
-    required_file_patterns = ["*site.json", "*site-environments.json", "*project-structure.json"]
-    required_files_not_present = paths.files_exist_filtered(project_path, False, required_file_patterns)
+    required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files_not_present = paths.files_exist_filtered(project_path, False, required_files_pattern_suffixes)
 
     # If there are missing required files, ask for using the default ones from GitHub
     if len(required_files_not_present) > 0:
@@ -85,10 +86,11 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
             fw.write(response.content)
 
     # Determine required file paths
-    required_file_paths = wordpress.wptools.get_required_file_paths(project_path, required_file_patterns)
+    required_file_paths = wordpress.wptools.get_required_file_paths(project_path, required_files_pattern_suffixes)
 
     # Create project structure
     # TODO(ivan.sainz) Create project structure
+    wordpress.start_basic_project_structure.main(project_path, required_file_paths[2])
 
     # Move devops-toolset to .devops
     # TODO(ivan.sainz) Move devops-toolset to .devops
@@ -115,7 +117,8 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     # TODO(ivan.sainz) Move initial required files to .devops
 
     # Commit git repository
-    # TODO(ccruz) Commit git repository
+
+    # TODO(ccruz) Commit git repository if --skip-git == False
 
     # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
 
@@ -125,6 +128,7 @@ if __name__ == "__main__":
     parser.add_argument("project-path", action=tools.argument_validators.PathValidator)
     parser.add_argument("--db-user-password", required=True)
     parser.add_argument("--db-admin-password", required=True)
+    parser.add_argument("--skip-git", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_wordpress_new_repo"))
