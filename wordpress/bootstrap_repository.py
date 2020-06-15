@@ -26,13 +26,20 @@ import tools.argument_validators
 import tools.cli
 import wordpress.wptools
 from clint.textui import prompt
+from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from core.app import App
 from devops.constants import Urls
+from tools.commands import Commands as ToolsCommands
 from wordpress.Literals import Literals as WordpressLiterals
+from tools.Literals import Literals as ToolsLiterals
 
 app: App = App()
+#Cambiar literals por wp_literals ?? ccruz
 literals = LiteralsCore([WordpressLiterals])
+commands = CommandsCore([ToolsCommands])
+#nombrarlo tools_literals // entiendo que está asociado a LiteralsCore ?? ccruz
+toolsLiterals = LiteralsCore([ToolsLiterals])
 
 
 def main(project_path: str = None, db_user_password: str = None, db_admin_password: str = None):
@@ -41,8 +48,10 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     # Initialize a local Git repository?
     init_git = prompt.yn(literals.get("wp_init_git_repo"))
     if init_git:
-        # TODO(ivan.sainz) Call this functionality
-        pass
+        tools.cli.call_subprocess(commands.get("git_init").format(path=project_path),
+                                  log_before_process=[toolsLiterals.get("log_before_process")],
+                                  log_after_err=[toolsLiterals.get("log_after_err")],
+                                  log_after_out=[toolsLiterals.get("log_after_out")])
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_file_patterns = ["*site.json", "*site-environments.json", "*project-structure.json"]
@@ -106,7 +115,7 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     # TODO(ivan.sainz) Move initial required files to .devops
 
     # Commit git repository
-    # TODO(ivan.sainz) Commit git repository
+    # TODO(ccruz) Commit git repository
 
     # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
 
@@ -119,4 +128,4 @@ if __name__ == "__main__":
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_wordpress_new_repo"))
-    main(args.project_path)
+    main(args.project_path, args.db_user_password, args.db_admin_password)
