@@ -37,11 +37,8 @@ from wordpress.Literals import Literals as WordpressLiterals
 from tools.Literals import Literals as ToolsLiterals
 
 app: App = App()
-#Cambiar literals por wp_literals ?? ccruz
-literals = LiteralsCore([WordpressLiterals])
+literals = LiteralsCore([WordpressLiterals, ToolsLiterals])
 commands = CommandsCore([ToolsCommands])
-#nombrarlo tools_literals // entiendo que está asociado a LiteralsCore ?? ccruz
-toolsLiterals = LiteralsCore([ToolsLiterals])
 
 
 def main(project_path: str = None, db_user_password: str = None, db_admin_password: str = None):
@@ -51,8 +48,10 @@ def main(project_path: str = None, db_user_password: str = None, db_admin_passwo
     if not args.skip_git:
         init_git = prompt.yn(literals.get("wp_init_git_repo"))
         if init_git:
-            # TODO(ivan.sainz) Call this functionality
-            pass
+            tools.cli.call_subprocess(commands.get("git_init").format(path=project_path),
+                                      log_before_process=[literals.get("git_repo_to_be_created")],
+                                      log_after_err=[literals.get("git_err_create_repo")],
+                                      log_after_out=[literals.get("git_repo_created")])
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
