@@ -179,5 +179,4 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
 
 
 if __name__ == "__main__":
-    start_basic_project_structure("D:/temp", "default-wordpress-project-structure.json")
     help(__name__)
