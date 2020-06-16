@@ -34,6 +34,13 @@ def convert_wp_parameter_skip_content(value: bool):
     return ""
 
 
+def convert_wp_parameter_yes(value: bool):
+    """Converts a boolean value to a --yes string."""
+    if value:
+        return "--yes"
+    return ""
+
+
 def get_constants(path: str) -> dict:
     """Gets all the constants from a WordPress constants file.
 

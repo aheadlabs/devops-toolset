@@ -66,6 +66,24 @@ def test_convert_wp_parameter_skip_content(value, expected):
 
 # endregion
 
+# region convert_wp_parameter_yes
+
+
+@pytest.mark.parametrize("value, expected", [(True, "--yes"), (False, "")])
+def test_convert_wp_parameter_yes(value, expected):
+    """When True, returns a --yes string.
+    When False, returns an empty string."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_yes(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
 # region get_constants()
 
 
