@@ -4,7 +4,7 @@ import pytest
 import json
 import pathlib
 import wordpress.wptools as sut
-from wordpress.BasicStructureStarter import BasicStructureStarter
+from wordpress.basic_structure_starter import BasicStructureStarter
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open

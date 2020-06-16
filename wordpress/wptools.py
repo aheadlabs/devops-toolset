@@ -4,7 +4,7 @@ import filesystem.paths as paths
 import json
 import pathlib
 import wordpress.constants
-from wordpress.BasicStructureStarter import BasicStructureStarter
+from wordpress.basic_structure_starter import BasicStructureStarter
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple

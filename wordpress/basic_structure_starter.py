@@ -9,20 +9,6 @@ import requests
 class BasicStructureStarter(object):
     """ Set of methods used to create a basic structure for a Wordpress project """
 
-    @staticmethod
-    def condition_met(item, base_path: str) -> bool:
-        """ Returns the result (True of False) of the condition contained on the item
-
-        Args:
-            item: the item inspected for conditions
-            base_path: parent dir to check
-        """
-
-        if "condition" in item and item["condition"] == "when-parent-not-empty":
-            return path_tools.is_empty_dir(base_path)
-        # Default behaviour
-        return True
-
     def add_item(self, item, base_path_str: str) -> None:
         """ Creates the item (file or dir) in the current filesystem
 
@@ -55,6 +41,20 @@ class BasicStructureStarter(object):
         if has_children:
             for child in item["children"]:
                 self.add_item(child, final_path)
+
+    @staticmethod
+    def condition_met(item, base_path: str) -> bool:
+        """ Returns the result (True of False) of the condition contained on the item
+
+        Args:
+            item: the item inspected for conditions
+            base_path: parent dir to check
+        """
+
+        if "condition" in item and item["condition"] == "when-parent-not-empty":
+            return path_tools.is_empty_dir(base_path)
+        # Default behaviour
+        return True
 
     @staticmethod
     def get_default_content(item) -> str:
