@@ -84,6 +84,7 @@ class WordPressData:
     parent_not_empty_value = 'when_parent_not_empty'
     condition_key = 'condition'
     dump_file_path = "/pathto/dump_file_1.sql"
+    path = "/pathto"
 
     # Mocks
     requests_get_mock = mock.patch.object(requests, "get").start()

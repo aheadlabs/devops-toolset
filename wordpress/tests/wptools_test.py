@@ -124,16 +124,20 @@ def test_get_project_structure_given_path_reads_and_parses_content(open_file_moc
 # region get_required_file_paths()
 
 
-# TODO(team) Finish this test
-def test_get_required_file_paths():
+@patch("filesystem.paths.get_file_path_from_pattern")
+def test_get_required_file_paths(get_file_path_from_pattern, wordpressdata):
     """Given, when, then"""
 
     # Arrange
+    path = wordpressdata.path
+    required_file_patterns = ["*site.json"]
+    get_file_path_from_pattern.return_value = wordpressdata.site_config_path
 
     # Act
+    result = sut.get_required_file_paths(path, required_file_patterns)
 
     # Assert
-    assert True
+    assert result == (wordpressdata.site_config_path,)
 
 # endregion
 
