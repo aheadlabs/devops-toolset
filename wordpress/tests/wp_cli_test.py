@@ -5,8 +5,9 @@ import pytest
 import pathlib
 import json
 import wordpress.wp_cli as sut
+import wordpress.wptools as wptools
 from core.app import App
-from unittest.mock import patch, mock_open, call
+from unittest.mock import patch, mock_open, call, ANY
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
@@ -36,6 +37,61 @@ def test_create_wp_cli_bat_file_given_phar_path_creates_bat_file_with_specific_c
         file_content = bat.read()
     assert file_content == expected_content
 
+
+# endregion
+
+# region download_wordpress()
+
+
+def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
+    """Given an invalid path, raises ValueError"""
+
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    path = wordpressdata.wordpress_path_err
+
+    # Act
+    with pytest.raises(ValueError):
+
+        # Assert
+        sut.download_wordpress(site_configuration, path)
+
+
+@patch("tools.git.purge_gitkeep")
+@patch("tools.cli.call_subprocess")
+def test_download_wordpress_given_valid_arguments_calls_subprocess(subprocess, purge_gitkeep, wordpressdata):
+    """Given valid arguments, calls subprocess"""
+
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    path = wordpressdata.wordpress_path
+
+    # Act
+    sut.download_wordpress(site_configuration, path)
+
+    # Assert
+    subprocess.assert_called_once()
+    purge_gitkeep.assert_called_once()
+
+# endregion
+
+# region import_database()
+
+
+@patch("tools.cli.call_subprocess")
+def test_import_database(call_subprocess, wordpressdata):
+    """Given arguments, calls subprocess"""
+
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    dump_file_path = wordpressdata.dump_file_path
+
+    # Act
+    sut.import_database(wordpress_path, dump_file_path)
+
+    # Assert
+    call_subprocess.assert_called_once_with(commands.get("wpcli_db_import").format(
+        file=dump_file_path, path=wordpress_path), log_before_process=ANY, log_after_err=ANY)
 
 # endregion
 
@@ -148,37 +204,23 @@ def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_
 
 # endregion
 
-# region download_wordpress()
+# region import_database()
 
 
-def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
-    """Given an invalid path, raises ValueError"""
-
-    # Arrange
-    site_configuration = json.loads(wordpressdata.site_config_content)
-    path = wordpressdata.wordpress_path_err
-
-    # Act
-    with pytest.raises(ValueError):
-
-        # Assert
-        sut.download_wordpress(site_configuration, path)
-
-
-@patch("tools.git.purge_gitkeep")
 @patch("tools.cli.call_subprocess")
-def test_download_wordpress_given_valid_arguments_calls_subprocess(subprocess, purge_gitkeep, wordpressdata):
-    """Given valid arguments, calls subprocess"""
+def test_reset_database(call_subprocess, wordpressdata):
+    """Given arguments, calls subprocess"""
 
     # Arrange
-    site_configuration = json.loads(wordpressdata.site_config_content)
-    path = wordpressdata.wordpress_path
+    wordpress_path = wordpressdata.wordpress_path
+    quiet = True
 
     # Act
-    sut.download_wordpress(site_configuration, path)
+    sut.reset_database(wordpress_path, quiet)
 
     # Assert
-    subprocess.assert_called_once()
-    purge_gitkeep.assert_called_once()
+    call_subprocess.assert_called_once_with(commands.get("wpcli_db_reset").format(
+        path=wordpress_path, yes=wptools.convert_wp_parameter_yes(quiet)),
+        log_before_process=ANY, log_after_err=ANY)
 
 # endregion

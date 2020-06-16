@@ -13,9 +13,13 @@ class Literals(ValueDictsBase):
     _titles = {
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
-        "wp_title_wordpress_rollback_db": _("WordPress\nrollback db"),
+        "wp_title_wordpress_rollback_db": _("WordPress\ndatabase rollback"),
     }
     _info = {
+        "wp_wpcli_db_reset_before": _("Resetting the database (drop and create)..."),
+        "wp_wpcli_db_reset_error": _("Database could not be reset due to an error."),
+        "wp_wpcli_db_import_before": _("Importing database dump from file:"),
+        "wp_wpcli_db_import_error": _("Dump file could not be imported due to an error."),
         "wp_wpcli_downloading": _("Downloading WP-CLI from {url}"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),

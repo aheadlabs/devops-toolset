@@ -13,5 +13,7 @@ class Commands(ValueDictsBase):
     _commands = {
         "wpcli_info": "wp --info",
         "wpcli_core_download": "wp core download --version={version} --locale={locale} --path={path} "
-                               "{skip_content} {debug_info}"
+                               "{skip_content} {debug_info}",
+        "wpcli_db_reset": "wp db reset --path={path} {yes}",
+        "wpcli_db_import": "wp db import {file} --path={path}",
     }

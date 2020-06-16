@@ -29,6 +29,23 @@ class ValueType(Enum):
     VARIABLE = 2
 
 
+def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+    """Creates the wp-config-php WordPress configuration file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/config/create/
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        database_user_password: Password for the database user configured in at
+            the wp-config.php file.
+    """
+    pass
+
+
 def create_wp_cli_bat_file(phar_path: str):
     """Creates a .bat file for WP-CLI.
 
@@ -42,42 +59,6 @@ def create_wp_cli_bat_file(phar_path: str):
     with open(bat_path, "w") as bat:
         bat.write("@ECHO OFF\n")
         bat.write(f"php \"{phar_path}\" %*")
-
-
-def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
-    """Downloads and installs the latest version of WP-CLI.
-
-    For more information see:
-        https://make.wordpress.org/cli/handbook/installing/
-
-    Args:
-        install_path: Path where WP-CLI will be installed. It must be in the
-            PATH/BIN of the operating system.
-    """
-
-    wp_cli_phar = "wp-cli.phar"
-    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
-    install_path = pathlib.Path(install_path)
-    file_path = pathlib.Path.joinpath(install_path, wp_cli_phar)
-
-    if not pathlib.Path.is_dir(install_path):
-        raise ValueError(literals.get("wp_not_dir"))
-
-    logging.info(literals.get("wp_wpcli_downloading").format(url=wp_cli_download_url))
-    response = requests.get(wp_cli_download_url)
-
-    with open(file_path, "wb") as wp_cli:
-        wp_cli.write(response.content)
-
-    file_stat = os.stat(file_path)
-    os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
-
-    if sys.platform == "win32":
-        create_wp_cli_bat_file(file_path)
-
-    cli.call_subprocess(commands.get("wpcli_info"),
-                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],
-                        log_after_out=[literals.get("wp_wpcli_add_ev")])
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):
@@ -121,34 +102,54 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     tools.git.purge_gitkeep(destination_path)
 
 
-def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
+    """Exports a WordPress database to a dump file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/db/export/
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        dump_file_path: Path to the destination dump file.
+    """
+    pass
+
+
+def import_database(wordpress_path: str, dump_file_path: str):
+    """Imports a WordPress database from a dump file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/db/import/
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        dump_file_path: Path to dump file to be imported.
+    """
+
+    dump_file_path_as_posix = str(pathlib.Path(dump_file_path).as_posix())
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+
+    cli.call_subprocess(commands.get("wpcli_db_import").format(
+        file=dump_file_path_as_posix, path=wordpress_path_as_posix),
+                        log_before_process=[literals.get("wp_wpcli_db_import_before"), dump_file_path],
+                        log_after_err=[literals.get("wp_wpcli_db_import_error")])
+
+
+def install_theme_from_configuration_file(site_configuration: dict, wordpress_path: str):
     """Creates the wp-config-php WordPress configuration file using WP-CLI.
 
     All parameters are obtained from a site configuration file.
 
     For more information see:
-        https://developer.wordpress.org/cli/commands/config/create/
+        https://developer.wordpress.org/cli/commands/theme/install/
 
     Args:
         site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
-        database_user_password: Password for the database user configured in at
-            the wp-config.php file.
-    """
-    pass
-
-
-def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
-    """Creates or updates a value (constant or variable) at the wp-config-php
-    WordPress configuration file using WP-CLI.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/config/set/
-
-    Args:
-        name: Name for the constant or variable.
-        value: Value for the constant or variable.
-        value_type: Type to be created (constant or value).
         wordpress_path: Path to WordPress files.
     """
     pass
@@ -170,7 +171,43 @@ def install_wordpress(site_configuration: dict, wordpress_path: str, wordpress_a
     pass
 
 
-def reset_database(site_configuration: dict, wordpress_path: str):
+def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
+    """Downloads and installs the latest version of WP-CLI.
+
+    For more information see:
+        https://make.wordpress.org/cli/handbook/installing/
+
+    Args:
+        install_path: Path where WP-CLI will be installed. It must be in the
+            PATH/BIN of the operating system.
+    """
+
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
+    install_path = pathlib.Path(install_path)
+    file_path = pathlib.Path.joinpath(install_path, wp_cli_phar)
+
+    if not pathlib.Path.is_dir(install_path):
+        raise ValueError(literals.get("wp_not_dir"))
+
+    logging.info(literals.get("wp_wpcli_downloading").format(url=wp_cli_download_url))
+    response = requests.get(wp_cli_download_url)
+
+    with open(file_path, "wb") as wp_cli:
+        wp_cli.write(response.content)
+
+    file_stat = os.stat(file_path)
+    os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
+
+    if sys.platform == "win32":
+        create_wp_cli_bat_file(file_path)
+
+    cli.call_subprocess(commands.get("wpcli_info"),
+                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],
+                        log_after_out=[literals.get("wp_wpcli_add_ev")])
+
+
+def reset_database(wordpress_path: str, quiet: bool):
     """Removes all WordPress core tables from the database using WP-CLI.
 
     All parameters are obtained from a site configuration file.
@@ -179,24 +216,28 @@ def reset_database(site_configuration: dict, wordpress_path: str):
         https://developer.wordpress.org/cli/commands/db/reset/
 
     Args:
-        site_configuration: parsed site configuration.
         wordpress_path: Path to WordPress files.
+        quiet: If True, no questions are asked.
     """
-    pass
+
+    cli.call_subprocess(commands.get("wpcli_db_reset").format(
+        path=wordpress_path, yes=wptools.convert_wp_parameter_yes(quiet)),
+                        log_before_process=[literals.get("wp_wpcli_db_reset_before")],
+                        log_after_err=[literals.get("wp_wpcli_db_reset_error")])
 
 
-def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
-    """Imports a WordPress database from a dump file using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
+def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
+    """Creates or updates a value (constant or variable) at the wp-config-php
+    WordPress configuration file using WP-CLI.
 
     For more information see:
-        https://developer.wordpress.org/cli/commands/db/import/
+        https://developer.wordpress.org/cli/commands/config/set/
 
     Args:
-        site_configuration: parsed site configuration.
+        name: Name for the constant or variable.
+        value: Value for the constant or variable.
+        value_type: Type to be created (constant or value).
         wordpress_path: Path to WordPress files.
-        dump_file_path: Path to dump file to be imported.
     """
     pass
 
@@ -219,22 +260,6 @@ def set_database_configuration(site_configuration: dict, wordpress_path: str, da
     pass
 
 
-def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
-    """Exports a WordPress database to a dump file using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/db/export/
-
-    Args:
-        site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
-        dump_file_path: Path to the destination dump file.
-    """
-    pass
-
-
 def update_database_option(option_name: str, option_value: str, wordpress_path: str):
     """Updates an option at the wp_options (*) table in the WordPress
     database using WP-CLI.
@@ -247,21 +272,6 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
     Args:
         option_name: Name for the option.
         option_value: Value for the option.
-        wordpress_path: Path to WordPress files.
-    """
-    pass
-
-
-def install_theme_from_configuration_file(site_configuration: dict, wordpress_path: str):
-    """Creates the wp-config-php WordPress configuration file using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/theme/install/
-
-    Args:
-        site_configuration: parsed site configuration.
         wordpress_path: Path to WordPress files.
     """
     pass
