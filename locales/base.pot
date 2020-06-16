@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-06-15 17:59+0200\n"
+"POT-Creation-Date: 2020-06-17 01:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,19 @@ msgstr ""
 
 msgid ""
 "WordPress\n"
-"rollback db"
+"database rollback"
+msgstr ""
+
+msgid "Resetting the database (drop and create)..."
+msgstr ""
+
+msgid "Database could not be reset due to an error."
+msgstr ""
+
+msgid "Importing database dump from file:"
+msgstr ""
+
+msgid "Dump file could not be imported due to an error."
 msgstr ""
 
 msgid "Downloading WP-CLI from {url}"
