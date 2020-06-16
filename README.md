@@ -14,16 +14,20 @@
 [![Donate Liberapay](https://img.shields.io/badge/donate-Liberapay-yellow)](https://liberapay.com/ahead-labs/donate)
 [![Donate PayPal](https://img.shields.io/badge/donate-PayPal-yellow.svg)](https://www.paypal.me/aheadlabs)  
 
-General purpose DevOps-related scripts and tools.<br><br>
+Everything than can be automated, must be automated!<br><br>
 ![Logo](.media/devops-toolset-logo-216x100px.png)
 
 # Getting Started
 
-### Prerequisites
+## Description
+
+This project contains general purpose, DevOps-related, scripts and tools.
+
+## Prerequisites
 
 You need Python 3.8.2+ installed on your machine. Please follow the instructions on the [Python web site](https://www.python.org/downloads/).
 
-### How to use
+## How to use
 
 Reference the package in your pipeline to have these tools available:<br>
 1. Download the package from the [feed](https://dev.azure.com/aheadlabs/DevOps-toolset/_packaging?_a=feed&feed=devops-toolset). Click on "Connect to feed" for more information<br>
