@@ -153,7 +153,7 @@ def test_get_site_configuration_from_environment(
     get_site_configuration_path_from_environment.return_value = json.loads(wordpressdata.site_config_content)
 
     # Act
-    result = sut.get_site_configuration_from_environment(environment_path, environment_name)
+    sut.get_site_configuration_from_environment(environment_path, environment_name)
 
     # Assert
     get_site_configuration.assert_called_with(get_site_configuration_path_from_environment.return_value)
