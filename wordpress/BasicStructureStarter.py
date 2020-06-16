@@ -10,7 +10,7 @@ class BasicStructureStarter(object):
     """ Set of methods used to create a basic structure for a Wordpress project """
 
     @staticmethod
-    def condition_met(item: str, base_path: str):
+    def condition_met(item, base_path: str) -> bool:
         """ Returns the result (True of False) of the condition contained on the item
 
         Args:
@@ -23,7 +23,7 @@ class BasicStructureStarter(object):
         # Default behaviour
         return True
 
-    def add_item(self, item, base_path_str):
+    def add_item(self, item, base_path_str: str) -> None:
         """ Creates the item (file or dir) in the current filesystem
 
          Args:
@@ -57,7 +57,7 @@ class BasicStructureStarter(object):
                 self.add_item(child, final_path)
 
     @staticmethod
-    def get_default_content(item):
+    def get_default_content(item) -> str:
         """ Gets the default content of the files based on the json item passed
 
             Args:
