@@ -28,30 +28,21 @@ import wordpress.constants as constants
 import wordpress.wptools
 import wordpress.start_basic_project_structure
 from clint.textui import prompt
-from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from core.app import App
 from devops.constants import Urls
-from tools.commands import Commands as ToolsCommands
+from tools import git
 from wordpress.Literals import Literals as WordpressLiterals
-from tools.Literals import Literals as ToolsLiterals
 
 app: App = App()
-literals = LiteralsCore([WordpressLiterals, ToolsLiterals])
-commands = CommandsCore([ToolsCommands])
+literals = LiteralsCore([WordpressLiterals])
 
 
 def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
 
     # Initialize a local Git repository?
-    if not args.skip_git:
-        init_git = prompt.yn(literals.get("wp_init_git_repo"))
-        if init_git:
-            tools.cli.call_subprocess(commands.get("git_init").format(path=project_path),
-                                      log_before_process=[literals.get("git_repo_to_be_created")],
-                                      log_after_err=[literals.get("git_err_create_repo")],
-                                      log_after_out=[literals.get("git_repo_created")])
+    git.git_init(project_path, args.skip_git)
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))

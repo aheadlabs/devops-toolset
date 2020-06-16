@@ -4,6 +4,7 @@ import pytest
 import json
 import pathlib
 import wordpress.wptools as sut
+from wordpress.basic_structure_starter import BasicStructureStarter
 from core.LiteralsCore import LiteralsCore
 from wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open
@@ -194,3 +195,34 @@ def test_get_site_configuration_path_from_environment_when_more_than_1_environme
     assert str(value_error.value) == literals.get("wp_env_gt1")
 
 # endregion convert_wp_parameter_skip_content()
+
+# region start_basic_structure
+
+@patch.object(sut, "get_project_structure")
+def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
+    """Given arguments, must call get_project_structure with passed project_path"""
+    # Arrange
+    project_structure_path = wordpressdata.project_structure_path
+    root_path = wordpressdata.wordpress_path
+    get_project_structure_mock.return_value = {"items": {}}
+    # Act
+    sut.start_basic_project_structure(root_path, project_structure_path)
+    # Assert
+    get_project_structure_mock.assert_called_once_with(project_structure_path)
+
+
+@patch.object(sut, "get_project_structure")
+@patch.object(BasicStructureStarter, "add_item")
+def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
+    """Given arguments, must call get_project_structure with passed project_path"""
+    # Arrange
+    project_structure_path = wordpressdata.project_structure_path
+    root_path = wordpressdata.wordpress_path
+    items_data = {"items": {'foo_item': 'foo_value'}}
+    get_project_structure_mock.return_value = items_data
+    # Act
+    sut.start_basic_project_structure(root_path, project_structure_path)
+    # Assert
+    add_item_mock.assert_called_once_with('foo_item', root_path)
+
+# endregion start_basic_structure
