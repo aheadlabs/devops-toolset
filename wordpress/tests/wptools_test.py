@@ -137,6 +137,30 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
 # endregion
 
+# region get_site_configuration_from_environment()
+
+
+@patch("wordpress.wptools.get_site_configuration")
+@patch("wordpress.wptools.get_site_configuration_path_from_environment")
+def test_get_site_configuration_from_environment(
+        get_site_configuration_path_from_environment, get_site_configuration, wordpressdata):
+    """Given environment data, calls get_site_configuration with the correct
+    path."""
+
+    # Arrange
+    environment_path = wordpressdata.environment_path
+    environment_name = wordpressdata.environment_name
+    get_site_configuration_path_from_environment.return_value = json.loads(wordpressdata.site_config_content)
+
+    # Act
+    result = sut.get_site_configuration_from_environment(environment_path, environment_name)
+
+    # Assert
+    get_site_configuration.assert_called_with(get_site_configuration_path_from_environment.return_value)
+
+
+# endregion
+
 # region get_site_configuration_path_from_environment()
 
 

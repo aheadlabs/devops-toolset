@@ -3,7 +3,6 @@
 import filesystem.paths as paths
 import json
 import pathlib
-import wordpress.constants
 from wordpress.basic_structure_starter import BasicStructureStarter
 from core.app import App
 from core.LiteralsCore import LiteralsCore
@@ -113,6 +112,22 @@ def get_site_configuration(path: str) -> dict:
     with open(path, "r") as config_file:
         data = config_file.read()
         return json.loads(data)
+
+
+def get_site_configuration_from_environment(environment_path: str, environment_name: str = None) -> dict:
+    """Gets the WordPress site configuration from a environment.
+
+    Args:
+        environment_path: Path to the environments file.
+        environment_name: Name of the environment.
+
+    Returns:
+        A dict with the site's configuration.
+    """
+
+    site_configuration_path = get_site_configuration_path_from_environment(environment_path, environment_name)
+
+    return get_site_configuration(site_configuration_path)
 
 
 def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
