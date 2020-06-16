@@ -1,6 +1,5 @@
 """Unit tests for the sonarx file"""
 
-import pytest
 from unittest.mock import patch
 import json
 from core.LiteralsCore import LiteralsCore
