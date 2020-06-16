@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-06-15 12:25+0200\n"
+"POT-Creation-Date: 2020-06-15 17:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,13 +42,22 @@ msgstr ""
 msgid "Purging .gitkeep file at {path}"
 msgstr ""
 
+msgid "The repository is going to be created"
+msgstr ""
+
+msgid "The repository has been created"
+msgstr ""
+
 msgid "The path specified in the {argument} argument is invalid or does not exist."
 msgstr ""
 
-msgid "RegEx must have 1 capture group. No less, no more."
+msgid "Git error: repository couldn't be created"
 msgstr ""
 
 msgid "Path must be an existent dir."
+msgstr ""
+
+msgid "RegEx must have 1 capture group. No less, no more."
 msgstr ""
 
 msgid "WordPress core"
@@ -57,6 +66,11 @@ msgstr ""
 msgid ""
 "WordPress\n"
 "existing repo"
+msgstr ""
+
+msgid ""
+"WordPress\n"
+"rollback db"
 msgstr ""
 
 msgid "Downloading WP-CLI from {url}"
