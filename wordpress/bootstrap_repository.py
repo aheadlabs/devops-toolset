@@ -21,12 +21,12 @@ import core.log_tools
 import filesystem.paths as paths
 import logging
 import pathlib
+import os
 import requests
 import tools.argument_validators
 import tools.cli
 import wordpress.constants as constants
 import wordpress.wptools
-import wordpress.start_basic_project_structure
 from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
@@ -40,6 +40,9 @@ literals = LiteralsCore([WordpressLiterals])
 
 def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
+
+    # Change the working directory
+    os.chdir(project_path)
 
     # Initialize a local Git repository?
     git.git_init(project_path, args.skip_git)
@@ -80,7 +83,6 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
 
     # Create project structure
     # TODO(ivan.sainz) Create project structure
-    wordpress.start_basic_project_structure.main(project_path, required_file_paths[2])
 
     # Move devops-toolset to .devops
     # TODO(ivan.sainz) Move devops-toolset to .devops
@@ -107,8 +109,7 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # TODO(ivan.sainz) Move initial required files to .devops
 
     # Commit git repository
-
-    # TODO(ccruz) Commit git repository if --skip-git == False
+    git.git_commit(args.skip_git)
 
     # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
 

@@ -11,5 +11,7 @@ class Commands(ValueDictsBase):
 
     # Add your core literal dictionaries here
     _commands = {
-        "git_init": "git init {path}"
+        "git_init": "git init {path}",
+        "git_add": "git add .",
+        "git_commit_m": "git commit -m \"{message}\"",
     }
