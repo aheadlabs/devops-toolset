@@ -16,4 +16,7 @@ class Commands(ValueDictsBase):
                                "{skip_content} {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes}",
         "wpcli_db_import": "wp db import {file} --path={path}",
+        "wpcli_db_delete_transient": "wp transient delete --all --path={path}",
+        # "wp_backup_create" pending review when PHP export database method will be done
+        "wp_backup_create": "wp backup create --path={path}"
     }
