@@ -9,7 +9,6 @@ app: App = App()
 class Literals(ValueDictsBase):
     """ValueDicts for the wordpress module."""
 
-    # Add your core literal dictionaries here
     _titles = {
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),

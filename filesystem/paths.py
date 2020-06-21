@@ -1,17 +1,49 @@
 """Gets different paths needed in the execution of the different scripts in the project."""
 
-#! python
-
 import os
 import pathlib
+import requests
 import xml.etree.ElementTree as ElementTree
 from core.app import App
-from filesystem.constants import FileNames, Directions
+from core.LiteralsCore import LiteralsCore
+from filesystem.Literals import Literals as FileSystemLiterals
+from filesystem.constants import Directions, FileNames, FileType
 from typing import List, Tuple, Union
 from urllib.parse import urlparse
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")
+literals = LiteralsCore([FileSystemLiterals])
+
+
+# noinspection PyTypeChecker
+def download_file(url: str, destination: str, file_type: FileType = FileType.BINARY) -> tuple:
+    """Downloads a file from a URL.
+
+    Args:
+        url: Where to download the file from.
+        destination: Path to the directory where the file will be downloaded.
+        file_type: The type of the file. Defaults to BINARY.
+
+    Returns:
+        Tuple with (file name, file path)
+    """
+
+    if not os.path.isdir(destination):
+        raise ValueError("fs_not_dir")
+
+    destination_path = pathlib.Path(destination)
+    file_name = get_file_name_from_url(url)
+    full_destination_path = pathlib.Path.joinpath(destination_path, file_name)
+
+    response = requests.get(url)
+
+    file_mode: str = f"w{file_type.value}"
+    with open(full_destination_path, file_mode) as file:
+        file.write(response.content)
+
+    return file_name, full_destination_path
+    # TODO(ivan.sainz) Unit tests
 
 
 def files_exist(path: str, file_names: List[str]) -> List[Tuple[str, bool]]:
