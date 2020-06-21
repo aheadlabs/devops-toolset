@@ -12,10 +12,10 @@
         "collate": "utf8_unicode_ci",
         "skip_check": true,
         "dumps":{
-            "core":"[date]-db.core.sql",
-            "theme":"[date]-db.theme.sql",
-            "plugins":"[date]-db.plugins.sql",
-            "regular": "[date]-db.sql"
+            "core":"[date|Y.m.d-Hisve]-db.core.sql",
+            "theme":"[date|Y.m.d-Hisve]-db.theme.sql",
+            "plugins":"[date|Y.m.d-Hisve]-db.plugins.sql",
+            "regular": "[date|Y.m.d-Hisve]-db-[commit].sql"
         }
     },
     "settings": {
