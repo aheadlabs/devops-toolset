@@ -5,10 +5,18 @@ import pathlib
 import pytest
 import tools.git as sut
 import filesystem.paths as path_tools
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, call, ANY
 from filesystem.constants import Directions, FileNames
 from tools.tests.conftest import GitignoreData
 from tools.tests.conftest import BranchesData
+from core.CommandsCore import CommandsCore
+from tools.commands import Commands as ToolsCommands
+from core.LiteralsCore import LiteralsCore
+from tools.Literals import Literals as ToolsLiterals
+
+
+commands = CommandsCore([ToolsCommands])
+literals = LiteralsCore([ToolsLiterals])
 
 
 # region add_gitignore_exclusion()
@@ -118,12 +126,48 @@ def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(target, f
 
 # endregion
 
-# region git_init()
+# region git_commit()
 
 
 @patch("tools.cli.call_subprocess")
+def test_git_commit_when_skip_do_nothing(call_subprocess):
+    """Given arguments, when skip is true, then do nothing"""
+
+    # Arrange
+    skip = True
+
+    # Act
+    sut.git_commit(skip)
+
+    # Assert
+    call_subprocess.assert_not_called()
+
+
+@patch("tools.cli.call_subprocess")
+def test_git_commit_when_not_skip_then_call_subprocess(call_subprocess):
+    """Given arguments, when skip is false, then call subprocess"""
+
+    # Arrange
+    skip = False
+    expected_command_1 = commands.get("git_add")
+    expected_command_2 = commands.get("git_commit_m").format(message=literals.get("git_add_project_structure_message"))
+
+    # Act
+    sut.git_commit(skip)
+
+    # Assert
+    calls = [call(expected_command_1, log_before_process=ANY, log_after_err=ANY),
+             call(expected_command_2, log_before_process=ANY, log_after_err=ANY, log_after_out=ANY)]
+    call_subprocess.assert_has_calls(calls, any_order=False)
+
+
+# endregion
+
+# region git_init()
+
+
 @patch("clint.textui.prompt.yn")
-def test_git_init_when_skip_do_nothing(prompt_yn, call_subprocess):
+def test_git_init_when_skip_do_nothing(prompt_yn):
     """Given arguments, when skip is true, then do nothing"""
 
     # Arrange

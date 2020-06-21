@@ -224,3 +224,38 @@ def test_reset_database(call_subprocess, wordpressdata):
         log_before_process=ANY, log_after_err=ANY)
 
 # endregion
+
+
+# region reset_transients()
+
+
+@patch("tools.cli.call_subprocess")
+def test_reset_transients(call_subprocess):
+    """Given arguments, when the method is called, then delete transients"""
+
+    # Arrange
+    wordpress_path = ""
+
+    # Act
+    sut.reset_transients(wordpress_path)
+
+    # Assert
+    call_subprocess.assert_called()
+
+# endregion
+
+# TODO (some user)
+# region reset_transients()
+
+
+# def test_export_database():
+#     """Given, when, then"""
+#
+#     # Arrange
+#
+#     # Act
+#
+#     # Assert
+#     assert False
+
+# endregion

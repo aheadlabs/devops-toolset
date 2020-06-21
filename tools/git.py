@@ -18,10 +18,9 @@ from tools.Literals import Literals as ToolsLiterals
 from filesystem.constants import FileNames, Directions
 from core.CommandsCore import CommandsCore
 from tools.commands import Commands as ToolsCommands
-from wordpress.Literals import Literals as WordpressLiterals
 
 app: core.app.App = core.app.App()
-literals = LiteralsCore([ToolsLiterals, WordpressLiterals])
+literals = LiteralsCore([ToolsLiterals])
 commands = CommandsCore([ToolsCommands])
 platform_specific = app.load_platform_specific("environment")
 
@@ -85,6 +84,24 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
     return str(filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
 
 
+def git_commit(skip: bool):
+    """Add modified files to .git repository and commit
+
+    Args:
+        skip: Boolean that determines if the user want or don't want create the .git repository.
+    """
+    if not skip:
+        tools.cli.call_subprocess(commands.get("git_add"),
+                                  log_before_process=[literals.get(
+                                      "git_before_adding_project_structure_files_to_stage")],
+                                  log_after_err=[literals.get("git_err_adding_project_structure_files_to_stage")])
+        tools.cli.call_subprocess(commands.get("git_commit_m").format(
+            message=literals.get("git_add_project_structure_message")),
+            log_before_process=[literals.get("git_before_project_structure_commit")],
+            log_after_err=[literals.get("git_err_commit_project_structure")],
+            log_after_out=[literals.get("git_after_project_structure_commit")])
+
+
 def git_init(path: str, skip: bool):
     """Initialize .git repository
 
@@ -94,7 +111,7 @@ def git_init(path: str, skip: bool):
     """
 
     if not skip:
-        init_git = prompt.yn(literals.get("wp_init_git_repo"))
+        init_git = prompt.yn(literals.get("git_init_repo"))
         if init_git:
             tools.cli.call_subprocess(commands.get("git_init").format(path=path),
                                       log_before_process=[literals.get("git_repo_to_be_created")],

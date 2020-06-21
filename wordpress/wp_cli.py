@@ -115,7 +115,14 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to the destination dump file.
     """
-    pass
+    # TODO (some user)
+    # reset_transients()
+    #
+    # "wp db export"
+
+    cli.call_subprocess(commands.get("wp_backup_create").format(path=dump_file_path),
+                        log_before_out=[literals.get("wp_backup_create")],
+                        log_after_err=[literals.get("wp_err_backup_create")])
 
 
 def import_database(wordpress_path: str, dump_file_path: str):
@@ -224,6 +231,18 @@ def reset_database(wordpress_path: str, quiet: bool):
         path=wordpress_path, yes=wptools.convert_wp_parameter_yes(quiet)),
                         log_before_process=[literals.get("wp_wpcli_db_reset_before")],
                         log_after_err=[literals.get("wp_wpcli_db_reset_error")])
+
+
+def reset_transients(wordpress_path: str):
+    """Removes all WordPress transients from database using WP-CLI
+
+    Args:
+        wordpress_path: Path to WordPress files.
+    """
+
+    cli.call_subprocess(commands.get("wpcli_db_delete_transient").format(path=wordpress_path),
+                        log_before_out=[literals.get("wp_wpcli_delete_transients")],
+                        log_after_err=[literals.get("wp_wpcli_delete_transients_err")])
 
 
 def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
