@@ -2,7 +2,6 @@
 wordpress/wp-admin/
 wordpress/wp-content/themes/twentytwenty/
 wordpress/wp-content/upgrade/
-wordpress/wp-content/uploads/
 wordpress/wp-includes/
 wordpress/wp*.php
 wordpress/index.php
