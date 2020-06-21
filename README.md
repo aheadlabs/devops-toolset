@@ -1,5 +1,5 @@
 # DevOps Toolset
-[![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset/dev)](https://github.com/aheadlabs/devops-toolset/commits/)
+[![Last commit](https://img.shields.io/github/last-commit/aheadlabs/devops-toolset)](https://github.com/aheadlabs/devops-toolset/commits/)
 [![Build status](https://img.shields.io/azure-devops/build/aheadlabs/DevOps-toolset/6)](https://dev.azure.com/aheadlabs/DevOps-toolset/_build?definitionId=6&_a=summary)
 [![Release](https://img.shields.io/azure-devops/release/aheadlabs/1485b494-712b-4941-9b9a-d177484d1727/1/1)](https://dev.azure.com/aheadlabs/DevOps-toolset/_release?_a=releases&view=mine&definitionId=1)  
 [![Sonar quality gate](https://img.shields.io/sonar/quality_gate/devops-toolset?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=devops-toolset)
