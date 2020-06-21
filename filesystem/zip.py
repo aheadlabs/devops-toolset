@@ -47,6 +47,3 @@ def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool 
 
 if __name__ == "__main__":
     help(__name__)
-    # TODO(ivan.sainz) Delete line below
-    download_an_unzip_file("https://github.com/aheadlabs/devops-toolset/archive/feature/pythonization.zip",
-                           r"D:\Source\_tests\_debugging", True, "devops-toolset-feature-pythonization")
