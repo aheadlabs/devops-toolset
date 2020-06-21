@@ -6,11 +6,18 @@
             to the toolset, since it will be called independently."""
 
 import argparse
+import logging
 import os
 import pathlib
 import requests
 import shutil
 import zipfile
+
+logging.basicConfig(level=logging.INFO)
+logging.Formatter("%(asctime)s %(levelname)-8s %(module)-15s %(message)s")
+console_handler = logging.StreamHandler()
+logger = logging.getLogger(__name__)
+logger.addHandler(console_handler)
 
 
 # TODO(ivan.sainz) Unit tests
@@ -35,6 +42,8 @@ def main(destination_path: str, branch: str):
     with open(full_destination_path, "wb") as zip_file:
         zip_file.write(response.content)
 
+    logger.info(f"devops-toolset downloaded to {full_destination_path}")
+
     # Decompress the toolset
     temporary_extraction_path = pathlib.Path.joinpath(destination_path_object, "__temp")
     with zipfile.ZipFile(full_destination_path, "r") as zip_file:
@@ -46,13 +55,20 @@ def main(destination_path: str, branch: str):
         to_path = pathlib.Path.joinpath(destination_path_object, item)
         shutil.move(from_path, to_path)
 
+    logger.info(f"devops-toolset decompressed to {destination_path_object}")
+
     # Delete the temporary files
     os.rmdir(internal_directory_full_path)
+    logger.info(f"Deleted directory {internal_directory_full_path}")
+
     os.rmdir(temporary_extraction_path)
+    logger.info(f"Deleted directory {temporary_extraction_path}")
+
     os.remove(full_destination_path)
+    logger.info(f"Deleted file {full_destination_path}")
 
     # Delete myself
-    os.remove(__file__) 
+    os.remove(__file__)
 
 
 def is_valid_path(path: str) -> bool:
