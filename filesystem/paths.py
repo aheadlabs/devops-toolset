@@ -192,7 +192,7 @@ def get_project_root() -> str:
     return get_filepath_in_tree(FileNames.PROJECT_FILE)
 
 
-def get_project_xml_data(add_environment_variables: bool = True) -> dict:
+def get_project_xml_data(add_environment_variables: bool = True, project_xml_path: str = None) -> dict:
     """Reads the /project.xml file and returns a dict with its data.
 
     XML elements are uppercased, underscored and prepended with parent name.
@@ -200,9 +200,13 @@ def get_project_xml_data(add_environment_variables: bool = True) -> dict:
     Args:
         add_environment_variables: If True it adds every element of the dict as
             an environment variable.
+        project_xml_path: Path to the project.xml file.
     """
 
-    project_xml_path = pathlib.Path.joinpath(app.settings.root_path, "project.xml")
+    if project_xml_path is None:
+        project_xml_path = pathlib.Path.joinpath(app.settings.root_path, "project.xml")
+    else:
+        project_xml_path = pathlib.Path(project_xml_path)
     xml = ElementTree.parse(str(project_xml_path)).getroot()
 
     environment_variables = {}
