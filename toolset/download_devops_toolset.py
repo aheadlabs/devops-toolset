@@ -76,7 +76,7 @@ def main(destination_path: str, branch: str):
 def is_valid_path(path: str) -> bool:
     """Checks if a path is valid"""
 
-    if path is None or path.strip() == "" or not os.path.isdir(path):
+    if path is None or path.strip() == "":
         return False
 
     return True
