@@ -1,11 +1,11 @@
 """Unit tests for the sonarx file"""
 
 import pathlib
-import devops.sonarx as sut
+import devops_platforms.sonarx as sut
 from unittest.mock import patch
-from devops.tests.conftest import mocked_requests_get
+from devops_platforms.tests.conftest import mocked_requests_get
 from core.LiteralsCore import LiteralsCore
-from devops.Literals import Literals as DevopsLiterals
+from devops_platforms.Literals import Literals as DevopsLiterals
 
 
 literals = LiteralsCore([DevopsLiterals])
@@ -14,9 +14,9 @@ literals = LiteralsCore([DevopsLiterals])
 
 
 @patch("requests.get", side_effect=mocked_requests_get)
-@patch("devops.sonarx.logging.info")
-@patch("devops.sonarx.read_sonar_properties_file")
-@patch("devops.sonarx.generate_branch_segment")
+@patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.read_sonar_properties_file")
+@patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_generates_branch_segment(
         branch_function, file_function, logger_info, requests_get, sonarxdata):
     """Given a branch, it generates the branch segment"""
@@ -33,9 +33,9 @@ def test_get_quality_gate_status_given_branch_then_generates_branch_segment(
 
 
 @patch("requests.get", side_effect=mocked_requests_get)
-@patch("devops.sonarx.logging.info")
-@patch("devops.sonarx.read_sonar_properties_file")
-@patch("devops.sonarx.generate_branch_segment")
+@patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.read_sonar_properties_file")
+@patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_reads_sonar_config_file(
         branch_function, file_function, logger_info, requests_get, sonarxdata):
     """Given the path to the Sonar* config file, it reads its properties"""
@@ -52,10 +52,10 @@ def test_get_quality_gate_status_given_branch_then_reads_sonar_config_file(
 
 
 @patch("requests.get", side_effect=mocked_requests_get)
-@patch("devops.sonarx.logging.error")
-@patch("devops.sonarx.logging.info")
-@patch("devops.sonarx.read_sonar_properties_file")
-@patch("devops.sonarx.generate_branch_segment")
+@patch("devops_platforms.sonarx.logging.error")
+@patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.read_sonar_properties_file")
+@patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_when_passing_qg_then_logs_info(
         branch_function, file_function, logging_info, logging_error, requests_get, sonarxdata):
     """Given a branch, when passing the quality gate, logs info"""
@@ -72,10 +72,10 @@ def test_get_quality_gate_status_given_branch_when_passing_qg_then_logs_info(
 
 
 @patch("requests.get", side_effect=mocked_requests_get)
-@patch("devops.sonarx.logging.error")
-@patch("devops.sonarx.logging.info")
-@patch("devops.sonarx.read_sonar_properties_file")
-@patch("devops.sonarx.generate_branch_segment")
+@patch("devops_platforms.sonarx.logging.error")
+@patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.read_sonar_properties_file")
+@patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_when_not_passing_qg_then_logs_errors(
         branch_function, file_function, logging_info, logging_error, requests_get, sonarxdata):
     """Given a branch, when not passing the quality gate, logs errors"""

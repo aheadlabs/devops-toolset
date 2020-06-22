@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 from io import StringIO
-import devops.azuredevops.environment as sut
+import devops_platforms.azuredevops.environment as sut
 
 # region create_environment_variables()
 

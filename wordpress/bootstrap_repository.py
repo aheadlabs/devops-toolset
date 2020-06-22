@@ -30,7 +30,7 @@ import wordpress.wptools
 from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
-from devops.constants import Urls
+from devops_platforms.constants import Urls
 from tools import git
 from wordpress.Literals import Literals as WordpressLiterals
 

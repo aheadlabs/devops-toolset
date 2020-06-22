@@ -2,7 +2,7 @@
 
 from core.app import App
 from core.LiteralsCore import LiteralsCore
-from devops.azuredevops.Literals import Literals as AzureDevOpsLiterals
+from devops_platforms.azuredevops.Literals import Literals as AzureDevOpsLiterals
 import sys
 import logging
 from enum import Enum

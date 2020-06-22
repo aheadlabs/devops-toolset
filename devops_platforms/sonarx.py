@@ -2,12 +2,12 @@
 
 from core.app import App
 from core.LiteralsCore import LiteralsCore
-from devops.Literals import Literals as DevopsLiterals
+from devops_platforms.Literals import Literals as DevopsLiterals
 import requests
 import configparser
 import logging
 from tools.xcoding64 import encode
-from devops.constants import Urls
+from devops_platforms.constants import Urls
 from tools.git import simplify_branch_name
 
 app: App = App()

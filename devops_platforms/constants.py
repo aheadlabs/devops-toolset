@@ -1,4 +1,4 @@
-"""Constants for the devops module"""
+"""Constants for the devops_platforms module"""
 
 
 class Urls(object):
