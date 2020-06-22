@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-06-22 02:00+0200\n"
+"POT-Creation-Date: 2020-06-23 01:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,9 @@ msgid "Invalid metric value for {metricKey}: {actualValue} {comparator} {errorTh
 msgstr ""
 
 msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
+msgid "Project path is {path}."
 msgstr ""
 
 msgid "Path must be a dir, not a file."
