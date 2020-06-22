@@ -1,5 +1,6 @@
 """Gets different paths needed in the execution of the different scripts in the project."""
 
+import logging
 import os
 import pathlib
 import requests
@@ -207,6 +208,7 @@ def get_project_xml_data(add_environment_variables: bool = True, project_xml_pat
         project_xml_path = pathlib.Path.joinpath(app.settings.root_path, "project.xml")
     else:
         project_xml_path = pathlib.Path(project_xml_path)
+    logging.info(literals.get("fs_project_path_is").format(project_xml_path))
     xml = ElementTree.parse(str(project_xml_path)).getroot()
 
     environment_variables = {}
