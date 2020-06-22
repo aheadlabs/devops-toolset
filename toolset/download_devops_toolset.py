@@ -79,10 +79,6 @@ def is_valid_path(path: str) -> bool:
     if path is None or path.strip() == "" or not os.path.isdir(path):
         return False
 
-    path_object = pathlib.Path(path)
-    if not pathlib.Path.exists(path_object):
-        return False
-
     return True
 
 
