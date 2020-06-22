@@ -39,6 +39,8 @@ def main(destination_path: str, branch: str):
     full_destination_path = pathlib.Path.joinpath(destination_path_object, f"{toolset_name}.zip")
     response = requests.get(f"https://github.com/aheadlabs/devops-toolset/archive/{branch}.zip")
 
+    if not os.path.exists(destination_path):
+        os.mkdir(destination_path)
     with open(full_destination_path, "wb") as zip_file:
         zip_file.write(response.content)
 
