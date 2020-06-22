@@ -1,11 +1,11 @@
 """Unit tests for the rollback_database file"""
 
 from unittest.mock import patch
-import wordpress.rollback_database as sut
+import project_types.wordpress.rollback_database as sut
 
 
-@patch("wordpress.wp_cli.import_database")
-@patch("wordpress.wp_cli.reset_database")
+@patch("project_types.wordpress.wp_cli.import_database")
+@patch("project_types.wordpress.wp_cli.reset_database")
 def test_main(reset_database, import_database):
     """Given arguments, then calls all needed WP CLI commands."""
 

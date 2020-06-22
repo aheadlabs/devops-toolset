@@ -6,15 +6,15 @@ import os
 import stat
 import pathlib
 import tools.cli as cli
-import wordpress.wptools as wptools
+import project_types.wordpress.wptools as wptools
 import filesystem.paths
 import sys
 import tools.git
 from core.app import App
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
-from wordpress.commands import Commands as WordpressCommands
+from project_types.wordpress.commands import Commands as WordpressCommands
 from enum import Enum
 
 app: App = App()

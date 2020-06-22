@@ -3,11 +3,11 @@
 import filesystem.paths as paths
 import json
 import pathlib
-from wordpress.basic_structure_starter import BasicStructureStarter
+from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])

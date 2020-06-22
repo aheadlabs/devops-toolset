@@ -8,8 +8,8 @@ from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from tools.commands import Commands as ToolsCommands
 from tools.Literals import Literals as ToolsLiterals
-from wordpress.Literals import Literals as WordpressLiterals
-from wordpress import wp_cli
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress import wp_cli
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals, ToolsLiterals])

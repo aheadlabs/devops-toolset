@@ -2,9 +2,9 @@
 import os
 from unittest.mock import patch, call, mock_open
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
-from wordpress.tests.conftest import mocked_requests_get
-from wordpress.basic_structure_starter import BasicStructureStarter
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.tests.conftest import mocked_requests_get
+from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 
 import filesystem.paths as path_tools
 import pathlib

@@ -3,12 +3,12 @@
 import pytest
 import json
 import pathlib
-import wordpress.wptools as sut
-from wordpress.basic_structure_starter import BasicStructureStarter
+import project_types.wordpress.wptools as sut
+from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open
-from wordpress.tests.conftest import WordPressData
+from project_types.wordpress.tests.conftest import WordPressData
 
 literals = LiteralsCore([WordpressLiterals])
 
@@ -162,8 +162,8 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 # region get_site_configuration_from_environment()
 
 
-@patch("wordpress.wptools.get_site_configuration")
-@patch("wordpress.wptools.get_site_configuration_path_from_environment")
+@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
 def test_get_site_configuration_from_environment(
         get_site_configuration_path_from_environment, get_site_configuration, wordpressdata):
     """Given environment data, calls get_site_configuration with the correct

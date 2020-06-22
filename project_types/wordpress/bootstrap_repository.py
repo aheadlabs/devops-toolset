@@ -25,14 +25,14 @@ import os
 import requests
 import tools.argument_validators
 import tools.cli
-import wordpress.constants as constants
-import wordpress.wptools
+import project_types.wordpress.constants as constants
+import project_types.wordpress.wptools
 from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
 from devops_platforms.constants import Urls
 from tools import git
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
@@ -79,7 +79,8 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
             fw.write(response.content)
 
     # Determine required file paths
-    required_file_paths = wordpress.wptools.get_required_file_paths(project_path, required_files_pattern_suffixes)
+    required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
+        project_path, required_files_pattern_suffixes)
 
     # Create project structure
     # TODO(ivan.sainz) Create project structure

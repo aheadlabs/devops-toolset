@@ -11,11 +11,11 @@ Args:
 import argparse
 import tools.argument_validators
 import tools.cli
-import wordpress.wptools
-import wordpress.wp_cli
+import project_types.wordpress.wptools
+import project_types.wordpress.wp_cli
 from core.app import App
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
@@ -26,13 +26,14 @@ def main(wordpress_path, environment_path, environment_name):
 
     # Get path to site configuration file from the environment file
     site_configuration_path: str = \
-        wordpress.wptools.get_site_configuration_path_from_environment(environment_path, environment_name)
+        project_types.wordpress.wptools.get_site_configuration_path_from_environment(
+            environment_path, environment_name)
 
     # Get site configuration from file
-    site_configuration: dict = wordpress.wptools.get_site_configuration(site_configuration_path)
+    site_configuration: dict = project_types.wordpress.wptools.get_site_configuration(site_configuration_path)
 
     # Download WordPress core files based on site configuration
-    wordpress.wp_cli.download_wordpress(site_configuration, wordpress_path)
+    project_types.wordpress.wp_cli.download_wordpress(site_configuration, wordpress_path)
 
 
 if __name__ == "__main__":

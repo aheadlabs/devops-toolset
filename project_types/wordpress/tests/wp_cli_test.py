@@ -4,15 +4,15 @@ import stat
 import pytest
 import pathlib
 import json
-import wordpress.wp_cli as sut
-import wordpress.wptools as wptools
+import project_types.wordpress.wp_cli as sut
+import project_types.wordpress.wptools as wptools
 from core.app import App
 from unittest.mock import patch, mock_open, call, ANY
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
 from core.CommandsCore import CommandsCore
-from wordpress.commands import Commands as WordpressCommands
-from wordpress.tests.conftest import mocked_requests_get
+from project_types.wordpress.commands import Commands as WordpressCommands
+from project_types.wordpress.tests.conftest import mocked_requests_get
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
@@ -115,7 +115,7 @@ def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_m
 
 
 @patch("pathlib.Path")
-@patch("wordpress.wp_cli.create_wp_cli_bat_file")
+@patch("project_types.wordpress.wp_cli.create_wp_cli_bat_file")
 @patch("tools.cli.call_subprocess")
 def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(
         subprocess_mock, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
@@ -137,7 +137,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
 
 
 @patch("pathlib.Path")
-@patch("wordpress.wp_cli.create_wp_cli_bat_file")
+@patch("project_types.wordpress.wp_cli.create_wp_cli_bat_file")
 @patch("tools.cli.call_subprocess")
 def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
         subprocess_mock, create_wp_cli_bat_file, pathlib_mock, wordpressdata):

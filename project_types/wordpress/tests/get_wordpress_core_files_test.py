@@ -3,15 +3,15 @@
 from unittest.mock import patch
 import json
 from core.LiteralsCore import LiteralsCore
-from wordpress.Literals import Literals as WordpressLiterals
-import wordpress.get_wordpress_core_files as sut
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+import project_types.wordpress.get_wordpress_core_files as sut
 
 literals = LiteralsCore([WordpressLiterals])
 
 
-@patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.wptools.get_site_configuration")
-@patch("wordpress.wptools.get_site_configuration_path_from_environment")
+@patch("project_types.wordpress.wp_cli.download_wordpress")
+@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_get_site_configuration_path_from_environment(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
@@ -30,9 +30,9 @@ def test_main_given_parameters_must_call_get_site_configuration_path_from_enviro
     get_site_config_path.assert_called_with(environment_path, environment_name)
 
 
-@patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.wptools.get_site_configuration")
-@patch("wordpress.wptools.get_site_configuration_path_from_environment")
+@patch("project_types.wordpress.wp_cli.download_wordpress")
+@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_get_site_configuration(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
@@ -51,9 +51,9 @@ def test_main_given_parameters_must_call_get_site_configuration(
     get_site_config.assert_called()
 
 
-@patch("wordpress.wp_cli.download_wordpress")
-@patch("wordpress.wptools.get_site_configuration")
-@patch("wordpress.wptools.get_site_configuration_path_from_environment")
+@patch("project_types.wordpress.wp_cli.download_wordpress")
+@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
 def test_main_given_parameters_must_call_download_wordpress(
         get_site_config_path, get_site_config, download_wordpress, wordpressdata):
     """Given arguments, must call get_site_configuration_path_from_environment
