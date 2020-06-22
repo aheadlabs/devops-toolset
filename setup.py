@@ -8,7 +8,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
-    author='Iván Sainz | Alberto Carbonell',
+    author='Ivan Sainz | Alberto Carbonell',
     author_email='',
     description='General purpose DevOps-related scripts and tools.',
 )
