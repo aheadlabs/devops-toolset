@@ -15,9 +15,7 @@ import zipfile
 
 logging.basicConfig(level=logging.INFO)
 logging.Formatter("%(asctime)s %(levelname)-8s %(module)-15s %(message)s")
-console_handler = logging.StreamHandler()
 logger = logging.getLogger(__name__)
-logger.addHandler(console_handler)
 
 
 # TODO(ivan.sainz) Unit tests
