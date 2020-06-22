@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-06-23 01:03+0200\n"
+"POT-Creation-Date: 2020-06-23 01:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,60 +43,6 @@ msgid "Project path is {path}."
 msgstr ""
 
 msgid "Path must be a dir, not a file."
-msgstr ""
-
-msgid "Purging .gitkeep file at {path}"
-msgstr ""
-
-msgid "The repository is going to be created"
-msgstr ""
-
-msgid "The repository has been created"
-msgstr ""
-
-msgid "The path specified in the {argument} argument is invalid or does not exist."
-msgstr ""
-
-msgid "Do you want me to initialize a local Git repository for you?"
-msgstr ""
-
-msgid "Adding files to the stage"
-msgstr ""
-
-msgid "Added files to the stage"
-msgstr ""
-
-msgid "File project structure created"
-msgstr ""
-
-msgid "Creating file project structure commit"
-msgstr ""
-
-msgid "Committed project structure files"
-msgstr ""
-
-msgid "Changing branch to master"
-msgstr ""
-
-msgid "Changed branch to master successfully"
-msgstr ""
-
-msgid "Git error: repository couldn't be created"
-msgstr ""
-
-msgid "Path must be an existent dir."
-msgstr ""
-
-msgid "RegEx must have 1 capture group. No less, no more."
-msgstr ""
-
-msgid "Git error: project structure files couldn't be committed"
-msgstr ""
-
-msgid "Files couldn't be staged"
-msgstr ""
-
-msgid "Changing to master branch couldn't be done"
 msgstr ""
 
 msgid "WordPress core"
@@ -172,6 +118,9 @@ msgstr ""
 msgid "Required files are mandatory. I cannot continue."
 msgstr ""
 
+msgid "Path must be an existent dir."
+msgstr ""
+
 msgid "Environment not found in the environments JSON file."
 msgstr ""
 
@@ -191,5 +140,56 @@ msgid "Transients could not be deleted"
 msgstr ""
 
 msgid "Dump could not be done"
+msgstr ""
+
+msgid "Purging .gitkeep file at {path}"
+msgstr ""
+
+msgid "The repository is going to be created"
+msgstr ""
+
+msgid "The repository has been created"
+msgstr ""
+
+msgid "The path specified in the {argument} argument is invalid or does not exist."
+msgstr ""
+
+msgid "Do you want me to initialize a local Git repository for you?"
+msgstr ""
+
+msgid "Adding files to the stage"
+msgstr ""
+
+msgid "Added files to the stage"
+msgstr ""
+
+msgid "File project structure created"
+msgstr ""
+
+msgid "Creating file project structure commit"
+msgstr ""
+
+msgid "Committed project structure files"
+msgstr ""
+
+msgid "Changing branch to master"
+msgstr ""
+
+msgid "Changed branch to master successfully"
+msgstr ""
+
+msgid "Git error: repository couldn't be created"
+msgstr ""
+
+msgid "RegEx must have 1 capture group. No less, no more."
+msgstr ""
+
+msgid "Git error: project structure files couldn't be committed"
+msgstr ""
+
+msgid "Files couldn't be staged"
+msgstr ""
+
+msgid "Changing to master branch couldn't be done"
 msgstr ""
 
