@@ -22,7 +22,6 @@ steps:
       configFile: '.devops/sonar-project.properties'
       extraProperties: |
         sonar.pullrequest.branch=$(CURRENT_BRANCH)
-        sonar.pullrequest.base=dev
   - task: SonarCloudAnalyze@1
     displayName: Run SonarCloud analysis
   - task: SonarCloudPublish@1
