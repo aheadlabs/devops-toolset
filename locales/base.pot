@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-06-23 01:44+0200\n"
+"POT-Creation-Date: 2020-06-24 00:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,6 +40,9 @@ msgid "Created environment variable {key} with value {value}"
 msgstr ""
 
 msgid "Project path is {path}."
+msgstr ""
+
+msgid "Composer file path is {path}."
 msgstr ""
 
 msgid "Path must be a dir, not a file."
@@ -106,6 +109,18 @@ msgstr ""
 msgid "Dump done successfully"
 msgstr ""
 
+msgid "Do you want me to initialize a local Git repository for you?"
+msgstr ""
+
+msgid "Creating wp-config.php..."
+msgstr ""
+
+msgid "File wp-config.php created successfully."
+msgstr ""
+
+msgid "Config value {name} set as {value}"
+msgstr ""
+
 msgid "wordpress-path is a mandatory parameter. I cannot continue."
 msgstr ""
 
@@ -142,6 +157,12 @@ msgstr ""
 msgid "Dump could not be done"
 msgstr ""
 
+msgid "File wp-config.php cannot be created."
+msgstr ""
+
+msgid "Cannot set {name} property as {value}"
+msgstr ""
+
 msgid "Purging .gitkeep file at {path}"
 msgstr ""
 
@@ -152,9 +173,6 @@ msgid "The repository has been created"
 msgstr ""
 
 msgid "The path specified in the {argument} argument is invalid or does not exist."
-msgstr ""
-
-msgid "Do you want me to initialize a local Git repository for you?"
 msgstr ""
 
 msgid "Adding files to the stage"
