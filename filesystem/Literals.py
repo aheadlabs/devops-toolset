@@ -11,7 +11,8 @@ class Literals(ValueDictsBase):
 
     _titles = {}
     _info = {
-        "fs_project_path_is": _("Project path is {path}.")
+        "fs_project_path_is": _("Project path is {path}."),
+        "fs_composer_path_is": _("Composer file path is {path}."),
     }
     _errors = {
         "fs_not_dir": _("Path must be a dir, not a file."),
