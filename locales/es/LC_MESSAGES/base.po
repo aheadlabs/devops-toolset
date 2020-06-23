@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-06-02 10:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:14
+msgid "Getting quality gate for branch {branch} (original name)."
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:15
+msgid "Pull request mode: {pull_request}"
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:16
+msgid "Using {file} as the Sonar* configuration file."
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:17
+msgid "Quality gate succeeded"
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:18
+msgid ""
+"This is the JSON data returned by Sonar*:\n"
+"\n"
+"{json}"
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\Literals.py:21
+msgid ""
+"Invalid metric value for {metricKey}: {actualValue} {comparator} "
+"{errorThreshold}"
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\devops\azuredevops\Literals.py:14
+msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\tools\Literals.py:16
+msgid "RegEx must have 1 capture group. No less, no more."
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\wordpress\Literals.py:15
+msgid "wordpress-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\wordpress\Literals.py:16
+msgid "environment-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+#: C:\Workspace\_devops-toolset\wordpress\Literals.py:17
+msgid "environment-name is a mandatory parameter. I cannot continue."
+msgstr ""

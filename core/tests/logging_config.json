@@ -1,0 +1,1 @@
+{"logging":{"version":1,"handlers":{"null":{"class":"logging.NullHandler","formatter":"default"}},"formatters":{"brief":{"format":"%(message)s"},"root":{"handlers":["null"],"level":"ERROR"}}}}

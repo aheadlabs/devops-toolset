@@ -1,0 +1,26 @@
+steps:
+  - task: CopyFiles@2
+    displayName: Copy files to artifact folder
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)'
+      Contents: |
+        **
+        !.git/**
+        !.devops/**
+        !.media/**
+        !.gitignore
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/_artifact'
+  - task: ArchiveFiles@2
+    displayName: Zip artifact files
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_artifact'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+      replaceExistingArchive: true
+  - task: PublishBuildArtifacts@1
+    displayName: Publish artifact devops-toolset
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+      ArtifactName: 'devops-toolset'
+      publishLocation: 'Container'

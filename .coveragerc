@@ -1,0 +1,27 @@
+# Configuration file for coverage.py and pytest-cov
+
+[run]
+branch = true
+data_file = .pytest/.coverage
+omit = 
+    **/__init__.py
+    **/conftest.py
+    setup.py
+    tools/argument_validators.py
+
+[report]
+exclude_lines =
+    if __name__ == "__main__":
+skip_covered = true
+
+[html]
+directory = .pytest/htmlcov/
+extra_css = .devops/coverage-report.css
+title = devops-toolset unit test coverage report
+
+[xml]
+output = .pytest/coverage.xml
+
+[json]
+output = .pytest/coverage.json
+pretty_print = true

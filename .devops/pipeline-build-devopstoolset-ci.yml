@@ -1,4 +1,4 @@
-# Pipeline /.devops/pipeline-build-devops-ci.yml
+# Pipeline /.devops/pipeline-build-devopstoolset-ci.yml
 
 trigger:
   batch: true
@@ -15,57 +15,17 @@ pr:
       - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 name: CI-$(date:yyyyMMdd)$(rev:.r)
 jobs:
-  - job: Package
-    displayName: Package job
+  - job: Main
+    displayName: Main job
     steps:
-    - task: PowerShell@2
-      displayName: Parse project.xml
-      inputs:
-        filePath: '$(System.DefaultWorkingDirectory)/file-system/Read-ProjectXml.ps1'
-        arguments: '-DevOpsPlatformCode ADO'
-    - task: SonarCloudPrepare@1
-      displayName: Prepare SonarCloud analysis
-      inputs:
-        SonarCloud: 'SonarCloud'
-        organization: 'ahead-labs'
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'devops-toolset'
-        cliProjectName: 'devops-toolset'
-        cliProjectVersion: 
-        cliSources: '.'
-    - task: SonarCloudAnalyze@1
-      displayName: Run SonarCloud analysis
-    - task: SonarCloudPublish@1
-      displayName: Publish SonarCloud quality gate results
-      inputs:
-        pollingTimeoutSec: '300'
-    - task: CopyFiles@2
-      displayName: Copy files to artifact folder
-      inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)'
-        Contents: |
-          **
-          !.git/**
-          !.devops/**
-          !.media/**
-          !.gitignore
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/_artifact'
-    - task: ArchiveFiles@2
-      displayName: Zip artifact files
-      inputs:
-        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_artifact'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
-        replaceExistingArchive: true
-    - task: PublishBuildArtifacts@1
-      displayName: Publish artifact devops-toolset
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
-        ArtifactName: 'devops-toolset'
-        publishLocation: 'Container'
+    - template: pipeline-template-python-setup.yml
+    - template: pipeline-template-i18n.yml
+    - template: pipeline-template-project-info.yml
+    - template: pipeline-template-unit-tests.yml
+    - template: pipeline-template-sonarcloud.yml
+    - template: pipeline-template-artifacts.yml
+    - template: pipeline-template-intellicode.yml

@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-06-23 01:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+msgid "Getting quality gate for branch {branch} (original name)."
+msgstr ""
+
+msgid "Pull request mode: {pull_request}"
+msgstr ""
+
+msgid "Using {file} as the Sonar* configuration file."
+msgstr ""
+
+msgid "Quality gate succeeded"
+msgstr ""
+
+msgid ""
+"This is the JSON data returned by Sonar*:\n"
+"\n"
+"{json}"
+msgstr ""
+
+msgid "Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}"
+msgstr ""
+
+msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
+msgid "Project path is {path}."
+msgstr ""
+
+msgid "Path must be a dir, not a file."
+msgstr ""
+
+msgid "WordPress core"
+msgstr ""
+
+msgid ""
+"WordPress\n"
+"existing repo"
+msgstr ""
+
+msgid ""
+"WordPress\n"
+"database rollback"
+msgstr ""
+
+msgid "Resetting the database (drop and create)..."
+msgstr ""
+
+msgid "Database could not be reset due to an error."
+msgstr ""
+
+msgid "Importing database dump from file:"
+msgstr ""
+
+msgid "Dump file could not be imported due to an error."
+msgstr ""
+
+msgid "Downloading WP-CLI from {url}"
+msgstr ""
+
+msgid "WP-CLI installation was successful."
+msgstr ""
+
+msgid "Here is the WP-CLI information:"
+msgstr ""
+
+msgid "Remember to add the path to the PATH or BIN, depending on your operating system."
+msgstr ""
+
+msgid "Downloading WordPress core files version {version}, locale {locale}"
+msgstr ""
+
+msgid "Downloading WordPress content (default themes and plugins): {content}"
+msgstr ""
+
+msgid "WordPress core destination path: {path}"
+msgstr ""
+
+msgid "WordPress core files were successfully downloaded."
+msgstr ""
+
+msgid "These are the default files from the GitHub repository:"
+msgstr ""
+
+msgid "Do you want me to use the default ones instead for those missing files?"
+msgstr ""
+
+msgid "Transients are going to be deleted"
+msgstr ""
+
+msgid "Dump done successfully"
+msgstr ""
+
+msgid "wordpress-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "environment-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "environment-name is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "Required files are mandatory. I cannot continue."
+msgstr ""
+
+msgid "Path must be an existent dir."
+msgstr ""
+
+msgid "Environment not found in the environments JSON file."
+msgstr ""
+
+msgid "There are more than 1 matching environments in the environments JSON file."
+msgstr ""
+
+msgid "WordPress core files could not be downloaded."
+msgstr ""
+
+msgid "The following required files where not found at {path}:"
+msgstr ""
+
+msgid "The required files where not found at {path}."
+msgstr ""
+
+msgid "Transients could not be deleted"
+msgstr ""
+
+msgid "Dump could not be done"
+msgstr ""
+
+msgid "Purging .gitkeep file at {path}"
+msgstr ""
+
+msgid "The repository is going to be created"
+msgstr ""
+
+msgid "The repository has been created"
+msgstr ""
+
+msgid "The path specified in the {argument} argument is invalid or does not exist."
+msgstr ""
+
+msgid "Do you want me to initialize a local Git repository for you?"
+msgstr ""
+
+msgid "Adding files to the stage"
+msgstr ""
+
+msgid "Added files to the stage"
+msgstr ""
+
+msgid "File project structure created"
+msgstr ""
+
+msgid "Creating file project structure commit"
+msgstr ""
+
+msgid "Committed project structure files"
+msgstr ""
+
+msgid "Changing branch to master"
+msgstr ""
+
+msgid "Changed branch to master successfully"
+msgstr ""
+
+msgid "Git error: repository couldn't be created"
+msgstr ""
+
+msgid "RegEx must have 1 capture group. No less, no more."
+msgstr ""
+
+msgid "Git error: project structure files couldn't be committed"
+msgstr ""
+
+msgid "Files couldn't be staged"
+msgstr ""
+
+msgid "Changing to master branch couldn't be done"
+msgstr ""
+

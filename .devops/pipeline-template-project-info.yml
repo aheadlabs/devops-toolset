@@ -1,0 +1,17 @@
+steps:
+  - task: PythonScript@0
+    displayName: Get current branch
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        import tools.git
+        tools.git.set_current_branch_simplified("$(Build.SourceBranch)", "CURRENT_BRANCH")
+      failOnStderr: true
+  - task: PythonScript@0
+    displayName: Parse project.xml
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        import filesystem.paths
+        filesystem.paths.get_project_xml_data()
+      failOnStderr: true
