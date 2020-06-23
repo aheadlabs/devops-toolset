@@ -12,7 +12,7 @@ platform_specific = app.load_platform_specific("environment")
 literals = LiteralsCore([FileSystemLiterals])
 
 
-def get_project_xml_data(add_environment_variables: bool = True, project_xml_path: str = None) -> dict:
+def parse_project_xml_data(add_environment_variables: bool = True, project_xml_path: str = None) -> dict:
     """Reads the /project.xml file and returns a dict with its data.
 
     XML elements are upper cased, underscored and prepended with parent name.
