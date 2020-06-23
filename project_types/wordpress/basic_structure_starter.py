@@ -21,9 +21,9 @@ class BasicStructureStarter(object):
         # Set paths
         base_path = pathlib.Path(base_path_str)
         final_path = pathlib.Path.joinpath(base_path, item["name"])
-        has_children = "children" in item
-        if has_children:
-            child_condition = self.condition_met(item["children"][0], base_path_str)
+        has_condition = "condition" in item
+        if has_condition:
+            child_condition = self.condition_met(item, base_path_str)
         else:
             child_condition = True
         # Only if the item DOES NOT exist and condition is met
@@ -38,7 +38,7 @@ class BasicStructureStarter(object):
                         new_file.write(self.get_default_content(item["default_content"]))
 
         # Iterate through children if any
-        if has_children:
+        if "children" in item:
             for child in item["children"]:
                 self.add_item(child, final_path)
 
@@ -52,7 +52,7 @@ class BasicStructureStarter(object):
         """
 
         if "condition" in item and item["condition"] == "when-parent-not-empty":
-            return path_tools.is_empty_dir(base_path)
+            return not path_tools.is_empty_dir(str(pathlib.Path(base_path).parent))
         # Default behaviour
         return True
 

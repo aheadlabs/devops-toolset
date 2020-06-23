@@ -1,9 +1,11 @@
 """Contains several tools for WordPress"""
+import os
 
 import filesystem.paths as paths
 import json
 import pathlib
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
+import project_types.wordpress.wp_cli as wp_cli
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
@@ -38,6 +40,13 @@ def convert_wp_parameter_yes(value: bool):
     """Converts a boolean value to a --yes string."""
     if value:
         return "--yes"
+    return ""
+
+
+def convert_wp_parameter_skip_check(value: bool):
+    """Converts a boolean value to a --skip-check string."""
+    if value:
+        return "--skip-check"
     return ""
 
 
@@ -185,6 +194,42 @@ def get_site_environments(path: str) -> dict:
     pass
 
 
+def get_wordpress_path_from_root_path(path) -> str:
+    """ Gets the wordpress path based on the constants.json from a desired root path 
+    
+    Args:
+        path: Full path of the project
+    """
+    # Add constants
+    wp_constants = get_constants("wordpress-constants.json")
+    # Get wordpress path from the constants
+    wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
+    wordpress_path = os.path.join(path, wordpress_relative_path)
+    return wordpress_path
+
+
+def set_wordpress_config(wordpress_path: str, environment_path: str, environment_name: str, db_user_password: str) -> None:
+    """ Sets all configuration parameters in pristine WordPress core files
+    Args:
+        root-wordpress_path: Wordpress installation path.
+        environment-path: Path to the environment JSON file.
+        environment-name: Environment name.
+        db-user_password: Database user password.
+
+    """
+    
+    # Parse site configuration
+    site_config_path = get_site_configuration_path_from_environment(environment_path, environment_name)
+    site_config_data = get_site_configuration(site_config_path)
+    # Create wp-config.php file
+    wp_cli.create_configuration_file(site_config_data, wordpress_path, db_user_password)
+    # Get config properties to set from site configuration
+    wp_config_properties = get_site_configuration(site_config_path)["settings"]["wp_config"]
+    # Foreach variable to set: execute wp config set
+    for prop in wp_config_properties.values():
+        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), root_path)
+
+
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
     """ Creates a basic structure of a wordpress project based on the project-structure.json
 
@@ -201,4 +246,8 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
 
 
 if __name__ == "__main__":
+    root_path = r"D:\\temp"
+    project_structure_path = "default-wordpress-project-structure.json"
+    # start_basic_project_structure(root_path, project_structure_path)
+    set_wordpress_config(root_path, "default-site-environments.json", "localhost", "root")
     help(__name__)

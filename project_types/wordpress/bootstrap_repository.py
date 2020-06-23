@@ -82,8 +82,14 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
         project_path, required_files_pattern_suffixes)
 
+    # Parsing site configuration file
+    site_config = wordpress.wptools.get_site_configuration(required_file_paths[0])
+
+    # Get wordpress future path (from the constants.json file)
+    wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(project_path)
+
     # Create project structure
-    # TODO(ivan.sainz) Create project structure
+    wordpress.wptools.start_basic_project_structure(project_path, required_file_paths[2])
 
     # Move devops-toolset to .devops
     # TODO(ivan.sainz) Move devops-toolset to .devops
@@ -92,10 +98,10 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # TODO(ivan.sainz) Move themes to content/themes
 
     # Download WordPress core files
-    # TODO(ivan.sainz) Download WordPress core files
+    wp_cli.download_wordpress(site_config, wordpress_path)
 
     # Configure WordPress site
-    # TODO(ivan.sainz) Configure WordPress site
+    wordpress.wptools.set_wordpress_config(wordpress_path, required_file_paths[1], "localhost", db_user_password)
 
     # Install WordPress site
     # TODO(ivan.sainz) Install WordPress site
