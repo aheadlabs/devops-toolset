@@ -38,3 +38,7 @@ def parse_project_xml_data(add_environment_variables: bool = True, project_xml_p
         platform_specific.create_environment_variables(environment_variables)
 
     return environment_variables
+
+
+if __name__ == "__main__":
+    help(__name__)

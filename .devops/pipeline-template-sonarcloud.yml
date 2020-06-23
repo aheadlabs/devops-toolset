@@ -31,6 +31,7 @@ steps:
       pollingTimeoutSec: '300'
   - task: PythonScript@0
     displayName: Get quality gate status from SonarCloud
+    enabled: false
     inputs:
       scriptSource: 'inline'
       script: |

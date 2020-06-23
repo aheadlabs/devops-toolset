@@ -12,6 +12,6 @@ steps:
     inputs:
       scriptSource: 'inline'
       script: |
-        import filesystem.paths
-        filesystem.paths.get_project_xml_data()
+        import filesystem.parsers
+        filesystem.parsers.parse_project_xml_data()
       failOnStderr: true
