@@ -43,7 +43,24 @@ def create_configuration_file(site_configuration: dict, wordpress_path: str, dat
         database_user_password: Password for the database user configured in at
             the wp-config.php file.
     """
-    pass
+    database_props = site_configuration["database"]
+    skip_check = wptools.convert_wp_parameter_skip_check(database_props["skip_check"])
+    debug_info = wptools.convert_wp_parameter_debug(site_configuration["wp_cli"]["debug"])
+    tools.cli.call_subprocess(commands.get("wpcli_config_create").format(
+        path=wordpress_path,
+        db_host=database_props["host"],
+        db_name=database_props["name"],
+        db_user=database_props["user"],
+        db_pass=database_user_password,
+        db_prefix=database_props["prefix"],
+        db_charset=database_props["charset"],
+        db_collate=database_props["collate"],
+        skip_check=skip_check,
+        debug_info=debug_info
+    ), log_before_process=[literals.get("wp_wpcli_creating_config")],
+        log_after_out=[literals.get("wp_wpcli_config_created_ok")],
+        log_after_err=[literals.get("wp_wpcli_config_create_err")]
+    )
 
 
 def create_wp_cli_bat_file(phar_path: str):
@@ -62,9 +79,7 @@ def create_wp_cli_bat_file(phar_path: str):
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):
-    """Downloads the latest version of the WordPress core files using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
+    """ Downloads the latest version of the WordPress core files using WP-CLI.
 
     For more information see:
         https://developer.wordpress.org/cli/commands/core/download/
@@ -130,14 +145,10 @@ def import_database(wordpress_path: str, dump_file_path: str):
 
     All parameters are obtained from a site configuration file.
 
-    For more information see:
-        https://developer.wordpress.org/cli/commands/db/import/
-
     Args:
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to dump file to be imported.
     """
-
     dump_file_path_as_posix = str(pathlib.Path(dump_file_path).as_posix())
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
@@ -217,8 +228,6 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
 def reset_database(wordpress_path: str, quiet: bool):
     """Removes all WordPress core tables from the database using WP-CLI.
 
-    All parameters are obtained from a site configuration file.
-
     For more information see:
         https://developer.wordpress.org/cli/commands/db/reset/
 
@@ -229,8 +238,8 @@ def reset_database(wordpress_path: str, quiet: bool):
 
     cli.call_subprocess(commands.get("wpcli_db_reset").format(
         path=wordpress_path, yes=wptools.convert_wp_parameter_yes(quiet)),
-                        log_before_process=[literals.get("wp_wpcli_db_reset_before")],
-                        log_after_err=[literals.get("wp_wpcli_db_reset_error")])
+        log_before_process=[literals.get("wp_wpcli_db_reset_before")],
+        log_after_err=[literals.get("wp_wpcli_db_reset_error")])
 
 
 def reset_transients(wordpress_path: str):
@@ -250,15 +259,27 @@ def set_configuration_value(name: str, value: str, value_type: ValueType, wordpr
     WordPress configuration file using WP-CLI.
 
     For more information see:
-        https://developer.wordpress.org/cli/commands/config/set/
+        https://developer.wordpress.org/cli/commands/db/import/
 
-    Args:
-        name: Name for the constant or variable.
-        value: Value for the constant or variable.
-        value_type: Type to be created (constant or value).
-        wordpress_path: Path to WordPress files.
+        Args:
+            name: Name of the parameter
+            value: Value of the parameter
+            value_type: CONSTANT or VARIABLE
+            with_debug: Toggles --debug_info as a parameter inside the command.
     """
-    pass
+    debug_info = wptools.convert_wp_parameter_debug(with_debug)
+    # This value will place the value as it gets, without quotes
+    raw = "--raw" if type(value) is not str else ""
+    tools.cli.call_subprocess(commands.get("wpcli_config_set").format(
+        name=name,
+        value=value,
+        raw=raw,
+        type=value_type,
+        path=wordpress_path,
+        debug_info=debug_info
+    ),  log_after_out=[literals.get("wp_wpcli_setting_value_ok")],
+        log_after_err=[literals.get("wp_wpcli_config_set_value_err")]
+    )
 
 
 def set_database_configuration(site_configuration: dict, wordpress_path: str, database_user_password: str):

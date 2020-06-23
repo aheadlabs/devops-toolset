@@ -31,6 +31,10 @@ class Literals(ValueDictsBase):
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wpcli_delete_transients": _("Transients are going to be deleted"),
         "wp_backup_create": _("Dump done successfully"),
+        "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
+        "wp_wpcli_creating_config": _("Creating wp-config.php..."),
+        "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
+        "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
     }
     _errors = {
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),
@@ -46,4 +50,6 @@ class Literals(ValueDictsBase):
         "wp_required_files_not_found": _("The required files where not found at {path}."),
         "wp_wpcli_delete_transients_err": _("Transients could not be deleted"),
         "wp_err_backup_create": _("Dump could not be done"),
+        "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
+        "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}")
     }
