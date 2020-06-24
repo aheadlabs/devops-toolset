@@ -80,9 +80,21 @@ def is_valid_path(path: str) -> bool:
     return True
 
 
+class PathValidator(argparse.Action):
+    """Validates a path"""
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        super(PathValidator, self).__init__(option_strings, dest.replace("-", "_"), **kwargs)
+
+    def __call__(self, parent_parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, values)
+
+        if not is_valid_path(values):
+            raise ValueError("The argument {argument} is not valid.".format(argument=self.dest))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("destination-path")
+    parser.add_argument("destination-path", action=PathValidator)
     parser.add_argument("--branch", default="master")
     args, args_unknown = parser.parse_known_args()
 
