@@ -39,6 +39,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
 
     url = f"{sonar_url}{Urls.SONAR_QUALITY_GATE_PARTIAL_URL}{sonar_project_key}{branch_segment}"
+    logging.info(literals.get("sonar_qg_url").format(url=url))
 
     response = requests.get(url, headers=headers)
     quality_gate_data = response.json()
