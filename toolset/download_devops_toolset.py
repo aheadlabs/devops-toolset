@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # TODO(ivan.sainz) Unit tests
 def main(destination_path: str, branch: str):
-    """Rollbacks a database using a dump, dropping and re-creating the database
+    """Downloads devops-toolset from the GitHub repository
 
     Args:
         destination_path: Path where devops-toolset will be downloaded and
