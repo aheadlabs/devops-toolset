@@ -19,5 +19,6 @@ class Literals(ValueDictsBase):
         "sonar_qg_url": _("Request URL:\n{url}")
     }
     _errors = {
-        "sonar_invalid_metric": _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}")
+        "sonar_invalid_metric": _("Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}"),
+        "sonar_unexpected_status_code": _("Status code got from Sonar* was not 200. Please check it out."),
     }

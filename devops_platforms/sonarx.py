@@ -3,12 +3,13 @@
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from devops_platforms.Literals import Literals as DevopsLiterals
-import requests
-import configparser
-import logging
 from tools.xcoding64 import encode
 from devops_platforms.constants import Urls
 from tools.git import simplify_branch_name
+import configparser
+import core.log_tools
+import logging
+import requests
 
 app: App = App()
 literals = LiteralsCore([DevopsLiterals])
@@ -27,6 +28,10 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
         pull_request: True if the analysis was originated by a pull request.
     """
 
+    core.log_tools.log_indented_list(literals.get("function_params"),
+                                     core.log_tools.get_parameter_value_list(locals()),
+                                     core.log_tools.LogLevel.info)
+
     token_base64 = encode(f"{token}:")
     basic_auth_token = f"Basic {token_base64}"
     headers = {"Authorization": basic_auth_token}
@@ -42,6 +47,9 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     logging.info(literals.get("sonar_qg_url").format(url=url))
 
     response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise ValueError(literals.get("sonar_unexpected_status_code"))
+
     quality_gate_data = response.json()
     logging.info(literals.get("sonar_qg_json").format(json=quality_gate_data))
 
@@ -96,6 +104,7 @@ def generate_branch_segment(branch: str = "master", pull_request: bool = False):
     branch = simplify_branch_name(branch)
 
     if pull_request:
+        branch = branch.replace("pull/", "")
         return f"&pullRequest={branch}"
     else:
         return f"&branch={branch}"
