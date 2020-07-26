@@ -50,7 +50,27 @@ def log_indented_list(header: str, list_values: List[str], level: LogLevel):
         level: Logging level.
     """
 
-    logging.log(level.value[0], header)
+    if list_values:
 
-    for value in list_values:
-        logging.log(level.value[0], f"\t{value}")
+        logging.log(level.value[0], header)
+
+        for value in list_values:
+            logging.log(level.value[0], f"\t{value}")
+
+
+def get_parameter_value_list(local_values: dict) -> List:
+    """Creates a list with all parameter values.
+
+    Args:
+        local_values: locals from the function.
+
+    Returns:
+        List with argument name and value pairs.
+    """
+
+    argument_list = []
+
+    for key, value in local_values.items():
+        argument_list.append(f"{key} = {value}")
+
+    return argument_list
