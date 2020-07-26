@@ -24,6 +24,8 @@ class LiteralsCore(ValueDictsBase):
     """
 
     # Add your core literal dictionaries here
+    _debug = {
+        "function_params": _("Parameters passed to the function:"),
+    }
     _info = {}
-
     _errors = {}
