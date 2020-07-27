@@ -11,7 +11,7 @@ class LogLevel(Enum):
     error = 40,
     warning = 30,
     info = 20,
-    debug = 10
+    debug = 10,
 
 
 def log_list(logs_list: List[str], level: LogLevel):
