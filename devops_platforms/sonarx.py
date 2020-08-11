@@ -48,7 +48,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
-        raise ValueError(literals.get("sonar_unexpected_status_code"))
+        raise ValueError(literals.get("sonar_unexpected_status_code").format(statusCode=response.status_code))
 
     quality_gate_data = response.json()
     logging.info(literals.get("sonar_qg_json").format(json=quality_gate_data))
