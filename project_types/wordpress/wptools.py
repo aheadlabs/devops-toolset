@@ -1,9 +1,11 @@
 """Contains several tools for WordPress"""
 import os
 
+import requests
 import filesystem.paths as paths
 import json
 import pathlib
+from project_types.wordpress.constants import wordpress_constants_json_resource
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 import project_types.wordpress.wp_cli as wp_cli
 from core.app import App
@@ -50,21 +52,21 @@ def convert_wp_parameter_skip_check(value: bool):
     return ""
 
 
-def get_constants(path: str) -> dict:
+def get_constants(resource: str) -> dict:
     """Gets all the constants from a WordPress constants file.
 
     For more information see:
         http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json
 
     Args:
-        path: Full path to the WordPress constants file.
+        resource: Full resource url to the WordPress constants file.
 
     Returns:
         All the constants in a dict object.
     """
 
-    with open(path, "r") as constants:
-        data = json.loads(constants.read())
+    response = requests.get(resource)
+    data = json.loads(response.content)
 
     return data
 
@@ -201,7 +203,7 @@ def get_wordpress_path_from_root_path(path) -> str:
         path: Full path of the project
     """
     # Add constants
-    wp_constants = get_constants("wordpress-constants.json")
+    wp_constants = get_constants(wordpress_constants_json_resource)
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
     wordpress_path = os.path.join(path, wordpress_relative_path)
@@ -217,7 +219,7 @@ def set_wordpress_config(wordpress_path: str, environment_path: str, environment
         db-user_password: Database user password.
 
     """
-    
+
     # Parse site configuration
     site_config_path = get_site_configuration_path_from_environment(environment_path, environment_name)
     site_config_data = get_site_configuration(site_config_path)
@@ -225,9 +227,10 @@ def set_wordpress_config(wordpress_path: str, environment_path: str, environment
     wp_cli.create_configuration_file(site_config_data, wordpress_path, db_user_password)
     # Get config properties to set from site configuration
     wp_config_properties = get_site_configuration(site_config_path)["settings"]["wp_config"]
+    debug = get_site_configuration(site_config_path)["wp_cli"]["debug"]
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():
-        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), root_path)
+        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), wordpress_path, debug)
 
 
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
@@ -246,8 +249,4 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
 
 
 if __name__ == "__main__":
-    root_path = r"D:\\temp"
-    project_structure_path = "default-wordpress-project-structure.json"
-    # start_basic_project_structure(root_path, project_structure_path)
-    set_wordpress_config(root_path, "default-site-environments.json", "localhost", "root")
     help(__name__)

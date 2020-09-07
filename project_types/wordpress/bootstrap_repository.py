@@ -31,6 +31,8 @@ from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
 from devops_platforms.constants import Urls
+from project_types import wordpress
+from project_types.wordpress import wp_cli
 from tools import git
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 

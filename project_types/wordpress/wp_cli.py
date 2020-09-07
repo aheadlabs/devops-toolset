@@ -254,7 +254,7 @@ def reset_transients(wordpress_path: str):
                         log_after_err=[literals.get("wp_wpcli_delete_transients_err")])
 
 
-def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str):
+def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str, with_debug: bool):
     """Creates or updates a value (constant or variable) at the wp-config-php
     WordPress configuration file using WP-CLI.
 
@@ -265,6 +265,7 @@ def set_configuration_value(name: str, value: str, value_type: ValueType, wordpr
             name: Name of the parameter
             value: Value of the parameter
             value_type: CONSTANT or VARIABLE
+            wordpress_path: Path to WordPress files.
             with_debug: Toggles --debug_info as a parameter inside the command.
     """
     debug_info = wptools.convert_wp_parameter_debug(with_debug)
@@ -277,8 +278,7 @@ def set_configuration_value(name: str, value: str, value_type: ValueType, wordpr
         type=value_type,
         path=wordpress_path,
         debug_info=debug_info
-    ),  log_after_out=[literals.get("wp_wpcli_setting_value_ok")],
-        log_after_err=[literals.get("wp_wpcli_config_set_value_err")]
+    ),  log_after_err=[literals.get("wp_wpcli_config_set_value_err")]
     )
 
 
