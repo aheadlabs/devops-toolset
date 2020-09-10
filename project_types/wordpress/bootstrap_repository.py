@@ -85,7 +85,7 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
         project_path, required_files_pattern_suffixes)
 
     # Parsing site configuration file
-    site_config = wordpress.wptools.get_site_configuration(required_file_paths[0])
+    site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], "localhost")
 
     # Get wordpress future path (from the constants.json file)
     wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(project_path)
@@ -103,10 +103,10 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     wp_cli.download_wordpress(site_config, wordpress_path)
 
     # Configure WordPress site
-    wordpress.wptools.set_wordpress_config(wordpress_path, required_file_paths[1], "localhost", db_user_password)
+    wordpress.wptools.set_wordpress_config(site_config, wordpress_path, db_user_password)
 
     # Install WordPress site
-    # TODO(ivan.sainz) Install WordPress site
+    wp_cli.install_wordpress_site(site_config, project_path, db_admin_password)
 
     # Install site theme
     # TODO(ivan.sainz) Install site theme

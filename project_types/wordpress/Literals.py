@@ -16,9 +16,8 @@ class Literals(ValueDictsBase):
     }
     _info = {
         "wp_wpcli_db_reset_before": _("Resetting the database (drop and create)..."),
-        "wp_wpcli_db_reset_error": _("Database could not be reset due to an error."),
         "wp_wpcli_db_import_before": _("Importing database dump from file:"),
-        "wp_wpcli_db_import_error": _("Dump file could not be imported due to an error."),
+        "wp_wpcli_core_install_before": _("Preparing wordpress core files to install..."),
         "wp_wpcli_downloading": _("Downloading WP-CLI from {url}"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),
@@ -27,14 +26,16 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_content": _("Downloading WordPress content (default themes and plugins): {content}"),
         "wp_wpcli_downloading_path": _("WordPress core destination path: {path}"),
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
+        "wp_wpcli_db_export_before": _("Exporting database dump to: {path}"),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wpcli_delete_transients": _("Transients are going to be deleted"),
-        "wp_backup_create": _("Dump done successfully"),
+        "wp_wpcli_backup_create_before": _("Creating database backup..."),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
         "wp_wpcli_creating_config": _("Creating wp-config.php..."),
         "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
+        "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
     }
     _errors = {
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),
@@ -49,7 +50,12 @@ class Literals(ValueDictsBase):
         "wp_required_files_not_found_detail": _("The following required files where not found at {path}:"),
         "wp_required_files_not_found": _("The required files where not found at {path}."),
         "wp_wpcli_delete_transients_err": _("Transients could not be deleted"),
-        "wp_err_backup_create": _("Dump could not be done"),
+        "wp_wpcli_db_reset_error": _("Database could not be reset due to an error."),
+        "wp_wpcli_core_install_error": _("Wordpress installation could not be installed."),
+        "wp_wpcli_db_export_error": _("Database dump could not be exported due to an error."),
         "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
-        "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}")
+        "wp_wpcli_db_import_error": _("Dump file could not be imported due to an error."),
+        "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),
+        "wp_wpcli_option_update_error":
+            _("Database option {option_name} cannot be set to {option_value} due to an error.")
     }

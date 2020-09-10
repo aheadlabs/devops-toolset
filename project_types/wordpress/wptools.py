@@ -17,6 +17,14 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
+def convert_wp_parameter_admin_password(admin_password: str):
+    """Converts a str value to a --admin_password parameter."""
+    if admin_password:
+        return "--admin_password=" + "\"" + admin_password + "\""
+    else:
+        return ""
+
+
 def convert_wp_parameter_content(value: bool):
     """Converts a boolean value to a yes/no string."""
     if not value:
@@ -31,10 +39,24 @@ def convert_wp_parameter_debug(value: bool):
     return ""
 
 
+def convert_wp_parameter_skip_check(value: bool):
+    """Converts a boolean value to a --skip-check string."""
+    if value:
+        return "--skip-check"
+    return ""
+
+
 def convert_wp_parameter_skip_content(value: bool):
     """Converts a boolean value to a --skip-content string."""
     if value:
         return "--skip-content"
+    return ""
+
+
+def convert_wp_parameter_skip_email(value: bool):
+    """Converts a boolean value to a --skip-email string."""
+    if value:
+        return "--skip-email"
     return ""
 
 
@@ -45,27 +67,18 @@ def convert_wp_parameter_yes(value: bool):
     return ""
 
 
-def convert_wp_parameter_skip_check(value: bool):
-    """Converts a boolean value to a --skip-check string."""
-    if value:
-        return "--skip-check"
-    return ""
-
-
-def get_constants(resource: str) -> dict:
-    """Gets all the constants from a WordPress constants file.
+def get_constants() -> dict:
+    """Gets all the constants from a WordPress constants resource.
 
     For more information see:
         http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json
 
-    Args:
-        resource: Full resource url to the WordPress constants file.
 
     Returns:
         All the constants in a dict object.
     """
 
-    response = requests.get(resource)
+    response = requests.get(wordpress_constants_json_resource)
     data = json.loads(response.content)
 
     return data
@@ -197,20 +210,21 @@ def get_site_environments(path: str) -> dict:
 
 
 def get_wordpress_path_from_root_path(path) -> str:
-    """ Gets the wordpress path based on the constants.json from a desired root path 
-    
+    """ Gets the wordpress path based on the constants.json from a desired root path
+
     Args:
         path: Full path of the project
     """
     # Add constants
-    wp_constants = get_constants(wordpress_constants_json_resource)
+    wp_constants = get_constants()
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
     wordpress_path = os.path.join(path, wordpress_relative_path)
     return wordpress_path
 
 
-def set_wordpress_config(wordpress_path: str, environment_path: str, environment_name: str, db_user_password: str) -> None:
+def set_wordpress_config(site_config: dict, wordpress_path: str, db_user_password: str) \
+        -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
         root-wordpress_path: Wordpress installation path.
@@ -220,14 +234,11 @@ def set_wordpress_config(wordpress_path: str, environment_path: str, environment
 
     """
 
-    # Parse site configuration
-    site_config_path = get_site_configuration_path_from_environment(environment_path, environment_name)
-    site_config_data = get_site_configuration(site_config_path)
     # Create wp-config.php file
-    wp_cli.create_configuration_file(site_config_data, wordpress_path, db_user_password)
+    wp_cli.create_configuration_file(site_config, wordpress_path, db_user_password)
     # Get config properties to set from site configuration
-    wp_config_properties = get_site_configuration(site_config_path)["settings"]["wp_config"]
-    debug = get_site_configuration(site_config_path)["wp_cli"]["debug"]
+    wp_config_properties = site_config["settings"]["wp_config"]
+    debug = site_config["wp_cli"]["debug"]
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():
         wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), wordpress_path, debug)
