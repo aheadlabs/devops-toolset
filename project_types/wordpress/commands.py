@@ -16,6 +16,7 @@ class Commands(ValueDictsBase):
                                "{skip_content} {debug_info}",
         "wpcli_core_install": "wp core install --path={path} --url={url} --title=\"{title}\" --admin_user={admin_user} "
                               "--admin_email={admin_email} {admin_password} {skip_email} {debug_info}",
+        "wpcli_theme_install": "wp theme install {source} --path={path} {activate} {debug_info}",
         "wpcli_db_export": "wp db export \"{core_dump_path}\" --path={path} --extended-insert=false {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes} {debug_info}",
         "wpcli_db_import": "wp db import {file} --path={path}",
@@ -24,5 +25,6 @@ class Commands(ValueDictsBase):
                                "--dbuser={db_user} --dbpass={db_pass} --dbprefix={db_prefix} --dbcharset={db_charset} "
                                "--dbcollate={db_collate} --force {skip_check} {debug_info}",
         "wpcli_config_set": "wp config set {name} {value} {raw} --type={type} --path={path} {debug_info}",
-        "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}"
+        "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}",
+        "wpcli_eval": "wp eval \"{php_code}\""
     }

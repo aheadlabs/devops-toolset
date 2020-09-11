@@ -17,6 +17,14 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
+def convert_wp_parameter_activate(activate: bool):
+    """Converts a str value to a --admin_password parameter."""
+    if activate:
+        return "--activate"
+    else:
+        return ""
+
+
 def convert_wp_parameter_admin_password(admin_password: str):
     """Converts a str value to a --admin_password parameter."""
     if admin_password:
@@ -65,6 +73,12 @@ def convert_wp_parameter_yes(value: bool):
     if value:
         return "--yes"
     return ""
+
+
+def convert_wp_config_date_token(date_token: str):
+    # parse token [date|Y.m.d-Hisve]
+    date_format = date_token.split("|")[1]
+    return wp_cli.eval("echo date('" + date_format + "')")
 
 
 def get_constants() -> dict:

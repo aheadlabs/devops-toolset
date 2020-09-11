@@ -54,6 +54,7 @@
     },
     "multisite": {},
     "themes": {
+        "name": "twentytwenty",
         "source_type": "wordpress",
         "source": "twentytwenty",
         "has_child": false

@@ -7,6 +7,7 @@ import stat
 import pathlib
 import tools.cli as cli
 import project_types.wordpress.wptools as wptools
+import tools.xcoding64 as base64tools
 import filesystem.paths
 import sys
 import tools.git
@@ -157,8 +158,8 @@ def import_database(wordpress_path: str, dump_file_path: str):
                         log_after_err=[literals.get("wp_wpcli_db_import_error")])
 
 
-def install_theme_from_configuration_file(site_configuration: dict, wordpress_path: str):
-    """Creates the wp-config-php WordPress configuration file using WP-CLI.
+def install_theme_from_configuration_file(site_configuration: dict, root_path: str):
+    """Installs WordPress's theme files (and child themes also) using WP-CLI.
 
     All parameters are obtained from a site configuration file.
 
@@ -167,9 +168,47 @@ def install_theme_from_configuration_file(site_configuration: dict, wordpress_pa
 
     Args:
         site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
+        root_path: Path to project root.
     """
-    pass
+    # Add constants
+    constants = wptools.get_constants()
+
+    # Set/expand variables before using WP CLI
+    debug_info = wptools.convert_wp_parameter_debug(site_configuration["wp_cli"]["debug"])
+    theme_name = site_configuration["themes"]["name"]
+    theme_source = site_configuration["themes"]["source"]
+    database_path = root_path + constants["paths"]["database"]
+    wordpress_path = root_path + constants["paths"]["wordpress"]
+    database_core_dump_path = os.path.join(database_path, site_configuration["database"]["dumps"]["core"])
+    themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
+    wordpress_theme_regex_filter = filter(lambda elem: elem["key"] == "wordpress-theme", constants["regex_base64"])
+    wordpress_theme_regex = next(wordpress_theme_regex_filter)["value"]
+    regex_wordpress_theme = base64tools.decode(wordpress_theme_regex)
+
+    # Install and activate WordPress theme
+    cli.call_subprocess(commands.get("wpcli_theme_install").format(
+        path=wordpress_path_as_posix,
+        source=theme_source,
+        activate="--activate",
+        debug_info=debug_info),
+        log_before_process=[literals.get("wp_wpcli_theme_install_before").format(theme_name=theme_name)],
+        log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
+    if site_configuration["themes"]["has_child"]:
+        # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
+        child_theme_path = themes_path_as_posix.replace(pathlib.Path(themes_path_as_posix).suffixes,
+                                                        "-child" + pathlib.Path(themes_path_as_posix).suffixes)
+        child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
+        cli.call_subprocess(commands.get("wpcli_theme_install").format(
+            path=wordpress_path_as_posix,
+            activate="--activate",
+            source=child_theme_path_as_posix,
+            debug_info=debug_info),
+            log_before_process=[literals.get("wp_wpcli_theme_install_before").format(theme_name=theme_name)],
+            log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
 def install_wordpress_core(site_config: dict, wordpress_path: str, admin_password: str):

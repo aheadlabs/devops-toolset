@@ -109,7 +109,7 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     wp_cli.install_wordpress_site(site_config, project_path, db_admin_password)
 
     # Install site theme
-    # TODO(ivan.sainz) Install site theme
+    wp_cli.install_theme_from_configuration_file(site_config, project_path)
 
     # Install site plugins
     # TODO(ivan.sainz) Install site plugins
