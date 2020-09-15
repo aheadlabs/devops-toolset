@@ -75,10 +75,20 @@ def convert_wp_parameter_yes(value: bool):
     return ""
 
 
-def convert_wp_config_date_token(date_token: str):
+def convert_wp_config_token(token: str, wordpress_path: str) -> str:
+    result = token
     # parse token [date|Y.m.d-Hisve]
-    date_format = date_token.split("|")[1]
-    return wp_cli.eval("echo date('" + date_format + "')")
+    if token.find("[date|") != -1:
+        date_format = token[token.find("[date|") + 1:token.find("]")]
+        date_token = date_format.split("|")[1]
+        result = result.replace("[" + date_format + "]",
+                               wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
+    if token.find("[commit]") != -1:
+        commit_token = token[token.find("[commit") + 1:token.rfind("]")]
+        # TODO (alberto.carbonell): Set latest commit id
+        commit_id = "123456"
+        result = result.replace("[" + commit_token + "]", commit_id)
+    return result
 
 
 def get_constants() -> dict:
@@ -237,8 +247,7 @@ def get_wordpress_path_from_root_path(path) -> str:
     return wordpress_path
 
 
-def set_wordpress_config(site_config: dict, wordpress_path: str, db_user_password: str) \
-        -> None:
+def set_wordpress_config(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
         root-wordpress_path: Wordpress installation path.
@@ -274,4 +283,6 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
 
 
 if __name__ == "__main__":
+    # Test data
+    # b = convert_wp_config_token("[date|Y.m.d-Hisve]-db-[commit]", wordpress_path="D:\\temp\\wordpress")
     help(__name__)

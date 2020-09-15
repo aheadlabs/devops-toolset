@@ -26,5 +26,5 @@ class Commands(ValueDictsBase):
                                "--dbcollate={db_collate} --force {skip_check} {debug_info}",
         "wpcli_config_set": "wp config set {name} {value} {raw} --type={type} --path={path} {debug_info}",
         "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}",
-        "wpcli_eval": "wp eval \"{php_code}\""
+        "wpcli_eval": "wp eval \"{php_code}\" --path={path}"
     }

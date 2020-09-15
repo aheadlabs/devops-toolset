@@ -118,6 +118,17 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     tools.git.purge_gitkeep(destination_path)
 
 
+def eval_code(php_code: str, wordpress_path: str) -> str:
+    """ Executes a piece of php code
+     Args:
+        php_code: Piece of php code to be evaluated
+        wordpress_path: Path to WordPress files.
+    """
+    return cli.call_subprocess_with_result(commands.get("wpcli_eval").format(
+        php_code=php_code,
+        path=wordpress_path))
+
+
 def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
     """Exports a WordPress database to a dump file using WP-CLI.
 
@@ -136,7 +147,7 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
         core_dump_path=dump_file_path,
         path=wordpress_path,
         debug_info=debug_info),
-        log_before_out=[literals.get("wp_wpcli_db_export_before")],
+        log_before_out=[literals.get("wp_wpcli_db_export_before").format(path=dump_file_path)],
         log_after_err=[literals.get("wp_wpcli_db_export_error")])
 
 
@@ -177,12 +188,9 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     debug_info = wptools.convert_wp_parameter_debug(site_configuration["wp_cli"]["debug"])
     theme_name = site_configuration["themes"]["name"]
     theme_source = site_configuration["themes"]["source"]
-    database_path = root_path + constants["paths"]["database"]
     wordpress_path = root_path + constants["paths"]["wordpress"]
-    database_core_dump_path = os.path.join(database_path, site_configuration["database"]["dumps"]["core"])
     themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
     themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
     wordpress_theme_regex_filter = filter(lambda elem: elem["key"] == "wordpress-theme", constants["regex_base64"])
     wordpress_theme_regex = next(wordpress_theme_regex_filter)["value"]
@@ -196,10 +204,10 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         debug_info=debug_info),
         log_before_process=[literals.get("wp_wpcli_theme_install_before").format(theme_name=theme_name)],
         log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
-    if site_configuration["themes"]["has_child"]:
+    if site_configuration["themes"]["has_child"] and site_configuration["themes"]["source_type"] == "zip":
         # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
-        child_theme_path = themes_path_as_posix.replace(pathlib.Path(themes_path_as_posix).suffixes,
-                                                        "-child" + pathlib.Path(themes_path_as_posix).suffixes)
+        child_theme_path = theme_source.replace(pathlib.Path(theme_source).suffixes[0],
+                                                        "-child" + pathlib.Path(theme_source).suffixes[0])
         child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
         cli.call_subprocess(commands.get("wpcli_theme_install").format(
             path=wordpress_path_as_posix,
@@ -208,6 +216,13 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
             debug_info=debug_info),
             log_before_process=[literals.get("wp_wpcli_theme_install_before").format(theme_name=theme_name)],
             log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
+
+    # Backup database after theme install
+    database_path = root_path + constants["paths"]["database"]
+    core_dump_path_converted = wptools.convert_wp_config_token(site_configuration["database"]["dumps"]["theme"],
+                                                               wordpress_path)
+    database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
     export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
@@ -259,9 +274,7 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     constants = wptools.get_constants()
 
     database_path = constants["paths"]["database"]
-    wordpress_path = root_path + constants["paths"]["wordpress"]
-    database_core_dump_path = os.path.join(root_path + database_path, site_configuration["database"]["dumps"]["core"])
-    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    wordpress_path = pathlib.Path(root_path + constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Reset database
@@ -275,6 +288,10 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     update_database_option("blogdescription", description, wordpress_path, site_configuration["wp_cli"]["debug"])
 
     # Backup database
+    core_dump_path_converted = \
+        wptools.convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+    database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
     export_database(site_configuration, wordpress_path, database_core_dump_path_as_posix)
 
 
