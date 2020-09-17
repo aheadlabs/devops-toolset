@@ -93,6 +93,9 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # Create project structure
     wordpress.wptools.start_basic_project_structure(project_path, required_file_paths[2])
 
+    # Update / Download devops-toolset
+    setup_devops_toolset(project_path)
+
     # Move devops-toolset to .devops
     # TODO(ivan.sainz) Move devops-toolset to .devops
 
@@ -121,6 +124,13 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     git.git_commit(args.skip_git)
 
     # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
+
+
+def setup_devops_toolset(root_path: str):
+    devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
+    devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
+    if os.path.exists(devops_path):
+        logging.info(literals.get("update_devops_toolset_latest"))
 
 
 if __name__ == "__main__":
