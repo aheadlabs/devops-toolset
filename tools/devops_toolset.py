@@ -4,9 +4,16 @@ import tools.constants as constants
 import requests
 from zipfile import ZipFile
 from tools.xmlparser import XMLParser
+import logging
+from core.LiteralsCore import LiteralsCore
+from core.app import App
 import os.path
 import pathlib
 import shutil
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+
+app: App = App()
+literals = LiteralsCore([WordpressLiterals])
 
 
 def get_devops_toolset(destination_path: str):
@@ -19,6 +26,9 @@ def get_devops_toolset(destination_path: str):
         destination_path: The destination path of the download / extraction
 
     """
+    logging.info(literals.get("wp_devops_toolset_obtaining").format(
+        resource=constants.devops_toolset_download_resource)
+    )
     response = requests.get(constants.devops_toolset_download_resource, allow_redirects=True)
     devops_toolset_path_file = os.path.join(destination_path, constants.devops_toolset_save_as)
     with open(devops_toolset_path_file, 'ab') as devops_toolset:
@@ -30,7 +40,11 @@ def get_devops_toolset(destination_path: str):
     old_destination_folder = os.path.join(destination_path, destination_file_without_zip_extension)
     final_destination_folder = os.path.join(destination_path, constants.devops_toolset_folder)
     os.rename(old_destination_folder, final_destination_folder)
+    logging.info(literals.get("wp_devops_toolset_obtained").format(
+        path=final_destination_folder)
+    )
     os.remove(devops_toolset_path_file)
+    os.remove(os.path.join(destination_path, ".gitkeep"))
 
 
 def update_devops_toolset(toolset_path: str):
@@ -42,8 +56,11 @@ def update_devops_toolset(toolset_path: str):
     is_latest_version = compare_devops_toolset_version(toolset_path)
     if not is_latest_version:
         if os.path.exists(toolset_path):
+            logging.warning(literals.get("wp_devops_toolset_needs_update"))
             # Remove current version
             shutil.rmtree(toolset_path)
+        else:
+            logging.warning(literals.get("wp_devops_toolset_not_found").format(path=toolset_path))
         get_devops_toolset(pathlib.Path(toolset_path).parent)
 
 
@@ -60,10 +77,12 @@ def compare_devops_toolset_version(toolset_path: str) -> bool:
     # Get current version of devops-toolset
     xml_parser.parse_from_path(project_xml_path)
     current_version = xml_parser.get_attribute_value("version")
+    logging.debug(literals.get("wp_current_version").format(version=current_version))
     # Get latest version from GitHub
     response = requests.get(constants.project_xml_download_resource, allow_redirects=True)
     xml_parser.parse_from_content(response.content.decode("utf-8"))
     latest_version = xml_parser.get_attribute_value("version")
+    logging.debug(literals.get("wp_latest_version").format(version=latest_version))
     return current_version == latest_version
 
 

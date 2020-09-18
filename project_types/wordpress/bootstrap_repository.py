@@ -23,8 +23,10 @@ import logging
 import pathlib
 import os
 import requests
+import shutil
 import tools.argument_validators
 import tools.cli
+import tools.devops_toolset
 import project_types.wordpress.constants as constants
 import project_types.wordpress.wptools
 from clint.textui import prompt
@@ -96,11 +98,8 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # Update / Download devops-toolset
     setup_devops_toolset(project_path)
 
-    # Move devops-toolset to .devops
-    # TODO(ivan.sainz) Move devops-toolset to .devops
-
     # Move themes to content/themes
-    # TODO(ivan.sainz) Move themes to content/themes
+    move_themes(project_path, site_config["themes"])
 
     # Download WordPress core files
     wp_cli.download_wordpress(site_config, wordpress_path)
@@ -127,10 +126,27 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
 
 
 def setup_devops_toolset(root_path: str):
+    """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
+    Args:
+        root_path: Project's root path
+    """
     devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
     devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
-    if os.path.exists(devops_path):
-        logging.info(literals.get("update_devops_toolset_latest"))
+    logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
+    tools.devops_toolset.update_devops_toolset(devops_path)
+
+
+def move_themes(root_path: str, theme: dict):
+    """ Moves the themes files (<theme>*.zip) to the folder defined under constants themes path
+        Args:
+            root_path: Project's root path
+            theme: Dict node content of the theme object inside site_config
+    """
+    themes_path_constant = wordpress.wptools.get_constants()["paths"]["content"]["themes"]
+    themes_path = os.path.join(root_path + themes_path_constant)
+    if theme["source_type"] == "zip":
+        shutil.move(theme["source"], themes_path)
+        os.remove(os.path.join(themes_path, ".gitkeep"))
 
 
 if __name__ == "__main__":
