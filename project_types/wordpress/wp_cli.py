@@ -169,6 +169,8 @@ def import_database(wordpress_path: str, dump_file_path: str):
                         log_after_err=[literals.get("wp_wpcli_db_import_error")])
 
 
+# TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
+#  See https://developer.wordpress.org/themes/advanced-topics/child-themes/
 def install_theme_from_configuration_file(site_configuration: dict, root_path: str):
     """Installs WordPress's theme files (and child themes also) using WP-CLI.
 
@@ -224,6 +226,30 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
     database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
     export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+
+
+def install_plugin(plugin_name: str, wordpress_path: str, force: str, source: str, debug: str):
+    """ Uses WP-CLI command to install a plugin with 'wp plugin install <source>'.
+
+           All parameters are obtained from a site configuration file.
+
+           For more information see:
+               https://developer.wordpress.org/cli/commands/theme/install/
+
+           Args:
+               plugin_name: Plugin name / slug
+               wordpress_path: Path to the wordpress installation.
+               force: Forces install by removing previous version of the plugin.
+               source: Source of the installation.
+               debug: Adds optional --debug parameter in order to better track the command result.
+           """
+    cli.call_subprocess(commands.get("wpcli_plugin_install").format(
+        path=wordpress_path,
+        force=force,
+        source=source,
+        debug_info=debug),
+        log_before_process=[literals.get("wp_wpcli_plugin_install_before").format(plugin_name=plugin_name)],
+        log_after_err=[literals.get("wp_wpcli_plugin_install_error").format(plugin_name=plugin_name)])
 
 
 def install_wordpress_core(site_config: dict, wordpress_path: str, admin_password: str):

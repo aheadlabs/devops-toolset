@@ -28,6 +28,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_path": _("WordPress core destination path: {path}"),
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
         "wp_wpcli_db_export_before": _("Exporting database dump to: {path}"),
+        "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wpcli_delete_transients": _("Transients are going to be deleted"),
@@ -67,5 +68,6 @@ class Literals(ValueDictsBase):
         "wp_wpcli_db_import_error": _("Dump file could not be imported due to an error."),
         "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),
         "wp_wpcli_option_update_error":
-            _("Database option {option_name} cannot be set to {option_value} due to an error.")
+            _("Database option {option_name} cannot be set to {option_value} due to an error."),
+        "wp_wpcli_plugin_install_error": _("Plugin {plugin_name} could not be installed due to an error.")
     }
