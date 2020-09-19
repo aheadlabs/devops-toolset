@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "http://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json",
+  "title": "WordPress' options schema",
+  "description": "WordPress' options schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "autoload": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "value"
+  ]
+}
