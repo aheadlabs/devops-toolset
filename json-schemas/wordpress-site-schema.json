@@ -5,27 +5,36 @@
     "description": "WordPress site definition and settings to be generated and deployed automatically",
     "type": "object",
     "definitions": {
+        "wp_plugin": {
+            "type": "object",
+            "properties": {
+                "name": {"type":"string"},
+                "source_type": {"enum": ["zip","wordpress","url"]},
+                "source": {"type":"string"},
+                "force": {"type":"boolean"}
+            }
+        },
         "wp_config_property_boolean": {
             "type": "object",
             "properties": {
                 "name:": {"type":"string"},
-                "type:":{"enum": ["constant", "variable"]},
-                "value":{"type": "boolean"}
+                "type": {"enum": ["constant", "variable"]},
+                "value": {"type": "boolean"}
             }},
         "wp_config_property_uri": {
             "type": "object",
             "properties": {
-                "name:": {"type":"string"},
-                "type:":{"enum": ["constant", "variable"]},
-                "value":{"type": "string","format":"uri"}
+                "name": {"type":"string"},
+                "type": {"enum": ["constant", "variable"]},
+                "value": {"type": "string","format":"uri"}
             }
         },
         "wp_config_property_number": {
             "type": "object",
             "properties": {
-                "name:": {"type":"string"},
-                "type:":{"enum": ["constant", "variable"]},
-                "value":{"type": "integer"}
+                "name": {"type":"string"},
+                "type": {"enum": ["constant", "variable"]},
+                "value": {"type": "integer"}
             }
         },
 
@@ -119,15 +128,18 @@
         "themes": {
             "type":"object",
             "properties": {
-                "source_type":{"enum": ["zip","wordpress","url"]},
-                "source":{"type":"string"},
-                "has_child":{"type":"boolean"}
+                "name": {"type":"string"},
+                "source_type": {"enum": ["zip","wordpress","url"]},
+                "source": {"type":"string"},
+                "has_child": {"type":"boolean"}
             },
             "additionalProperties": false,
             "required": ["source_type","source","has_child"]
         },
         "plugins": {
-            "type":"object"
+            "type": "array",
+            "items": { "$ref": "#/definitions/wp_plugin" },
+            "default": []
         }
     },
     "additionalProperties": false,

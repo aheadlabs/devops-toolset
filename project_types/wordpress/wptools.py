@@ -1,9 +1,12 @@
 """Contains several tools for WordPress"""
 import os
 
+import requests
 import filesystem.paths as paths
 import json
 import pathlib
+import shutil
+from project_types.wordpress.constants import wordpress_constants_json_resource
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 import project_types.wordpress.wp_cli as wp_cli
 from core.app import App
@@ -13,6 +16,22 @@ from project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
+
+
+def convert_wp_parameter_activate(activate: bool):
+    """Converts a str value to a --admin_password parameter."""
+    if activate:
+        return "--activate"
+    else:
+        return ""
+
+
+def convert_wp_parameter_admin_password(admin_password: str):
+    """Converts a str value to a --admin_password parameter."""
+    if admin_password:
+        return "--admin_password=" + "\"" + admin_password + "\""
+    else:
+        return ""
 
 
 def convert_wp_parameter_content(value: bool):
@@ -29,17 +48,10 @@ def convert_wp_parameter_debug(value: bool):
     return ""
 
 
-def convert_wp_parameter_skip_content(value: bool):
-    """Converts a boolean value to a --skip-content string."""
+def convert_wp_parameter_force(value: bool):
+    """Converts a boolean value to a --force string."""
     if value:
-        return "--skip-content"
-    return ""
-
-
-def convert_wp_parameter_yes(value: bool):
-    """Converts a boolean value to a --yes string."""
-    if value:
-        return "--yes"
+        return "--force"
     return ""
 
 
@@ -50,21 +62,56 @@ def convert_wp_parameter_skip_check(value: bool):
     return ""
 
 
-def get_constants(path: str) -> dict:
-    """Gets all the constants from a WordPress constants file.
+def convert_wp_parameter_skip_content(value: bool):
+    """Converts a boolean value to a --skip-content string."""
+    if value:
+        return "--skip-content"
+    return ""
+
+
+def convert_wp_parameter_skip_email(value: bool):
+    """Converts a boolean value to a --skip-email string."""
+    if value:
+        return "--skip-email"
+    return ""
+
+
+def convert_wp_parameter_yes(value: bool):
+    """Converts a boolean value to a --yes string."""
+    if value:
+        return "--yes"
+    return ""
+
+
+def convert_wp_config_token(token: str, wordpress_path: str) -> str:
+    result = token
+    # parse token [date|Y.m.d-Hisve]
+    if token.find("[date|") != -1:
+        date_format = token[token.find("[date|") + 1:token.find("]")]
+        date_token = date_format.split("|")[1]
+        result = result.replace("[" + date_format + "]",
+                               wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
+    if token.find("[commit]") != -1:
+        commit_token = token[token.find("[commit") + 1:token.rfind("]")]
+        # TODO (alberto.carbonell): Set latest commit id
+        commit_id = "123456"
+        result = result.replace("[" + commit_token + "]", commit_id)
+    return result
+
+
+def get_constants() -> dict:
+    """Gets all the constants from a WordPress constants resource.
 
     For more information see:
         http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json
 
-    Args:
-        path: Full path to the WordPress constants file.
 
     Returns:
         All the constants in a dict object.
     """
 
-    with open(path, "r") as constants:
-        data = json.loads(constants.read())
+    response = requests.get(wordpress_constants_json_resource)
+    data = json.loads(response.content)
 
     return data
 
@@ -195,20 +242,56 @@ def get_site_environments(path: str) -> dict:
 
 
 def get_wordpress_path_from_root_path(path) -> str:
-    """ Gets the wordpress path based on the constants.json from a desired root path 
-    
+    """ Gets the wordpress path based on the constants.json from a desired root path
+
     Args:
         path: Full path of the project
     """
     # Add constants
-    wp_constants = get_constants("wordpress-constants.json")
+    wp_constants = get_constants()
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
     wordpress_path = os.path.join(path, wordpress_relative_path)
     return wordpress_path
 
 
-def set_wordpress_config(wordpress_path: str, environment_path: str, environment_name: str, db_user_password: str) -> None:
+def install_plugins_from_configuration_file(site_configuration: dict, root_path: str):
+    """Installs WordPress's plugin files (and child themes also) using WP-CLI.
+
+       All parameters are obtained from a site configuration file.
+
+       For more information see:
+           https://developer.wordpress.org/cli/commands/theme/install/
+
+       Args:
+           site_configuration: parsed site configuration.
+           root_path: Path to project root.
+       """
+    # Add constants
+    constants = get_constants()
+
+    # Set/expand variables before using WP CLI
+    debug_info = convert_wp_parameter_debug(site_configuration["wp_cli"]["debug"])
+    wordpress_path = root_path + constants["paths"]["wordpress"]
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+    # For each plugin in config, invoke the command
+    for plugin in site_configuration["plugins"]:
+        plugin_name = plugin["name"]
+        plugin_source = plugin["source"]
+        plugins_path = root_path + constants["paths"]["content"]["plugins"]
+        plugins_path_as_posix = str(pathlib.Path(plugins_path).as_posix())
+        force_plugin_install = convert_wp_parameter_force(plugin["force"])
+        wp_cli.install_plugin(plugin_name, wordpress_path_as_posix, force_plugin_install, plugin_source, debug_info)
+        # When source is zipped, move source to the plugins content path
+        if plugin["source_type"] == "zip":
+            shutil.move(plugin_source, plugins_path_as_posix)
+            # Clean up
+            gitkeep_file_path = os.path.join(plugins_path_as_posix, ".gitkeep")
+            if os.path.exists(gitkeep_file_path):
+                os.remove(gitkeep_file_path)
+
+
+def set_wordpress_config(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
         root-wordpress_path: Wordpress installation path.
@@ -217,17 +300,15 @@ def set_wordpress_config(wordpress_path: str, environment_path: str, environment
         db-user_password: Database user password.
 
     """
-    
-    # Parse site configuration
-    site_config_path = get_site_configuration_path_from_environment(environment_path, environment_name)
-    site_config_data = get_site_configuration(site_config_path)
+
     # Create wp-config.php file
-    wp_cli.create_configuration_file(site_config_data, wordpress_path, db_user_password)
+    wp_cli.create_configuration_file(site_config, wordpress_path, db_user_password)
     # Get config properties to set from site configuration
-    wp_config_properties = get_site_configuration(site_config_path)["settings"]["wp_config"]
+    wp_config_properties = site_config["settings"]["wp_config"]
+    debug = site_config["wp_cli"]["debug"]
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():
-        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), root_path)
+        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), wordpress_path, debug)
 
 
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
@@ -246,8 +327,4 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
 
 
 if __name__ == "__main__":
-    root_path = r"D:\\temp"
-    project_structure_path = "default-wordpress-project-structure.json"
-    # start_basic_project_structure(root_path, project_structure_path)
-    set_wordpress_config(root_path, "default-site-environments.json", "localhost", "root")
     help(__name__)

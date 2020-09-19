@@ -1,7 +1,6 @@
 """Unit tests for the log_setup file"""
 
 import logging
-from logging import config
 from unittest.mock import patch, mock_open
 import core.log_setup as sut
 from core.tests.conftest import CoreTestsFixture as Fixture
@@ -9,7 +8,8 @@ from core.tests.conftest import CoreTestsFixture as Fixture
 # region configure(filepath)
 
 
-def test_configure_given_filepath_when_exception_catch_then_logs_error():
+@patch.object(sut, "configure_by_default")
+def test_configure_given_filepath_when_exception_catch_then_logs_error(configure_by_default_mock):
     """Given a filepath to configure logging, when exception is catch, then logs
     with error severity"""
 
@@ -25,7 +25,8 @@ def test_configure_given_filepath_when_exception_catch_then_logs_error():
             logger_error_mock.assert_called_once_with(expected_message)
 
 
-def test_configure_given_filepath_when_exception_catch_then_configure_by_default():
+@patch.object(logging, "error")
+def test_configure_given_filepath_when_exception_catch_then_configure_by_default(logging_error_mock):
     """Given a filepath to configure logging, when exception is catch, then calls
     configure logger by default"""
 
@@ -40,7 +41,9 @@ def test_configure_given_filepath_when_exception_catch_then_configure_by_default
             configure_by_default_mock.assert_called_once()
 
 
-def test_configure_given_filepath_then_configure_by_file():
+@patch.object(sut, "add_filter_to_console_handler")
+@patch.object(sut, "add_colored_formatter_to_console_handlers")
+def test_configure_given_filepath_then_calls_configure_by_file(add_filter_mock, add_formatter_mock):
     """Given a filepath to configure logging, then calls
     configure logger by file"""
 
@@ -53,9 +56,10 @@ def test_configure_given_filepath_then_configure_by_file():
         configure_by_file_mock.assert_called_once()
 
 
+@patch.object(logging, "info")
 @patch.object(sut, "add_colored_formatter_to_console_handlers")
 @patch.object(sut, "configure_by_file")
-def test_configure_given_filepath_then_add_colored_formatter(add_colored_formatter_mock, configure_by_file_mock):
+def test_configure_given_filepath_then_add_colored_formatter(add_colored_formatter_mock, configure_by_file_mock, logging_mock):
     """Given a filepath to configure logging, then adds the colored formatter on every console handler"""
 
     # Arrange
@@ -71,7 +75,8 @@ def test_configure_given_filepath_then_add_colored_formatter(add_colored_formatt
 
 
 @patch.object(logging, "getLogger")
-def test_configure_by_default_sets_root_logger_level(get_logger_mock):
+@patch.object(logging, "error")
+def test_configure_by_default_sets_root_logger_level(get_logger_mock, logger_error_mock):
     """Given a log level, should set loglevel to the root logger."""
     # Arrange
     loglevel = Fixture.default_loglevel
