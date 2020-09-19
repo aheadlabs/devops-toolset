@@ -3,21 +3,40 @@
   "$id": "http://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json",
   "title": "WordPress' options schema",
   "description": "WordPress' options schema",
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string"
-    },
-    "value": {
-      "type": "string"
-    },
-    "autoload": {
-      "type": "boolean"
+
+  "definitions": {
+    "option": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "autoload": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value"
+      ]
     }
   },
-  "additionalProperties": false,
-  "required": [
-    "name",
-    "value"
-  ]
+
+  "type": "object",
+
+  "properties": {
+    "options": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/option"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
 }
