@@ -20,7 +20,7 @@ class Commands(ValueDictsBase):
         "wpcli_theme_install": "wp theme install {source} --path={path} {activate} {debug_info}",
         "wpcli_db_export": "wp db export \"{core_dump_path}\" --path={path} --extended-insert=false {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes} {debug_info}",
-        "wpcli_db_import": "wp db import {file} --path={path}",
+        "wpcli_db_import": "wp db import {file} --path={path} {debug_info}",
         "wpcli_db_delete_transient": "wp transient delete --all --path={path}",
         "wpcli_config_create": "wp config create --path={path} --dbhost={db_host} --dbname={db_name} "
                                "--dbuser={db_user} --dbpass={db_pass} --dbprefix={db_prefix} --dbcharset={db_charset} "

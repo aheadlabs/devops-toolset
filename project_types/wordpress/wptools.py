@@ -1,14 +1,17 @@
 """Contains several tools for WordPress"""
 import os
-
 import requests
 import filesystem.paths as paths
 import json
 import pathlib
 import shutil
+import stat
+import logging
 from project_types.wordpress.constants import wordpress_constants_json_resource
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 import project_types.wordpress.wp_cli as wp_cli
+import sys
+import tools.git as git_tools
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
@@ -18,85 +21,106 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
-def convert_wp_parameter_activate(activate: bool):
-    """Converts a str value to a --admin_password parameter."""
-    if activate:
-        return "--activate"
-    else:
-        return ""
-
-
-def convert_wp_parameter_admin_password(admin_password: str):
-    """Converts a str value to a --admin_password parameter."""
-    if admin_password:
-        return "--admin_password=" + "\"" + admin_password + "\""
-    else:
-        return ""
-
-
-def convert_wp_parameter_content(value: bool):
-    """Converts a boolean value to a yes/no string."""
-    if not value:
-        return "yes"
-    return "no"
-
-
-def convert_wp_parameter_debug(value: bool):
-    """Converts a boolean value to a --debug string."""
-    if value:
-        return "--debug"
-    return ""
-
-
-def convert_wp_parameter_force(value: bool):
-    """Converts a boolean value to a --force string."""
-    if value:
-        return "--force"
-    return ""
-
-
-def convert_wp_parameter_skip_check(value: bool):
-    """Converts a boolean value to a --skip-check string."""
-    if value:
-        return "--skip-check"
-    return ""
-
-
-def convert_wp_parameter_skip_content(value: bool):
-    """Converts a boolean value to a --skip-content string."""
-    if value:
-        return "--skip-content"
-    return ""
-
-
-def convert_wp_parameter_skip_email(value: bool):
-    """Converts a boolean value to a --skip-email string."""
-    if value:
-        return "--skip-email"
-    return ""
-
-
-def convert_wp_parameter_yes(value: bool):
-    """Converts a boolean value to a --yes string."""
-    if value:
-        return "--yes"
-    return ""
-
-
 def convert_wp_config_token(token: str, wordpress_path: str) -> str:
+    """ Replaces [] tokens inside configuration parameters using php syntax
+
+    Args:
+        token: The token to replace (for example: [date|Y.m.d-Hisve])
+        wordpress_path: Wordpress installation path
+    """
     result = token
     # parse token [date|Y.m.d-Hisve]
     if token.find("[date|") != -1:
         date_format = token[token.find("[date|") + 1:token.find("]")]
         date_token = date_format.split("|")[1]
-        result = result.replace("[" + date_format + "]",
-                               wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
+        result = result.replace(
+            "[" + date_format + "]", wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
     if token.find("[commit]") != -1:
         commit_token = token[token.find("[commit") + 1:token.rfind("]")]
         # TODO (alberto.carbonell): Set latest commit id
         commit_id = "123456"
         result = result.replace("[" + commit_token + "]", commit_id)
+    # Add more tokens if needed
     return result
+
+
+def create_wp_cli_bat_file(phar_path: str):
+    """Creates a .bat file for WP-CLI.
+
+    Args:
+        phar_path: Path to the .phar file.
+    """
+
+    path = pathlib.Path(phar_path)
+    bat_path = pathlib.Path.joinpath(path.parent, "wp.bat")
+
+    with open(bat_path, "w") as bat:
+        bat.write("@ECHO OFF\n")
+        bat.write(f"php \"{phar_path}\" %*")
+
+
+def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+    """Creates the wp-config-php WordPress configuration file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/config/create/
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        database_user_password: Password for the database user configured in at the wp-config.php file.
+    """
+    database_props = site_configuration["database"]
+    wp_cli.create_configuration_file(wordpress_path=wordpress_path,
+                                     db_host=database_props["host"],
+                                     db_name=database_props["name"],
+                                     db_user=database_props["user"],
+                                     db_pass=database_user_password,
+                                     db_prefix=database_props["prefix"],
+                                     db_charset=database_props["charset"],
+                                     db_collate=database_props["collate"],
+                                     skip_check=database_props["skip_check"],
+                                     debug=site_configuration["wp_cli"]["debug"]
+                                     )
+
+
+def download_wordpress(site_configuration: dict, destination_path: str):
+    """ Downloads the latest version of the WordPress core files using a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/core/download/
+
+    Args:
+        site_configuration: parsed site configuration.
+        destination_path: Path where WP-CLI will be downloaded.
+    """
+    if not paths.is_valid_path(destination_path):
+        raise ValueError(literals.get("wp_non_valid_dir_path"))
+
+    version = site_configuration["settings"]["version"]
+    locale = site_configuration["settings"]["locale"]
+    skip_content = site_configuration["settings"]["skip_content_download"]
+    debug = site_configuration["wp_cli"]["debug"]
+    wp_cli.download_wordpress(destination_path, version, locale, skip_content, debug)
+    git_tools.purge_gitkeep(destination_path)
+
+
+def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
+    """Exports a WordPress database to a dump file using a site configuration file.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/db/export/
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        dump_file_path: Path to the destination dump file.
+    """
+    wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
 
 
 def get_constants() -> dict:
@@ -255,13 +279,26 @@ def get_wordpress_path_from_root_path(path) -> str:
     return wordpress_path
 
 
+def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
+    """Imports a WordPress database from a dump file based on a site_configuration file.
+
+    For more information see:
+           https://developer.wordpress.org/cli/commands/db/import/
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        dump_file_path: Path to dump file to be imported.
+    """
+    dump_file_path_as_posix = str(pathlib.Path(dump_file_path).as_posix())
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+    wp_cli.import_database(wordpress_path_as_posix, dump_file_path_as_posix, site_configuration["wp_cli"]["debug"])
+
+
 def install_plugins_from_configuration_file(site_configuration: dict, root_path: str):
     """Installs WordPress's plugin files (and child themes also) using WP-CLI.
 
-       All parameters are obtained from a site configuration file.
-
        For more information see:
-           https://developer.wordpress.org/cli/commands/theme/install/
+           https://developer.wordpress.org/cli/commands/plugin/install/
 
        Args:
            site_configuration: parsed site configuration.
@@ -271,7 +308,6 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
     constants = get_constants()
 
     # Set/expand variables before using WP CLI
-    debug_info = convert_wp_parameter_debug(site_configuration["wp_cli"]["debug"])
     wordpress_path = root_path + constants["paths"]["wordpress"]
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
     # For each plugin in config, invoke the command
@@ -280,8 +316,8 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
         plugin_source = plugin["source"]
         plugins_path = root_path + constants["paths"]["content"]["plugins"]
         plugins_path_as_posix = str(pathlib.Path(plugins_path).as_posix())
-        force_plugin_install = convert_wp_parameter_force(plugin["force"])
-        wp_cli.install_plugin(plugin_name, wordpress_path_as_posix, force_plugin_install, plugin_source, debug_info)
+        wp_cli.install_plugin(plugin_name, wordpress_path_as_posix,  plugin["force"], plugin_source,
+                              site_configuration["wp_cli"]["debug"])
         # When source is zipped, move source to the plugins content path
         if plugin["source_type"] == "zip":
             shutil.move(plugin_source, plugins_path_as_posix)
@@ -291,24 +327,181 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
                 os.remove(gitkeep_file_path)
 
 
-def set_wordpress_config(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
-    """ Sets all configuration parameters in pristine WordPress core files
+def install_recommended_plugins():
+    """ Uses TGMPA core to decide and install automatically the recommended plugins.
+
+    See Also: http://tgmpluginactivation.com/
+    See Also: https://github.com/itspriddle/wp-cli-tgmpa-plugin
     Args:
-        root-wordpress_path: Wordpress installation path.
-        environment-path: Path to the environment JSON file.
-        environment-name: Environment name.
-        db-user_password: Database user password.
 
     """
+    # TODO(alberto.carbonell) Develop an WP-cli extension.
+    pass
 
+
+def install_wordpress_core(site_config: dict, wordpress_path: str, admin_password: str):
+    """Installs WordPress core files using a site configuration file.
+
+        For more information see:
+            https://developer.wordpress.org/cli/commands/core/install/
+
+        Args:
+            site_config: parsed site configuration.
+            wordpress_path: Path to WordPress files.
+            admin_password: Password for the WordPress administrator user
+        """
+    # Set/expand variables before using WP CLI
+    debug_info = site_config["wp_cli"]["debug"]
+    admin_user = site_config["settings"]["admin"]["user"]
+    admin_email = site_config["settings"]["admin"]["email"]
+    url = site_config["settings"]["wp_config"]["site_url"]["value"]
+    title = site_config["settings"]["title"]
+    skip_email = site_config["settings"]["admin"]["skip_email"]
+    wp_cli.install_wordpress_core(wordpress_path, url, title, admin_user, admin_email, admin_password,
+                                  skip_email, debug_info)
+
+
+# TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
+# See https://developer.wordpress.org/themes/advanced-topics/child-themes/
+def install_theme_from_configuration_file(site_configuration: dict, root_path: str):
+    """Installs WordPress's theme files (and child themes also) using a site configuration file
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/theme/install/
+
+    Args:
+        site_configuration: parsed site configuration.
+        root_path: Path to project root.
+    """
+    # Add constants
+    constants = get_constants()
+
+    # Set/expand variables before using WP CLI
+    debug_info = site_configuration["wp_cli"]["debug"]
+    theme_name = site_configuration["themes"]["name"]
+    theme_source = site_configuration["themes"]["source"]
+    wordpress_path = root_path + constants["paths"]["wordpress"]
+    themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+    themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
+    # TODO: (alberto.carbonell) Unused feature (regex): investigate why
+    # wordpress_theme_regex_filter = filter(lambda elem: elem["key"] == "wordpress-theme", constants["regex_base64"])
+    # wordpress_theme_regex = next(wordpress_theme_regex_filter)["value"]
+    # regex_wordpress_theme = base64tools.decode(wordpress_theme_regex)
+
+    # Install and activate WordPress theme
+    wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
+    # Clean up the theme by moving to the content folder
+    shutil.move(theme_source, themes_path_as_posix)
+    if site_configuration["themes"]["has_child"] and site_configuration["themes"]["source_type"] == "zip":
+        # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
+        child_theme_path = theme_source.replace(
+            pathlib.Path(theme_source).suffixes[0], "-child" + pathlib.Path(theme_source).suffixes[0])
+        child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
+        # Install and activate WordPress child theme
+        wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+        # Clean up the theme by moving to the content folder
+        shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+    # Backup database after theme install
+    database_path = root_path + constants["paths"]["database"]
+    core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["theme"], wordpress_path)
+    database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+
+
+def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
+    """Downloads and installs the latest version of WP-CLI.
+
+    For more information see:
+        https://make.wordpress.org/cli/handbook/installing/
+
+    Args:
+        install_path: Path where WP-CLI will be installed. It must be in the
+            PATH/BIN of the operating system.
+    """
+
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
+    install_path = pathlib.Path(install_path)
+    file_path = pathlib.Path.joinpath(install_path, wp_cli_phar)
+
+    if not pathlib.Path.is_dir(install_path):
+        raise ValueError(literals.get("wp_not_dir"))
+
+    logging.info(literals.get("wp_wpcli_downloading").format(url=wp_cli_download_url))
+    response = requests.get(wp_cli_download_url)
+
+    with open(file_path, "wb") as cli:
+        cli.write(response.content)
+
+    file_stat = os.stat(file_path)
+    os.chmod(file_path, file_stat.st_mode | stat.S_IEXEC)
+
+    if sys.platform == "win32":
+        create_wp_cli_bat_file(file_path)
+
+    wp_cli.wp_cli_info()
+
+
+def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str):
+    """Installs WordPress core files using WP-CLI.
+
+    This operation requires cleaning the db and doing a backup after the process.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/core/install/
+
+    Args:
+        site_configuration: parsed site configuration.
+        root_path: Path to site installation.
+        admin_password: Password for the WordPress administrator user
+    """
+    # Add constants
+    constants = get_constants()
+
+    database_path = constants["paths"]["database"]
+    wordpress_path = pathlib.Path(root_path + constants["paths"]["wordpress"])
+    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+
+    # Reset database
+    wp_cli.reset_database(wordpress_path_as_posix, True, site_configuration["wp_cli"]["debug"])
+
+    # Install wordpress
+    install_wordpress_core(site_configuration, wordpress_path_as_posix, admin_password)
+
+    # Update description option
+    description = site_configuration["settings"]["description"]
+    wp_cli.update_database_option("blogdescription", description, wordpress_path, site_configuration["wp_cli"]["debug"])
+
+    # Backup database
+    core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+    database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    export_database(site_configuration, wordpress_path, database_core_dump_path_as_posix)
+
+
+def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
+    """ Sets all configuration parameters in pristine WordPress core files
+    Args:
+        site_config: parsed site configuration.
+        wordpress_path: Path to wordpress installation.
+        db_user_password: Database user password.
+
+    """
     # Create wp-config.php file
-    wp_cli.create_configuration_file(site_config, wordpress_path, db_user_password)
+    create_configuration_file(site_config, wordpress_path, db_user_password)
     # Get config properties to set from site configuration
     wp_config_properties = site_config["settings"]["wp_config"]
     debug = site_config["wp_cli"]["debug"]
+
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():
-        wp_cli.set_configuration_value(prop.get("name"), prop.get("value"), prop.get("type"), wordpress_path, debug)
+        # This value will place the value as it gets, without quotes
+        value = prop.get("value")
+        raw = type(value) != str
+        wp_cli.set_configuration_value(
+            prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
 
 
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:

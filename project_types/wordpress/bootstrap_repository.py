@@ -23,7 +23,6 @@ import logging
 import pathlib
 import os
 import requests
-import shutil
 import tools.argument_validators
 import tools.cli
 import tools.devops_toolset
@@ -34,7 +33,6 @@ from core.LiteralsCore import LiteralsCore
 from core.app import App
 from devops_platforms.constants import Urls
 from project_types import wordpress
-from project_types.wordpress import wp_cli
 from tools import git
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 
@@ -98,20 +96,17 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # Update / Download devops-toolset
     setup_devops_toolset(project_path)
 
-    # Move themes to content/themes
-    move_themes(project_path, site_config["themes"])
-
     # Download WordPress core files
-    wp_cli.download_wordpress(site_config, wordpress_path)
+    wordpress.wptools.download_wordpress(site_config, wordpress_path)
 
     # Configure WordPress site
-    wordpress.wptools.set_wordpress_config(site_config, wordpress_path, db_user_password)
+    wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
 
     # Install WordPress site
-    wp_cli.install_wordpress_site(site_config, project_path, db_admin_password)
+    wordpress.wptools.install_wordpress_site(site_config, project_path, db_admin_password)
 
     # Install site theme
-    wp_cli.install_theme_from_configuration_file(site_config, project_path)
+    wordpress.wptools.install_theme_from_configuration_file(site_config, project_path)
 
     # Install site plugins
     wordpress.wptools.install_plugins_from_configuration_file(site_config, project_path)
@@ -134,19 +129,6 @@ def setup_devops_toolset(root_path: str):
     devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
     logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
     tools.devops_toolset.update_devops_toolset(devops_path)
-
-
-def move_themes(root_path: str, theme: dict):
-    """ Moves the themes files (<theme>*.zip) to the folder defined under constants themes path
-        Args:
-            root_path: Project's root path
-            theme: Dict node content of the theme object inside site_config
-    """
-    themes_path_constant = wordpress.wptools.get_constants()["paths"]["content"]["themes"]
-    themes_path = os.path.join(root_path + themes_path_constant)
-    if theme["source_type"] == "zip":
-        shutil.move(theme["source"], themes_path)
-        os.remove(os.path.join(themes_path, ".gitkeep"))
 
 
 if __name__ == "__main__":
