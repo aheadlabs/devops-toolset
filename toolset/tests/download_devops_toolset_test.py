@@ -117,6 +117,7 @@ def test_decompress_toolset_given_paths_should_return_internal_full_path_and_tem
 
 # region download_toolset()
 
+
 # TODO (alberto.carbonell) Implement this tests
 def test_download_toolset_given_args_when_not_exist_destination_path_then_create_it():
     """ Given destination path when it doesn't exist then use os.mkdir to create it """
@@ -124,12 +125,12 @@ def test_download_toolset_given_args_when_not_exist_destination_path_then_create
 
 
 def test_download_toolset_given_args_then_write_response_content_to_full_destination_path():
-    """  """
+    """  Given destination path then write the zip content response to full destination path """
     pass
 
 
 def test_download_toolset_given_args_then_returns_destination_path_and_full_destination_path():
-    """  """
+    """  Given destination path then returns a tuple with destination_path and full_destination_path """
     pass
 
 # endregion
@@ -140,7 +141,7 @@ def test_download_toolset_given_args_then_returns_destination_path_and_full_dest
 def test_is_valid_path_given_path_when_path_is_none_then_return_false():
     """ Given path, when its None, then return false """
     # Arrange
-    path = None
+    path: str = None
     # Act
     result = sut.is_valid_path(path)
     # Assert
