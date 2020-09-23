@@ -117,16 +117,123 @@ def test_decompress_toolset_given_paths_should_return_internal_full_path_and_tem
 
 # region download_toolset()
 
+# TODO (alberto.carbonell) Implement this tests
+def test_download_toolset_given_args_when_not_exist_destination_path_then_create_it():
+    """ Given destination path when it doesn't exist then use os.mkdir to create it """
+    pass
+
+
+def test_download_toolset_given_args_then_write_response_content_to_full_destination_path():
+    """  """
+    pass
+
+
+def test_download_toolset_given_args_then_returns_destination_path_and_full_destination_path():
+    """  """
+    pass
+
 # endregion
 
 # region is_valid_path()
+
+
+def test_is_valid_path_given_path_when_path_is_none_then_return_false():
+    """ Given path, when its None, then return false """
+    # Arrange
+    path = None
+    # Act
+    result = sut.is_valid_path(path)
+    # Assert
+    assert not result
+
+
+def test_is_valid_path_given_path_when_path_strip_is_empty_then_return_false():
+    """ Given path, when its None, then return false """
+    # Arrange
+    path = ""
+    # Act
+    result = sut.is_valid_path(path)
+    # Assert
+    assert not result
+
+
+def test_is_valid_path_given_path_when_path_is_valid_then_return_true():
+    """ Given path, when its None, then return false """
+    # Arrange
+    path = "somepath/that/is/valid/"
+    # Act
+    result = sut.is_valid_path(path)
+    # Assert
+    assert result
 
 # endregion
 
 # region main()
 
+
+@patch("os.remove")
+@patch("toolset.download_devops_toolset.cleanup")
+@patch("toolset.download_devops_toolset.download_toolset")
+@patch("toolset.download_devops_toolset.decompress_toolset")
+def test_main_given_args_then_call_download_toolset(
+        decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
+    """ Given destination path and branch then compose required paths and call download_toolset() """
+    # Arrange
+    toolset_name = pathsdata.toolset_name
+    branch = pathsdata.branch
+    destination_path = pathsdata.destination_path
+    download_toolset_mock.return_value = ("result1", "result2")
+    decompress_toolset_mock.return_value = ("result1", "result2")
+    # Act
+    sut.main(destination_path, branch)
+    # Assert
+    download_toolset_mock.assert_called_once_with(branch, destination_path, toolset_name)
+
+
+@patch("os.remove")
+@patch("toolset.download_devops_toolset.cleanup")
+@patch("toolset.download_devops_toolset.download_toolset")
+@patch("toolset.download_devops_toolset.decompress_toolset")
+def test_main_given_args_then_call_decompress_toolset(
+        decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
+    """ Given destination path and branch then compose required paths and call decompress_toolset() """
+    # Arrange
+    destination_path = pathsdata.destination_path
+    destination_path_object = destination_path
+    full_destination_path = pathsdata.full_destination_path
+    download_toolset_mock.return_value = (destination_path_object, full_destination_path)
+    decompress_toolset_mock.return_value = ("result1", "result2")
+    dashed_branch = pathsdata.branch.replace("/", "-")
+    internal_directory = f"{pathsdata.toolset_name}-{dashed_branch}"
+    # Act
+    sut.main(destination_path, pathsdata.branch)
+    # Assert
+    decompress_toolset_mock.assert_called_once_with(destination_path_object, full_destination_path, internal_directory)
+
+
+@patch("os.remove")
+@patch("toolset.download_devops_toolset.cleanup")
+@patch("toolset.download_devops_toolset.download_toolset")
+@patch("toolset.download_devops_toolset.decompress_toolset")
+def test_main_given_args_then_call_cleanup(
+        decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
+    """  Given destination path and branch then compose required paths and call cleanup() """
+    # Arrange
+    destination_path = pathsdata.destination_path
+    full_destination_path = pathsdata.full_destination_path
+    download_toolset_mock.return_value = (destination_path, full_destination_path)
+    internal_directory = f"{pathsdata.toolset_name}-{pathsdata.branch}"
+    internal_directory_full_path = destination_path + internal_directory
+    temporary_extraction_path = pathsdata.temporary_extraction_path
+    decompress_toolset_mock.return_value = (internal_directory_full_path, temporary_extraction_path)
+    # Act
+    sut.main(destination_path, pathsdata.branch)
+    # Assert
+    cleanup_mock.assert_called_once_with(full_destination_path, internal_directory_full_path, temporary_extraction_path)
+
 # endregion
 
 
 def my_joinpath(*args):
+    """ Just a side effect function to replace the real os.joinpath() """
     return args[0] + args[1]

@@ -14,6 +14,8 @@ class PathsData:
     internal_directory = "devops_toolset-branch/"
     temporary_extraction_path = "/pathto/temporary_extraction/"
     destination_path = "/pathto/destination/"
+    toolset_name = "devops-toolset"
+    branch = "main/branch"
 
 
 @pytest.fixture
