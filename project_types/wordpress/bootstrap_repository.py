@@ -39,7 +39,7 @@ from project_types.wordpress.Literals import Literals as WordpressLiterals
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
-
+# TODO (alberto.carbonell) Check if database and db users exist and if not, prompt to create them
 def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
 

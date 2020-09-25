@@ -11,6 +11,7 @@ from unittest import mock
 
 class WordPressData:
     """Class used to create the wordpressdata fixture"""
+    root_path = "pathto/project"
     wordpress_path = "/pathto/wordpress"
     wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
@@ -48,6 +49,9 @@ class WordPressData:
                           "[\"localhost\"],\"auto_update_core\":\"minor\",\"image_edit_overwrite\":true}," \
                           "\"multisite\":{},\"themes\":{\"source_type\":\"wordpress\",\"source\":\"twentytwenty\"," \
                           "\"has_child\":false},\"plugins\":{}}"
+    plugins_content = \
+        "[{\"name\":\"plugin-1\",\"source_type\":\"wordpress\",\"source\":\"path-to-source1\",\"force\":true}," \
+        "{\"name\":\"plugin-2\",\"source_type\":\"wordpress\",\"source\":\"path-to-source2\",\"force\":true}]"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \

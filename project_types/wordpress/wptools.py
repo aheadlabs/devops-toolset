@@ -322,9 +322,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
         if plugin["source_type"] == "zip":
             shutil.move(plugin_source, plugins_path_as_posix)
             # Clean up
-            gitkeep_file_path = os.path.join(plugins_path_as_posix, ".gitkeep")
-            if os.path.exists(gitkeep_file_path):
-                os.remove(gitkeep_file_path)
+            git_tools.purge_gitkeep(plugins_path_as_posix)
 
 
 def install_recommended_plugins():
@@ -373,6 +371,10 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         site_configuration: parsed site configuration.
         root_path: Path to project root.
     """
+    if not site_configuration["themes"]:
+        logging.info("No themes configured to install")
+        return
+
     # Add constants
     constants = get_constants()
 

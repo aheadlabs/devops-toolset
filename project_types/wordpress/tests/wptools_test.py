@@ -36,9 +36,40 @@ def test_create_wp_cli_bat_file_given_phar_path_creates_bat_file_with_specific_c
 
 # endregion
 
+# region create_configuration_file()
+
+
+@patch("project_types.wordpress.wp_cli.create_configuration_file")
+def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_database_parameters(
+        create_conf_file_mock, wordpressdata):
+    """ Given database parameters, calls wp.cli.create_configuration_file """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    database_props = site_config["database"]
+    wordpress_path = wordpressdata.wordpress_path
+    database_user_pass = "my-password"
+    # Act
+    sut.create_configuration_file(site_config, wordpress_path, database_user_pass)
+    # Assert
+    create_conf_file_mock.assert_called_once_with(
+        wordpress_path=wordpress_path,
+        db_host=database_props["host"],
+        db_name=database_props["name"],
+        db_user=database_props["user"],
+        db_pass=database_user_pass,
+        db_prefix=database_props["prefix"],
+        db_charset=database_props["charset"],
+        db_collate=database_props["collate"],
+        skip_check=database_props["skip_check"],
+        debug=site_config["wp_cli"]["debug"])
+
+
+# endregion
+
 # region download_wordpress()
 
 
+@patch("project_types.wordpress.wp_cli.download_wordpress")
 def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
     """Given an invalid path, raises ValueError"""
 
@@ -48,14 +79,14 @@ def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
 
     # Act
     with pytest.raises(ValueError):
-
         # Assert
         sut.download_wordpress(site_configuration, path)
 
 
 @patch("tools.git.purge_gitkeep")
-@patch("tools.cli.call_subprocess")
-def test_download_wordpress_given_valid_arguments_calls_subprocess(subprocess, purge_gitkeep, wordpressdata):
+@patch("project_types.wordpress.wp_cli.download_wordpress")
+def test_download_wordpress_given_valid_arguments_calls_subprocess(
+        download_wordpress_mock, purge_gitkeep, wordpressdata):
     """Given valid arguments, calls subprocess"""
 
     # Arrange
@@ -66,8 +97,28 @@ def test_download_wordpress_given_valid_arguments_calls_subprocess(subprocess, p
     sut.download_wordpress(site_configuration, path)
 
     # Assert
-    subprocess.assert_called_once()
+    download_wordpress_mock.assert_called_once()
     purge_gitkeep.assert_called_once()
+
+
+# endregion
+
+# region import_database()
+
+
+@patch("project_types.wordpress.wp_cli.import_database")
+def test_import_database_given_config_then_call_cli_import_database(import_database_mock, wordpressdata):
+    """ Given site configuration, then calls wp_cli.import database """
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    dump_file_path = wordpressdata.dump_file_path
+    # Act
+    sut.import_database(site_configuration, wordpress_path, dump_file_path)
+    # Assert
+    import_database_mock.assert_called_once_with(
+        wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
+
 
 # endregion
 
@@ -169,6 +220,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_
                     sut.install_wp_cli(install_path)
                     # Assert
                     wp_cli_info.assert_called_once()
+
+
 # endregion
 
 # region get_constants()
@@ -191,6 +244,7 @@ def test_get_project_structure_given_path_reads_and_parses_content(open_file_moc
     # Assert
     assert result == json.loads(WordPressData.structure_file_content)
 
+
 # endregion
 
 # region get_required_file_paths()
@@ -211,6 +265,7 @@ def test_get_required_file_paths(get_file_path_from_pattern, wordpressdata):
     # Assert
     assert result == (wordpressdata.site_config_path,)
 
+
 # endregion
 
 # region get_site_configuration()
@@ -228,6 +283,7 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
     # Assert
     assert result == json.loads(wordpressdata.site_config_content)
+
 
 # endregion
 
@@ -312,9 +368,131 @@ def test_get_site_configuration_path_from_environment_when_more_than_1_environme
     # Assert
     assert str(value_error.value) == literals.get("wp_env_gt1")
 
+
 # endregion convert_wp_parameter_skip_content()
 
+# region import_database()
+
+
+@patch("project_types.wordpress.wp_cli.import_database")
+def test_import_database_given_config_then_call_cli_import_database(import_database_mock, wordpressdata):
+    """ Given site configuration, then calls wp_cli.import database """
+    # Arrange
+    site_configuration = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    dump_file_path = wordpressdata.dump_file_path
+    # Act
+    sut.import_database(site_configuration, wordpress_path, dump_file_path)
+    # Assert
+    import_database_mock.assert_called_once_with(
+        wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
+
+
+# endregion
+
+# region install_plugins_from_configuration_file()
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_plugin")
+def test_install_plugins_given_configuration_file_when_no_plugins_then_no_install(
+        install_plugin_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no plugins present, the no installation calls
+     should be made """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["plugins"] = {}
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    # Act
+    sut.install_plugins_from_configuration_file(site_config, root_path)
+    # Assert
+    install_plugin_mock.assert_not_called()
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("pathlib.Path.as_posix")
+def test_install_plugins_given_configuration_file_when_plugins_then_calls_wp_cli_install_plugin(
+        path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no plugins present, the no installation calls
+     should be made """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_plugins_from_configuration_file(site_config, root_path)
+    # Assert
+    calls = []
+    for plugin in site_config["plugins"]:
+        plugin_call = call(plugin["name"],
+                           wordpressdata.wordpress_path,
+                           plugin["force"],
+                           plugin["source"],
+                           site_config["wp_cli"]["debug"])
+        calls.append(plugin_call)
+    install_plugin_mock.assert_has_calls(calls)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_shutil_move(
+        purge_gitkeep_mock, move_mock, path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no plugins present, the no installation calls
+     should be made """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
+    site_config["plugins"][0]["source_type"] = "zip"
+    site_config["plugins"][1]["source_type"] = "zip"
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_plugins_from_configuration_file(site_config, root_path)
+    # Assert
+    calls = []
+    for plugin in site_config["plugins"]:
+        move_call = call(plugin["source"],
+                         wordpressdata.wordpress_path)
+        calls.append(move_call)
+    move_mock.assert_has_calls(calls, any_order=True)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_shutil_move(
+        purge_gitkeep_mock, move_mock, path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no plugins present, the no installation calls
+     should be made """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
+    site_config["plugins"][0]["source_type"] = "zip"
+    site_config["plugins"][1]["source_type"] = "zip"
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_plugins_from_configuration_file(site_config, root_path)
+    # Assert
+    calls = []
+    purge_gitkeep_mock.assert_called()
+
+# endregion
+
+
 # region start_basic_structure
+
 
 @patch.object(sut, "get_project_structure")
 def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
