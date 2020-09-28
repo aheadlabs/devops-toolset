@@ -13,6 +13,7 @@ class WordPressData:
     """Class used to create the wordpressdata fixture"""
     root_path = "pathto/project"
     wordpress_path = "/pathto/wordpress"
+    wordpress_path_part = "/wordpress"
     wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
     project_structure_path = "/pathto/structure"

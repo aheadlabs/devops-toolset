@@ -349,7 +349,7 @@ def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_sh
 @patch("pathlib.Path.as_posix")
 @patch("shutil.move")
 @patch("tools.git.purge_gitkeep")
-def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_shutil_move(
+def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_purge_git_keep(
         purge_gitkeep_mock, move_mock, path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
     """ Given the configuration values, when no plugins present, the no installation calls
      should be made """
@@ -364,7 +364,6 @@ def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_sh
     # Act
     sut.install_plugins_from_configuration_file(site_config, root_path)
     # Assert
-    calls = []
     purge_gitkeep_mock.assert_called()
 
 # endregion
@@ -409,7 +408,7 @@ def test_install_themes_given_configuration_file_when_themes_then_calls_wp_cli_i
     sut.install_theme_from_configuration_file(site_config, root_path)
     # Assert
     install_theme_mock.assert_called_with(
-        wordpressdata.root_path + "/wordpress",
+        wordpressdata.root_path + wordpressdata.wordpress_path_part,
         site_config["themes"]["source"],
         True,
         site_config["wp_cli"]["debug"],
@@ -488,12 +487,12 @@ def test_install_themes_given_configuration_file_when_child_themes_then_calls_in
     # Act
     sut.install_theme_from_configuration_file(site_config, root_path)
     # Assert
-    calls = [call(root_path + "/wordpress",
+    calls = [call(root_path + wordpressdata.wordpress_path_part,
                   site_config["themes"]["source"],
                   True,
                   debug,
                   site_config["themes"]["name"]),
-             call(root_path + "/wordpress",
+             call(root_path + wordpressdata.wordpress_path_part,
                   wordpressdata.wordpress_path,
                   True,
                   debug,
