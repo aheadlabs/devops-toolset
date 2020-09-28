@@ -404,6 +404,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
         # Clean up the theme by moving to the content folder
         shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+    git_tools.purge_gitkeep(themes_path_as_posix)
     # Backup database after theme install
     database_path = root_path + constants["paths"]["database"]
     core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["theme"], wordpress_path)
@@ -474,13 +475,13 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
 
     # Update description option
     description = site_configuration["settings"]["description"]
-    wp_cli.update_database_option("blogdescription", description, wordpress_path, site_configuration["wp_cli"]["debug"])
+    wp_cli.update_database_option("blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
 
     # Backup database
     core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
     database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
     database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-    export_database(site_configuration, wordpress_path, database_core_dump_path_as_posix)
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:

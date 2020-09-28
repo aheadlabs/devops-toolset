@@ -70,7 +70,7 @@ def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_d
 
 
 @patch("project_types.wordpress.wp_cli.download_wordpress")
-def test_download_wordpress_given_invalid_path_raises_valueerror(wordpressdata):
+def test_download_wordpress_given_invalid_path_raises_valueerror(download_wordpress_mock, wordpressdata):
     """Given an invalid path, raises ValueError"""
 
     # Arrange
@@ -99,127 +99,6 @@ def test_download_wordpress_given_valid_arguments_calls_subprocess(
     # Assert
     download_wordpress_mock.assert_called_once()
     purge_gitkeep.assert_called_once()
-
-
-# endregion
-
-# region import_database()
-
-
-@patch("project_types.wordpress.wp_cli.import_database")
-def test_import_database_given_config_then_call_cli_import_database(import_database_mock, wordpressdata):
-    """ Given site configuration, then calls wp_cli.import database """
-    # Arrange
-    site_configuration = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    dump_file_path = wordpressdata.dump_file_path
-    # Act
-    sut.import_database(site_configuration, wordpress_path, dump_file_path)
-    # Assert
-    import_database_mock.assert_called_once_with(
-        wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
-
-
-# endregion
-
-# region install_wp_cli()
-
-
-@patch("pathlib.Path")
-def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_mock, wordpressdata):
-    """Given a file path, raises ValueError when install_path is not a dir."""
-
-    # Arrange
-    install_path = wordpressdata.wp_cli_install_path
-    pathlib_mock.return_value = install_path
-    expected_exception_message = literals.get("wp_not_dir")
-    with patch.object(pathlib.Path, "is_dir", return_value=False):
-        # Act
-        with pytest.raises(ValueError) as exceptionInfo:
-            sut.install_wp_cli(install_path)
-        # Assert
-        assert expected_exception_message == str(exceptionInfo.value)
-
-
-@patch("pathlib.Path")
-@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
-def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(
-        wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
-    """ Given a file path, when path is a dir, then downloads from download url """
-    # Arrange
-    install_path = wordpressdata.wp_cli_install_path
-    pathlib_mock.return_value = install_path
-    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
-    wp_cli_phar = "wp-cli.phar"
-    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
-    with patch(wordpressdata.builtins_open, mock_open()):
-        with patch.object(os, "stat"):
-            with patch.object(os, "chmod"):
-                # Act
-                sut.install_wp_cli(install_path)
-    # Assert
-    calls = [call(wp_cli_download_url)]
-    wordpressdata.requests_get_mock.assert_has_calls(calls, any_order=True)
-
-
-@patch("pathlib.Path")
-@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
-def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
-        wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
-    """ Given a file path, when path is a dir, then writes response content to file_path """
-    # Arrange
-    install_path = wordpressdata.wp_cli_install_path
-    pathlib_mock.return_value = install_path
-    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
-    expected_content = b"sample response in bytes"
-    m = mock_open()
-    with patch(wordpressdata.builtins_open, m, create=True):
-        with patch.object(os, "stat"):
-            with patch.object(os, "chmod"):
-                # Act
-                sut.install_wp_cli(install_path)
-                # Assert
-                handler = m()
-                handler.write.assert_called_once_with(expected_content)
-
-
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
-def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wp_cli_info, wordpressdata):
-    """ Given a file path, when path is a dir, then does chmod with S_IEXEC """
-    # Arrange
-    install_path = wordpressdata.wp_cli_install_path
-    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
-
-    with patch.object(pathlib.Path, "is_dir", return_value=True):
-        with patch(wordpressdata.builtins_open, mock_open()):
-            with patch.object(os, "stat") as file_stat_mock:
-                file_stat_mock.return_value = os.stat(install_path)
-                with patch.object(os, "chmod") as chmod_mock:
-                    # Act
-                    sut.install_wp_cli(install_path)
-                    # Assert
-                    chmod_mock.assert_called_once_with(wordpressdata.wp_cli_file_path,
-                                                       file_stat_mock.return_value.st_mode | stat.S_IEXEC)
-
-
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
-def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(wp_cli_info, wordpressdata):
-    """ Given a file path, when path is a dir, then calls wp_cli_info() from wp_cli module """
-    # Arrange
-    install_path = wordpressdata.wp_cli_install_path
-    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
-
-    with patch.object(pathlib.Path, "is_dir", return_value=True):
-        with patch(wordpressdata.builtins_open, mock_open()):
-            with patch.object(os, "stat") as file_stat_mock:
-                file_stat_mock.return_value = os.stat(install_path)
-                with patch.object(os, "chmod"):
-                    # Act
-                    sut.install_wp_cli(install_path)
-                    # Assert
-                    wp_cli_info.assert_called_once()
 
 
 # endregion
@@ -490,6 +369,351 @@ def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_sh
 
 # endregion
 
+# region install_theme_from_configuration_file()
+
+
+@patch("logging.info")
+@patch("project_types.wordpress.wp_cli.install_theme")
+def test_install_theme_given_configuration_file_when_no_themes_then_no_install(
+        install_theme_mock, logging_mock, wordpressdata):
+    """ Given the configuration values, when no plugins present, then no installation calls
+     should be made """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = {}
+    root_path = wordpressdata.root_path
+    # Act
+    sut.install_theme_from_configuration_file(site_config, root_path)
+    # Assert
+    install_theme_mock.assert_not_called()
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_theme")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+def test_install_themes_given_configuration_file_when_themes_then_calls_wp_cli_install_theme(
+        convert_wp_token, purge_gitkeep_mock, move_mock, path_mock, export_database_mock,
+        install_theme_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when themes present, then call install_theme """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_theme_from_configuration_file(site_config, root_path)
+    # Assert
+    install_theme_mock.assert_called_with(
+        wordpressdata.root_path + "/wordpress",
+        site_config["themes"]["source"],
+        True,
+        site_config["wp_cli"]["debug"],
+        site_config["themes"]["name"])
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_theme")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+def test_install_themes_given_configuration_file_when_themes_then_calls_shutil_move(
+        convert_wp_token, purge_gitkeep_mock, move_mock, path_mock, export_database_mock,
+        install_theme_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no themes present, then call shutil move """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_theme_from_configuration_file(site_config, root_path)
+    # Assert
+    move_mock.assert_called_with(
+        site_config["themes"]["source"],
+        wordpressdata.wordpress_path)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_theme")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+def test_install_themes_given_configuration_file_when_themes_then_calls_export_database(
+        convert_wp_token, purge_gitkeep_mock, move_mock, path_mock, export_database_mock,
+        install_theme_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when no themes present, then call shutil move """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_theme_from_configuration_file(site_config, root_path)
+    # Assert
+    export_database_mock.assert_called_with(
+        site_config, wordpressdata.wordpress_path, wordpressdata.wordpress_path)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.install_theme")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("pathlib.Path.as_posix")
+@patch("shutil.move")
+@patch("tools.git.purge_gitkeep")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+def test_install_themes_given_configuration_file_when_child_themes_then_calls_install_theme_twice(
+        convert_wp_token, purge_gitkeep_mock, move_mock, path_mock, export_database_mock,
+        install_theme_mock, get_constants_mock, wordpressdata):
+    """ Given the configuration values, when child theme present, then call install theme
+     twice """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    site_config["themes"]["has_child"] = True
+    debug = site_config["wp_cli"]["debug"]
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = wordpressdata.wordpress_path
+    # Act
+    sut.install_theme_from_configuration_file(site_config, root_path)
+    # Assert
+    calls = [call(root_path + "/wordpress",
+                  site_config["themes"]["source"],
+                  True,
+                  debug,
+                  site_config["themes"]["name"]),
+             call(root_path + "/wordpress",
+                  wordpressdata.wordpress_path,
+                  True,
+                  debug,
+                  site_config["themes"]["name"])]
+    install_theme_mock.assert_has_calls(calls)
+
+# endregion
+
+# region install_wp_cli()
+
+
+@patch("pathlib.Path")
+def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_mock, wordpressdata):
+    """Given a file path, raises ValueError when install_path is not a dir."""
+
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    expected_exception_message = literals.get("wp_not_dir")
+    with patch.object(pathlib.Path, "is_dir", return_value=False):
+        # Act
+        with pytest.raises(ValueError) as exceptionInfo:
+            sut.install_wp_cli(install_path)
+        # Assert
+        assert expected_exception_message == str(exceptionInfo.value)
+
+
+@patch("pathlib.Path")
+@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
+@patch("project_types.wordpress.wp_cli.wp_cli_info")
+def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(
+        wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
+    """ Given a file path, when path is a dir, then downloads from download url """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    wp_cli_phar = "wp-cli.phar"
+    wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
+    with patch(wordpressdata.builtins_open, mock_open()):
+        with patch.object(os, "stat"):
+            with patch.object(os, "chmod"):
+                # Act
+                sut.install_wp_cli(install_path)
+    # Assert
+    calls = [call(wp_cli_download_url)]
+    wordpressdata.requests_get_mock.assert_has_calls(calls, any_order=True)
+
+
+@patch("pathlib.Path")
+@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
+@patch("project_types.wordpress.wp_cli.wp_cli_info")
+def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
+        wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata):
+    """ Given a file path, when path is a dir, then writes response content to file_path """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    pathlib_mock.return_value = install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    expected_content = b"sample response in bytes"
+    m = mock_open()
+    with patch(wordpressdata.builtins_open, m, create=True):
+        with patch.object(os, "stat"):
+            with patch.object(os, "chmod"):
+                # Act
+                sut.install_wp_cli(install_path)
+                # Assert
+                handler = m()
+                handler.write.assert_called_once_with(expected_content)
+
+
+@patch("project_types.wordpress.wp_cli.wp_cli_info")
+def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wp_cli_info, wordpressdata):
+    """ Given a file path, when path is a dir, then does chmod with S_IEXEC """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+
+    with patch.object(pathlib.Path, "is_dir", return_value=True):
+        with patch(wordpressdata.builtins_open, mock_open()):
+            with patch.object(os, "stat") as file_stat_mock:
+                file_stat_mock.return_value = os.stat(install_path)
+                with patch.object(os, "chmod") as chmod_mock:
+                    # Act
+                    sut.install_wp_cli(install_path)
+                    # Assert
+                    chmod_mock.assert_called_once_with(wordpressdata.wp_cli_file_path,
+                                                       file_stat_mock.return_value.st_mode | stat.S_IEXEC)
+
+
+@patch("project_types.wordpress.wp_cli.wp_cli_info")
+def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(wp_cli_info, wordpressdata):
+    """ Given a file path, when path is a dir, then calls wp_cli_info() from wp_cli module """
+    # Arrange
+    install_path = wordpressdata.wp_cli_install_path
+    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+
+    with patch.object(pathlib.Path, "is_dir", return_value=True):
+        with patch(wordpressdata.builtins_open, mock_open()):
+            with patch.object(os, "stat") as file_stat_mock:
+                file_stat_mock.return_value = os.stat(install_path)
+                with patch.object(os, "chmod"):
+                    # Act
+                    sut.install_wp_cli(install_path)
+                    # Assert
+                    wp_cli_info.assert_called_once()
+
+
+# endregion
+
+# region install_wordpress_core()
+
+
+@patch("project_types.wordpress.wp_cli.install_wordpress_core")
+def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wordpress_mock, wordpressdata):
+    """ Given configuration file, then calls install_wordpress_core from cli """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    admin_pass = "root"
+    # Act
+    sut.install_wordpress_core(site_config, wordpress_path, admin_pass)
+    # Assert
+    install_wordpress_mock.assert_called_once()
+
+
+# endregion
+
+# region install_wordpress_site()
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.reset_database")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wptools.install_wordpress_core")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("pathlib.Path.as_posix")
+def test_install_wordpress_site_then_calls_cli_reset_database(
+        path_mock, convert_wp_config_token, export_database, install_wordpress_core,
+        update_database, reset_database_mock, get_constants_mock, wordpressdata):
+    """ Given site_configuration, then calls cli's reset database """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    path_mock.return_value = wordpress_path
+    admin_pass = "root"
+    # Act
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    # Assert
+    reset_database_mock.assert_called_with(wordpress_path, True, site_config["wp_cli"]["debug"])
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.reset_database")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wptools.install_wordpress_core")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("pathlib.Path.as_posix")
+def test_install_wordpress_site_then_calls_install_wordpress_core(
+        path_mock, convert_wp_config_token, export_database, install_wordpress_core,
+        update_database, reset_database_mock, get_constants_mock, wordpressdata):
+    """ Given site_configuration, then calls install_wordpress_core """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    path_mock.return_value = wordpress_path
+    admin_pass = "root"
+    # Act
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    # Assert
+    install_wordpress_core.assert_called_with(site_config, wordpress_path, admin_pass)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.reset_database")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wptools.install_wordpress_core")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("pathlib.Path.as_posix")
+def test_install_wordpress_site_then_calls_cli_update_option(
+        path_mock, convert_wp_config_token, export_database, install_wordpress_core,
+        update_database, reset_database_mock, get_constants_mock, wordpressdata):
+    """ Given site_configuration, then calls cli's update database  option """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    path_mock.return_value = str(wordpress_path)
+    admin_pass = "root"
+    # Act
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    # Assert
+    update_database.assert_called_with("blogdescription", site_config["settings"]["description"],
+                                       wordpress_path, site_config["wp_cli"]["debug"])
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_cli.reset_database")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wptools.install_wordpress_core")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("pathlib.Path.as_posix")
+def test_install_wordpress_site_then_calls_cli_export_database(
+        path_mock, convert_wp_config_token, export_database, install_wordpress_core,
+        update_database, reset_database_mock, get_constants_mock, wordpressdata):
+    """ Given site_configuration, then calls cli's export_database"""
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    path_mock.return_value = wordpress_path
+    admin_pass = "root"
+    # Act
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    # Assert
+    export_database.assert_called_with(site_config, wordpress_path, wordpress_path)
+
+# endregion
 
 # region start_basic_structure
 
