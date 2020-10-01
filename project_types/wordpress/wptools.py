@@ -475,7 +475,8 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
 
     # Update description option
     description = site_configuration["settings"]["description"]
-    wp_cli.update_database_option("blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
+    wp_cli.update_database_option(
+        "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
 
     # Backup database
     core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)

@@ -110,16 +110,12 @@ class WordPressData:
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
 
-    # Mocks
-    requests_get_mock = mock.patch.object(requests, "get").start()
-
 
 @pytest.fixture
 def wordpressdata():
     """Sample data for testing"""
     yield WordPressData()
     # Below code is executed as a TearDown
-    WordPressData.requests_get_mock.stop()
     print("Teardown finished.")
 
 

@@ -1,8 +1,10 @@
 """Test configuration file for filesystem module.
 
 Add here whatever you want to pass as a fixture in your texts."""
+from unittest import mock
 
 import pytest
+import requests
 
 
 class GitignoreData(object):
@@ -51,10 +53,36 @@ def clidata():
 
 class Paths(object):
     """Class used to create paths fixture"""
-    invalid_path = "/invalidpath"
+    invalid_path = "/invalid/path"
+    devops_toolset_path_file = "/devops_toolset/path/file"
+    devops_destination_path = "/devops_toolset/destination/path"
+    devops_old_destination_path = "/devops_toolset/destination/old"
+    devops_final_destination_path = "/devops_toolset/destination/final"
+    toolset_path = "/toolset/path"
+    builtins_open = 'builtins.open'
 
 
 @pytest.fixture()
 def paths():
     """Sample paths for testing"""
-    return Paths()
+    yield Paths()
+    # Below code is executed as a TearDown
+    print("Teardown finished.")
+
+
+def mocked_requests_get(url: str, *args, **kwargs):
+    """Mock to replace requests.get()"""
+
+    # Default values
+    bytes_content = b"sample response in bytes"
+    text_content = "sample text response"
+
+    # Return instance
+    return MockResponse(bytes_content, text_content)
+
+
+class MockResponse:
+    """This is the mocked Response object returned by requests.get()"""
+    def __init__(self, b_content, text_content):
+        self.content = b_content
+        self.text = text_content
