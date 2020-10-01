@@ -9,7 +9,8 @@ import devops_platforms.azuredevops.environment as sut
 
 @patch("logging.error")
 @patch("sys.stdout", new_callable=StringIO)
-def test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout(mock_stdout, logger_mock, platformdata):
+def test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout(
+        mock_stdout, logger_mock, platformdata):
     """Given a dictionary, when it is not empty, writes environment variables
     to stdout in the Azure DevOps notation"""
 

@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import os.path
 
 
-class XMLParser:
+class XMLParser(object):
     """ Class to to interact to xml files """
 
     def __init__(self):

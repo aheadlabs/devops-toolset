@@ -59,7 +59,8 @@ def test_configure_given_filepath_then_calls_configure_by_file(add_filter_mock, 
 @patch.object(logging, "info")
 @patch.object(sut, "add_colored_formatter_to_console_handlers")
 @patch.object(sut, "configure_by_file")
-def test_configure_given_filepath_then_add_colored_formatter(add_colored_formatter_mock, configure_by_file_mock, logging_mock):
+def test_configure_given_filepath_then_add_colored_formatter(
+        add_colored_formatter_mock, configure_by_file_mock, logging_mock):
     """Given a filepath to configure logging, then adds the colored formatter on every console handler"""
 
     # Arrange

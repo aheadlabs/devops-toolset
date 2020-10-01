@@ -54,6 +54,7 @@ def clidata():
 class Paths(object):
     """Class used to create paths fixture"""
     invalid_path = "/invalid/path"
+    xml_path = "../../project.xml"
     devops_toolset_path_file = "/devops_toolset/path/file"
     devops_destination_path = "/devops_toolset/destination/path"
     devops_old_destination_path = "/devops_toolset/destination/old"
