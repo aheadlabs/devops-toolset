@@ -1,14 +1,17 @@
 """ Unit tests for the xmlparser file"""
+from unittest.mock import patch
 
 from tools.xmlparser import XMLParser
 
 # region parse_from_path
 
 
-def test_parse_from_path_when_xml_path_exist_then_calls_et_parse(paths):
+@patch("os.path.exists")
+def test_parse_from_path_when_xml_path_exist_then_calls_et_parse(exist_mock, paths):
     """ Given xml path, when path exist, then should call ET.parse """
     # Arrange
     xml_path = paths.xml_path
+    exist_mock.return_value = True
     # Act
     sut = XMLParser()
     sut.parse_from_path(xml_path)
@@ -16,10 +19,12 @@ def test_parse_from_path_when_xml_path_exist_then_calls_et_parse(paths):
     assert sut.xml_file is not None
 
 
-def test_parse_from_path_when_xml_path_not_exist_then_assigns_xml_file_as_empty(paths):
+@patch("os.path.exists")
+def test_parse_from_path_when_xml_path_not_exist_then_assigns_xml_file_as_empty(exist_mock, paths):
     """ Given xml path, when path not exist, then should set xml file as empty """
     # Arrange
-    xml_path = paths.invalid_path
+    xml_path = paths.xml_path
+    exist_mock.return_value = False
     # Act
     sut = XMLParser()
     sut.parse_from_path(xml_path)
