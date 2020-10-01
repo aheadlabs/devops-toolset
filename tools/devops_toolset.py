@@ -8,6 +8,7 @@ import logging
 from core.LiteralsCore import LiteralsCore
 from core.app import App
 import os.path
+import tools.git as git_tools
 import pathlib
 import shutil
 from project_types.wordpress.Literals import Literals as WordpressLiterals
@@ -44,7 +45,7 @@ def get_devops_toolset(destination_path: str):
         path=final_destination_folder)
     )
     os.remove(devops_toolset_path_file)
-    os.remove(os.path.join(destination_path, ".gitkeep"))
+    git_tools.purge_gitkeep(pathlib.Path(destination_path).as_posix())
 
 
 def update_devops_toolset(toolset_path: str):
