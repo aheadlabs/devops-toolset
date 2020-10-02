@@ -13,6 +13,7 @@ class Literals(ValueDictsBase):
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
         "wp_title_wordpress_rollback_db": _("WordPress\ndatabase rollback"),
+        "wp_title_generate_wordpress": _("New Wordpress")
     }
     _info = {
         "wp_wpcli_db_reset_before": _("Resetting the database (drop and create)..."),
