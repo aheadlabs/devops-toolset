@@ -7,8 +7,10 @@ import devops_platforms.azuredevops.environment as sut
 # region create_environment_variables()
 
 
+@patch("logging.error")
 @patch("sys.stdout", new_callable=StringIO)
-def test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout(mock_stdout, platformdata):
+def test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout(
+        mock_stdout, logger_mock, platformdata):
     """Given a dictionary, when it is not empty, writes environment variables
     to stdout in the Azure DevOps notation"""
 
@@ -22,8 +24,10 @@ def test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout
     assert mock_stdout.tell() > 0
 
 
+@patch("logging.error")
 @patch("sys.stdout.write")
-def test_create_environment_variables_given_dict_writes_correct_format_to_stdout(mock_stdout_write, platformdata):
+def test_create_environment_variables_given_dict_writes_correct_format_to_stdout(
+        mock_stdout_write, logger_mock, platformdata):
     """Given a dictionary, writes environment variables in the correct format
     to stdout in the Azure DevOps notation"""
 
@@ -44,7 +48,8 @@ def test_create_environment_variables_given_dict_writes_correct_format_to_stdout
 
 
 @patch("sys.stdout.write")
-def test_end_task_given_type_and_description_writes_to_stdout(mock_stdout_write, platformdata):
+@patch("logging.error")
+def test_end_task_given_type_and_description_writes_to_stdout(logging_mock, mock_stdout_write, platformdata):
     """Given a type and a description, writes task termination command to
     stdout in the Azure DevOps notation"""
 

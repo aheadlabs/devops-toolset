@@ -11,7 +11,9 @@ from unittest import mock
 
 class WordPressData:
     """Class used to create the wordpressdata fixture"""
+    root_path = "pathto/project"
     wordpress_path = "/pathto/wordpress"
+    wordpress_path_part = "/wordpress"
     wordpress_path_err = "/nonexistentpath"
     environment_path = "/pathto/environment"
     project_structure_path = "/pathto/structure"
@@ -29,25 +31,47 @@ class WordPressData:
     site_config_path_from_json = "/pathto/default-localhost-site.json"
     site_config_path = "/pathto/site-config"
     site_config_file_name = "default-localhost-site.json"
-    site_config_content = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json\"," \
-                          "\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\",\"name\":" \
-                          "\"my_wordpress_site\",\"user\":\"wp_db_user\",\"prefix\":\"wp_\",\"charset\":\"utf8\"," \
-                          "\"collate\":\"utf8_unicode_ci\",\"skip_check\":true,\"dumps\":{\"core\":" \
-                          "\"[date]-db.core.sql\",\"theme\":\"[date]-db.theme.sql\",\"plugins\":" \
-                          "\"[date]-db.plugins.sql\",\"regular\":\"[date]-db.sql\"}},\"settings\":{\"title\":" \
-                          "\"My WordPress site\",\"description\":\"This is my WordPress site\",\"version\":" \
-                          "\"latest\",\"locale\":\"en_US\",\"site_url\":\"http://localhost/my-wordpress-site\"," \
+    site_config_content = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
                           "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
-                          "\"skip_content_download\":false,\"content_url\":" \
-                          "\"http://localhost/my-wordpress-site/wp-content\",\"plugin_url\":" \
-                          "\"http://localhost/my-wordpress-site/wp-content/plugins\",\"noblogredirect_url\":" \
-                          "\"http://localhost/my-wordpress-site\",\"disable_fatal_error_handler_and_debug_display\":" \
-                          "false,\"concatenate_scripts\":true,\"cache\":false,\"save_queries\":false," \
-                          "\"empty_trash_days\":5,\"disallow_file_edit\":false,\"disallow_file_mods\":false," \
-                          "\"force_ssl_admin\":false,\"http_block_external\":true,\"accessible_hosts\":" \
-                          "[\"localhost\"],\"auto_update_core\":\"minor\",\"image_edit_overwrite\":true}," \
-                          "\"multisite\":{},\"themes\":{\"source_type\":\"wordpress\",\"source\":\"twentytwenty\"," \
-                          "\"has_child\":false},\"plugins\":{}}"
+                          "\"wp_config\":{\"site_url\":{\"name\":\"WP_SITEURL\",\"type\":\"constant\"," \
+                          "\"value\":\"http://localhost/wordpress-playground\"},\"home_url\":{\"name\":\"WP_HOME\"," \
+                          "\"type\":\"constant\",\"value\":\"http://localhost/wordpress-playground\"}," \
+                          "\"content_url\":{\"name\":\"WP_CONTENT_URL\",\"type\":\"constant\"," \
+                          "\"value\":\"http://localhost/wordpress-playground/wp-content\"}," \
+                          "\"plugin_url\":{\"name\":\"WP_PLUGIN_URL\",\"type\":\"constant\"," \
+                          "\"value\":\"http://localhost/wordpress-playground/wp-content/plugins\"}," \
+                          "\"noblogredirect_url\":{\"name\":\"NOBLOGREDIRECT\",\"type\":\"constant\"," \
+                          "\"value\":\"http://localhost/wordpress-playground\"}," \
+                          "\"disable_fatal_error_handler\":{\"name\":\"WP_DISABLE_FATAL_ERROR_HANDLER\"," \
+                          "\"type\":\"constant\",\"value\":false},\"debug_display\":{\"name\":\"WP_DEBUG_DISPLAY\"," \
+                          "\"type\":\"constant\",\"value\":false},\"debug\":{\"name\":\"WP_DEBUG\"," \
+                          "\"type\":\"constant\",\"value\":false},\"cache\":{\"name\":\"WP_CACHE\"," \
+                          "\"type\":\"constant\",\"value\":false},\"save_queries\":{\"name\":\"SAVEQUERIES\"," \
+                          "\"type\":\"constant\",\"value\":false},\"empty_trash_days\":{\"name\":\"EMPTY_TRASH_DAYS\"," \
+                          "\"type\":\"constant\",\"value\":5},\"disallow_file_edit\":{\"name\":\"DISALLOW_FILE_EDIT\"," \
+                          "\"type\":\"constant\",\"value\":false},\"disallow_file_mods\":{\"name\":\"DISALLOW_FILE_MODS\"," \
+                          "\"type\":\"constant\",\"value\":false},\"force_ssl_admin\":{\"name\":\"FORCE_SSL_ADMIN\"," \
+                          "\"type\":\"constant\",\"value\":false},\"http_block_external\":" \
+                          "{\"name\":\"WP_HTTP_BLOCK_EXTERNAL\",\"type\":\"constant\",\"value\":true}," \
+                          "\"accessible_hosts\":{\"name\":\"WP_ACCESIBLE_HOSTS\",\"type\":\"constant\"," \
+                          "\"value\":[\"localhost\"]},\"auto_update_core\":{\"name\":\"WP_AUTO_UPDATE_CORE\"," \
+                          "\"type\":\"constant\",\"value\":\"minor\"},\"image_edit_overwrite\":" \
+                          "{\"name\":\"IMAGE_EDIT_OVERWRITE\",\"type\":\"constant\",\"value\":true}}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true},\"multisite\":{}," \
+                          "\"themes\":{},\"plugins\":[]}"
+    plugins_content = \
+        "[{\"name\":\"plugin-1\",\"source_type\":\"wordpress\",\"source\":\"path-to-source1\",\"force\":true}," \
+        "{\"name\":\"plugin-2\",\"source_type\":\"wordpress\",\"source\":\"path-to-source2\",\"force\":true}]"
+    themes_content = \
+        "{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\",\"has_child\":false}"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
@@ -86,16 +110,12 @@ class WordPressData:
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
 
-    # Mocks
-    requests_get_mock = mock.patch.object(requests, "get").start()
-
 
 @pytest.fixture
 def wordpressdata():
     """Sample data for testing"""
     yield WordPressData()
     # Below code is executed as a TearDown
-    WordPressData.requests_get_mock.stop()
     print("Teardown finished.")
 
 
