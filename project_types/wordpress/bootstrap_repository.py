@@ -17,30 +17,20 @@ Args:
 #! python
 
 import argparse
-import core.log_tools
-import filesystem.paths as paths
-import logging
-import pathlib
 import os
-import requests
 import tools.argument_validators
 import tools.cli
 import tools.devops_toolset
-import project_types.wordpress.constants as constants
-import project_types.wordpress.wptools
-from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
-from devops_platforms.constants import Urls
-from project_types import wordpress
-from tools import git
+from project_types.wordpress import generate_wordpress
 from project_types.wordpress.Literals import Literals as WordpressLiterals
+from tools import git
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
-# TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 # TODO (alberto.carbonell) Check if database and db users exist and if not, prompt to create them
 def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
@@ -51,67 +41,8 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     # Initialize a local Git repository?
     git.git_init(project_path, args.skip_git)
 
-    # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
-    required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
-    required_files_not_present = paths.files_exist_filtered(project_path, False, required_files_pattern_suffixes)
-
-    # If there are missing required files, ask for using the default ones from GitHub
-    if len(required_files_not_present) > 0:
-        core.log_tools.log_indented_list(literals.get("wp_required_files_not_found_detail").format(path=project_path),
-                                         required_files_not_present, core.log_tools.LogLevel.warning)
-
-        core.log_tools.log_indented_list(literals.get("wp_default_files"), [
-            Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE, Urls.DEFAULT_SITE_ENVIRONMENTS, Urls.DEFAULT_SITE_CONFIG],
-                                         core.log_tools.LogLevel.info)
-
-        # Ask to use defaults
-        use_defaults = prompt.yn(literals.get("wp_use_default_files"))
-
-        # If not using defaults, exit
-        if not use_defaults:
-            logging.critical(literals.get("wp_required_files_mandatory"))
-            raise ValueError(literals.get("wp_required_files_not_found").format(project_path))
-
-    # Download defaults from GitHub
-    for file in required_files_not_present:
-        url = Urls.bootstrap_required_files[file]
-        file_name = paths.get_file_name_from_url(url)
-        file_path = pathlib.Path.joinpath(pathlib.Path(project_path), file_name)
-
-        response = requests.get(url)
-        with open(file_path, "wb") as fw:
-            fw.write(response.content)
-
-    # Determine required file paths
-    required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
-        project_path, required_files_pattern_suffixes)
-
-    # Parsing site configuration file
-    site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], "localhost")
-
-    # Get wordpress future path (from the constants.json file)
-    wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(project_path)
-
-    # Create project structure
-    wordpress.wptools.start_basic_project_structure(project_path, required_file_paths[2])
-
-    # Update / Download devops-toolset
-    setup_devops_toolset(project_path)
-
-    # Download WordPress core files
-    wordpress.wptools.download_wordpress(site_config, wordpress_path)
-
-    # Configure WordPress site
-    wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
-
-    # Install WordPress site
-    wordpress.wptools.install_wordpress_site(site_config, project_path, db_admin_password)
-
-    # Install site theme
-    wordpress.wptools.install_theme_from_configuration_file(site_config, project_path)
-
-    # Install site plugins
-    wordpress.wptools.install_plugins_from_configuration_file(site_config, project_path)
+    # Generate wordpress with the required data
+    generate_wordpress.main(project_path, db_user_password, db_admin_password)
 
     # Move initial required files to .devops
     # TODO(ivan.sainz) Move initial required files to .devops
@@ -120,17 +51,6 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     git.git_commit(args.skip_git)
 
     # TODO(ivan.sainz) Remove this script from SonarCloud exclusions
-
-
-def setup_devops_toolset(root_path: str):
-    """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
-    Args:
-        root_path: Project's root path
-    """
-    devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
-    devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
-    logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
-    tools.devops_toolset.update_devops_toolset(devops_path)
 
 
 if __name__ == "__main__":
