@@ -51,10 +51,10 @@ def main(root_path: str, db_user_password: str = None, db_admin_password: str = 
             # If not using defaults, exit
             if not use_defaults:
                 logging.critical(literals.get("wp_required_files_mandatory"))
-                raise ValueError(literals.get("wp_required_files_not_found").format(root_path))
+                raise ValueError(literals.get("wp_required_files_not_found").format(path=root_path))
         else:
             logging.critical(literals.get("wp_required_files_mandatory"))
-            raise ValueError(literals.get("wp_required_files_not_found").format(root_path))
+            raise ValueError(literals.get("wp_required_files_not_found").format(path=root_path))
 
         # Download defaults from GitHub
         for file in required_files_not_present:
