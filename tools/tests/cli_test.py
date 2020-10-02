@@ -9,7 +9,8 @@ import core.log_tools
 
 
 @mock.patch.object(subprocess, "Popen")
-def test_call_subprocess_given_command_srt_then_calls_popens_with_command(subprocess_mock, clidata):
+@mock.patch("core.log_tools")
+def test_call_subprocess_given_command_srt_then_calls_popens_with_command(logtools_mock, subprocess_mock, clidata):
     """ Given an str command, then calls subprocess. Popen with that command"""
 
     # Arrange

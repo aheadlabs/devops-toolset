@@ -23,8 +23,7 @@ def main(destination_path: str, branch: str):
     """Downloads devops-toolset from the GitHub repository
 
     Args:
-        destination_path: Path where devops-toolset will be downloaded and
-            decompressed.
+        destination_path: Path where devops-toolset will be downloaded and decompressed.
         branch: What branch to download from the repository.
     """
 
@@ -33,18 +32,46 @@ def main(destination_path: str, branch: str):
     internal_directory = f"{toolset_name}-{dashed_branch}"
 
     # Download the toolset
-    destination_path_object = pathlib.Path(destination_path)
-    full_destination_path = pathlib.Path.joinpath(destination_path_object, f"{toolset_name}.zip")
-    response = requests.get(f"https://github.com/aheadlabs/devops-toolset/archive/{branch}.zip")
-
-    if not os.path.exists(destination_path):
-        os.mkdir(destination_path)
-    with open(full_destination_path, "wb") as zip_file:
-        zip_file.write(response.content)
-
-    logger.info(f"devops-toolset downloaded to {full_destination_path}")
+    destination_path_object, full_destination_path = download_toolset(branch, destination_path, toolset_name)
 
     # Decompress the toolset
+    internal_directory_full_path, temporary_extraction_path = \
+        decompress_toolset(destination_path_object, full_destination_path, internal_directory)
+
+    # Delete the temporary files
+    cleanup(full_destination_path, internal_directory_full_path, temporary_extraction_path)
+
+    # Delete myself
+    os.remove(__file__)
+
+
+def cleanup(full_destination_path, internal_directory_full_path, temporary_extraction_path):
+    """Downloads devops-toolset from the GitHub repository
+
+    Args:
+        full_destination_path: Path where devops-toolset will be downloaded and decompressed joined to the toolset-name
+        internal_directory_full_path: Path where devops-toolset will be extracted joined to
+        {toolset_name}-{dashed_branch}
+        temporary_extraction_path: Path devops-toolset will be extracted
+
+        """
+    os.rmdir(internal_directory_full_path)
+    logger.info(f"Deleted directory {internal_directory_full_path}")
+    os.rmdir(temporary_extraction_path)
+    logger.info(f"Deleted directory {temporary_extraction_path}")
+    os.remove(full_destination_path)
+    logger.info(f"Deleted file {full_destination_path}")
+
+
+def decompress_toolset(destination_path_object, full_destination_path, internal_directory):
+    """Downloads devops-toolset from the GitHub repository
+
+    Args:
+        destination_path_object: Path where devops-toolset will be downloaded and decompressed.
+        full_destination_path: Path where devops-toolset will be downloaded and decompressed joined to the toolset-name
+        internal_directory: {toolset_name}-{dashed_branch}
+
+        """
     temporary_extraction_path = pathlib.Path.joinpath(destination_path_object, "__temp")
     with zipfile.ZipFile(full_destination_path, "r") as zip_file:
         zip_file.extractall(temporary_extraction_path)
@@ -54,21 +81,28 @@ def main(destination_path: str, branch: str):
         from_path = pathlib.Path.joinpath(internal_directory_full_path, item)
         to_path = pathlib.Path.joinpath(destination_path_object, item)
         shutil.move(from_path, to_path)
-
     logger.info(f"devops-toolset decompressed to {destination_path_object}")
+    return internal_directory_full_path, temporary_extraction_path
 
-    # Delete the temporary files
-    os.rmdir(internal_directory_full_path)
-    logger.info(f"Deleted directory {internal_directory_full_path}")
 
-    os.rmdir(temporary_extraction_path)
-    logger.info(f"Deleted directory {temporary_extraction_path}")
+def download_toolset(branch, destination_path, toolset_name):
+    """Downloads devops-toolset from the GitHub repository
 
-    os.remove(full_destination_path)
-    logger.info(f"Deleted file {full_destination_path}")
-
-    # Delete myself
-    os.remove(__file__)
+        Args:
+            toolset_name: The name of the zip downloaded.
+            destination_path: Path where devops-toolset will be downloaded and
+                decompressed.
+            branch: What branch to download from the repository.
+        """
+    destination_path_object = pathlib.Path(destination_path)
+    full_destination_path = pathlib.Path.joinpath(destination_path_object, f"{toolset_name}.zip")
+    response = requests.get(f"https://github.com/aheadlabs/devops-toolset/archive/{branch}.zip")
+    if not os.path.exists(destination_path):
+        os.mkdir(destination_path)
+    with open(full_destination_path, "wb") as zip_file:
+        zip_file.write(response.content)
+    logger.info(f"devops-toolset downloaded to {full_destination_path}")
+    return destination_path_object, full_destination_path
 
 
 def is_valid_path(path: str) -> bool:
@@ -82,7 +116,7 @@ def is_valid_path(path: str) -> bool:
 
 class PathValidator(argparse.Action):
     """Validates a path"""
-    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    def __init__(self, option_strings, dest, **kwargs):
         super(PathValidator, self).__init__(option_strings, dest.replace("-", "_"), **kwargs)
 
     def __call__(self, parent_parser, namespace, values, option_string=None):

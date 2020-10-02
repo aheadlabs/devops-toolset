@@ -7,7 +7,10 @@ Add here whatever you want to pass as a fixture in your tests.
         - Add a class that contains what you want to pass as a fixture in your tests.
         - Create a fixture with that same lowered name that returns an instance to that class."""
 
+from unittest import mock
+
 import pytest
+import requests
 
 
 class FileNames(object):
@@ -24,7 +27,20 @@ class FileNames(object):
     glob_no_match = "**/no_match.file"
 
 
+class Mocks(object):
+    """Class used to declare general purpose testing mocks"""
+    requests_get_mock = mock.patch.object(requests, "get").start()
+
+
 @pytest.fixture
 def filenames():
     """Sample file names for testing file system related functionality"""
     return FileNames()
+
+@pytest.fixture
+def mocks():
+    """ General testing mocks """
+    yield Mocks()
+    Mocks.requests_get_mock.stop()
+    print(" Teardown finished.")
+
