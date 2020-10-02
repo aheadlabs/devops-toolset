@@ -16,11 +16,11 @@ steps:
       rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_artifact'
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(PROJECT_NAME)-$(PROJECT_VERSION).zip'
       replaceExistingArchive: true
   - task: PublishBuildArtifacts@1
     displayName: Publish artifact devops-toolset
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(ProjectName)-$(ProjectVersion).zip'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(PROJECT_NAME)-$(PROJECT_VERSION).zip'
       ArtifactName: 'devops-toolset'
       publishLocation: 'Container'
