@@ -29,7 +29,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 # TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 def main(root_path: str, db_user_password: str = None, db_admin_password: str = None, environment: str = "localhost"):
-    """ Generates a new Wordpress based on the required configuration files"""
+    """ Generates a new Wordpress site based on the required configuration files"""
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
@@ -44,7 +44,7 @@ def main(root_path: str, db_user_password: str = None, db_admin_password: str = 
             Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE, Urls.DEFAULT_SITE_ENVIRONMENTS, Urls.DEFAULT_SITE_CONFIG],
                                          core.log_tools.LogLevel.info)
 
-        # NOTE: Devops engine won't call this script with "localhost" environment.
+        # NOTE: DevOps engine won't call this script with "localhost" environment.
         if environment == "localhost":
             # Ask to use defaults
             use_defaults = prompt.yn(literals.get("wp_use_default_files"))

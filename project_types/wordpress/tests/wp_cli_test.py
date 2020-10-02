@@ -274,14 +274,25 @@ def test_wp_cli_info(call_subprocess):
 
 # endregion
 
-# TODO (some user)
+# region reset_transients()
 
-# def test_export_database():
-#     """Given, when, then"""
-#
-#     # Arrange
-#
-#     # Act
-#
-#     # Assert
-#     assert False
+
+@patch("tools.cli.call_subprocess")
+def test_create_wordpress_database_user(call_subprocess):
+    """Given arguments, when the method is called, then creates a db user"""
+
+    # Arrange
+    wordpress_path = ""
+    user_name = "user1"
+    user_password = "pass"
+    schema = "db1"
+    host = "localhost"
+    privileges = "create, alter, select, insert, update, delete"
+
+    # Act
+    sut.create_wordpress_database_user(wordpress_path, user_name, user_password, schema, host, privileges)
+
+    # Assert
+    call_subprocess.assert_called()
+
+# endregion
