@@ -284,13 +284,13 @@ def test_create_wordpress_database_user(call_subprocess):
     # Arrange
     wordpress_path = ""
     user_name = "user1"
-    user_password = "pass"
+    user_p = "pass"
     schema = "db1"
     host = "localhost"
     privileges = "create, alter, select, insert, update, delete"
 
     # Act
-    sut.create_wordpress_database_user(wordpress_path, user_name, user_password, schema, host, privileges)
+    sut.create_wordpress_database_user(wordpress_path, user_name, user_p, schema, host, privileges)
 
     # Assert
     call_subprocess.assert_called()
