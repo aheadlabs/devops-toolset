@@ -164,10 +164,11 @@ def test_get_default_content_given_item_when_source_then_return_corresponding_va
         file_mock
         , item
         , expected_value
-        , wordpressdata):
+        , wordpressdata
+        , mocks):
     """Given item when source has value raw, then return value content"""
     # Arrange
-    wordpressdata.requests_get_mock.side_effect = mocked_requests_get
+    mocks.requests_get_mock.side_effect = mocked_requests_get
     # Act
     result = BasicStructureStarter.get_default_content(item)
     # Assert

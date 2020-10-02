@@ -15,10 +15,11 @@ literals = LiteralsCore([DevopsLiterals])
 
 @patch("requests.get", side_effect=mocked_requests_get)
 @patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.logging.error")
 @patch("devops_platforms.sonarx.read_sonar_properties_file")
 @patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_generates_branch_segment(
-        branch_function, file_function, logger_info, requests_get, sonarxdata):
+        branch_function, file_function, logger_info, logging_error, requests_get, sonarxdata):
     """Given a branch, it generates the branch segment"""
 
     # Arrange
@@ -34,10 +35,11 @@ def test_get_quality_gate_status_given_branch_then_generates_branch_segment(
 
 @patch("requests.get", side_effect=mocked_requests_get)
 @patch("devops_platforms.sonarx.logging.info")
+@patch("devops_platforms.sonarx.logging.error")
 @patch("devops_platforms.sonarx.read_sonar_properties_file")
 @patch("devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_reads_sonar_config_file(
-        branch_function, file_function, logger_info, requests_get, sonarxdata):
+        branch_function, file_function, logger_info, logger_error, requests_get, sonarxdata):
     """Given the path to the Sonar* config file, it reads its properties"""
 
     # Arrange

@@ -30,7 +30,7 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
 
     core.log_tools.log_indented_list(literals.get("function_params"),
                                      core.log_tools.get_parameter_value_list(locals()),
-                                     core.log_tools.LogLevel.info)
+                                     core.log_tools.LogLevel.debug)
 
     token_base64 = encode(f"{token}:")
     basic_auth_token = f"Basic {token_base64}"

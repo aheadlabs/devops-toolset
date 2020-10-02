@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://dev.aheadlabs.com/schemas/json/keyvaluepair-schema.json",
-    "title": "Kay-value pair schema",
-    "description": "Kay-value pair schema",
+    "title": "Key-value pair schema",
+    "description": "Key-value pair schema",
 
     "type": "object",
     "properties": {
