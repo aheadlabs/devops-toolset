@@ -42,7 +42,7 @@ def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass
 def convert_wp_parameter_db_user(db_user: str):
     """Converts a str value to a --db_user parameter."""
     if db_user:
-        return "--db_user=" + "\"" + db_user + "\""
+        return "--dbuser=" + "\"" + db_user + "\""
     else:
         return ""
 
@@ -50,7 +50,7 @@ def convert_wp_parameter_db_user(db_user: str):
 def convert_wp_parameter_db_pass(db_pass: str):
     """Converts a str value to a --db_pass parameter."""
     if db_pass:
-        return "--db_pass=" + "\"" + db_pass + "\""
+        return "--dbpass=" + "\"" + db_pass + "\""
     else:
         return ""
 
@@ -447,7 +447,7 @@ def create_wordpress_database_user(wordpress_path: str, admin_user_name: str, ad
     cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
         path=wordpress_path,
         db_user=convert_wp_parameter_db_user(admin_user_name),
-        db_pass=convert_wp_parameter_admin_password(admin_password),
+        db_pass=convert_wp_parameter_db_pass(admin_password),
         user_name=user_name,
         host=host,
         user_password=user_password),
@@ -458,7 +458,7 @@ def create_wordpress_database_user(wordpress_path: str, admin_user_name: str, ad
     cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
         path=wordpress_path,
         db_user=convert_wp_parameter_db_user(admin_user_name),
-        db_pass=convert_wp_parameter_admin_password(admin_password),
+        db_pass=convert_wp_parameter_db_pass(admin_password),
         privileges=privileges,
         schema=schema,
         user_name=user_name,
