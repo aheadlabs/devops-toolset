@@ -385,5 +385,49 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
             option_value=option_value)])
 
 
+def create_wordpress_database_user(wordpress_path: str, user_name: str, user_password: str, schema: str,
+                                   host: str = 'localhost',
+                                   privileges: str = 'create, alter, select, insert, update, delete'):
+    """Creates a database user to be used by WordPress
+        e.g.:
+            wp db query
+                "create user '<username>'@'localhost'
+                identified by '<password>'"
+            wp db query
+                "grant create, alter, select, insert, update, delete
+                on <schema>.* to '<username>'@'localhost'"
+
+        Args:
+            wordpress_path: Path to WordPress files.
+            user_name: Database user name.
+            user_password: Database user password.
+            schema: Existing database schema name.
+            host: localhost or FQDN. (% and _ wildcards are permitted).
+            privileges: comma-separated privileges to be granted. More info at:
+                https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
+                e.g.: 'create, alter, select, insert, update, delete'
+    """
+    cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
+        path=wordpress_path,
+        user_name=user_name,
+        host=host,
+        user_password=user_password),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user_name, host=host)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user_name, host=host)]
+    )
+
+    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+        path=wordpress_path,
+        privileges=privileges,
+        schema=schema,
+        user_name=user_name,
+        host=host),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+            user=user_name, host=host, schema=schema, privileges=privileges)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+            user=user_name, host=host, schema=schema)]
+    )
+
+
 if __name__ == "__main__":
     help(__name__)
