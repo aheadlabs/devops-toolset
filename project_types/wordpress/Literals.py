@@ -22,6 +22,10 @@ class Literals(ValueDictsBase):
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system."),
         "wp_wpcli_backup_create_before": _("Creating database backup..."),
         "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
+        "wp_wpcli_db_create_before":
+            _("Creating Wordpress database (by default, user_name and host will be taken from wp_config)"),
+        "wp_wpcli_db_reset_before": _("Resetting the database (drop and create)..."),
+        "wp_wpcli_db_import_before": _("Importing database dump from file:"),
         "wp_wpcli_core_install_before": _("Preparing wordpress core files to install..."),
         "wp_wpcli_creating_config": _("Creating wp-config.php..."),
         "wp_wpcli_delete_transients": _("Transients are going to be deleted"),

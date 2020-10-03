@@ -21,6 +21,40 @@ class ValueType(Enum):
     VARIABLE = 2
 
 
+def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass: str = ""):
+    """ Calls wp db create with the parameters
+    Args
+        wordpress_path: Path to WordPress files
+        debug: If present, --debug will be added to the command showing all debug trace information.
+        db_user: Database user
+        db_pass: Database password
+
+    """
+    tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
+        path=wordpress_path,
+        db_user=convert_wp_parameter_db_user(db_user),
+        db_pass=convert_wp_parameter_db_pass(db_pass),
+        debug_info=convert_wp_parameter_debug(debug)
+    ), log_before_process=[literals.get("wp_wpcli_db_create_before")]
+    )
+
+
+def convert_wp_parameter_db_user(db_user: str):
+    """Converts a str value to a --db_user parameter."""
+    if db_user:
+        return "--db_user=" + "\"" + db_user + "\""
+    else:
+        return ""
+
+
+def convert_wp_parameter_db_pass(db_pass: str):
+    """Converts a str value to a --db_pass parameter."""
+    if db_pass:
+        return "--db_pass=" + "\"" + db_pass + "\""
+    else:
+        return ""
+
+
 def convert_wp_parameter_activate(activate: bool):
     """Converts a str value to a --admin_password parameter."""
     if activate:
@@ -385,22 +419,25 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
             option_value=option_value)])
 
 
-def create_wordpress_database_user(wordpress_path: str, user_name: str, user_password: str, schema: str,
+def create_wordpress_database_user(wordpress_path: str, admin_user_name: str, admin_password: str,
+                                   user_name: str, user_password: str, schema: str,
                                    host: str = 'localhost',
                                    privileges: str = 'create, alter, select, insert, update, delete'):
     """Creates a database user to be used by WordPress
         e.g.:
-            wp db query
+            wp db query --dbuser=<admin_user_name> --dbpass=<admin_password>
                 "create user '<username>'@'localhost'
                 identified by '<password>'"
-            wp db query
+            wp db query --dbuser=<admin_user_name> --dbpass=<admin_password>
                 "grant create, alter, select, insert, update, delete
                 on <schema>.* to '<username>'@'localhost'"
 
         Args:
             wordpress_path: Path to WordPress files.
-            user_name: Database user name.
-            user_password: Database user password.
+            admin_user_name: Database admin user name
+            admin_password: Database admin password
+            user_name: Database user name to be created
+            user_password: Database user password to be created
             schema: Existing database schema name.
             host: localhost or FQDN. (% and _ wildcards are permitted).
             privileges: comma-separated privileges to be granted. More info at:
@@ -409,6 +446,8 @@ def create_wordpress_database_user(wordpress_path: str, user_name: str, user_pas
     """
     cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
         path=wordpress_path,
+        db_user=convert_wp_parameter_db_user(admin_user_name),
+        db_pass=convert_wp_parameter_admin_password(admin_password),
         user_name=user_name,
         host=host,
         user_password=user_password),
@@ -418,6 +457,8 @@ def create_wordpress_database_user(wordpress_path: str, user_name: str, user_pas
 
     cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
         path=wordpress_path,
+        db_user=convert_wp_parameter_db_user(admin_user_name),
+        db_pass=convert_wp_parameter_admin_password(admin_password),
         privileges=privileges,
         schema=schema,
         user_name=user_name,
