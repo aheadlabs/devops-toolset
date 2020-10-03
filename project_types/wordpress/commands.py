@@ -28,6 +28,8 @@ class Commands(ValueDictsBase):
         "wpcli_db_query_grant": "wp db query --path={path} \"grant {privileges} on {schema}.* "
                                 "to '{user_name}'@'{host}'\"",
         "wpcli_eval": "wp eval \"{php_code}\" --path={path}",
+        "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
+                        "--filename_format={date}_UTC-content{suffix}.xml",
         "wpcli_info": "wp --info",
         "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}",
         "wpcli_plugin_install": "wp plugin install {source} --path={path} {force} {debug_info}",

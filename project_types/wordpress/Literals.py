@@ -36,6 +36,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_path": _("WordPress core destination path: {path}"),
         "wp_wpcli_downloading_wordpress": _("Downloading WordPress core files version {version}, locale {locale}"),
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
+        "wp_wpcli_export": _("Exporting WordPress content to {path}"),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
@@ -73,6 +74,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_db_reset_error": _("Database could not be reset due to an error."),
         "wp_wpcli_delete_transients_err": _("Transients could not be deleted"),
         "wp_wpcli_downloading_wordpress_err": _("WordPress core files could not be downloaded."),
+        "wp_wpcli_export_err": _("WordPress content could not be exported to {path}"),
         "wp_wpcli_option_update_error":
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
         "wp_wpcli_plugin_install_error": _("Plugin {plugin_name} could not be installed due to an error."),
