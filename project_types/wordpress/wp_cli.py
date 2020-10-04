@@ -165,8 +165,8 @@ def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass
     )
 
 
-def create_wordpress_database_user(wordpress_path: str, user_name: str, user_password: str, schema: str,
-                                   host: str = 'localhost',
+def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
+                                   schema: str, host: str = 'localhost',
                                    privileges: str = 'create, alter, select, insert, update, delete'):
     """Creates a database user to be used by WordPress
         e.g.:
@@ -179,8 +179,11 @@ def create_wordpress_database_user(wordpress_path: str, user_name: str, user_pas
 
         Args:
             wordpress_path: Path to WordPress files.
-            user_name: Database user name.
-            user_password: Database user password.
+            admin_user: Database user with privileges to create databases and
+                other users.
+            admin_password: Admin user password.
+            user: Database user name.
+            password: Database user password.
             schema: Existing database schema name.
             host: localhost or FQDN. (% and _ wildcards are permitted).
             privileges: comma-separated privileges to be granted. More info at:
@@ -188,24 +191,28 @@ def create_wordpress_database_user(wordpress_path: str, user_name: str, user_pas
                 e.g.: 'create, alter, select, insert, update, delete'
     """
     cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
-        path=wordpress_path,
-        user_name=user_name,
+        user=user,
         host=host,
-        user_password=user_password),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user_name, host=host)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user_name, host=host)]
+        password=password,
+        admin_user=admin_user,
+        admin_password=admin_password,
+        path=wordpress_path),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user, host=host)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
     )
 
     cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        path=wordpress_path,
         privileges=privileges,
         schema=schema,
-        user_name=user_name,
-        host=host),
+        user=user,
+        host=host,
+        admin_user=admin_user,
+        admin_password=admin_password,
+        path=wordpress_path),
         log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user_name, host=host, schema=schema, privileges=privileges)],
+            user=user, host=host, schema=schema, privileges=privileges)],
         log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
-            user=user_name, host=host, schema=schema)]
+            user=user, host=host, schema=schema)]
     )
 
 

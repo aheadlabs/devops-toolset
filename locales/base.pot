@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-03 01:28+0200\n"
+"POT-Creation-Date: 2020-10-04 02:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,6 +93,15 @@ msgstr ""
 msgid "File wp-config.php created successfully."
 msgstr ""
 
+msgid "Creating Wordpress database (by default, user_name and host will be taken from wp_config)"
+msgstr ""
+
+msgid "Resetting the database (drop and create)..."
+msgstr ""
+
+msgid "Importing database dump from file:"
+msgstr ""
+
 msgid "Preparing wordpress core files to install..."
 msgstr ""
 
@@ -105,16 +114,10 @@ msgstr ""
 msgid "Exporting database dump to: {path}"
 msgstr ""
 
-msgid "Importing database dump from file:"
-msgstr ""
-
 msgid "Creating database user {user} for host {host}"
 msgstr ""
 
 msgid "Granting database user {user} for host {host} the following privileges on schema {schema}: {privileges}"
-msgstr ""
-
-msgid "Resetting the database (drop and create)..."
 msgstr ""
 
 msgid "Downloading WP-CLI from {url}"
@@ -130,6 +133,9 @@ msgid "Downloading WordPress core files version {version}, locale {locale}"
 msgstr ""
 
 msgid "WordPress core files were successfully downloaded."
+msgstr ""
+
+msgid "Exporting WordPress content to {path}"
 msgstr ""
 
 msgid "Here is the WP-CLI information:"
@@ -229,6 +235,9 @@ msgid "Transients could not be deleted"
 msgstr ""
 
 msgid "WordPress core files could not be downloaded."
+msgstr ""
+
+msgid "WordPress content could not be exported to {path}"
 msgstr ""
 
 msgid "Database option {option_name} cannot be set to {option_value} due to an error."

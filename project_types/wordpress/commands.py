@@ -25,10 +25,10 @@ class Commands(ValueDictsBase):
         "wpcli_db_import": "wp db import {file} --path={path} {debug_info}",
         "wpcli_db_delete_transient": "wp transient delete --all --path={path}",
         "wpcli_db_query_create_user":
-            "wp db query {db_user} {db_pass} --path={path} \"create user '{user_name}'@'{host}' "
-            "identified by '{user_password}'\"",
-        "wpcli_db_query_grant": "wp db query {db_user} {db_pass} --path={path} \"grant {privileges} on {schema}.* "
-                                "to '{user_name}'@'{host}'\"",
+            "wp db query \"create user '{user}'@'{host}' identified by '{password}'\" "
+            "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
+        "wpcli_db_query_grant": "wp db query \"grant {privileges} on {schema}.* to '{user}'@'{host}'\" "
+            "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
         "wpcli_eval": "wp eval \"{php_code}\" --path={path}",
         "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
                         "--filename_format={date}_UTC-content{suffix}.xml",

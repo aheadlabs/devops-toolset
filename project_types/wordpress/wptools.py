@@ -528,23 +528,25 @@ def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_pa
             prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
 
 
-def setup_database(site_config: dict, wordpress_path: str, db_user_pass: str,
-                   admin_db_user: str = "", admin_db_pass: str = ""):
+def setup_database(site_config: dict, wordpress_path: str, db_user_password: str,
+                   admin_db_user: str = "", admin_db_password: str = ""):
     """ Uses wp cli create to create a new database from configuration file
 
     Args:
         site_config: parsed site configuration.
         wordpress_path: Path to WordPress files.
-        db_user_pass: Password of the database user to be created
-        admin_db_user: Database administrator user name
-        admin_db_pass:  Database administrator user password
+        db_user_password: Password of the database user to be created.
+        admin_db_user: Database administrator user name.
+        admin_db_password:  Database administrator user password.
     """
-    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_pass)
-    db_user_name = site_config["database"]["user"]
-    db_host = site_config["database"]["host"]
+    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_password)
+
+    db_user = site_config["database"]["user"]
     schema = site_config["database"]["name"]
+    db_host = site_config["database"]["host"]
+
     wp_cli.create_wordpress_database_user(
-        wordpress_path, admin_db_user, admin_db_pass, db_user_name, db_user_pass, schema, db_host)
+        wordpress_path, admin_db_user, admin_db_password, db_user, db_user_password, schema, db_host)
 
 
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
