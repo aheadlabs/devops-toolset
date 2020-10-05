@@ -123,6 +123,19 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
 
 
+def get_dbadmin_from_environment(environment_path: str, environment_name: str = None) -> str:
+    """ Gets the db_admin user from the environment path
+
+        Args:
+             environment_path: Path to the environments file.
+             environment_name: Name of the environment.
+
+    """
+    environment_obj = get_site_environments(environment_path, environment_name)
+
+    return environment_obj["db_admin_user"]
+
+
 def get_constants() -> dict:
     """Gets all the constants from a WordPress constants resource.
 
@@ -225,14 +238,33 @@ def get_site_configuration_path_from_environment(environment_path: str, environm
         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
 
     Args:
-        environment_path: Full path to the WordPress site environment file.
-        environment_name: Name of the environment to be got. If no name is
-            given, default environment is obtained.
 
     Returns:
         Site configuration path.
     """
 
+    environment_obj = get_site_environments(environment_path, environment_name)
+
+    directory = pathlib.Path(environment_path).parent
+    file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
+
+    return str(file_path)
+
+
+def get_site_environments(environment_path: str, environment_name: str = None) -> dict:
+    """Gets the site environments from a WordPress site environment file.
+
+    For more information see:
+        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
+
+    Args:
+        environment_path: Full path to the WordPress site environment file.
+        environment_name: Name of the environment to be got. If no name is
+            given, default environment is obtained.
+
+    Returns:
+        Site environments in a dict object.
+    """
     with open(environment_path, "r") as environment_file:
         json_data = json.loads(environment_file.read())
 
@@ -244,25 +276,7 @@ def get_site_configuration_path_from_environment(environment_path: str, environm
     if len(matching_environments) > 1:
         raise ValueError(literals.get("wp_env_gt1"))
 
-    directory = pathlib.Path(environment_path).parent
-    file_path = pathlib.Path.joinpath(directory, matching_environments[0]["configuration_file"])
-
-    return str(file_path)
-
-
-def get_site_environments(path: str) -> dict:
-    """Gets the site environments from a WordPress site environment file.
-
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
-
-    Args:
-        path: Full path to the WordPress project structure file.
-
-    Returns:
-        Site environments in a dict object.
-    """
-    pass
+    return matching_environments[0]
 
 
 def get_wordpress_path_from_root_path(path) -> str:
@@ -361,7 +375,7 @@ def install_wordpress_core(site_config: dict, wordpress_path: str, admin_passwor
 
 # TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
 # See https://developer.wordpress.org/themes/advanced-topics/child-themes/
-def install_theme_from_configuration_file(site_configuration: dict, root_path: str):
+def install_theme_from_configuration_file(site_configuration: dict, root_path: str, is_devops: bool):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 
     For more information see:
@@ -370,6 +384,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     Args:
         site_configuration: parsed site configuration.
         root_path: Path to project root.
+        is_devops: True if devops-engine launched this, False otherwise
     """
     if not site_configuration["themes"]:
         logging.info("No themes configured to install")
@@ -393,24 +408,32 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
 
     # Install and activate WordPress theme
     wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
+
     # Clean up the theme by moving to the content folder
     shutil.move(theme_source, themes_path_as_posix)
     if site_configuration["themes"]["has_child"] and site_configuration["themes"]["source_type"] == "zip":
+
         # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
         child_theme_path = theme_source.replace(
             pathlib.Path(theme_source).suffixes[0], "-child" + pathlib.Path(theme_source).suffixes[0])
         child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
+
         # Install and activate WordPress child theme
         wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+
         # Clean up the theme by moving to the content folder
         shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+
     git_tools.purge_gitkeep(themes_path_as_posix)
+
     # Backup database after theme install
-    database_path = root_path + constants["paths"]["database"]
-    core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["theme"], wordpress_path)
-    database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
-    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    if not is_devops:
+        database_path = root_path + constants["paths"]["database"]
+        core_dump_path_converted = convert_wp_config_token(
+            site_configuration["database"]["dumps"]["theme"], wordpress_path)
+        database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
+        database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
@@ -447,7 +470,7 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str):
+def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str, is_devops: bool):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -459,6 +482,7 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         site_configuration: parsed site configuration.
         root_path: Path to site installation.
         admin_password: Password for the WordPress administrator user
+        is_devops: True if devops engine launched this, False otherwise
     """
     # Add constants
     constants = get_constants()
@@ -479,10 +503,12 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
 
     # Backup database
-    core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
-    database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
-    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    if not is_devops:
+        core_dump_path_converted = \
+            convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+        database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
+        database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
@@ -506,6 +532,27 @@ def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_pa
         raw = type(value) != str
         wp_cli.set_configuration_value(
             prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
+
+
+def setup_database(site_config: dict, wordpress_path: str, db_user_password: str,
+                   admin_db_user: str = "", admin_db_password: str = ""):
+    """ Uses wp cli create to create a new database from configuration file
+
+    Args:
+        site_config: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        db_user_password: Password of the database user to be created.
+        admin_db_user: Database administrator user name.
+        admin_db_password:  Database administrator user password.
+    """
+    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_password)
+
+    db_user = site_config["database"]["user"]
+    schema = site_config["database"]["name"]
+    db_host = site_config["database"]["host"]
+
+    wp_cli.create_wordpress_database_user(
+        wordpress_path, admin_db_user, admin_db_password, db_user, db_user_password, schema, db_host)
 
 
 def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:

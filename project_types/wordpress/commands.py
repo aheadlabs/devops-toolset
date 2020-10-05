@@ -19,14 +19,16 @@ class Commands(ValueDictsBase):
                                "{skip_content} {debug_info}",
         "wpcli_core_install": "wp core install --path={path} --url={url} --title=\"{title}\" --admin_user={admin_user} "
                               "--admin_email={admin_email} {admin_password} {skip_email} {debug_info}",
+        "wpcli_db_create": "wp db create {db_user} {db_pass} --path={path} {debug_info}",
         "wpcli_db_export": "wp db export \"{core_dump_path}\" --path={path} --extended-insert=false {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes} {debug_info}",
         "wpcli_db_import": "wp db import {file} --path={path} {debug_info}",
         "wpcli_db_delete_transient": "wp transient delete --all --path={path}",
-        "wpcli_db_query_create_user": "wp db query --path={path} \"create user '{user_name}'@'{host}' "
-                                      "identified by '{user_password}'\"",
-        "wpcli_db_query_grant": "wp db query --path={path} \"grant {privileges} on {schema}.* "
-                                "to '{user_name}'@'{host}'\"",
+        "wpcli_db_query_create_user":
+            "wp db query \"create user '{user}'@'{host}' identified by '{password}'\" "
+            "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
+        "wpcli_db_query_grant": "wp db query \"grant {privileges} on {schema}.* to '{user}'@'{host}'\" "
+            "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
         "wpcli_eval": "wp eval \"{php_code}\" --path={path}",
         "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
                         "--filename_format={date}_UTC-content{suffix}.xml",
