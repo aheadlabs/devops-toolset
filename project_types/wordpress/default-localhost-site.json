@@ -53,11 +53,13 @@
         "concatenate_scripts": true
     },
     "multisite": {},
-    "themes": {
-        "name": "twentytwenty",
-        "source_type": "wordpress",
-        "source": "twentytwenty",
-        "has_child": false
-    },
+    "themes": [
+        {
+        "name": "betheme",
+        "source_type": "zip",
+        "source": "D:\\temp\\betheme.zip",
+        "child" : "D:\\temp\\betheme-child.zip"
+        }
+    ],
     "plugins": []
 }

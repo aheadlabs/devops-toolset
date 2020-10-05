@@ -5,7 +5,8 @@
             "name": "localhost",
             "type": "development",
             "default": true,
-            "configuration_file": "default-localhost-site.json"
+            "configuration_file": "default-localhost-site.json",
+            "db_admin_user": "root"
         }
     ]
 }

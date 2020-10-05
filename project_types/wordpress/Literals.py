@@ -66,6 +66,7 @@ class Literals(ValueDictsBase):
         "wp_required_files_mandatory": _("Required files are mandatory. I cannot continue."),
         "wp_required_files_not_found": _("The required files where not found at {path}."),
         "wp_required_files_not_found_detail": _("The following required files where not found at {path}:"),
+        "wp_theme_path_not_exist": _("The following theme path does not exist: {path}"),
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),
         "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
         "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),

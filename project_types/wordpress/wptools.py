@@ -375,7 +375,7 @@ def install_wordpress_core(site_config: dict, wordpress_path: str, admin_passwor
 
 # TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
 # See https://developer.wordpress.org/themes/advanced-topics/child-themes/
-def install_theme_from_configuration_file(site_configuration: dict, root_path: str, is_devops: bool):
+def install_theme_from_configuration_file(site_configuration: dict, root_path: str):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 
     For more information see:
@@ -392,48 +392,54 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
 
     # Add constants
     constants = get_constants()
+    for theme in site_configuration["themes"]:
+        # Src themes will not be installed, should be avoided
+        if theme["source"] == "src":
+            continue
 
-    # Set/expand variables before using WP CLI
-    debug_info = site_configuration["wp_cli"]["debug"]
-    theme_name = site_configuration["themes"]["name"]
-    theme_source = site_configuration["themes"]["source"]
-    wordpress_path = root_path + constants["paths"]["wordpress"]
-    themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
-    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-    themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
-    # TODO: (alberto.carbonell) Unused feature (regex): investigate why
-    # wordpress_theme_regex_filter = filter(lambda elem: elem["key"] == "wordpress-theme", constants["regex_base64"])
-    # wordpress_theme_regex = next(wordpress_theme_regex_filter)["value"]
-    # regex_wordpress_theme = base64tools.decode(wordpress_theme_regex)
+        # Set/expand variables before using WP CLI
+        debug_info = site_configuration["wp_cli"]["debug"]
+        theme_name = theme["name"]
+        theme_source = theme["source"]
+        wordpress_path = root_path + constants["paths"]["wordpress"]
+        themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
+        wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+        themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
 
-    # Install and activate WordPress theme
-    wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
-
-    # Clean up the theme by moving to the content folder
-    shutil.move(theme_source, themes_path_as_posix)
-    if site_configuration["themes"]["has_child"] and site_configuration["themes"]["source_type"] == "zip":
-
-        # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
-        child_theme_path = theme_source.replace(
-            pathlib.Path(theme_source).suffixes[0], "-child" + pathlib.Path(theme_source).suffixes[0])
-        child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
-
-        # Install and activate WordPress child theme
-        wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+        if theme["source_type"] == "zip" and not os.path.exists(theme_source):
+            logging.error(literals.get("wp_theme_path_not_exist").format(path=theme_source))
+            continue
+        # Install and activate WordPress theme
+        wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
 
         # Clean up the theme by moving to the content folder
-        shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+        # shutil.move(theme_source, themes_path_as_posix)
+        # git_tools.purge_gitkeep(themes_path_as_posix)
+        if "child" in theme and theme["source_type"] == "zip":
+            # Get child path
+            child_path = theme["child"]
+            if os.path.exists(child_path):
+                child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
 
-    git_tools.purge_gitkeep(themes_path_as_posix)
+                # Install and activate WordPress child theme
+                wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+
+                # Clean up the theme by moving to the content folder
+                # shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+            else:
+                logging.error(literals.get("wp_theme_path_not_exist").format(path=child_path))
 
     # Backup database after theme install
-    if not is_devops:
-        database_path = root_path + constants["paths"]["database"]
-        core_dump_path_converted = convert_wp_config_token(
-            site_configuration["database"]["dumps"]["theme"], wordpress_path)
-        database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
-        database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    database_path = root_path + constants["paths"]["database"]
+    core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["theme"], wordpress_path)
+    database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+
+
+def compile_themes(site_configuration: dict, destination_path: str):
+    """ Compiles and builds a prepared-to-install theme zip file into destination path """
+    pass
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
@@ -470,7 +476,7 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str, is_devops: bool):
+def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -503,12 +509,11 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
 
     # Backup database
-    if not is_devops:
-        core_dump_path_converted = \
-            convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
-        database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
-        database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    core_dump_path_converted = \
+        convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+    database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
+    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
