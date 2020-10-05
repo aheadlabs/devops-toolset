@@ -36,4 +36,9 @@ class Commands(ValueDictsBase):
         "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}",
         "wpcli_plugin_install": "wp plugin install {source} --path={path} {force} {debug_info}",
         "wpcli_theme_install": "wp theme install {source} --path={path} {activate} {debug_info}",
+        "npm_install": "npm install",
+        "npm_run_task": "npm run {task}",
+        "theme_src_build": "gulp build --theme-slug=\"{theme_slug}\" --path=\"{path}\"",
+        "theme_src_watch":
+            "gulp watch --theme-slug=\"{theme_slug}\" --dev-proxy=\"{local_web_server}\" --path=\"{path}\""
     }

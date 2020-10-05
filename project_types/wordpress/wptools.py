@@ -437,8 +437,19 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
-def compile_themes(site_configuration: dict, destination_path: str):
-    """ Compiles and builds a prepared-to-install theme zip file into destination path """
+def build_theme(site_configuration: dict, wordpress_path: str, theme_slug: str, src_path: str, destination_path: str):
+    """ Builds a theme source into a packaged theme distribution using npm tasks
+
+    Args:
+        site_configuration: Parsed site configuration
+        wordpress_path: Path to the wordpress installation
+        theme_slug: The name / slug of theme which is being developed
+        src_path: The source path of the compilation
+        destination_path: The destination path of the compiled files
+    """
+    # Get configuration data and paths
+    # Run npm install from the package.json path
+    # Run npm run build to execute the task build with the required parameters
     pass
 
 
