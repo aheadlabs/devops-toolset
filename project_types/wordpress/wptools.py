@@ -408,18 +408,24 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
 
     # Install and activate WordPress theme
     wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
+
     # Clean up the theme by moving to the content folder
     shutil.move(theme_source, themes_path_as_posix)
     if site_configuration["themes"]["has_child"] and site_configuration["themes"]["source_type"] == "zip":
+
         # This operation should take from a theme named <theme>.zip, a <theme>-child.zip path
         child_theme_path = theme_source.replace(
             pathlib.Path(theme_source).suffixes[0], "-child" + pathlib.Path(theme_source).suffixes[0])
         child_theme_path_as_posix = str(pathlib.Path(child_theme_path).as_posix())
+
         # Install and activate WordPress child theme
         wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+
         # Clean up the theme by moving to the content folder
         shutil.move(child_theme_path_as_posix, themes_path_as_posix)
+
     git_tools.purge_gitkeep(themes_path_as_posix)
+
     # Backup database after theme install
     if not is_devops:
         database_path = root_path + constants["paths"]["database"]
