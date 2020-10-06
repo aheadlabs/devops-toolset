@@ -50,7 +50,9 @@ def run_script(command: str, silent: bool = False, if_present: bool = False, *ar
         silent=convert_npm_parameter_silent(silent),
         if_present=convert_npm_parameter_if_present(if_present),
         extra_args=convert_npm_extra_args(args)
-    ))
+    ), log_before_out=[literals.get("npm_run_before").format(task=command)],
+     log_after_out=[literals.get("npm_run_after").format(task=command)],
+     log_after_err=[literals.get("npm_run_error").format(task=command)])
 
 
 def install(folder: str = ""):
@@ -65,7 +67,9 @@ def install(folder: str = ""):
     """
     cli.call_subprocess(commands.get("npm_install").format(
         folder=folder,
-    ), live_log=True)
+    ), log_before_out=[literals.get("npm_install_before")],
+     log_after_out=[literals.get("npm_install_after")],
+     log_after_err=[literals.get("npm_install_error")])
 
 
 def theme_build(theme_slug: str, wordpress_path: str):
@@ -78,7 +82,9 @@ def theme_build(theme_slug: str, wordpress_path: str):
     cli.call_subprocess(commands.get("theme_src_build").format(
         theme_slug=theme_slug,
         path=wordpress_path
-    ))
+    ), log_before_out=[literals.get("gulp_build_before").format(theme_slug=theme_slug)],
+     log_after_out=[literals.get("gulp_build_after").format(theme_slug=theme_slug)],
+     log_after_err=[literals.get("gulp_build_error").format(theme_slug=theme_slug)])
 
 
 if __name__ == "__main__":
