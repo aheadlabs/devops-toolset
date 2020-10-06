@@ -10,6 +10,7 @@ import logging
 from project_types.wordpress.constants import wordpress_constants_json_resource
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 import project_types.wordpress.wp_cli as wp_cli
+import project_types.node.npm as npm
 import sys
 import tools.git as git_tools
 from core.app import App
@@ -437,20 +438,31 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
 
 
-def build_theme(site_configuration: dict, wordpress_path: str, theme_slug: str, src_path: str, destination_path: str):
+def build_theme(site_configuration: dict, wordpress_path: str):
     """ Builds a theme source into a packaged theme distribution using npm tasks
 
     Args:
         site_configuration: Parsed site configuration
         wordpress_path: Path to the wordpress installation
-        theme_slug: The name / slug of theme which is being developed
-        src_path: The source path of the compilation
-        destination_path: The destination path of the compiled files
     """
+    logging.info("Looking for development themes to build...")
+
     # Get configuration data and paths
-    # Run npm install from the package.json path
-    # Run npm run build to execute the task build with the required parameters
-    pass
+    src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))[0]
+    if src_theme and os.path.exists(src_theme["source"]):
+
+        theme_slug = src_theme["name"]
+        # Navigate to the source path
+        os.chdir(src_theme["source"])
+
+        # Run npm install from the package.json path
+        npm.install()
+
+        # Run npm run build to execute the task build with the required parameters
+        npm.theme_build(theme_slug, wordpress_path)
+    else:
+        # Src theme not present or not existing source path
+        logging.info("No src themes to build, skipping this step..")
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):

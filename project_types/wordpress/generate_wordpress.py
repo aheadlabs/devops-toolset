@@ -85,6 +85,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Download WordPress core files
     wordpress.wptools.download_wordpress(site_config, wordpress_path)
 
+    # Set development themes / plugins ready
+    wordpress.wptools.build_theme(site_config, wordpress_path)
+
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
 
