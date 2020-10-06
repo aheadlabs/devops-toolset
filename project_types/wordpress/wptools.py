@@ -395,7 +395,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     constants = get_constants()
     for theme in site_configuration["themes"]:
         # Src themes will not be installed, should be avoided
-        if theme["source"] == "src":
+        if theme["source_type"] == "src":
             continue
 
         # Set/expand variables before using WP CLI
@@ -423,7 +423,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
                 child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
 
                 # Install and activate WordPress child theme
-                wp_cli.install_theme(wordpress_path, child_theme_path_as_posix, True, debug_info, theme_name)
+                wp_cli.install_theme(wordpress_path, child_path, True, debug_info, theme_name)
 
                 # Clean up the theme by moving to the content folder
                 # shutil.move(child_theme_path_as_posix, themes_path_as_posix)
