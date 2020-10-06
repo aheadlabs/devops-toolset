@@ -31,8 +31,8 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
-# TODO (alberto.carbonell) Check if database and db users exist and if not, prompt to create them
-def main(project_path: str, db_user_password: str = None, db_admin_password: str = None):
+def main(
+        project_path: str, db_user_password: str = None, db_admin_password: str = None, wp_admin_password: str = None):
     """Generates a WordPress Git repository for local development."""
 
     # Change the working directory
@@ -42,7 +42,7 @@ def main(project_path: str, db_user_password: str = None, db_admin_password: str
     git.git_init(project_path, args.skip_git)
 
     # Generate wordpress with the required data
-    generate_wordpress.main(project_path, db_user_password, db_admin_password)
+    generate_wordpress.main(project_path, db_user_password, db_admin_password, wp_admin_password)
 
     # Move initial required files to .devops
     # TODO(ivan.sainz) Move initial required files to .devops
@@ -58,8 +58,9 @@ if __name__ == "__main__":
     parser.add_argument("project-path", action=tools.argument_validators.PathValidator)
     parser.add_argument("--db-user-password", required=True)
     parser.add_argument("--db-admin-password", required=True)
+    parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--skip-git", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_wordpress_new_repo"))
-    main(args.project_path, args.db_user_password, args.db_admin_password)
+    main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password)

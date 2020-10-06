@@ -37,3 +37,4 @@ class Commands(ValueDictsBase):
         "wpcli_plugin_install": "wp plugin install {source} --path={path} {force} {debug_info}",
         "wpcli_theme_install": "wp theme install {source} --path={path} {activate} {debug_info}",
     }
+

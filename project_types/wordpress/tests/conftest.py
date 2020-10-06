@@ -71,7 +71,10 @@ class WordPressData:
         "[{\"name\":\"plugin-1\",\"source_type\":\"wordpress\",\"source\":\"path-to-source1\",\"force\":true}," \
         "{\"name\":\"plugin-2\",\"source_type\":\"wordpress\",\"source\":\"path-to-source2\",\"force\":true}]"
     themes_content = \
-        "{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\",\"has_child\":false}"
+        "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\"}]"
+    themes_content_with_child = \
+        "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\"," \
+        "\"child\":\"\"}]"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
