@@ -1,4 +1,5 @@
-""" This script will generate and configure a Wordpress based on the required configuration files"""
+""" This script will generate and configure a Wordpress site based on the
+required configuration files"""
 
 
 import argparse

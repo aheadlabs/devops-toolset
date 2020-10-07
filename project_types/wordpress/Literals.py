@@ -10,7 +10,7 @@ class Literals(ValueDictsBase):
     """ValueDicts for the wordpress module."""
 
     _titles = {
-        "wp_title_generate_wordpress": _("New Wordpress"),
+        "wp_title_generate_wordpress": _("Generate WordPress site"),
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
         "wp_title_wordpress_rollback_db": _("WordPress\ndatabase rollback"),
@@ -19,6 +19,8 @@ class Literals(ValueDictsBase):
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
+        "wp_required_file_paths_not_found": _("No required file paths were found"),
+        "wp_required_file_paths_found": _("The following file paths were found:"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system."),
         "wp_wpcli_backup_create_before": _("Creating database backup..."),

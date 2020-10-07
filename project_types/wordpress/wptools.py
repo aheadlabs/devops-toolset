@@ -1,25 +1,26 @@
 """Contains several tools for WordPress"""
-import os
-import requests
+import core.log_tools
 import filesystem.paths as paths
 import json
-import pathlib
-import shutil
-import stat
 import logging
-from project_types.wordpress.constants import wordpress_constants_json_resource
-from project_types.wordpress.basic_structure_starter import BasicStructureStarter
-from core.CommandsCore import CommandsCore
-from project_types.wordpress.commands import Commands as WordpressCommands
+import os
+import pathlib
 import project_types.wordpress.wp_cli as wp_cli
 import project_types.node.npm as npm
+import requests
+import shutil
+import stat
 import sys
 import tools.git as git_tools
+from project_types.wordpress.constants import wordpress_constants_json_resource
+from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from core.app import App
+from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
-from typing import List, Tuple
 from project_types.wordpress.Literals import Literals as WordpressLiterals
+from project_types.wordpress.commands import Commands as WordpressCommands
 from tools import cli
+from typing import List, Tuple
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
@@ -197,6 +198,13 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
     result = []
     for required_file_pattern in required_file_patterns:
         result.append(paths.get_file_path_from_pattern(path, required_file_pattern))
+
+    if len(result) == 0:
+        logging.info(literals.get("wp_required_file_paths_not_found"))
+    else:
+        core.log_tools.log_indented_list(literals.get("wp_required_file_paths_found"),
+                                         result,
+                                         core.log_tools.LogLevel.info)
 
     return tuple(result)
 
