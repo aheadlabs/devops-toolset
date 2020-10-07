@@ -407,9 +407,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         theme_name = theme["name"]
         theme_source = theme["source"]
         wordpress_path = root_path + constants["paths"]["wordpress"]
-        # themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
         wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-        # themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
 
         if theme["source_type"] == "zip" and not os.path.exists(theme_source):
             logging.error(literals.get("wp_theme_path_not_exist").format(path=theme_source))
@@ -417,20 +415,12 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         # Install and activate WordPress theme
         wp_cli.install_theme(wordpress_path, theme_source, True, debug_info, theme_name)
 
-        # Clean up the theme by moving to the content folder
-        # shutil.move(theme_source, themes_path_as_posix)
-        # git_tools.purge_gitkeep(themes_path_as_posix)
         if "child" in theme and theme["source_type"] == "zip":
             # Get child path
             child_path = theme["child_source"]
             if os.path.exists(child_path):
-                # child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
-
                 # Install and activate WordPress child theme
                 wp_cli.install_theme(wordpress_path, child_path, True, debug_info, theme_name)
-
-                # Clean up the theme by moving to the content folder
-                # shutil.move(child_theme_path_as_posix, themes_path_as_posix)
             else:
                 logging.error(literals.get("wp_theme_path_not_exist").format(path=child_path))
 
