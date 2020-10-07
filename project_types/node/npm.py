@@ -72,20 +72,5 @@ def install(folder: str = ""):
      log_after_err=[literals.get("npm_install_error")])
 
 
-def theme_build(theme_slug: str, wordpress_path: str):
-    """ Executes the src task gulp build task
-
-    Args:
-        theme_slug: Name / slug of the theme to build
-        wordpress_path: Path of the wordpress installation
-    """
-    cli.call_subprocess(commands.get("theme_src_build").format(
-        theme_slug=theme_slug,
-        path=wordpress_path
-    ), log_before_out=[literals.get("gulp_build_before").format(theme_slug=theme_slug)],
-     log_after_out=[literals.get("gulp_build_after").format(theme_slug=theme_slug)],
-     log_after_err=[literals.get("gulp_build_error").format(theme_slug=theme_slug)])
-
-
 if __name__ == "__main__":
     help(__name__)
