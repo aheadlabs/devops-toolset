@@ -34,7 +34,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 
 @patch("logging.critical")
 @patch("core.log_tools.log_indented_list")
-@patch("project_types.wordpress.wptools.get_dbadmin_from_environment")
+@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wptools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wptools.install_theme_from_configuration_file")
@@ -67,7 +67,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 
 @patch("core.log_tools.log_indented_list")
 @patch("clint.textui.prompt.yn")
-@patch("project_types.wordpress.wptools.get_dbadmin_from_environment")
+@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wptools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wptools.install_theme_from_configuration_file")

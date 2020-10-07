@@ -69,7 +69,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         root_path, required_files_pattern_suffixes)
 
     # Get database admin user from environment
-    db_admin_user = wordpress.wptools.get_dbadmin_from_environment(required_file_paths[1], environment)
+    db_admin_user = wordpress.wptools.get_db_admin_from_environment(required_file_paths[1], environment)
 
     # Parsing site configuration file
     site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], environment)

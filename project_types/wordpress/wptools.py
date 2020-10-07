@@ -129,7 +129,7 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
 
 
-def get_dbadmin_from_environment(environment_path: str, environment_name: str = None) -> str:
+def get_db_admin_from_environment(environment_path: str, environment_name: str = None) -> str:
     """ Gets the db_admin user from the environment path
 
         Args:
@@ -138,8 +138,10 @@ def get_dbadmin_from_environment(environment_path: str, environment_name: str = 
 
     """
     environment_obj = get_site_environments(environment_path, environment_name)
+    db_admin_user = environment_obj["db_admin_user"]
+    logging.info(literals.get("wp_got_db_admin_user").format(db_admin_user=db_admin_user))
 
-    return environment_obj["db_admin_user"]
+    return db_admin_user
 
 
 def get_constants() -> dict:
@@ -310,6 +312,7 @@ def get_wordpress_path_from_root_path(path) -> str:
     """
     # Add constants
     wp_constants = get_constants()
+    
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
     wordpress_path = os.path.join(path, wordpress_relative_path)

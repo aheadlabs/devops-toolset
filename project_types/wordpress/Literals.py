@@ -18,6 +18,8 @@ class Literals(ValueDictsBase):
     _info = {
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
+        "wp_got_db_admin_user": _("I got the following database admin user from the environment configuration file: "
+                                  "{db_admin_user}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
         "wp_required_file_paths_not_found": _("No required file paths were found"),
         "wp_required_file_paths_found": _("The following file paths were found:"),
