@@ -459,24 +459,30 @@ def build_theme(site_configuration: dict, wordpress_path: str):
         site_configuration: Parsed site configuration
         wordpress_path: Path to the wordpress installation
     """
-    logging.info("Looking for development themes to build...")
+    logging.info(literals.get("wp_looking_for_src_themes"))
 
     # Get configuration data and paths
-    src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))[0]
-    if src_theme and os.path.exists(src_theme["source"]):
+    src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))
+    if len(src_theme) > 0 and os.path.exists(src_theme[0]["source"]):
 
-        theme_slug = src_theme["name"]
+        theme_slug = src_theme[0]["name"]
         # Navigate to the source path
-        os.chdir(src_theme["source"])
+        os.chdir(src_theme[0]["source"])
 
         # Run npm install from the package.json path
         npm.install()
 
         # Run npm run build to execute the task build with the required parameters
-        npm.theme_build(theme_slug, wordpress_path)
+        cli.call_subprocess(commands.get("wp_theme_src_build").format(
+            theme_slug=theme_slug,
+            path=wordpress_path
+        ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
+            log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
+            log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
+
     else:
         # Src theme not present or not existing source path
-        logging.info("No src themes to build, skipping this step..")
+        logging.info(literals.get("wp_no_src_themes"))
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
@@ -610,21 +616,6 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, root_path)
-
-
-def theme_build(theme_slug: str, wordpress_path: str):
-    """ Executes the src task gulp build task
-
-    Args:
-        theme_slug: Name / slug of the theme to build
-        wordpress_path: Path of the wordpress installation
-    """
-    cli.call_subprocess(commands.get("wp_theme_src_build").format(
-        theme_slug=theme_slug,
-        path=wordpress_path
-    ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
-     log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
-     log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
 
 
 if __name__ == "__main__":

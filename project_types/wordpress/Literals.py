@@ -21,6 +21,8 @@ class Literals(ValueDictsBase):
         "wp_got_db_admin_user": _("I got the following database admin user from the environment configuration file: "
                                   "{db_admin_user}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
+        "wp_looking_for_src_themes": _("Looking for development themes to build..."),
+        "wp_no_src_themes": _("No development themes to build. Skipping this step."),
         "wp_required_file_paths_not_found": _("No required file paths were found"),
         "wp_required_file_paths_found": _("The following file paths were found:"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),

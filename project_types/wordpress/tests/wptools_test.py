@@ -775,3 +775,55 @@ def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_str
     add_item_mock.assert_called_once_with('foo_item', root_path)
 
 # endregion start_basic_structure
+
+# region build_theme
+
+
+@patch("logging.info")
+@patch("os.path.exists")
+def test_build_theme_given_site_config_when_no_src_themes_then_logs(path_exists_mock, logging_mock, wordpressdata):
+    """ Given site configuration, when no src themes present, then logs info """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    site_config = json.loads(wordpressdata.site_config_content)
+    path_exists_mock.return_value = False
+    literal1 = literals.get("wp_looking_for_src_themes")
+    literal2 = literals.get("wp_no_src_themes")
+
+    # Act
+    sut.build_theme(site_config, wordpress_path)
+    # Assert
+    calls = [call(literal1), call(literal2)]
+    logging_mock.assert_has_calls(calls)
+
+
+@patch("logging.info")
+@patch("os.path.exists")
+@patch("os.chdir")
+@patch("project_types.node.npm.install")
+@patch("tools.cli.call_subprocess")
+def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
+        subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata):
+    """ Given site configuration, when src theme present, then calls npm install wrapper """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    site_config = json.loads(wordpressdata.site_config_content)
+    path_exists_mock.return_value = True
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    site_config["themes"][0]["source_type"] = "src"
+    # Act
+    sut.build_theme(site_config, wordpress_path)
+    # Assert
+    npm_install_mock.assert_called_once()
+
+
+def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source():
+    """ Given site configuration, when src theme present, then calls npm install wrapper """
+    pass
+
+
+def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command():
+    """ Given site configuration, when src theme present, then calls subprocess with gulp_build command """
+    pass
+
+# endregion
