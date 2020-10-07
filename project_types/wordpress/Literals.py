@@ -46,6 +46,8 @@ class Literals(ValueDictsBase):
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
+        "wp_gulp_build_before": _("Gulp build task has launched for theme {theme_slug}."),
+        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}.")
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),
@@ -86,4 +88,7 @@ class Literals(ValueDictsBase):
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
         "wp_wpcli_plugin_install_error": _("Plugin {plugin_name} could not be installed due to an error."),
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
+        "wp_gulp_build_error":
+            _("Gulp build task has encountered an error for theme {theme_slug}. "
+              "Please check above logs for more details.")
     }

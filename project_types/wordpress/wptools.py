@@ -9,6 +9,8 @@ import stat
 import logging
 from project_types.wordpress.constants import wordpress_constants_json_resource
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
+from core.CommandsCore import CommandsCore
+from project_types.wordpress.commands import Commands as WordpressCommands
 import project_types.wordpress.wp_cli as wp_cli
 import project_types.node.npm as npm
 import sys
@@ -17,9 +19,11 @@ from core.app import App
 from core.LiteralsCore import LiteralsCore
 from typing import List, Tuple
 from project_types.wordpress.Literals import Literals as WordpressLiterals
+from tools import cli
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
+commands = CommandsCore([WordpressCommands])
 
 
 def convert_wp_config_token(token: str, wordpress_path: str) -> str:
@@ -413,9 +417,9 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         theme_name = theme["name"]
         theme_source = theme["source"]
         wordpress_path = root_path + constants["paths"]["wordpress"]
-        themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
+        # themes_path = os.path.join(root_path + constants["paths"]["content"]["themes"], theme_name)
         wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-        themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
+        # themes_path_as_posix = str(pathlib.Path(themes_path).as_posix())
 
         if theme["source_type"] == "zip" and not os.path.exists(theme_source):
             logging.error(literals.get("wp_theme_path_not_exist").format(path=theme_source))
@@ -430,7 +434,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
             # Get child path
             child_path = theme["child_source"]
             if os.path.exists(child_path):
-                child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
+                # child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
 
                 # Install and activate WordPress child theme
                 wp_cli.install_theme(wordpress_path, child_path, True, debug_info, theme_name)
@@ -606,6 +610,21 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, root_path)
+
+
+def theme_build(theme_slug: str, wordpress_path: str):
+    """ Executes the src task gulp build task
+
+    Args:
+        theme_slug: Name / slug of the theme to build
+        wordpress_path: Path of the wordpress installation
+    """
+    cli.call_subprocess(commands.get("wp_theme_src_build").format(
+        theme_slug=theme_slug,
+        path=wordpress_path
+    ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
+     log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
+     log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
 
 
 if __name__ == "__main__":

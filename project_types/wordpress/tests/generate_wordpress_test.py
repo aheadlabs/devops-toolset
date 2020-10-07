@@ -1,6 +1,8 @@
 """ Unit tests for the generate wordpress script """
 
 # region main
+import json
+import os
 from unittest.mock import patch
 
 import pytest
@@ -63,4 +65,24 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 
 # endregion main
 
-# TODO (alberto.carbonell) Finish this tests by covering all possible paths
+# region setup_devops_toolset
+
+
+@patch("tools.devops_toolset.update_devops_toolset")
+@patch("logging.info")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(
+        get_constants_mock, logging_mock, update_devops_toolset_mock, wordpressdata):
+    """ Given root_path, then calls update_devops_toolset with devops_path """
+    # Arrange
+    constants_data = json.loads(wordpressdata.constants_file_content)
+    get_constants_mock.return_value = constants_data
+    root_path = wordpressdata.root_path
+    devops_path = os.path.join(root_path + "/.devops", "devops-toolset")
+    # Act
+    sut.setup_devops_toolset(root_path)
+    # Assert
+    update_devops_toolset_mock.assert_called_once_with(devops_path)
+
+# endregion
+
