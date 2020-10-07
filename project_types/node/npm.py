@@ -14,7 +14,7 @@ commands = CommandsCore([NodeCommands])
 
 def convert_npm_extra_args(*args):
     """ Converts a list of variable args into extra args of a command -- <args> """
-    if len(args) > 0:
+    if args[0]:
         return " -- " + " ".join(args)
     return ""
 
