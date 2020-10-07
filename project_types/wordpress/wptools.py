@@ -418,7 +418,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         # git_tools.purge_gitkeep(themes_path_as_posix)
         if "child" in theme and theme["source_type"] == "zip":
             # Get child path
-            child_path = theme["child"]
+            child_path = theme["child_source"]
             if os.path.exists(child_path):
                 child_theme_path_as_posix = str(pathlib.Path(child_path).as_posix())
 

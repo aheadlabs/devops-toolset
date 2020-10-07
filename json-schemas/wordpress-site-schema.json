@@ -22,7 +22,7 @@
         "source": {
           "type": "string"
         },
-        "child": {
+        "child_source": {
           "type": "string"
         }
       },

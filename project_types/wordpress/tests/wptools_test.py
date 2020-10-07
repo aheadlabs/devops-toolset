@@ -484,7 +484,7 @@ def test_install_themes_given_configuration_file_when_child_themes_then_calls_in
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
     site_config["themes"] = json.loads(wordpressdata.themes_content_with_child)
-    site_config["themes"][0]["child"] = "path/to/child.zip"
+    site_config["themes"][0]["child_source"] = "path/to/child.zip"
     debug = site_config["wp_cli"]["debug"]
     get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
     root_path = wordpressdata.root_path
@@ -499,7 +499,7 @@ def test_install_themes_given_configuration_file_when_child_themes_then_calls_in
                   debug,
                   site_config["themes"][0]["name"]),
              call(root_path + wordpressdata.wordpress_path_part,
-                  site_config["themes"][0]["child"],
+                  site_config["themes"][0]["child_source"],
                   True,
                   debug,
                   site_config["themes"][0]["name"])]
