@@ -243,15 +243,25 @@ def get_site_configuration_path_from_environment(environment_path: str, environm
         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
 
     Args:
+        environment_path: Path to the WordPress environment file.
+        environment_name: Environment name that exists in the environment file.
 
     Returns:
         Site configuration path.
     """
 
+    if environment_path is None:
+        raise ValueError(literals.get("wp_environment_path_not_found"))
+    if environment_name is None:
+        raise ValueError(literals.get("wp_environment_name_not_found"))
+
     environment_obj = get_site_environments(environment_path, environment_name)
 
     directory = pathlib.Path(environment_path).parent
     file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
+    if not file_path.exists() or not file_path.is_file():
+        raise ValueError(literals.get("wp_file_not_found").format(file=file_path))
+    logging.info(literals.get("wp_environment_file_used").format(file=file_path))
 
     return str(file_path)
 
