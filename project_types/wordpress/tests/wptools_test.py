@@ -194,15 +194,36 @@ def test_get_site_configuration_from_environment(
 # region get_site_configuration_path_from_environment()
 
 
+@pytest.mark.parametrize("env_path, env_name, literal",
+                         [("path", None, "wp_environment_path_not_found"),
+                          (None, "localhost", "wp_environment_name_not_found")])
+def test_get_site_configuration_path_from_environment_when_environment_path_is_none_raises_error(
+       env_path, env_name, literal):
+    """Given arguments, when the environment is found in the JSON file, returns
+    the site configuration file path"""
+    # Arrange
+    expected_error = literals.get(literal)
+    # Act
+    with pytest.raises(ValueError) as error:
+        sut.get_site_configuration_path_from_environment(env_path, env_name)
+
+        # Assert
+        assert error.value == expected_error
+
+
 @patch("builtins.open", new_callable=mock_open, read_data=WordPressData.environment_file_content)
+@patch("pathlib.Path.exists")
+@patch("pathlib.Path.is_file")
 def test_get_site_configuration_path_from_environment_when_environment_found_returns_config_path(
-        builtins_open, wordpressdata):
+        path_isfile_mock, path_exist_mock, builtins_open, wordpressdata):
     """Given arguments, when the environment is found in the JSON file, returns
     the site configuration file path"""
 
     # Arrange
     environment_path = wordpressdata.environment_path
     environment_name = wordpressdata.environment_name
+    path_exist_mock.return_value = True
+    path_isfile_mock.return_value = True
     expected_path = wordpressdata.site_config_path_from_json
 
     # Act

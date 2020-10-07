@@ -410,7 +410,6 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     Args:
         site_configuration: parsed site configuration.
         root_path: Path to project root.
-        is_devops: True if devops-engine launched this, False otherwise
     """
     if not site_configuration["themes"]:
         logging.info("No themes configured to install")
