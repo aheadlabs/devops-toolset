@@ -312,7 +312,7 @@ def get_wordpress_path_from_root_path(path) -> str:
     """
     # Add constants
     wp_constants = get_constants()
-    
+
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
     wordpress_path = os.path.join(path, wordpress_relative_path)
