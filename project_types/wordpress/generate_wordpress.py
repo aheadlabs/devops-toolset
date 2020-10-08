@@ -35,7 +35,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     """ Generates a new Wordpress site based on the required configuration files"""
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
-    required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files_pattern_suffixes = list(map(lambda x: f"*{ x[1]}", constants.required_files_suffixes.items()))
     required_files_not_present = paths.files_exist_filtered(root_path, False, required_files_pattern_suffixes)
 
     # If there are missing required files, ask for using the default ones from GitHub if quiet flag is activated
@@ -74,8 +74,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Parsing site configuration file
     site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], environment)
 
-    # Get wordpress future path (from the constants.json file)
+    # Get future paths (from the constants.json file)
     wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(root_path)
+    themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
 
     # Create project structure & prepare devops-toolset
     wordpress.wptools.start_basic_project_structure(root_path, required_file_paths[2])
@@ -87,7 +88,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.download_wordpress(site_config, wordpress_path)
 
     # Set development themes / plugins ready
-    wordpress.wptools.build_theme(site_config, wordpress_path)
+    wordpress.wptools.build_theme(site_config, themes_path)
 
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
@@ -111,7 +112,7 @@ def setup_devops_toolset(root_path: str):
         root_path: Project's root path
     """
     devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
-    devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
+    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset")
     logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
     tools.devops_toolset.update_devops_toolset(devops_path)
 

@@ -1,9 +1,16 @@
 """ Creates an opinionated basic structure for a WordPress project. """
 
-import pathlib
 import filesystem.paths as path_tools
+import logging
 import os
+import pathlib
 import requests
+from core.app import App
+from core.LiteralsCore import LiteralsCore
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+
+app: App = App()
+literals = LiteralsCore([WordpressLiterals])
 
 
 class BasicStructureStarter(object):
@@ -26,16 +33,19 @@ class BasicStructureStarter(object):
             child_condition = self.condition_met(item, base_path_str)
         else:
             child_condition = True
+
         # Only if the item DOES NOT exist and condition is met
-        if not path_tools.is_valid_path(str(final_path)) and child_condition and "type" in item:
+        if not path_tools.is_valid_path(str(final_path), True) and child_condition and "type" in item:
             # Create item
             if item["type"] == "directory":
                 os.mkdir(final_path)
+                logging.debug(literals.get("wp_directory_created").format(directory=final_path))
             elif item["type"] == "file":
                 with open(final_path, "a") as new_file:
                     # Add default content if applies
                     if "default_content" in item:
                         new_file.write(self.get_default_content(item["default_content"]))
+                        logging.debug(literals.get("wp_file_created").format(file=final_path))
 
         # Iterate through children if any
         if "children" in item:
@@ -52,7 +62,7 @@ class BasicStructureStarter(object):
         """
 
         if "condition" in item and item["condition"] == "when-parent-not-empty":
-            return not path_tools.is_empty_dir(str(pathlib.Path(base_path).parent))
+            return path_tools.is_empty_dir(str(pathlib.Path(base_path)))
         # Default behaviour
         return True
 
@@ -63,12 +73,23 @@ class BasicStructureStarter(object):
             Args:
                 item : the object containing the type and the value of the default content
         """
-
         if item["source"] == "raw":
+            logging.debug(literals.get("wp_write_default_content").format(
+                file=item["name"],
+                source=f"raw data => {item['source']}"
+            ))
             return item["value"]
         elif item["source"] == "from_file":
             with open(item["value"], "r") as default_content_file:
+                logging.debug(literals.get("wp_write_default_content").format(
+                    file=item["name"],
+                    source=f"file => {item['source']}"
+                ))
                 return default_content_file.read()
         elif item["source"] == "from_url":
+            logging.debug(literals.get("wp_write_default_content").format(
+                file=item["name"],
+                source=f"URL => {item['source']}"
+            ))
             response = requests.get(item["value"])
             return response.text

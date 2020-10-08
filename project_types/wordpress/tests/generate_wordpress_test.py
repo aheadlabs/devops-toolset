@@ -2,7 +2,7 @@
 
 # region main
 import json
-import os
+import pathlib
 from unittest.mock import patch, mock_open, call
 
 import pytest
@@ -121,11 +121,10 @@ def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(
     constants_data = json.loads(wordpressdata.constants_file_content)
     get_constants_mock.return_value = constants_data
     root_path = wordpressdata.root_path
-    devops_path = os.path.join(root_path + "/.devops", "devops-toolset")
+    devops_path = pathlib.Path.joinpath(root_path, ".devops", "devops-toolset")
     # Act
     sut.setup_devops_toolset(root_path)
     # Assert
     update_devops_toolset_mock.assert_called_once_with(devops_path)
 
 # endregion
-

@@ -304,18 +304,41 @@ def get_site_environments(environment_path: str, environment_name: str = None) -
     return matching_environments[0]
 
 
-def get_wordpress_path_from_root_path(path) -> str:
-    """ Gets the wordpress path based on the constants.json from a desired root path
+def get_themes_path_from_root_path(path) -> str:
+    """ Gets the themes path based on the constants.json from a desired root path
 
     Args:
         path: Full path of the project
     """
+    logging.info(literals.get("wp_root_path").format(path=path))
+
     # Add constants
     wp_constants = get_constants()
 
     # Get wordpress path from the constants
-    wordpress_relative_path = wp_constants["paths"]["wordpress"].split('/')[1]
-    wordpress_path = os.path.join(path, wordpress_relative_path)
+    themes_relative_path = wp_constants["paths"]["content"]["themes"]
+    themes_path = os.path.join(pathlib.Path(path), themes_relative_path)
+    logging.info(literals.get("wp_themes_path").format(path=themes_path))
+
+    return themes_path
+
+
+def get_wordpress_path_from_root_path(root_path) -> str:
+    """ Gets the wordpress path based on the constants.json from a desired root path
+
+    Args:
+        root_path: Full path of the project
+    """
+    logging.info(literals.get("wp_root_path").format(path=root_path))
+
+    # Add constants
+    wp_constants = get_constants()
+
+    # Get wordpress path from the constants
+    wordpress_relative_path = wp_constants["paths"]["wordpress"]
+    wordpress_path = pathlib.Path.joinpath(root_path, wordpress_relative_path)
+    logging.info(literals.get("wp_wordpress_path").format(path=wordpress_path))
+
     return wordpress_path
 
 
@@ -348,21 +371,20 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
     constants = get_constants()
 
     # Set/expand variables before using WP CLI
-    wordpress_path = root_path + constants["paths"]["wordpress"]
-    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"]).as_posix()
     # For each plugin in config, invoke the command
     for plugin in site_configuration["plugins"]:
         plugin_name = plugin["name"]
         plugin_source = plugin["source"]
-        plugins_path = root_path + constants["paths"]["content"]["plugins"]
-        plugins_path_as_posix = str(pathlib.Path(plugins_path).as_posix())
-        wp_cli.install_plugin(plugin_name, wordpress_path_as_posix,  plugin["force"], plugin_source,
+        plugins_path = pathlib.Path.joinpath(
+            pathlib.Path(root_path), constants["paths"]["content"]["plugins"]).as_posix()
+        wp_cli.install_plugin(plugin_name, wordpress_path,  plugin["force"], plugin_source,
                               site_configuration["wp_cli"]["debug"])
         # When source is zipped, move source to the plugins content path
         if plugin["source_type"] == "zip":
-            shutil.move(plugin_source, plugins_path_as_posix)
+            shutil.move(plugin_source, plugins_path)
             # Clean up
-            git_tools.purge_gitkeep(plugins_path_as_posix)
+            git_tools.purge_gitkeep(plugins_path)
 
 
 def install_recommended_plugins():
@@ -426,8 +448,7 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
         debug_info = site_configuration["wp_cli"]["debug"]
         theme_name = theme["name"]
         theme_source = theme["source"]
-        wordpress_path = root_path + constants["paths"]["wordpress"]
-        wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
+        wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"]).as_posix()
 
         if theme["source_type"] == "zip" and not os.path.exists(theme_source):
             logging.error(literals.get("wp_theme_path_not_exist").format(path=theme_source))
@@ -449,23 +470,26 @@ def install_theme_from_configuration_file(site_configuration: dict, root_path: s
     core_dump_path_converted = convert_wp_config_token(site_configuration["database"]["dumps"]["theme"], wordpress_path)
     database_core_dump_path = os.path.join(database_path, core_dump_path_converted)
     database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    export_database(site_configuration, wordpress_path, database_core_dump_path_as_posix)
 
 
-def build_theme(site_configuration: dict, wordpress_path: str):
+def build_theme(site_configuration: dict, theme_path: str):
     """ Builds a theme source into a packaged theme distribution using npm tasks
 
     Args:
         site_configuration: Parsed site configuration
-        wordpress_path: Path to the wordpress installation
+        theme_path: Path to the wordpress installation
     """
     logging.info(literals.get("wp_looking_for_src_themes"))
 
     # Get configuration data and paths
     src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))
-    if len(src_theme) > 0 and os.path.exists(src_theme[0]["source"]):
+
+    src_theme_path = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme[0]["source"])
+    if len(src_theme) > 0 and os.path.exists(src_theme_path):
 
         theme_slug = src_theme[0]["name"]
+
         # Navigate to the source path
         os.chdir(src_theme[0]["source"])
 
@@ -475,7 +499,7 @@ def build_theme(site_configuration: dict, wordpress_path: str):
         # Run npm run build to execute the task build with the required parameters
         cli.call_subprocess(commands.get("wp_theme_src_build").format(
             theme_slug=theme_slug,
-            path=wordpress_path
+            path=theme_path
         ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
             log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
@@ -537,7 +561,7 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     constants = get_constants()
 
     database_path = constants["paths"]["database"]
-    wordpress_path = pathlib.Path(root_path + constants["paths"]["wordpress"])
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Reset database
@@ -610,12 +634,18 @@ def start_basic_project_structure(root_path: str, project_structure_path: str) -
         root_path: Full path where the structure will be created
         project_structure_path: Full path to the json containing the structure
     """
+
+    logging.info(literals.get("wp_creating_project_structure"))
+
     # Parse project structure configuration
     project_structure = get_project_structure(project_structure_path)
     project_starter = BasicStructureStarter()
+
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, root_path)
+
+    logging.info(literals.get("wp_created_project_structure"))
 
 
 if __name__ == "__main__":

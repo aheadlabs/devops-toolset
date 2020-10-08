@@ -16,8 +16,12 @@ class Literals(ValueDictsBase):
         "wp_title_wordpress_rollback_db": _("WordPress\ndatabase rollback"),
     }
     _info = {
+        "wp_created_project_structure": _("Finished creation of the project structure."),
+        "wp_creating_project_structure": _("Starting to create the project structure."),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
+        "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
+        "wp_file_created": _("File created: {file}"),
         "wp_got_db_admin_user": _("I got the following database admin user from the environment configuration file: "
                                   "{db_admin_user}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
@@ -25,7 +29,10 @@ class Literals(ValueDictsBase):
         "wp_no_src_themes": _("No development themes to build. Skipping this step."),
         "wp_required_file_paths_not_found": _("No required file paths were found"),
         "wp_required_file_paths_found": _("The following file paths were found:"),
+        "wp_root_path": _("The root path is: {path}"),
+        "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
+        "wp_wordpress_path": _("The WordPress path is: {path}"),
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system."),
         "wp_wpcli_backup_create_before": _("Creating database backup..."),
         "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
@@ -52,6 +59,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
+        "wp_write_default_content": _("Writing default content to file \"{file}\" from {source}"),
         "wp_gulp_build_before": _("Gulp build task has launched for theme {theme_slug}."),
         "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}.")
     }
