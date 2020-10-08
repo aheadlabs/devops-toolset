@@ -817,13 +817,53 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
     npm_install_mock.assert_called_once()
 
 
-def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source():
+@patch("logging.info")
+@patch("os.path.exists")
+@patch("os.chdir")
+@patch("project_types.node.npm.install")
+@patch("tools.cli.call_subprocess")
+def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
+        subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata):
     """ Given site configuration, when src theme present, then calls npm install wrapper """
-    pass
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    site_config = json.loads(wordpressdata.site_config_content)
+    path_exists_mock.return_value = True
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    site_config["themes"][0]["source_type"] = "src"
+    # Act
+    sut.build_theme(site_config, wordpress_path)
+    # Assert
+    chdir_mock.assert_called_once_with(site_config["themes"][0]["source"])
 
 
-def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command():
+@patch("logging.info")
+@patch("os.path.exists")
+@patch("os.chdir")
+@patch("project_types.node.npm.install")
+@patch("tools.cli.call_subprocess")
+def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command(
+    subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata):
     """ Given site configuration, when src theme present, then calls subprocess with gulp_build command """
-    pass
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    site_config = json.loads(wordpressdata.site_config_content)
+    path_exists_mock.return_value = True
+    site_config["themes"] = json.loads(wordpressdata.themes_content)
+    site_config["themes"][0]["source_type"] = "src"
+    theme_slug = site_config["themes"][0]["name"]
+    command = sut.commands.get("wp_theme_src_build").format(
+            theme_slug=theme_slug,
+            path=wordpress_path)
+    literal_before = literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)
+    literal_after = literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)
+    literal_error = literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)
+    # Act
+    sut.build_theme(site_config, wordpress_path)
+    # Assert
+    subprocess_mock.assert_called_once_with(command,
+                                            log_before_out=[literal_before],
+                                            log_after_out=[literal_after],
+                                            log_after_err=[literal_error])
 
 # endregion
