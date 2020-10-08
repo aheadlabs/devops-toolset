@@ -274,14 +274,46 @@ def test_wp_cli_info(call_subprocess):
 
 # endregion
 
-# TODO (some user)
+# region create_wordpress_database_user()
 
-# def test_export_database():
-#     """Given, when, then"""
-#
-#     # Arrange
-#
-#     # Act
-#
-#     # Assert
-#     assert False
+
+@patch("tools.cli.call_subprocess")
+def test_create_wordpress_database_user(call_subprocess):
+    """Given arguments, when the method is called, then creates a db user"""
+
+    # Arrange
+    wordpress_path = ""
+    user_name = "user1"
+    user_p = "pass"
+    schema = "db1"
+    host = "localhost"
+    privileges = "create, alter, select, insert, update, delete"
+
+    # Act
+    sut.create_wordpress_database_user(wordpress_path, user_name, user_p, schema, host, privileges)
+
+    # Assert
+    call_subprocess.assert_called()
+
+# endregion
+
+# region create_wordpress_database_user()
+
+
+@patch("tools.cli.call_subprocess")
+def test_export_content_to_wxr(call_subprocess):
+    """Given arguments, when the method is called, then exports WordPress
+    content"""
+
+    # Arrange
+    wordpress_path = ""
+    destination_path = ""
+    wxr_file_suffix = "suffix"
+
+    # Act
+    sut.export_content_to_wxr(wordpress_path, destination_path, wxr_file_suffix)
+
+    # Assert
+    call_subprocess.assert_called()
+
+# endregion

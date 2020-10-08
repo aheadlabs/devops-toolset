@@ -38,7 +38,7 @@ def test_condition_met_given_parameters_should_call_is_empty_dir_result(is_empty
     # Arrange
     item = {"condition": "when-parent-not-empty"}
     base_path = wordpressdata.wordpress_path
-    base_path_parent = str(pathlib.Path(base_path).parent)
+    base_path_parent = str(pathlib.Path(base_path))
     # Act
     BasicStructureStarter.condition_met(item, base_path)
     # Assert

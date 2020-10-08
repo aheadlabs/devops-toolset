@@ -53,11 +53,12 @@
         "concatenate_scripts": true
     },
     "multisite": {},
-    "themes": {
+    "themes": [
+        {
         "name": "twentytwenty",
         "source_type": "wordpress",
-        "source": "twentytwenty",
-        "has_child": false
-    },
+        "source": "twentytwenty"
+        }
+    ],
     "plugins": []
 }

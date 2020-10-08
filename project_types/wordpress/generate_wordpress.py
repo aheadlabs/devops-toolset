@@ -1,4 +1,5 @@
-""" This scripts will generate and configure a Wordpress based on the required configuration files"""
+""" This script will generate and configure a Wordpress site based on the
+required configuration files"""
 
 
 import argparse
@@ -7,6 +8,7 @@ import os
 import pathlib
 import requests
 import core
+import core.log_tools
 import filesystem.paths as paths
 import project_types.wordpress.constants as constants
 import project_types.wordpress.wptools
@@ -28,11 +30,12 @@ literals = LiteralsCore([WordpressLiterals])
 
 
 # TODO (alberto.carbonell) Check .gitkeep not deleted on /database
-def main(root_path: str, db_user_password: str = None, db_admin_password: str = None, environment: str = "localhost"):
-    """ Generates a new Wordpress based on the required configuration files"""
+def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
+         environment: str = "localhost"):
+    """ Generates a new Wordpress site based on the required configuration files"""
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
-    required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files_pattern_suffixes = list(map(lambda x: f"*{ x[1]}", constants.required_files_suffixes.items()))
     required_files_not_present = paths.files_exist_filtered(root_path, False, required_files_pattern_suffixes)
 
     # If there are missing required files, ask for using the default ones from GitHub if quiet flag is activated
@@ -44,15 +47,10 @@ def main(root_path: str, db_user_password: str = None, db_admin_password: str = 
             Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE, Urls.DEFAULT_SITE_ENVIRONMENTS, Urls.DEFAULT_SITE_CONFIG],
                                          core.log_tools.LogLevel.info)
 
-        # NOTE: Devops engine won't call this script with "localhost" environment.
-        if environment == "localhost":
-            # Ask to use defaults
-            use_defaults = prompt.yn(literals.get("wp_use_default_files"))
-            # If not using defaults, exit
-            if not use_defaults:
-                logging.critical(literals.get("wp_required_files_mandatory"))
-                raise ValueError(literals.get("wp_required_files_not_found").format(path=root_path))
-        else:
+        # Ask to use defaults
+        use_defaults = prompt.yn(literals.get("wp_use_default_files"))
+        # If not using defaults, exit
+        if not use_defaults:
             logging.critical(literals.get("wp_required_files_mandatory"))
             raise ValueError(literals.get("wp_required_files_not_found").format(path=root_path))
 
@@ -70,26 +68,36 @@ def main(root_path: str, db_user_password: str = None, db_admin_password: str = 
     required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
         root_path, required_files_pattern_suffixes)
 
+    # Get database admin user from environment
+    db_admin_user = wordpress.wptools.get_db_admin_from_environment(required_file_paths[1], environment)
+
     # Parsing site configuration file
     site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], environment)
 
-    # Get wordpress future path (from the constants.json file)
+    # Get future paths (from the constants.json file)
     wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(root_path)
+    themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
 
-    # Create project structure
+    # Create project structure & prepare devops-toolset
     wordpress.wptools.start_basic_project_structure(root_path, required_file_paths[2])
 
-    # Update / Download devops-toolset
+    # Check for updates / download devops-toolset
     setup_devops_toolset(root_path)
 
     # Download WordPress core files
     wordpress.wptools.download_wordpress(site_config, wordpress_path)
 
+    # Set development themes / plugins ready
+    wordpress.wptools.build_theme(site_config, themes_path)
+
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
 
+    # Create database and users
+    wordpress.wptools.setup_database(site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
+
     # Install WordPress site
-    wordpress.wptools.install_wordpress_site(site_config, root_path, db_admin_password)
+    wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password)
 
     # Install site theme
     wordpress.wptools.install_theme_from_configuration_file(site_config, root_path)
@@ -104,7 +112,7 @@ def setup_devops_toolset(root_path: str):
         root_path: Project's root path
     """
     devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
-    devops_path = os.path.join(root_path + devops_path_constant, "devops-toolset")
+    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset")
     logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
     tools.devops_toolset.update_devops_toolset(devops_path)
 
@@ -114,8 +122,10 @@ if __name__ == "__main__":
     parser.add_argument("project-path", action=tools.argument_validators.PathValidator)
     parser.add_argument("--db-user-password", required=True)
     parser.add_argument("--db-admin-password", required=True)
+    parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
-    main(args.project_path, args.db_user_password, args.db_admin_password, args.environment)
+    main(args.project_path, args.db_user_password, args.db_admin_password,
+         args.wp_admin_password, args.environment)

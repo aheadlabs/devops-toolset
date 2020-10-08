@@ -109,18 +109,23 @@ def get_file_name_from_url(url: str) -> str:
     return os.path.basename(parsed.path)
 
 
-def get_file_path_from_pattern(path: str, pattern: str) -> Union[List[str], str, None]:
+def get_file_path_from_pattern(path: str, pattern: str, recursive: bool = False) -> Union[List[str], str, None]:
     """Gets the file path from a file name pattern.
 
     Args:
         path: Where to look for.
         pattern: glob pattern of the file name to be found.
+        recursive: If True the search will be recursive.
 
     Returns:
         None if no file or more than one is found, path to file if one found.
     """
 
-    files = sorted(pathlib.Path(path).rglob(pattern))
+    if recursive:
+        files = sorted(pathlib.Path(path).rglob(pattern))
+    else:
+        files = sorted(pathlib.Path(path).glob(pattern))
+
     if len(files) == 0:
         return None
     elif len(files) > 1:
@@ -211,11 +216,12 @@ def is_empty_dir(path: str = None) -> bool:
     return False
 
 
-def is_valid_path(path: str = None) -> bool:
+def is_valid_path(path: str = None, check_existence: bool = False) -> bool:
     """Checks if it is a valid path.
 
     Args:
-        path: Path string to be analyzed
+        path: Path string to be analyzed.
+        check_existence: If True, it checks that the path exists.
 
     Returns:
         True if path is valid an exists.
@@ -224,7 +230,11 @@ def is_valid_path(path: str = None) -> bool:
     if path is None or path.strip() == "":
         return False
 
+    if check_existence and not os.path.exists(path):
+        return False
+
     path_object = pathlib.Path(path)
+
     # Exception for unit tests
     if not path.startswith("/pathto") \
             and not pathlib.Path.exists(path_object):

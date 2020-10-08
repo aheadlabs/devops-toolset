@@ -11,10 +11,11 @@
                 "name": {"type":"string"},
                 "type": {"enum": ["development","devops","integration","qa","staging","production"]},
                 "default": {"type":"boolean"},
-                "configuration_file": {"type":"string"}
+                "configuration_file": {"type":"string"},
+                "db_admin_user": {"type": "string"}
             },
             "additionalProperties": false,
-            "required": ["name","type","default","configuration_file"]
+            "required": ["name","type","default","configuration_file", "db_admin_user"]
         }
     },
 

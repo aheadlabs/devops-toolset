@@ -1,5 +1,6 @@
 """Contains wrappers for WP CLI commands"""
 
+import datetime
 import tools.cli as cli
 import tools.git
 from core.app import App
@@ -19,6 +20,22 @@ class ValueType(Enum):
 
     CONSTANT = 1,
     VARIABLE = 2
+
+
+def convert_wp_parameter_db_user(db_user: str):
+    """Converts a str value to a --db_user parameter."""
+    if db_user:
+        return "--dbuser=" + "\"" + db_user + "\""
+    else:
+        return ""
+
+
+def convert_wp_parameter_db_pass(db_pass: str):
+    """Converts a str value to a --db_pass parameter."""
+    if db_pass:
+        return "--dbpass=" + "\"" + db_pass + "\""
+    else:
+        return ""
 
 
 def convert_wp_parameter_activate(activate: bool):
@@ -130,6 +147,75 @@ def create_configuration_file(wordpress_path: str, db_host: str, db_name: str, d
     )
 
 
+def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass: str = ""):
+    """ Calls wp db create with the parameters
+    Args
+        wordpress_path: Path to WordPress files
+        debug: If present, --debug will be added to the command showing all debug trace information.
+        db_user: Database user
+        db_pass: Database password
+
+    """
+    tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
+        path=wordpress_path,
+        db_user=convert_wp_parameter_db_user(db_user),
+        db_pass=convert_wp_parameter_db_pass(db_pass),
+        debug_info=convert_wp_parameter_debug(debug)
+    ), log_before_process=[literals.get("wp_wpcli_db_create_before")]
+    )
+
+
+def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
+                                   schema: str, host: str = 'localhost',
+                                   privileges: str = 'create, alter, select, insert, update, delete'):
+    """Creates a database user to be used by WordPress
+        e.g.:
+            wp db query
+                "create user '<username>'@'localhost'
+                identified by '<password>'"
+            wp db query
+                "grant create, alter, select, insert, update, delete
+                on <schema>.* to '<username>'@'localhost'"
+
+        Args:
+            wordpress_path: Path to WordPress files.
+            admin_user: Database user with privileges to create databases and
+                other users.
+            admin_password: Admin user password.
+            user: Database user name.
+            password: Database user password.
+            schema: Existing database schema name.
+            host: localhost or FQDN. (% and _ wildcards are permitted).
+            privileges: comma-separated privileges to be granted. More info at:
+                https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
+                e.g.: 'create, alter, select, insert, update, delete'
+    """
+    cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
+        user=user,
+        host=host,
+        password=password,
+        admin_user=admin_user,
+        admin_password=admin_password,
+        path=wordpress_path),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user, host=host)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
+    )
+
+    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+        privileges=privileges,
+        schema=schema,
+        user=user,
+        host=host,
+        admin_user=admin_user,
+        admin_password=admin_password,
+        path=wordpress_path),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+            user=user, host=host, schema=schema, privileges=privileges)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+            user=user, host=host, schema=schema)]
+    )
+
+
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
     """ Downloads the latest version of the WordPress core files using WP-CLI.
 
@@ -190,6 +276,32 @@ def export_database(wordpress_path: str, dump_file_path: str, debug: bool):
         debug_info=convert_wp_parameter_debug(debug)),
         log_before_out=[literals.get("wp_wpcli_db_export_before").format(path=dump_file_path)],
         log_after_err=[literals.get("wp_wpcli_db_export_error")])
+
+
+def export_content_to_wxr(wordpress_path: str, destination_path: str, wrx_file_suffix: str = None):
+    """Exports all WordPress content to a WXR XML file.
+
+    e.g.:
+        wp export --dir="<destination path>" --filename_format="<date>-content.xml"
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        destination_path: Path where the files will be generated.
+        wrx_file_suffix: Suffix to be added to the generated XML file.
+
+    Returns:
+
+    """
+    date = datetime.datetime.utcnow().strftime("%Y.%m.%d")
+    suffix = "" if wrx_file_suffix is None else f"-{wrx_file_suffix}"
+
+    cli.call_subprocess(commands.get("wpcli_export").format(
+        path=wordpress_path,
+        destination_path=destination_path,
+        date=date,
+        suffix=suffix),
+        log_before_out=[literals.get("wp_wpcli_export").format(path=destination_path)],
+        log_after_err=[literals.get("wp_wpcli_export_err").format(path=destination_path)])
 
 
 def import_database(wordpress_path: str, dump_file_path: str, debug: bool):
@@ -292,13 +404,6 @@ def install_wordpress_core(wordpress_path: str, url: str, title: str, admin_user
     )
 
 
-def wp_cli_info():
-    """Executes wp info command and logs output based on the result. """
-    cli.call_subprocess(commands.get("wpcli_info"),
-                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],
-                        log_after_out=[literals.get("wp_wpcli_add_ev")])
-
-
 def reset_database(wordpress_path: str, quiet: bool, debug_info: bool):
     """Removes all WordPress core tables from the database using WP-CLI.
 
@@ -383,6 +488,13 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
         log_after_err=[literals.get("wp_wpcli_option_update_error").format(
             option_name=option_name,
             option_value=option_value)])
+
+
+def wp_cli_info():
+    """Executes wp info command and logs output based on the result. """
+    cli.call_subprocess(commands.get("wpcli_info"),
+                        log_before_out=[literals.get("wp_wpcli_install_ok"), literals.get("wp_wpcli_info")],
+                        log_after_out=[literals.get("wp_wpcli_add_ev")])
 
 
 if __name__ == "__main__":

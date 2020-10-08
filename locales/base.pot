@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-08-11 13:33+0200\n"
+"POT-Creation-Date: 2020-10-08 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,279 +15,366 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: C:\Workspace\_devops-toolset\core\LiteralsCore.py:28
 msgid "Parameters passed to the function:"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:14
 msgid "Getting quality gate for branch {branch} (original name)."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:15
 msgid "Pull request mode: {pull_request}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:16
 msgid "Using {file} as the Sonar* configuration file."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:17
 msgid "Quality gate succeeded"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:18
 msgid ""
 "This is the JSON data returned by Sonar*:\n"
 "\n"
 "{json}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:19
 msgid ""
 "Request URL:\n"
 "{url}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:22
 msgid "Invalid metric value for {metricKey}: {actualValue} {comparator} {errorThreshold}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\Literals.py:24
 msgid "Status code got from Sonar* was not 200, but {statusCode}. Please check it out."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\devops_platforms\azuredevops\Literals.py:14
 msgid "Created environment variable {key} with value {value}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\filesystem\Literals.py:14
 msgid "Project path is {path}."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\filesystem\Literals.py:15
 msgid "Composer file path is {path}."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\filesystem\Literals.py:18
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:44
 msgid "Path must be a dir, not a file."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:13
+msgid "Running npm task: {task}..."
+msgstr ""
+
+msgid "npm task: {task} has completed successfully."
+msgstr ""
+
+msgid "Npm install launched. This may take a while..."
+msgstr ""
+
+msgid "Npm install completed successfully."
+msgstr ""
+
+msgid "An error has occurred while running task {task}. See above log for more details."
+msgstr ""
+
+msgid "Npm install has encountered an error. Please check above logs for more details."
+msgstr ""
+
+msgid "Generate WordPress site"
+msgstr ""
+
 msgid "WordPress core"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:14
 msgid ""
 "WordPress\n"
 "existing repo"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:15
 msgid ""
 "WordPress\n"
 "database rollback"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:18
-msgid "Resetting the database (drop and create)..."
+msgid "Finished creation of the project structure."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:19
-msgid "Database could not be reset due to an error."
+msgid "Starting to create the project structure."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:20
-msgid "Importing database dump from file:"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:21
-msgid "Dump file could not be imported due to an error."
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:22
-msgid "Downloading WP-CLI from {url}"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:23
-msgid "WP-CLI installation was successful."
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:24
-msgid "Here is the WP-CLI information:"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:25
-msgid "Remember to add the path to the PATH or BIN, depending on your operating system."
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:26
-msgid "Downloading WordPress core files version {version}, locale {locale}"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:27
-msgid "Downloading WordPress content (default themes and plugins): {content}"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:28
-msgid "WordPress core destination path: {path}"
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:29
-msgid "WordPress core files were successfully downloaded."
-msgstr ""
-
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:30
 msgid "These are the default files from the GitHub repository:"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:31
-msgid "Do you want me to use the default ones instead for those missing files?"
+msgid "Directory created: {directory}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:32
-msgid "Transients are going to be deleted"
+msgid "The following environment file will be used: {file}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:33
-msgid "Dump done successfully"
+msgid "File created: {file}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:34
-#: C:\Workspace\_devops-toolset\tools\Literals.py:19
+msgid "I got the following database admin user from the environment configuration file: {db_admin_user}"
+msgstr ""
+
 msgid "Do you want me to initialize a local Git repository for you?"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:35
-msgid "Creating wp-config.php..."
+msgid "Looking for development themes to build..."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:36
+msgid "No development themes to build. Skipping this step."
+msgstr ""
+
+msgid "No required file paths were found"
+msgstr ""
+
+msgid "The following file paths were found:"
+msgstr ""
+
+msgid "The root path is: {path}"
+msgstr ""
+
+msgid "The themes path is: {path}"
+msgstr ""
+
+msgid "Do you want me to use the default ones instead for those missing files?"
+msgstr ""
+
+msgid "The WordPress path is: {path}"
+msgstr ""
+
+msgid "Remember to add the path to the PATH or BIN, depending on your operating system."
+msgstr ""
+
+msgid "Creating database backup..."
+msgstr ""
+
 msgid "File wp-config.php created successfully."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:37
+msgid "Preparing wordpress core files to install..."
+msgstr ""
+
+msgid "Creating wp-config.php..."
+msgstr ""
+
+msgid "Creating Wordpress database (by default, user_name and host will be taken from wp_config)"
+msgstr ""
+
+msgid "Importing database dump from file:"
+msgstr ""
+
+msgid "Exporting database dump to: {path}"
+msgstr ""
+
+msgid "Creating database user {user} for host {host}"
+msgstr ""
+
+msgid "Granting database user {user} for host {host} the following privileges on schema {schema}: {privileges}"
+msgstr ""
+
+msgid "Resetting the database (drop and create)..."
+msgstr ""
+
+msgid "Transients are going to be deleted"
+msgstr ""
+
+msgid "Downloading WP-CLI from {url}"
+msgstr ""
+
+msgid "Downloading WordPress content (default themes and plugins): {content}"
+msgstr ""
+
+msgid "WordPress core destination path: {path}"
+msgstr ""
+
+msgid "Downloading WordPress core files version {version}, locale {locale}"
+msgstr ""
+
+msgid "WordPress core files were successfully downloaded."
+msgstr ""
+
+msgid "Exporting WordPress content to {path}"
+msgstr ""
+
+msgid "Here is the WP-CLI information:"
+msgstr ""
+
+msgid "WP-CLI installation was successful."
+msgstr ""
+
+msgid "Updating database option {option_name}..."
+msgstr ""
+
+msgid "Installing plugin {plugin_name}..."
+msgstr ""
+
 msgid "Config value {name} set as {value}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:40
-msgid "wordpress-path is a mandatory parameter. I cannot continue."
+msgid "Installing wordpress theme {theme_name}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:41
-msgid "environment-path is a mandatory parameter. I cannot continue."
+msgid "Writing default content to file \"{file}\" from {source}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:42
-msgid "environment-name is a mandatory parameter. I cannot continue."
+msgid "Gulp build task has launched for theme {theme_slug}."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:43
-msgid "Required files are mandatory. I cannot continue."
+msgid "Gulp build task has completed successfully for theme {theme_slug}."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:45
-#: C:\Workspace\_devops-toolset\tools\Literals.py:31
-msgid "Path must be an existent dir."
+msgid "Checking for devops-toolset in: {path}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:46
-msgid "Environment not found in the environments JSON file."
+msgid "Current version: {version}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:47
+msgid "devops-toolset needs to be updated."
+msgstr ""
+
+msgid "devops-toolset not found in required path: {path} "
+msgstr ""
+
+msgid "devops-toolset has been successfully downloaded on: {path}"
+msgstr ""
+
+msgid "Obtaining latest version of devops-toolset from: {resource}"
+msgstr ""
+
+msgid "devops-toolset is up to date."
+msgstr ""
+
 msgid "There are more than 1 matching environments in the environments JSON file."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:48
-msgid "WordPress core files could not be downloaded."
+msgid "Environment not found in the environments JSON file."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:49
-msgid "The following required files where not found at {path}:"
+msgid "environment-name is a mandatory parameter. I cannot continue."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:50
+msgid "environment-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
+msgid "Environment name was not found. I cannot continue."
+msgstr ""
+
+msgid "Environment file path was not found. I cannot continue."
+msgstr ""
+
+msgid "The following file was not found: {file}"
+msgstr ""
+
+msgid "Latest version: {version}"
+msgstr ""
+
+msgid "Path must be an existent dir."
+msgstr ""
+
+msgid "Required files are mandatory. I cannot continue."
+msgstr ""
+
 msgid "The required files where not found at {path}."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:51
-msgid "Transients could not be deleted"
+msgid "The following required files where not found at {path}:"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:52
-msgid "Dump could not be done"
+msgid "The following theme path does not exist: {path}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:53
+msgid "wordpress-path is a mandatory parameter. I cannot continue."
+msgstr ""
+
 msgid "File wp-config.php cannot be created."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\project_types\wordpress\Literals.py:54
 msgid "Cannot set {name} property as {value}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:15
+msgid "Wordpress installation could not be done."
+msgstr ""
+
+msgid "Database dump could not be exported due to an error."
+msgstr ""
+
+msgid "Dump file could not be imported due to an error."
+msgstr ""
+
+msgid "Database user {user} for host {host} could not be created"
+msgstr ""
+
+msgid "Privileges could not be granted to database user {user} for host {host} on schema {schema}"
+msgstr ""
+
+msgid "Database could not be reset due to an error."
+msgstr ""
+
+msgid "Transients could not be deleted"
+msgstr ""
+
+msgid "WordPress core files could not be downloaded."
+msgstr ""
+
+msgid "WordPress content could not be exported to {path}"
+msgstr ""
+
+msgid "Database option {option_name} cannot be set to {option_value} due to an error."
+msgstr ""
+
+msgid "Plugin {plugin_name} could not be installed due to an error."
+msgstr ""
+
+msgid "Theme {theme_name} could not be installed."
+msgstr ""
+
+msgid "Gulp build task has encountered an error for theme {theme_slug}. Please check above logs for more details."
+msgstr ""
+
 msgid "Purging .gitkeep file at {path}"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:16
 msgid "The repository is going to be created"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:17
 msgid "The repository has been created"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:18
 msgid "The path specified in the {argument} argument is invalid or does not exist."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:20
 msgid "Adding files to the stage"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:21
 msgid "Added files to the stage"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:22
 msgid "File project structure created"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:23
 msgid "Creating file project structure commit"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:24
 msgid "Committed project structure files"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:25
 msgid "Changing branch to master"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:26
 msgid "Changed branch to master successfully"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:30
 msgid "Git error: repository couldn't be created"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:32
 msgid "RegEx must have 1 capture group. No less, no more."
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:33
 msgid "Git error: project structure files couldn't be committed"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:34
 msgid "Files couldn't be staged"
 msgstr ""
 
-#: C:\Workspace\_devops-toolset\tools\Literals.py:35
 msgid "Changing to master branch couldn't be done"
 msgstr ""
 

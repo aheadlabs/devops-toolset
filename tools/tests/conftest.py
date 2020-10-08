@@ -82,7 +82,7 @@ def mocked_requests_get(url: str, *args, **kwargs):
     return MockResponse(bytes_content, text_content)
 
 
-class MockResponse:
+class MockResponse(object):
     """This is the mocked Response object returned by requests.get()"""
     def __init__(self, b_content, text_content):
         self.content = b_content
