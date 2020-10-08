@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-04 02:53+0200\n"
+"POT-Creation-Date: 2020-10-08 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,7 +59,25 @@ msgstr ""
 msgid "Path must be a dir, not a file."
 msgstr ""
 
-msgid "New Wordpress"
+msgid "Running npm task: {task}..."
+msgstr ""
+
+msgid "npm task: {task} has completed successfully."
+msgstr ""
+
+msgid "Npm install launched. This may take a while..."
+msgstr ""
+
+msgid "Npm install completed successfully."
+msgstr ""
+
+msgid "An error has occurred while running task {task}. See above log for more details."
+msgstr ""
+
+msgid "Npm install has encountered an error. Please check above logs for more details."
+msgstr ""
+
+msgid "Generate WordPress site"
 msgstr ""
 
 msgid "WordPress core"
@@ -75,13 +93,52 @@ msgid ""
 "database rollback"
 msgstr ""
 
+msgid "Finished creation of the project structure."
+msgstr ""
+
+msgid "Starting to create the project structure."
+msgstr ""
+
 msgid "These are the default files from the GitHub repository:"
+msgstr ""
+
+msgid "Directory created: {directory}"
+msgstr ""
+
+msgid "The following environment file will be used: {file}"
+msgstr ""
+
+msgid "File created: {file}"
+msgstr ""
+
+msgid "I got the following database admin user from the environment configuration file: {db_admin_user}"
 msgstr ""
 
 msgid "Do you want me to initialize a local Git repository for you?"
 msgstr ""
 
+msgid "Looking for development themes to build..."
+msgstr ""
+
+msgid "No development themes to build. Skipping this step."
+msgstr ""
+
+msgid "No required file paths were found"
+msgstr ""
+
+msgid "The following file paths were found:"
+msgstr ""
+
+msgid "The root path is: {path}"
+msgstr ""
+
+msgid "The themes path is: {path}"
+msgstr ""
+
 msgid "Do you want me to use the default ones instead for those missing files?"
+msgstr ""
+
+msgid "The WordPress path is: {path}"
 msgstr ""
 
 msgid "Remember to add the path to the PATH or BIN, depending on your operating system."
@@ -93,22 +150,16 @@ msgstr ""
 msgid "File wp-config.php created successfully."
 msgstr ""
 
-msgid "Creating Wordpress database (by default, user_name and host will be taken from wp_config)"
-msgstr ""
-
-msgid "Resetting the database (drop and create)..."
-msgstr ""
-
-msgid "Importing database dump from file:"
-msgstr ""
-
 msgid "Preparing wordpress core files to install..."
 msgstr ""
 
 msgid "Creating wp-config.php..."
 msgstr ""
 
-msgid "Transients are going to be deleted"
+msgid "Creating Wordpress database (by default, user_name and host will be taken from wp_config)"
+msgstr ""
+
+msgid "Importing database dump from file:"
 msgstr ""
 
 msgid "Exporting database dump to: {path}"
@@ -118,6 +169,12 @@ msgid "Creating database user {user} for host {host}"
 msgstr ""
 
 msgid "Granting database user {user} for host {host} the following privileges on schema {schema}: {privileges}"
+msgstr ""
+
+msgid "Resetting the database (drop and create)..."
+msgstr ""
+
+msgid "Transients are going to be deleted"
 msgstr ""
 
 msgid "Downloading WP-CLI from {url}"
@@ -156,6 +213,15 @@ msgstr ""
 msgid "Installing wordpress theme {theme_name}"
 msgstr ""
 
+msgid "Writing default content to file \"{file}\" from {source}"
+msgstr ""
+
+msgid "Gulp build task has launched for theme {theme_slug}."
+msgstr ""
+
+msgid "Gulp build task has completed successfully for theme {theme_slug}."
+msgstr ""
+
 msgid "Checking for devops-toolset in: {path}"
 msgstr ""
 
@@ -189,6 +255,15 @@ msgstr ""
 msgid "environment-path is a mandatory parameter. I cannot continue."
 msgstr ""
 
+msgid "Environment name was not found. I cannot continue."
+msgstr ""
+
+msgid "Environment file path was not found. I cannot continue."
+msgstr ""
+
+msgid "The following file was not found: {file}"
+msgstr ""
+
 msgid "Latest version: {version}"
 msgstr ""
 
@@ -202,6 +277,9 @@ msgid "The required files where not found at {path}."
 msgstr ""
 
 msgid "The following required files where not found at {path}:"
+msgstr ""
+
+msgid "The following theme path does not exist: {path}"
 msgstr ""
 
 msgid "wordpress-path is a mandatory parameter. I cannot continue."
@@ -247,6 +325,9 @@ msgid "Plugin {plugin_name} could not be installed due to an error."
 msgstr ""
 
 msgid "Theme {theme_name} could not be installed."
+msgstr ""
+
+msgid "Gulp build task has encountered an error for theme {theme_slug}. Please check above logs for more details."
 msgstr ""
 
 msgid "Purging .gitkeep file at {path}"

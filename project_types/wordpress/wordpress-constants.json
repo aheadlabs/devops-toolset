@@ -5,12 +5,12 @@
         "locale":"en_US"        
     },
     "paths": {
-        "devops":"/.devops",
-        "database":"/database",
-        "wordpress":"/wordpress",
+        "devops":".devops",
+        "database":"database",
+        "wordpress":"wordpress",
         "content":{
-            "themes":"/content/themes",
-            "plugins":"/content/plugins"
+            "themes":"content/themes",
+            "plugins":"content/plugins"
         }
     },
     "packages": {
