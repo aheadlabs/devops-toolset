@@ -304,20 +304,20 @@ def get_site_environments(environment_path: str, environment_name: str = None) -
     return matching_environments[0]
 
 
-def get_themes_path_from_root_path(path) -> str:
+def get_themes_path_from_root_path(root_path) -> str:
     """ Gets the themes path based on the constants.json from a desired root path
 
     Args:
         path: Full path of the project
     """
-    logging.info(literals.get("wp_root_path").format(path=path))
+    logging.info(literals.get("wp_root_path").format(path=root_path))
 
     # Add constants
     wp_constants = get_constants()
 
     # Get wordpress path from the constants
     themes_relative_path = wp_constants["paths"]["content"]["themes"]
-    themes_path = os.path.join(pathlib.Path(path), themes_relative_path)
+    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path), themes_relative_path).as_posix()
     logging.info(literals.get("wp_themes_path").format(path=themes_path))
 
     return themes_path
@@ -336,7 +336,7 @@ def get_wordpress_path_from_root_path(root_path) -> str:
 
     # Get wordpress path from the constants
     wordpress_relative_path = wp_constants["paths"]["wordpress"]
-    wordpress_path = pathlib.Path.joinpath(root_path, wordpress_relative_path)
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), wordpress_relative_path).as_posix()
     logging.info(literals.get("wp_wordpress_path").format(path=wordpress_path))
 
     return wordpress_path
@@ -490,8 +490,8 @@ def build_theme(site_configuration: dict, theme_path: str):
 
         theme_slug = src_theme[0]["name"]
 
-        # Navigate to the source path
-        os.chdir(src_theme[0]["source"])
+        # Change to the the theme's source directory
+        os.chdir(src_theme_path)
 
         # Run npm install from the package.json path
         npm.install()

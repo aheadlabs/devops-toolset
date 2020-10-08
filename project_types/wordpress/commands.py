@@ -40,4 +40,3 @@ class Commands(ValueDictsBase):
         "wp_theme_src_watch":
             "gulp watch --theme-slug=\"{theme_slug}\" --dev-proxy=\"{local_web_server}\" --wordpress-path=\"{path}\""
     }
-
