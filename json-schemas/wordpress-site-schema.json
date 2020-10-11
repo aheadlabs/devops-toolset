@@ -57,6 +57,23 @@
         }
       }
     },
+    "wp_config_property_string": {
+      "type": "object",
+      "properties": {
+        "name:": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "constant",
+            "variable"
+          ]
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "wp_config_property_boolean": {
       "type": "object",
       "properties": {
@@ -106,6 +123,23 @@
         },
         "value": {
           "type": "integer"
+        }
+      }
+    },
+    "wp_config_property_array": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "constant",
+            "variable"
+          ]
+        },
+        "value": {
+          "type": "array"
         }
       }
     }
@@ -201,6 +235,12 @@
         "locale": {
           "type": "string"
         },
+        "skip_content_download": {
+          "type": "boolean"
+        },
+        "concatenate_scripts": {
+          "type": "boolean"
+        },
         "admin": {
           "type": "object",
           "properties": {
@@ -222,102 +262,77 @@
           ]
         },
         "wp_config": {
-          "site_url": {
-            "$ref": "#/definitions/wp_config_property_uri"
-          },
-          "home_url": {
-            "$ref": "#/definitions/wp_config_property_uri"
-          },
-          "content_url": {
-            "$ref": "#/definitions/wp_config_property_uri"
-          },
-          "plugin_url": {
-            "$ref": "#/definitions/wp_config_property_uri"
-          },
-          "noblogredirect_url": {
-            "$ref": "#/definitions/wp_config_property_uri"
-          },
-          "disable_fatal_error_handler_and_debug_display": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "cache": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "save_queries": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "empty_trash_days": {
-            "$ref": "#/definitions/wp_config_property_number"
-          },
-          "disallow_file_edit": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "disallow_file_mods": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "force_ssl_admin": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "http_block_external": {
-            "$ref": "#/definitions/wp_config_property_boolean"
-          },
-          "accessible_hosts": {
-            "name": {
+          "type": "object",
+          "properties": {
+            "wp_config_path": {
               "type": "string"
             },
-            "type": {
-              "enum": [
-                "constant",
-                "variable"
-              ]
+            "site_url": {
+              "$ref": "#/definitions/wp_config_property_uri"
             },
-            "value": {
-              "type": "array",
-              "format": "hostmane"
+            "home_url": {
+              "$ref": "#/definitions/wp_config_property_uri"
+            },
+            "content_url": {
+              "$ref": "#/definitions/wp_config_property_uri"
+            },
+            "plugin_url": {
+              "$ref": "#/definitions/wp_config_property_uri"
+            },
+            "noblogredirect_url": {
+              "$ref": "#/definitions/wp_config_property_uri"
+            },
+            "disable_fatal_error_handler_and_debug_display": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "debug_display": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "debug": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "cache": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "save_queries": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "empty_trash_days": {
+              "$ref": "#/definitions/wp_config_property_number"
+            },
+            "disallow_file_edit": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "disallow_file_mods": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "force_ssl_admin": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "http_block_external": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "accessible_hosts": {
+              "$ref": "#/definitions/wp_config_property_array"
             },
             "auto_update_core": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "enum": [
-                  "constant",
-                  "variable"
-                ]
-              },
-              "value": {
-                "enum": [
-                  true,
-                  false,
-                  "minor"
-                ]
-              },
-              "image_edit_overwrite": {
-                "$ref": "#/definitions/wp_config_property_boolean"
-              }
+              "$ref": "#/definitions/wp_config_property_string"
             },
-            "skip_content_download": {
-              "type": "boolean"
-            },
-            "concatenate_scripts": {
-              "type": "boolean"
+            "image_edit_overwrite": {
+              "$ref": "#/definitions/wp_config_property_boolean"
             }
           },
           "additionalProperties": false,
           "additionalItems": false,
           "required": [
-            "title",
-            "description",
-            "version",
-            "locale",
             "site_url",
-            "admin",
-            "skip_content_download",
+            "home_url",
             "content_url",
             "plugin_url",
             "noblogredirect_url",
             "disable_fatal_error_handler_and_debug_display",
-            "concatenate_scripts",
+            "debug_display",
+            "debug",
             "cache",
             "save_queries",
             "empty_trash_days",
@@ -325,37 +340,48 @@
             "disallow_file_mods",
             "force_ssl_admin",
             "http_block_external",
+            "accessible_hosts",
             "auto_update_core",
             "image_edit_overwrite"
           ]
-        },
-        "multisite": {
-          "type": "object"
-        },
-        "themes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/wp_theme"
-          },
-          "default": []
-        },
-        "plugins": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/wp_plugin"
-          },
-          "default": []
         }
       },
       "additionalProperties": false,
       "required": [
-        "wp_cli",
-        "database",
-        "settings",
-        "multisite",
-        "themes",
-        "plugins"
+        "title",
+        "description",
+        "version",
+        "locale",
+        "skip_content_download",
+        "concatenate_scripts",
+        "admin",
+        "wp_config"
       ]
+    },
+    "multisite": {
+        "type": "object"
+    },
+    "themes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/wp_theme"
+        },
+        "default": []
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/wp_plugin"
+      },
+      "default": []
     }
-  }
+  },
+  "required": [
+    "wp_cli",
+    "database",
+    "settings",
+    "multisite",
+    "themes",
+    "plugins"
+  ]
 }
