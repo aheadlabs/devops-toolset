@@ -264,9 +264,6 @@
         "wp_config": {
           "type": "object",
           "properties": {
-            "wp_config_path": {
-              "type": "string"
-            },
             "site_url": {
               "$ref": "#/definitions/wp_config_property_uri"
             },
