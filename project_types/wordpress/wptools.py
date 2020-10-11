@@ -485,8 +485,14 @@ def build_theme(site_configuration: dict, theme_path: str):
     # Get configuration data and paths
     src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))
 
+    if len(src_theme) == 0:
+        # Src theme not present
+        logging.info(literals.get("wp_no_src_themes"))
+        return
+
     src_theme_path = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme[0]["source"])
-    if len(src_theme) > 0 and os.path.exists(src_theme_path):
+
+    if os.path.exists(src_theme_path):
 
         theme_slug = src_theme[0]["name"]
 
@@ -503,10 +509,8 @@ def build_theme(site_configuration: dict, theme_path: str):
         ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
             log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
-
     else:
-        # Src theme not present or not existing source path
-        logging.info(literals.get("wp_no_src_themes"))
+        logging.error(literals.get("wp_file_not_found").format(file=src_theme_path))
 
 
 def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
