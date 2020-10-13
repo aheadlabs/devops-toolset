@@ -72,6 +72,16 @@
             "type": "array",
             "items": { "$ref": "http://dev.aheadlabs.com/schemas/json/keyvaluepair-schema.json" },
             "uniqueItems": true
+        },
+        "urls": {
+            "type": "object",
+            "properties": {
+                "wp_theme_download": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": ["wp_theme_download"]
         }
     },
     "additionalProperties": false,
@@ -79,6 +89,7 @@
         "defaults",
         "paths",
         "packages",
-        "regex_base64"
+        "regex_base64",
+        "urls"
     ]
 }
