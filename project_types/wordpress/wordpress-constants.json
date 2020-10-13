@@ -22,5 +22,8 @@
             "key": "wordpress-theme",
             "value": "d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8="
         }
-    ]
+    ],
+    "urls": {
+        "wp_theme_download": "https://downloads.wordpress.org/theme/{slug}{version}.zip"
+    }
 }
