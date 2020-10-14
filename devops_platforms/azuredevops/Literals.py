@@ -11,6 +11,9 @@ class Literals(ValueDictsBase):
 
     # Add your core literal dictionaries here
     _info = {
-        "platform_created_ev": _("Created environment variable {key} with value {value}")
+        "azdevops_download_package_manually": _("Please, download the packages from the Azure DevOps feed manually."),
+        "platform_created_ev": _("Created environment variable {key} with value {value}"),
     }
-    _errors = {}
+    _errors = {
+        "azdevops_token_not_found": _("Azure DevOps token was not found in the **kwargs parameter."),
+    }
