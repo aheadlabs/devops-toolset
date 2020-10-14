@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-08 22:46+0200\n"
+"POT-Creation-Date: 2020-10-14 18:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,7 +47,13 @@ msgstr ""
 msgid "Status code got from Sonar* was not 200, but {statusCode}. Please check it out."
 msgstr ""
 
+msgid "Please, download the packages from the Azure DevOps feed manually."
+msgstr ""
+
 msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
+msgid "Azure DevOps token was not found in the **kwargs parameter."
 msgstr ""
 
 msgid "Project path is {path}."
@@ -123,6 +129,18 @@ msgstr ""
 msgid "No development themes to build. Skipping this step."
 msgstr ""
 
+msgid "Parsing theme metadata..."
+msgstr ""
+
+msgid "Regex to match theme metadata content is: {regex}"
+msgstr ""
+
+msgid "No match/es found for token: {token}"
+msgstr ""
+
+msgid "Matched content {content} for token {token}"
+msgstr ""
+
 msgid "No required file paths were found"
 msgstr ""
 
@@ -130,6 +148,9 @@ msgid "The following file paths were found:"
 msgstr ""
 
 msgid "The root path is: {path}"
+msgstr ""
+
+msgid "Please, install the theme/s manually."
 msgstr ""
 
 msgid "The themes path is: {path}"
@@ -225,6 +246,12 @@ msgstr ""
 msgid "Checking for devops-toolset in: {path}"
 msgstr ""
 
+msgid "There are {number} themes in the configuration file (must be 1 or 2)."
+msgstr ""
+
+msgid "You can only activate one theme and there are {number} themes marked to be activated. Please, check the configuration file."
+msgstr ""
+
 msgid "Current version: {version}"
 msgstr ""
 
@@ -280,6 +307,9 @@ msgid "The following required files where not found at {path}:"
 msgstr ""
 
 msgid "The following theme path does not exist: {path}"
+msgstr ""
+
+msgid "The {theme} theme has a source type of feed, but it has no feed configuration. Please, check the configuration file."
 msgstr ""
 
 msgid "wordpress-path is a mandatory parameter. I cannot continue."

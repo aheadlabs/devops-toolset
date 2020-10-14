@@ -27,9 +27,14 @@ class Literals(ValueDictsBase):
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
         "wp_looking_for_src_themes": _("Looking for development themes to build..."),
         "wp_no_src_themes": _("No development themes to build. Skipping this step."),
+        "wp_parsing_theme_metadata": _("Parsing theme metadata..."),
+        "wp_parsing_theme_regex": _("Regex to match theme metadata content is: {regex}"),
+        "wp_parsing_theme_no_matches_found": _("No match/es found for token: {token}"),
+        "wp_parsing_theme_matches_found": _("Matched content {content} for token {token}"),
         "wp_required_file_paths_not_found": _("No required file paths were found"),
         "wp_required_file_paths_found": _("The following file paths were found:"),
         "wp_root_path": _("The root path is: {path}"),
+        "wp_themes_install_manually": _("Please, install the theme/s manually."),
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wordpress_path": _("The WordPress path is: {path}"),
@@ -65,6 +70,9 @@ class Literals(ValueDictsBase):
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),
+        "wp_config_file_bad_themes_number": _("There are {number} themes in the configuration file (must be 1 or 2)."),
+        "wp_config_file_only_one_activated_theme": _("You can only activate one theme and there are {number} themes "
+                                                     "marked to be activated. Please, check the configuration file."),
         "wp_current_version": _("Current version: {version}"),
         "wp_devops_toolset_needs_update": _("devops-toolset needs to be updated."),
         "wp_devops_toolset_not_found": _("devops-toolset not found in required path: {path} "),
@@ -85,6 +93,8 @@ class Literals(ValueDictsBase):
         "wp_required_files_not_found": _("The required files where not found at {path}."),
         "wp_required_files_not_found_detail": _("The following required files where not found at {path}:"),
         "wp_theme_path_not_exist": _("The following theme path does not exist: {path}"),
+        "wp_theme_feed_no_info": _("The {theme} theme has a source type of feed, but it has no feed configuration. "
+                                   "Please, check the configuration file."),
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),
         "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
         "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),
