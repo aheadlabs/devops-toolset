@@ -31,8 +31,17 @@ literals = LiteralsCore([WordpressLiterals])
 
 # TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
-         environment: str = "localhost"):
-    """ Generates a new Wordpress site based on the required configuration files"""
+         environment: str = "localhost", **kwargs):
+    """Generates a new Wordpress site based on the required configuration files
+
+    Args:
+        root_path: Path to the repository root.
+        db_user_password: Password for the database user.
+        db_admin_password: Password for the database admin user.
+        wp_admin_password: Password for the WordPress admin user.
+        environment: Name of the environment to be processed.
+        kwargs: Platform-specific arguments
+    """
 
     # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{ x[1]}", constants.required_files_suffixes.items()))
@@ -100,10 +109,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password)
 
     # Install site theme
-    wordpress.wptools.install_theme_from_configuration_file(site_config, root_path)
+    wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, **kwargs)
 
     # Install site plugins
-    wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path)
+    # TODO(ivan.sainz) wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path)
 
 
 def setup_devops_toolset(root_path: str):

@@ -79,8 +79,8 @@ def test_add_item_given_parameters_when_child_condition_is_false_and_have_childr
         # Act
         BasicStructureStarter().add_item(item, base_path)
         # Assert
-        calls = [call(expected_path_1),
-                 call(expected_path_2)]
+        calls = [call(expected_path_1, True),
+                 call(expected_path_2, True)]
         is_valid_path_mock.assert_has_calls(calls, any_order=True)
 
 
@@ -156,9 +156,9 @@ def test_add_item_given_parameters_when_child_condition_and_type_is_file_should_
 
 
 @pytest.mark.parametrize('item, expected_value', [
-    ({"source": "raw", "value": "some_raw_value"}, "some_raw_value"),
-    ({"source": "from_file", "value": "file"}, "some_from_file_value"),
-    ({"source": "from_url", "value": "url_resource"}, "sample text response")])
+    ({"source": "raw", "name": "raw_name", "value": "some_raw_value"}, "some_raw_value"),
+    ({"source": "from_file", "name": "file_name", "value": "file"}, "some_from_file_value"),
+    ({"source": "from_url", "name": "url_name", "value": "url_resource"}, "sample text response")])
 @patch('builtins.open', new_callable=mock_open, read_data="some_from_file_value")
 def test_get_default_content_given_item_when_source_then_return_corresponding_value(
         file_mock
