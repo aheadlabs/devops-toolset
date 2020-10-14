@@ -390,7 +390,7 @@ def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_pu
 
 # endregion
 
-# region install_theme_from_configuration_file()
+# region install_themes_from_configuration_file()
 
 
 @patch("logging.info")
@@ -404,7 +404,7 @@ def test_install_theme_given_configuration_file_when_no_themes_then_no_install(
     site_config["themes"] = {}
     root_path = wordpressdata.root_path
     # Act
-    sut.install_theme_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path)
     # Assert
     install_theme_mock.assert_not_called()
 
@@ -431,7 +431,7 @@ def test_install_themes_given_configuration_file_when_themes_then_calls_wp_cli_i
     path_mock.return_value = wordpress_path
     path_exists_mock.return_value = True
     # Act
-    sut.install_theme_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path)
     # Assert
     install_theme_mock.assert_called_with(
         wordpress_path,
@@ -460,7 +460,7 @@ def test_install_themes_given_configuration_file_when_themes_then_calls_shutil_m
     root_path = wordpressdata.root_path
     path_mock.return_value = wordpressdata.wordpress_path
     # Act
-    sut.install_theme_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path)
     # Assert
     move_mock.assert_called_with(
         site_config["themes"][0]["source"],
@@ -485,7 +485,7 @@ def test_install_themes_given_configuration_file_when_themes_then_calls_export_d
     root_path = wordpressdata.root_path
     path_mock.return_value = wordpressdata.wordpress_path
     # Act
-    sut.install_theme_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path)
     # Assert
     export_database_mock.assert_called_with(
         site_config, wordpressdata.wordpress_path, wordpressdata.wordpress_path)
@@ -516,7 +516,7 @@ def test_install_themes_given_configuration_file_when_child_themes_then_calls_in
     path_mock.return_value = wordpress_path
     path_exists_mock.return_value = True
     # Act
-    sut.install_theme_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path)
     # Assert
     calls = [call(wordpress_path,
                   site_config["themes"][0]["source"],
