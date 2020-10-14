@@ -13,10 +13,11 @@
         },
         "source_type": {
           "enum": [
-            "zip",
-            "wordpress",
+            "feed",
+            "src",
             "url",
-            "src"
+            "wordpress",
+            "zip"
           ]
         },
         "source": {
@@ -27,6 +28,26 @@
         },
         "activate": {
           "type": "boolean"
+        },
+        "feed": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "package": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true,
+          "required": [
+            "name",
+            "package",
+            "version"
+          ]
         }
       },
       "additionalProperties": false,
@@ -279,7 +300,7 @@
             "noblogredirect_url": {
               "$ref": "#/definitions/wp_config_property_uri"
             },
-            "disable_fatal_error_handler_and_debug_display": {
+            "disable_fatal_error_handler": {
               "$ref": "#/definitions/wp_config_property_boolean"
             },
             "debug_display": {
