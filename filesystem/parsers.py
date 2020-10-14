@@ -95,6 +95,4 @@ def parse_theme_metadata(css_file_content: bytes, tokens: List[str], add_environ
 
 
 if __name__ == "__main__":
-    with open("D:\\temp\\content\\themes\\atipicosantiago\\dist\\style.css", "rb") as css_file:
-        content = parse_theme_metadata(css_file.read(), ["Version", "Template"], True)
     help(__name__)
