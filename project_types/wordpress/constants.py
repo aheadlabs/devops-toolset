@@ -6,5 +6,7 @@ required_files_suffixes = {
     "project_structure_file_path": "project-structure.json"
 }
 
+theme_metadata_parse_regex = ":\s([\w\d\sáéíóú'-.]+)\r\n"
+
 wordpress_constants_json_resource = \
     "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/project_types/wordpress/wordpress-constants.json"

@@ -36,3 +36,9 @@ def test_parse_project_xml_data_when_add_environment_variables_is_true_then_call
 
 
 # endregion
+
+# region parse_theme_metadata()
+
+
+
+# endregion

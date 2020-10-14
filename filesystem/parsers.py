@@ -2,14 +2,21 @@
 
 import logging
 import pathlib
+import re
 import xml.etree.ElementTree as ElementTree
+import project_types.wordpress.constants as wp_constants
+from typing import List
+
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from filesystem.Literals import Literals as FileSystemLiterals
+from project_types.wordpress.Literals import Literals as WordpressLiterals
+
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")
 literals = LiteralsCore([FileSystemLiterals])
+wp_literals = LiteralsCore([WordpressLiterals])
 
 
 def parse_project_xml_data(add_environment_variables: bool = True, project_xml_path: str = None) -> dict:
@@ -40,5 +47,54 @@ def parse_project_xml_data(add_environment_variables: bool = True, project_xml_p
     return environment_variables
 
 
+def parse_theme_metadata(css_file_content: bytes, tokens: List[str], add_environment_variables: bool = False) -> dict:
+    """ Reads a style.css data and returns its metadata as a dict based on the tokens list.
+    Args:
+        css_file_content: Data content of the style.css file used to retrieve metadata from:
+        tokens: List of strings representing parts of the metadata to be retrieved
+        add_environment_variables: If True it adds every element of the dict as an environment variable.
+
+    Returns: Metadata content in a dict
+
+    """
+    result = dict()
+    environment_variables = dict()
+    logging.info(wp_literals.get("wp_parsing_theme_metadata"))
+
+    # Convert css binary data to text
+    css_str_content = css_file_content.decode("utf-8")
+
+    # For each token in tokens
+    for token in tokens:
+
+        # Build the regex to retrieve data
+        regex = token + wp_constants.theme_metadata_parse_regex
+        logging.debug(wp_literals.get("wp_parsing_theme_regex").format(regex=regex))
+
+        # Search with regex
+        matches = re.search(regex, css_str_content)
+
+        if matches is not None and matches.group(1):
+            match = matches.group(1)
+            logging.info(wp_literals.get("wp_parsing_theme_matches_found").format(
+                token=token, content=match))
+            result[token] = match
+
+            # If add_environment_variables, then prepare match as an environment variables
+            if add_environment_variables:
+                environment_variables[f"theme_{token}".upper()] = match
+
+        else:
+            logging.warning(wp_literals.get("wp_parsing_theme_no_matches_found").format(token=token))
+
+    # When environment variables present, then create them
+    if len(environment_variables) > 0:
+        platform_specific.create_environment_variables(environment_variables)
+
+    return result
+
+
 if __name__ == "__main__":
+    with open("D:\\temp\\content\\themes\\atipicosantiago\\dist\\style.css", "rb") as css_file:
+        content = parse_theme_metadata(css_file.read(), ["Version", "Template"], True)
     help(__name__)
