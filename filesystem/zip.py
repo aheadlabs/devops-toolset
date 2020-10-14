@@ -45,5 +45,20 @@ def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool 
     # TODO(ivan.sainz) Unit tests
 
 
+def read_text_file_in_zip(zip_file_path: str, text_file_path: str):
+    """Reads a text file that is enclosed inside a ZIP file.
+
+    Args:
+        zip_file_path: Path to the ZIP file.
+        text_file_path: Path to the text file inside the ZIP file.
+
+    Returns:
+        Content of the text file
+    """
+    with zipfile.ZipFile(zip_file_path, "r") as zip_file:
+        return zip_file.read(text_file_path)
+    # TODO(ivan.sainz) Unit tests
+
+
 if __name__ == "__main__":
     help(__name__)
