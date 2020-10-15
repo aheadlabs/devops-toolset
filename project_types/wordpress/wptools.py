@@ -387,8 +387,6 @@ def get_themes_path_from_root_path(root_path) -> str:
     Args:
         path: Full path of the project
     """
-    logging.info(literals.get("wp_themes_path").format(path=root_path))
-
     # Add constants
     wp_constants = get_constants()
 
