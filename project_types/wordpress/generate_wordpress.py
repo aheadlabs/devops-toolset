@@ -40,7 +40,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         db_admin_password: Password for the database admin user.
         wp_admin_password: Password for the WordPress admin user.
         environment: Name of the environment to be processed.
-        create_db: If True it creates the database and the user
+        create_db: If True it creates the database and the user.
         kwargs: Platform-specific arguments
     """
 
@@ -109,7 +109,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
 
     # Install WordPress site
-    wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password)
+    wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password, create_db)
 
     # Install site theme
     wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, **kwargs)
