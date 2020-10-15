@@ -50,7 +50,7 @@ def parse_project_xml_data(add_environment_variables: bool = True, project_xml_p
 def parse_theme_metadata(css_file_content: bytes, tokens: List[str], add_environment_variables: bool = False) -> dict:
     """ Reads a style.css data and returns its metadata as a dict based on the tokens list.
     Args:
-        css_file_content: Data content of the style.css file used to retrieve metadata from:
+        css_file_content: Data content of the style.css file used to retrieve metadata from.
         tokens: List of strings representing parts of the metadata to be retrieved
         add_environment_variables: If True it adds every element of the dict as an environment variable.
 
