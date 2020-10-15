@@ -31,7 +31,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 # TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
-         environment: str = "localhost", **kwargs):
+         environment: str, create_db: bool, **kwargs):
     """Generates a new Wordpress site based on the required configuration files
 
     Args:
@@ -40,6 +40,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         db_admin_password: Password for the database admin user.
         wp_admin_password: Password for the WordPress admin user.
         environment: Name of the environment to be processed.
+        create_db: If True it creates the database and the user
         kwargs: Platform-specific arguments
     """
 
@@ -103,7 +104,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
 
     # Create database and users
-    wordpress.wptools.setup_database(site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
+    if create_db:
+        wordpress.wptools.setup_database(
+            site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
 
     # Install WordPress site
     wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password)
@@ -133,8 +136,9 @@ if __name__ == "__main__":
     parser.add_argument("--db-admin-password", required=True)
     parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
+    parser.add_argument("--create-db", default=False)
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
     main(args.project_path, args.db_user_password, args.db_admin_password,
-         args.wp_admin_password, args.environment)
+         args.wp_admin_password, args.environment, args.create_db)
