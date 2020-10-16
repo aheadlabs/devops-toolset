@@ -656,7 +656,8 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     constants = get_constants()
 
     database_path = constants["paths"]["database"]
-    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
+    root_path_obj = pathlib.Path(root_path)
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Install wordpress
@@ -670,9 +671,8 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     # Backup database
     core_dump_path_converted = \
         convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
-    database_core_dump_path = os.path.join(root_path + database_path, core_dump_path_converted)
-    database_core_dump_path_as_posix = str(pathlib.Path(database_core_dump_path).as_posix())
-    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path_as_posix)
+    database_core_dump_path = pathlib.Path.joinpath(root_path_obj, database_path, core_dump_path_converted)
+    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
