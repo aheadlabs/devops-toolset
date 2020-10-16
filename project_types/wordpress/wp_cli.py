@@ -167,7 +167,8 @@ def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
-                                   privileges: str = 'create, alter, select, insert, update, delete, process'):
+                                   db_privileges: str = 'create, alter, select, insert, update, delete',
+                                   global_privileges: str = 'process'):
     """Creates a database user to be used by WordPress
         e.g.:
             wp db query
@@ -186,10 +187,14 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
             password: Database user password.
             schema: Existing database schema name.
             host: localhost or FQDN. (% and _ wildcards are permitted).
-            privileges: comma-separated privileges to be granted. More info at:
+            db_privileges: comma-separated privileges to be granted on the database. More info at:
                 https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
-                e.g.: 'create, alter, select, insert, update, delete, process'
+                e.g.: 'create, alter, select, insert, update, delete'
+            global_privileges: comma-separated privileges to be granted globally. More info at:
+                https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
+                e.g.: 'process'
     """
+    # Create user
     cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
         user=user,
         host=host,
@@ -201,8 +206,9 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
         log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
     )
 
+    # Grant user privileges on the database
     cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        privileges=privileges,
+        privileges=db_privileges,
         schema=schema,
         user=user,
         host=host,
@@ -210,7 +216,22 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
         admin_password=admin_password,
         path=wordpress_path),
         log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user, host=host, schema=schema, privileges=privileges)],
+            user=user, host=host, schema=schema, privileges=db_privileges)],
+        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+            user=user, host=host, schema=schema)]
+    )
+
+    # Grant user global privileges
+    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+        privileges=global_privileges,
+        schema="*",
+        user=user,
+        host=host,
+        admin_user=admin_user,
+        admin_password=admin_password,
+        path=wordpress_path),
+        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+            user=user, host=host, schema=schema, privileges=db_privileges)],
         log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
             user=user, host=host, schema=schema)]
     )
