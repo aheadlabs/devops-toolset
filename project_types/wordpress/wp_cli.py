@@ -167,7 +167,7 @@ def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
-                                   privileges: str = 'create, alter, select, insert, update, delete'):
+                                   privileges: str = 'create, alter, select, insert, update, delete, process'):
     """Creates a database user to be used by WordPress
         e.g.:
             wp db query
@@ -188,7 +188,7 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
             host: localhost or FQDN. (% and _ wildcards are permitted).
             privileges: comma-separated privileges to be granted. More info at:
                 https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
-                e.g.: 'create, alter, select, insert, update, delete'
+                e.g.: 'create, alter, select, insert, update, delete, process'
     """
     cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
         user=user,
