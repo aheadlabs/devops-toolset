@@ -639,7 +639,7 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str, create_db: bool):
+def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -651,7 +651,6 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         site_configuration: parsed site configuration.
         root_path: Path to site installation.
         admin_password: Password for the WordPress administrator user.
-        create_db: If True it creates the database and the user.
     """
     # Add constants
     constants = get_constants()
@@ -659,10 +658,6 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     database_path = constants["paths"]["database"]
     wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-
-    # Reset database
-    if create_db:
-        wp_cli.reset_database(wordpress_path_as_posix, True, site_configuration["wp_cli"]["debug"])
 
     # Install wordpress
     install_wordpress_core(site_configuration, wordpress_path_as_posix, admin_password)

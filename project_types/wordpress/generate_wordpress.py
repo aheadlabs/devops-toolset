@@ -109,7 +109,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
 
     # Install WordPress site
-    wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password, create_db)
+    wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password)
 
     # Install site theme
     wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, **kwargs)
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     parser.add_argument("--db-admin-password", required=True)
     parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
-    parser.add_argument("--create-db", default=False)
+    parser.add_argument("--create-db", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
