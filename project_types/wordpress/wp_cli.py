@@ -168,7 +168,7 @@ def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
                                    db_privileges: str = 'create, alter, select, insert, update, delete',
-                                   global_privileges: str = 'lock tables'):
+                                   global_privileges: str = 'lock tables, process'):
     """Creates a database user to be used by WordPress
         e.g.:
             wp db query
