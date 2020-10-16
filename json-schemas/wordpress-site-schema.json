@@ -250,8 +250,7 @@
           "type": "string"
         },
         "version": {
-          "type": "string",
-          "format": "hostname"
+          "type": "string"
         },
         "locale": {
           "type": "string"
@@ -348,7 +347,7 @@
             "content_url",
             "plugin_url",
             "noblogredirect_url",
-            "disable_fatal_error_handler_and_debug_display",
+            "disable_fatal_error_handler",
             "debug_display",
             "debug",
             "cache",
