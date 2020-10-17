@@ -330,7 +330,7 @@
               "$ref": "#/definitions/wp_config_property_boolean"
             },
             "accessible_hosts": {
-              "$ref": "#/definitions/wp_config_property_array"
+              "$ref": "#/definitions/wp_config_property_string"
             },
             "auto_update_core": {
               "$ref": "#/definitions/wp_config_property_string"
