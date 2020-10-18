@@ -563,30 +563,32 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
     export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
 
 
-def build_theme(site_configuration: dict, theme_path: str):
+def build_theme(themes_config: dict, theme_path: str):
     """ Builds a theme source into a packaged theme distribution using npm tasks
 
     Args:
-        site_configuration: Parsed site configuration
-        theme_path: Path to the wordpress installation
-        wordpress_theme_path: Path to the theme in the WordPress installation
+        themes_config: Themes configuration
+        theme_path: Path to the theme in the WordPress repository
     """
     logging.info(literals.get("wp_looking_for_src_themes"))
 
     # Get configuration data and paths
-    src_theme = list(filter(lambda elem: elem["source_type"] == "src", site_configuration["themes"]))
+    src_theme_list = list(filter(lambda elem: elem["source_type"] == "src", themes_config))
 
-    if len(src_theme) == 0:
+    if len(src_theme_list) == 0:
         # Src theme not present
         logging.info(literals.get("wp_no_src_themes"))
         return
 
-    theme_path_src = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme[0]["source"])
+    src_theme = src_theme_list[0]
+    theme_path_obj = pathlib.Path(theme_path)
+    theme_path_src = pathlib.Path.joinpath(theme_path_obj, src_theme["source"])
     theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
+    theme_path_zip = pathlib.Path.joinpath(theme_path_obj, f"{src_theme['name']}.zip")
 
     if os.path.exists(theme_path_src):
 
-        theme_slug = src_theme[0]["name"]
+        theme_slug = src_theme["name"]
 
         # Change to the the theme's source directory
         os.chdir(theme_path_src)
@@ -601,6 +603,9 @@ def build_theme(site_configuration: dict, theme_path: str):
         ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
             log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
+
+        # Zip dist
+        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix())
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
 
@@ -769,11 +774,3 @@ def triage_themes(themes: dict) -> (dict, dict):
 
 if __name__ == "__main__":
     help(__name__)
-
-    # site_config = get_site_configuration_from_environment(
-    #     r"D:\Source\_david-diaz-fernandez\atipico-santiago\default-site-environments.json", "localhost")
-    # install_themes_from_configuration_file(
-    #     site_config,
-    #     r"D:\Source\_david-diaz-fernandez\atipico-santiago",
-    #     azdevops_token="ysi4dwqwbq5lfnqolhmbet5kfxd6s3adh236257dlsx3iztmvmja"
-    # )

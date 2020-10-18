@@ -98,7 +98,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.download_wordpress(site_config, wordpress_path)
 
     # Set development themes / plugins ready
-    wordpress.wptools.build_theme(site_config, themes_path)
+    wordpress.wptools.build_theme(site_config["themes"], themes_path)
 
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
@@ -138,7 +138,11 @@ if __name__ == "__main__":
     parser.add_argument("--environment", default="localhost")
     parser.add_argument("--create-db", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
+    kwargs = {}
+    for kwarg in args_unknown:
+        splited = str(kwarg).split("=")
+        kwargs[splited[0]] = splited[1]
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
     main(args.project_path, args.db_user_password, args.db_admin_password,
-         args.wp_admin_password, args.environment, args.create_db)
+         args.wp_admin_password, args.environment, args.create_db, **kwargs)
