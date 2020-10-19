@@ -533,6 +533,7 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
 
         # Get theme path
         theme_path = pathlib.Path.joinpath(themes_path, f"{theme['name']}.zip")
+        logging.info(literals.get("wp_theme_path").format(path=theme_path))
         theme["source"] = theme_path
 
         # Download theme if needed
