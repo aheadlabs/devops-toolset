@@ -4,14 +4,15 @@ required configuration files"""
 
 import argparse
 import logging
-import os
 import pathlib
 import requests
 import core
 import core.log_tools
 import filesystem.paths as paths
+import os
 import project_types.wordpress.constants as constants
 import project_types.wordpress.wptools
+import shutil
 import tools.argument_validators
 import tools.cli
 import tools.devops_toolset
@@ -31,7 +32,8 @@ literals = LiteralsCore([WordpressLiterals])
 
 # TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
-         environment: str, create_db: bool, **kwargs):
+         environment: str, additional_environments: list, additional_environment_db_user_passwords: list,
+         create_db: bool, **kwargs):
     """Generates a new Wordpress site based on the required configuration files
 
     Args:
@@ -40,6 +42,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         db_admin_password: Password for the database admin user.
         wp_admin_password: Password for the WordPress admin user.
         environment: Name of the environment to be processed.
+        additional_environments: Additional environments to create additional
+            wp-config.php files.
+        additional_environment_db_user_passwords: Additional environment db
+            user passwords.
         create_db: If True it creates the database and the user.
         kwargs: Platform-specific arguments
     """
@@ -77,19 +83,21 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Determine required file paths
     required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
         root_path, required_files_pattern_suffixes)
+    environment_file_path = required_file_paths[1]
+    project_structure_file_path = required_file_paths[2]
 
     # Get database admin user from environment
-    db_admin_user = wordpress.wptools.get_db_admin_from_environment(required_file_paths[1], environment)
+    db_admin_user = wordpress.wptools.get_db_admin_from_environment(environment_file_path, environment)
 
     # Parsing site configuration file
-    site_config = wordpress.wptools.get_site_configuration_from_environment(required_file_paths[1], environment)
+    site_config = wordpress.wptools.get_site_configuration_from_environment(environment_file_path, environment)
 
     # Get future paths (from the constants.json file)
     wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(root_path)
     themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
 
     # Create project structure & prepare devops-toolset
-    wordpress.wptools.start_basic_project_structure(root_path, required_file_paths[2])
+    wordpress.wptools.start_basic_project_structure(root_path, project_structure_file_path)
 
     # Check for updates / download devops-toolset
     setup_devops_toolset(root_path)
@@ -117,6 +125,13 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Install site plugins
     # TODO(ivan.sainz) wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path)
 
+    # Generate additional wp-config.php files
+    generate_additional_wpconfig_files(environment_file_path, additional_environments,
+                                       additional_environment_db_user_passwords, wordpress_path)
+
+    # Delete sample configuration file
+    delete_sample_wp_config_file(wordpress_path)
+
 
 def setup_devops_toolset(root_path: str):
     """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
@@ -129,6 +144,49 @@ def setup_devops_toolset(root_path: str):
     tools.devops_toolset.update_devops_toolset(devops_path)
 
 
+def generate_additional_wpconfig_files(environments_file_path: str, environments: list,
+                                       additional_environment_db_user_passwords: list,
+                                       wordpress_path: str):
+    """Generates additional wp-config.php files for different environments.
+
+    Args:
+        environments_file_path: Path to the environments file.
+        environments: List of environment configuration files to be generated.
+        additional_environment_db_user_passwords: Additional environment db
+            user passwords.
+        wordpress_path: Path to the WordPress installation.
+    """
+    wordpress_path_obj = pathlib.Path(wordpress_path)
+    wp_config_path = pathlib.Path.joinpath(wordpress_path_obj, "wp-config.php")
+    wp_config_path_temp = pathlib.Path.joinpath(wordpress_path_obj, "wp-config-temp.php")
+
+    # Rename original file
+    if paths.is_valid_path(wp_config_path.as_posix(), True):
+        shutil.move(wp_config_path, wp_config_path_temp)
+
+    i = 0
+    while i < len(environments):
+        site_config = wordpress.wptools.get_site_configuration_from_environment(environments_file_path, environments[i])
+        wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path,
+                                                                       additional_environment_db_user_passwords[i])
+        shutil.move(wp_config_path, pathlib.Path.joinpath(wordpress_path_obj, f"wp-config-{environments[i]}.php"))
+        i += 1
+
+    # Rename original file
+    if paths.is_valid_path(str(wp_config_path_temp), True):
+        shutil.move(wp_config_path_temp, wp_config_path)
+
+
+def delete_sample_wp_config_file(wordpress_path: str):
+    """Deletes the wp-config-sample.php file.
+
+    Args:
+        wordpress_path: Path to WordPress.
+    """
+    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config-sample.php")
+    os.remove(str(file_path))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("project-path", action=tools.argument_validators.PathValidator)
@@ -136,6 +194,8 @@ if __name__ == "__main__":
     parser.add_argument("--db-admin-password", required=True)
     parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
+    parser.add_argument("--additional-environments", default="")
+    parser.add_argument("--additional-environment-db-user-passwords", default="")
     parser.add_argument("--create-db", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
@@ -144,5 +204,8 @@ if __name__ == "__main__":
         kwargs[splited[0]] = splited[1]
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
-    main(args.project_path, args.db_user_password, args.db_admin_password,
-         args.wp_admin_password, args.environment, args.create_db, **kwargs)
+    main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password,
+         args.environment,
+         args.additional_environments.split(","),
+         args.additional_environment_db_user_passwords.split(","),
+         args.create_db, **kwargs)

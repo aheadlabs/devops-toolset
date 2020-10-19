@@ -298,7 +298,7 @@ def get_site_configuration(path: str) -> dict:
         Site configuration in a dict object.
     """
 
-    with open(path, "r") as config_file:
+    with open(path, "r", encoding="utf-8") as config_file:
         data = config_file.read()
         return json.loads(data)
 
