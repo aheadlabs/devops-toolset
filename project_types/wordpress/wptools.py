@@ -493,8 +493,6 @@ def install_wordpress_core(site_config: dict, wordpress_path: str, admin_passwor
                                   skip_email, debug_info)
 
 
-# TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
-# See https://developer.wordpress.org/themes/advanced-topics/child-themes/
 def install_themes_from_configuration_file(site_configuration: dict, root_path: str, **kwargs):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 

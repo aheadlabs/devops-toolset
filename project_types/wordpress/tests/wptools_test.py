@@ -759,28 +759,6 @@ def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wo
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.wptools.convert_wp_config_token")
 @patch("pathlib.Path.as_posix")
-def test_install_wordpress_site_then_calls_cli_reset_database(
-        path_mock, convert_wp_config_token, export_database, install_wordpress_core,
-        update_database, reset_database_mock, get_constants_mock, wordpressdata):
-    """ Given site_configuration, then calls cli's reset database """
-    # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = wordpress_path
-    admin_pass = "root"
-    # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass, True)
-    # Assert
-    reset_database_mock.assert_called_with(wordpress_path, True, site_config["wp_cli"]["debug"])
-
-
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.reset_database")
-@patch("project_types.wordpress.wp_cli.update_database_option")
-@patch("project_types.wordpress.wptools.install_wordpress_core")
-@patch("project_types.wordpress.wptools.export_database")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
-@patch("pathlib.Path.as_posix")
 def test_install_wordpress_site_then_calls_install_wordpress_core(
         path_mock, convert_wp_config_token, export_database, install_wordpress_core,
         update_database, reset_database_mock, get_constants_mock, wordpressdata):
@@ -791,7 +769,7 @@ def test_install_wordpress_site_then_calls_install_wordpress_core(
     path_mock.return_value = wordpress_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass, False)
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
     # Assert
     install_wordpress_core.assert_called_with(site_config, wordpress_path, admin_pass)
 
@@ -813,7 +791,7 @@ def test_install_wordpress_site_then_calls_cli_update_option(
     path_mock.return_value = str(wordpress_path)
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass, False)
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
     # Assert
     update_database.assert_called_with("blogdescription", site_config["settings"]["description"],
                                        wordpress_path, site_config["wp_cli"]["debug"])
@@ -836,7 +814,7 @@ def test_install_wordpress_site_then_calls_cli_export_database(
     path_mock.return_value = wordpress_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass, False)
+    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
     # Assert
     export_database.assert_called_with(site_config, wordpress_path, wordpress_path)
 
@@ -881,17 +859,18 @@ def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_str
 
 @patch("logging.info")
 @patch("os.path.exists")
-def test_build_theme_given_site_config_when_no_src_themes_then_logs(path_exists_mock, logging_mock, wordpressdata):
+def test_build_theme_given_site_config_when_no_src_themes_then_logs\
+                (path_exists_mock, logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when no src themes present, then logs info """
     # Arrange
     theme_path = wordpressdata.theme_path
-    site_config = json.loads(wordpressdata.site_config_content)
+    no_src_theme_config = [json.loads(themesdata.theme_single_content_with_url)]
     path_exists_mock.return_value = False
     literal1 = literals.get("wp_looking_for_src_themes")
     literal2 = literals.get("wp_no_src_themes")
 
     # Act
-    sut.build_theme(site_config, theme_path)
+    sut.build_theme(no_src_theme_config, theme_path)
     # Assert
     calls = [call(literal1), call(literal2)]
     logging_mock.assert_has_calls(calls)
@@ -902,17 +881,17 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs(path_exists_
 @patch("os.chdir")
 @patch("project_types.node.npm.install")
 @patch("tools.cli.call_subprocess")
+@patch("filesystem.zip.zip_directory")
 def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
-        subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
+        zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
+        logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls npm install wrapper """
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
-    site_config = json.loads(wordpressdata.site_config_content)
     path_exists_mock.return_value = True
-    site_config["themes"] = [json.loads(themesdata.theme_single_content_with_url)]
-    site_config["themes"][0]["source_type"] = "src"
+    src_theme_config = [json.loads(themesdata.theme_single_src)]
     # Act
-    sut.build_theme(site_config, wordpress_path)
+    sut.build_theme(src_theme_config, wordpress_path)
     # Assert
     npm_install_mock.assert_called_once()
 
@@ -922,18 +901,18 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
 @patch("os.chdir")
 @patch("project_types.node.npm.install")
 @patch("tools.cli.call_subprocess")
+@patch("filesystem.zip.zip_directory")
 def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
-        subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
+        zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
+        logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls npm install wrapper """
     # Arrange
     theme_path = wordpressdata.theme_path
-    site_config = json.loads(wordpressdata.site_config_content)
     path_exists_mock.return_value = True
-    site_config["themes"] = [json.loads(themesdata.theme_single_content_with_url)]
-    site_config["themes"][0]["source_type"] = "src"
-    src_theme_path = pathlib.Path.joinpath(pathlib.Path(theme_path), site_config["themes"][0]["source"])
+    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_path = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
     # Act
-    sut.build_theme(site_config, theme_path)
+    sut.build_theme(src_theme_config, theme_path)
     # Assert
     chdir_mock.assert_called_once_with(src_theme_path)
 
@@ -943,17 +922,17 @@ def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
 @patch("os.chdir")
 @patch("project_types.node.npm.install")
 @patch("tools.cli.call_subprocess")
+@patch("filesystem.zip.zip_directory")
 def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command(
-        subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
+        zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
+        logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls subprocess with gulp_build command """
     # Arrange
     theme_path = wordpressdata.theme_path
-    site_config = json.loads(wordpressdata.site_config_content)
     path_exists_mock.return_value = True
-    site_config["themes"] = [json.loads(themesdata.theme_single_content_with_url)]
-    site_config["themes"][0]["source_type"] = "src"
-    theme_slug = site_config["themes"][0]["name"]
-    theme_path_src = pathlib.Path.joinpath(pathlib.Path(theme_path), site_config["themes"][0]["source"])
+    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    theme_slug = src_theme_config[0]["name"]
+    theme_path_src = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
     theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
     command = sut.commands.get("wp_theme_src_build").format(
         theme_slug=theme_slug,
@@ -962,11 +941,36 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_wit
     literal_after = literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)
     literal_error = literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)
     # Act
-    sut.build_theme(site_config, theme_path)
+    sut.build_theme(src_theme_config, theme_path)
     # Assert
     subprocess_mock.assert_called_once_with(command,
                                             log_before_out=[literal_before],
                                             log_after_out=[literal_after],
                                             log_after_err=[literal_error])
+
+
+@patch("logging.info")
+@patch("os.path.exists")
+@patch("os.chdir")
+@patch("project_types.node.npm.install")
+@patch("tools.cli.call_subprocess")
+@patch("filesystem.zip.zip_directory")
+def test_build_theme_given_site_config_when_src_themes_then_zips_dist(
+        zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
+        logging_mock, wordpressdata, themesdata):
+    """ Given site configuration, when src theme present, then calls zip_directory """
+    # Arrange
+    theme_path = wordpressdata.theme_path
+    path_exists_mock.return_value = True
+    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_path_obj = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
+    theme_slug = src_theme_config[0]['name']
+    theme_path_dist = pathlib.Path.joinpath(src_theme_path_obj, "dist")
+    theme_path_zip = pathlib.Path.joinpath(pathlib.Path(theme_path), f"{theme_slug}.zip")
+    # Act
+    sut.build_theme(src_theme_config, theme_path)
+    # Assert
+    zip_directory_mock.assert_called_once_with(
+        theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
 
 # endregion
