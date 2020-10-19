@@ -94,12 +94,7 @@ def convert_wp_config_token(token: str, wordpress_path: str) -> str:
         date_token = date_format.split("|")[1]
         result = result.replace(
             "[" + date_format + "]", wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
-    if token.find("[commit]") != -1:
-        commit_token = token[token.find("[commit") + 1:token.rfind("]")]
-        # TODO (alberto.carbonell): Set latest commit id
-        commit_id = "123456"
-        result = result.replace("[" + commit_token + "]", commit_id)
-    # Add more tokens if needed
+    # NOTE: Add more tokens if needed
     return result
 
 
@@ -498,8 +493,6 @@ def install_wordpress_core(site_config: dict, wordpress_path: str, admin_passwor
                                   skip_email, debug_info)
 
 
-# TODO: (alberto.carbonell) Set child theme name using styles.css's Template property (in comments).
-# See https://developer.wordpress.org/themes/advanced-topics/child-themes/
 def install_themes_from_configuration_file(site_configuration: dict, root_path: str, **kwargs):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 
@@ -777,3 +770,4 @@ def triage_themes(themes: dict) -> (dict, dict):
 
 if __name__ == "__main__":
     help(__name__)
+

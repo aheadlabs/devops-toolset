@@ -8,6 +8,35 @@ import requests
 
 from unittest import mock
 
+class ThemesData:
+    """Class used to create the themesdata fixture"""
+    themes_content_with_three_themes_no_activate = \
+        "[{\"name\":\"theme1\",\"source_type\":\"zip\",\"source\":\"source1.zip\"}," \
+        "{\"name\":\"theme2\",\"source_type\":\"zip\",\"source\":\"source2.zip\"}," \
+        "{\"name\":\"theme3\",\"source_type\":\"zip\",\"source\":\"source3.zip\"}]"
+    themes_content_with_two_themes_none_activated = \
+        "[{\"name\":\"theme1\",\"source_type\":\"zip\",\"activate\":false,\"source\":\"source1.zip\"}," \
+        "{\"name\":\"theme2\",\"source_type\":\"zip\",\"activate\":false,\"source\":\"source2.zip\"}]"
+    themes_content_with_two_activated_themes = \
+        "[{\"name\":\"theme1\",\"source_type\":\"zip\",\"activate\":true,\"source\":\"source1.zip\"}," \
+        "{\"name\":\"theme2\",\"source_type\":\"zip\",\"activate\":true,\"source\":\"source2.zip\"}]"
+    themes_content_with_two_themes_one_activated = \
+        "[{\"name\":\"theme1\",\"source_type\":\"zip\",\"activate\":false,\"source\":\"source1.zip\"}," \
+        "{\"name\":\"theme2\",\"source_type\":\"zip\",\"activate\":true,\"source\":\"source2.zip\"}]"
+    theme_single_content_with_wrong_feed = \
+        "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"}"
+    theme_single_content_with_correct_feed = \
+        "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"," \
+        "\"feed\": {\"name\": \"testfeed\", \"package\": \"testpackage\", \"version\": \"1.0\"}}"
+    theme_single_content_with_url = \
+        "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http::\\theme.zip\"}"
+    theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"source1.zip\"}]"
+    theme_single_no_src = "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"source1.zip\"}]"
+    child_name = "child_theme"
+    child_url_source = "path-to-source1.zip"
+    themes_content_with_child_activated = \
+        "[{\"name\":\"child_theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"path-to-source1.zip\"}]"
+
 
 class WordPressData:
     """Class used to create the wordpressdata fixture"""
@@ -23,7 +52,7 @@ class WordPressData:
     environment_file_content = \
         "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json\"," \
         "\"environments\":[{\"name\":\"localhost\",\"type\":\"development\",\"default\":true,\"configuration_file\":" \
-        "\"default-localhost-site.json\"}]}"
+        "\"default-localhost-site.json\",\"db_admin_user\":\"root\"}]}"
     environment_file_content_duplicated_environment = \
         "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json\"," \
         "\"environments\":[{\"name\":\"localhost\",\"type\":\"development\",\"default\":true,\"configuration_file\":" \
@@ -71,11 +100,7 @@ class WordPressData:
     plugins_content = \
         "[{\"name\":\"plugin-1\",\"source_type\":\"wordpress\",\"source\":\"path-to-source1\",\"force\":true}," \
         "{\"name\":\"plugin-2\",\"source_type\":\"wordpress\",\"source\":\"path-to-source2\",\"force\":true}]"
-    themes_content = \
-        "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\"}]"
-    themes_content_with_child = \
-        "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"path-to-source1.zip\"," \
-        "\"child\":\"\"}]"
+
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
@@ -113,6 +138,14 @@ class WordPressData:
     condition_key = 'condition'
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
+
+
+@pytest.fixture
+def themesdata():
+    """ Sample themes configuration data for testing"""
+    yield ThemesData()
+    # Below code is executed as a TearDown
+    print("Teardown finished.")
 
 
 @pytest.fixture
