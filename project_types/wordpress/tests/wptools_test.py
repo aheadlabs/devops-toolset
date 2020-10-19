@@ -864,7 +864,7 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs\
     """ Given site configuration, when no src themes present, then logs info """
     # Arrange
     theme_path = wordpressdata.theme_path
-    no_src_theme_config = [json.loads(themesdata.theme_single_content_with_url)]
+    no_src_theme_config = json.loads(themesdata.theme_single_no_src)
     path_exists_mock.return_value = False
     literal1 = literals.get("wp_looking_for_src_themes")
     literal2 = literals.get("wp_no_src_themes")
@@ -889,7 +889,7 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
     path_exists_mock.return_value = True
-    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_config = json.loads(themesdata.theme_single_src)
     # Act
     sut.build_theme(src_theme_config, wordpress_path)
     # Assert
@@ -909,7 +909,7 @@ def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
     # Arrange
     theme_path = wordpressdata.theme_path
     path_exists_mock.return_value = True
-    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_config = json.loads(themesdata.theme_single_src)
     src_theme_path = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
     # Act
     sut.build_theme(src_theme_config, theme_path)
@@ -930,7 +930,7 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_wit
     # Arrange
     theme_path = wordpressdata.theme_path
     path_exists_mock.return_value = True
-    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_config = json.loads(themesdata.theme_single_src)
     theme_slug = src_theme_config[0]["name"]
     theme_path_src = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
     theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
@@ -962,7 +962,7 @@ def test_build_theme_given_site_config_when_src_themes_then_zips_dist(
     # Arrange
     theme_path = wordpressdata.theme_path
     path_exists_mock.return_value = True
-    src_theme_config = [json.loads(themesdata.theme_single_src)]
+    src_theme_config = json.loads(themesdata.theme_single_src)
     src_theme_path_obj = pathlib.Path.joinpath(pathlib.Path(theme_path), src_theme_config[0]["source"])
     theme_slug = src_theme_config[0]['name']
     theme_path_dist = pathlib.Path.joinpath(src_theme_path_obj, "dist")
