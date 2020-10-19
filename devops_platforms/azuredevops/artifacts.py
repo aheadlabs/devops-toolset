@@ -1,6 +1,5 @@
 """Artifacts-related functionality"""
 
-import os
 import tools.cli as cli
 from core.app import App
 from core.CommandsCore import CommandsCore

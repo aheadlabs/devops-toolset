@@ -64,8 +64,7 @@ def test_parse_theme_metadata_when_tokens_matched_then_return_matches_dict(loggi
     """ Given theme metadata, when tokens to match, then return matches as a dict"""
     # Arrange
     token1, value1, token2, value2 = "Sometoken1", "Somevalue1", "Sometoken2", "Somevalue2"
-    tokens = dict()
-    tokens[token1], tokens[token2] = value1, value2
+    tokens = [token1, token2]
     css_file_data = b"Sometoken1: Somevalue1\r\nSometoken2: Somevalue2\r\n"
     # Act
     result = sut.parse_theme_metadata(css_file_data, tokens)
@@ -81,12 +80,11 @@ def test_parse_theme_metadata_when_token_and_not_matched_then_warns(
     """ Given theme metadata, when token present and doest match, then return matches as a dict"""
     # Arrange
     token1, value1 = "Sometoken1", "Somevalue1"
-    tokens = dict()
-    tokens[token1] = value1
+    tokens = [token1]
     css_file_data = b"Sometoken2: Somevalue2\r\n"
     literal_expected = wp_literals.get("wp_parsing_theme_no_matches_found").format(token=token1)
     # Act
-    result = sut.parse_theme_metadata(css_file_data, tokens)
+    sut.parse_theme_metadata(css_file_data, tokens)
     # Assert
     logging_warning_mock.assert_called_once_with(literal_expected)
 

@@ -233,13 +233,6 @@ def is_valid_path(path: str = None, check_existence: bool = False) -> bool:
     if check_existence and not os.path.exists(path):
         return False
 
-    path_object = pathlib.Path(path)
-
-    # Exception for unit tests
-    if not path.startswith("/pathto") \
-            and not pathlib.Path.exists(path_object):
-        return False
-
     return True
 
 

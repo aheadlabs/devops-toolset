@@ -8,7 +8,18 @@ class PlatformData(object):
     description = "Lorem ipsum dolor sit amet"
 
 
+class ArtifactsData(object):
+    """Class used to create the artifactsdata fixture"""
+    artifact_destination_path = "/pathto/artifact/destination"
+    feed_content = "{\"name\":\"feed_name\",\"package\":\"package_name\",\"version\":\"1.0.1\"," \
+                   "\"organization_url\":\"https://my-organization\"}"
+
 @pytest.fixture
 def platformdata():
     """Sample data for testing"""
     return PlatformData()
+
+@pytest.fixture
+def artifactsdata():
+    """Sample data for testing"""
+    return ArtifactsData()
