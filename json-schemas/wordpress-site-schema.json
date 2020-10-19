@@ -250,8 +250,7 @@
           "type": "string"
         },
         "version": {
-          "type": "string",
-          "format": "hostname"
+          "type": "string"
         },
         "locale": {
           "type": "string"
@@ -331,7 +330,7 @@
               "$ref": "#/definitions/wp_config_property_boolean"
             },
             "accessible_hosts": {
-              "$ref": "#/definitions/wp_config_property_array"
+              "$ref": "#/definitions/wp_config_property_string"
             },
             "auto_update_core": {
               "$ref": "#/definitions/wp_config_property_string"
@@ -348,7 +347,7 @@
             "content_url",
             "plugin_url",
             "noblogredirect_url",
-            "disable_fatal_error_handler_and_debug_display",
+            "disable_fatal_error_handler",
             "debug_display",
             "debug",
             "cache",

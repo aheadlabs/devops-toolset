@@ -1,14 +1,18 @@
 """Supports al compression / decompression operations in the file system."""
 
+from core.app import App
+from core.LiteralsCore import LiteralsCore
+from filesystem.Literals import Literals as FileSystemLiterals
 import filesystem.constants as constants
 import filesystem.paths
+import logging
 import os
 import pathlib
 import shutil
 import zipfile
-from core.app import App
 
 app: App = App()
+literals = LiteralsCore([FileSystemLiterals])
 
 
 def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool = True, unzip_root: str = None):
@@ -43,6 +47,32 @@ def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool 
     if delete_after_unzip:
         os.remove(file_path)
     # TODO(ivan.sainz) Unit tests
+
+
+def zip_directory(directory_path: str, file_path, internal_path_prefix: str = ""):
+    """Creates a ZIP file of the contents of the specified directory path.
+
+    Args:
+        directory_path: Path to the directory to be zipped (directory will not
+            be included in the ZIP file).
+        file_path: Path to the file to be created.
+        internal_path_prefix: Prefix to be added to all the internal paths.
+            Must end with /
+
+    Returns:
+        Path to the created ZIP file.
+    """
+    with zipfile.ZipFile(file_path, "w") as output_file:
+        for directory, subfolders, files in os.walk(directory_path):
+            for file in files:
+                current_path = pathlib.Path.joinpath(pathlib.Path(directory), file)
+                zip_internal_basepath = pathlib.Path(directory.replace(directory_path, "")).as_posix()
+                zip_internal_path = f"{internal_path_prefix}{zip_internal_basepath}/{file}"
+                output_file.write(current_path, zip_internal_path)
+                logging.debug(literals.get("fs_zip_added_file").format(
+                    zip_file_name=os.path.basename(file_path),
+                    added_file=zip_internal_path
+                ))
 
 
 def read_text_file_in_zip(zip_file_path: str, text_file_path: str):
