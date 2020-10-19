@@ -541,7 +541,7 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
             download_wordpress_theme(theme, theme_path, **kwargs)
 
         # Get template for the theme if it has one
-        style_content: bytes = filesystem.zip.read_text_file_in_zip(theme_path, "style.css")
+        style_content: bytes = filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
         metadata: dict = filesystem.parsers.parse_theme_metadata(style_content, ["Template", "Version"])
         theme["template"] = metadata["Template"] if "Template" in metadata else None
         theme["version"] = metadata["Version"]
@@ -608,7 +608,7 @@ def build_theme(themes_config: dict, theme_path: str):
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
 
         # Zip dist
-        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix())
+        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
 
