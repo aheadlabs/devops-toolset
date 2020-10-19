@@ -11,7 +11,10 @@ class Commands(ValueDictsBase):
 
     # Add your wordpress literal dictionaries here
     _commands = {
-        "azdevops_login": "{token} | az devops login --organization {organization}",
-        "azdevops_universal_download": "az artifacts universal download --feed {feed} --name {name} --path {path} "
+        "azdevops_rest_get_build_list": "https://dev.azure.com/{organization}/{project}/_apis/build/builds",
+        "azdevops_rest_get_build": "https://dev.azure.com/{organization}/{project}/_apis/build/builds/{build_id}/"
+                                   "artifacts?artifactName={artifact_name}",
+        "azdevops_cli_login": "{token} | az devops login --organization {organization}",
+        "azdevops_cli_universal_download": "az artifacts universal download --feed {feed} --name {name} --path {path} "
                                        "--version {version} --organization {organization}",
     }

@@ -177,7 +177,7 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
 
     if source_type == "feed":
         # TODO(anyone) not working via command line
-        #  platform_specific.download_artifact_from_feed(theme_config["feed"], destination_path, **kwargs)
+        #  platform_specific.download_artifact_from_feed_cli(theme_config["feed"], destination_path, **kwargs)
         pass
     elif source_type == "url":
         destination_file_path = pathlib.Path.joinpath(pathlib.Path(destination_path), f"{theme_config['name']}.zip")

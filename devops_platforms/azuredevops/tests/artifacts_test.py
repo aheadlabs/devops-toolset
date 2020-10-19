@@ -14,7 +14,7 @@ app: App = App()
 literals = LiteralsCore([PlatformSpecificLiterals])
 commands = CommandsCore([PlatformSpecificCommands])
 
-# region download_artifact_from_feed()
+# region download_artifact_from_feed_cli()
 
 
 @patch("logging.warning")
@@ -29,7 +29,7 @@ def test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_l
     destination_path = artifactsdata.artifact_destination_path
     expected_error = literals.get("azdevops_token_not_found")
     # Act
-    sut.download_artifact_from_feed(feed_config, destination_path, **kwargs)
+    sut.download_artifact_from_feed_cli(feed_config, destination_path, **kwargs)
     # Assert
     logging_err_mock.assert_called_once_with(expected_error)
 
@@ -52,7 +52,7 @@ def testdownload_artifact_from_feed_given_kwargs_when_azdevops_token_calls_comma
                 organization=feed_config["organization_url"])
 
     # Act
-    sut.download_artifact_from_feed(feed_config, destination_path, **kwargs)
+    sut.download_artifact_from_feed_cli(feed_config, destination_path, **kwargs)
     # Assert
     expected_calls = [call(expected_azdevops_login_command), call(expected_azdevops_univ_download)]
     subprocess_mock.assert_has_calls(expected_calls)

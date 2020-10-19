@@ -14,7 +14,7 @@ literals = LiteralsCore([PlatformSpecificLiterals])
 commands = CommandsCore([PlatformSpecificCommands])
 
 
-def download_artifact_from_feed(feed_config: dict, destination_path: str, **kwargs):
+def download_artifact_from_feed_cli(feed_config: dict, destination_path: str, **kwargs):
     """Downloads an artifact from a feed
 
     Args:
@@ -28,12 +28,21 @@ def download_artifact_from_feed(feed_config: dict, destination_path: str, **kwar
         return
 
     azdevops_token = kwargs["azdevops_token"]
-    cli.call_subprocess(commands.get("azdevops_login")
+    cli.call_subprocess(commands.get("azdevops_cli_login")
                         .format(token=azdevops_token, organization=feed_config["organization_url"]))
 
-    cli.call_subprocess(commands.get("azdevops_universal_download")
+    cli.call_subprocess(commands.get("azdevops_cli_universal_download")
                         .format(feed=feed_config["name"],
                                 name=feed_config["package"],
                                 path=f"\"{destination_path}\"",
                                 version=feed_config["version"],
                                 organization=feed_config["organization_url"]))
+
+
+def download_artifact_from_feed_rest(feed_config: dict, destination_path: str, **kwargs):
+    """"""
+    pass
+
+
+if __name__ == "__main__":
+    help(__name__)

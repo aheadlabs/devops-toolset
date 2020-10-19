@@ -16,12 +16,15 @@ literals = LiteralsCore([FileSystemLiterals])
 
 
 # noinspection PyTypeChecker
-def download_file(url: str, destination: str, file_type: FileType = FileType.BINARY) -> tuple:
+def download_file(url: str, destination: str, save_as: str = None, headers: dict = None,
+                  file_type: FileType = FileType.BINARY) -> tuple:
     """Downloads a file from a URL.
 
     Args:
         url: Where to download the file from.
         destination: Path to the directory where the file will be downloaded.
+        save_as: File name to save the downloaded file as.
+        headers: Authentication headers.
         file_type: The type of the file. Defaults to BINARY.
 
     Returns:
@@ -32,10 +35,10 @@ def download_file(url: str, destination: str, file_type: FileType = FileType.BIN
         raise ValueError("fs_not_dir")
 
     destination_path = pathlib.Path(destination)
-    file_name = get_file_name_from_url(url)
+    file_name = save_as if save_as else get_file_name_from_url(url)
     full_destination_path = pathlib.Path.joinpath(destination_path, file_name)
 
-    response = requests.get(url)
+    response = requests.get(url, headers=headers) if headers else requests.get(url)
 
     file_mode: str = f"w{file_type.value}"
     with open(full_destination_path, file_mode) as file:
