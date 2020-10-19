@@ -94,12 +94,7 @@ def convert_wp_config_token(token: str, wordpress_path: str) -> str:
         date_token = date_format.split("|")[1]
         result = result.replace(
             "[" + date_format + "]", wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
-    if token.find("[commit]") != -1:
-        commit_token = token[token.find("[commit") + 1:token.rfind("]")]
-        # TODO (alberto.carbonell): Set latest commit id
-        commit_id = "123456"
-        result = result.replace("[" + commit_token + "]", commit_id)
-    # Add more tokens if needed
+    # NOTE: Add more tokens if needed
     return result
 
 
@@ -775,10 +770,3 @@ def triage_themes(themes: dict) -> (dict, dict):
 if __name__ == "__main__":
     help(__name__)
 
-    # site_config = get_site_configuration_from_environment(
-    #     r"D:\Source\_david-diaz-fernandez\atipico-santiago\default-site-environments.json", "localhost")
-    # install_themes_from_configuration_file(
-    #     site_config,
-    #     r"D:\Source\_david-diaz-fernandez\atipico-santiago",
-    #     azdevops_token="ysi4dwqwbq5lfnqolhmbet5kfxd6s3adh236257dlsx3iztmvmja"
-    # )

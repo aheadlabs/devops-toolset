@@ -27,7 +27,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
     prompt_mock.return_value = False
     # Act
     with pytest.raises(ValueError) as value_error:
-        sut.main(root_path, "root", "root", environment)
+        sut.main(root_path, "root", "root", "root", environment, False)
     # Assert
     assert str(value_error.value) == sut.literals.get("wp_required_files_not_found").format(path=root_path)
 
@@ -61,7 +61,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
     root_path = wordpressdata.root_path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
     # Act
-    sut.main(root_path, "root", "root", "root", environment)
+    sut.main(root_path, "root", "root", "root", environment, False)
     # Assert
     get_required_files_mock.assert_called_with(root_path, required_files_pattern_suffixes)
 
@@ -99,7 +99,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
     expected_content = b"sample response in bytes"
     # Act
     with patch(wordpressdata.builtins_open, m, create=True):
-        sut.main(root_path, "root", "root", "root", environment)
+        sut.main(root_path, "root", "root", "root", environment, False)
         # Assert
         handler = m()
         calls = []
@@ -124,7 +124,7 @@ def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(
     get_constants_mock.return_value = constants_data
     devops_path_constant = "/.devops"
     root_path = wordpressdata.root_path
-    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant , "devops-toolset")
+    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset")
     # Act
     sut.setup_devops_toolset(root_path)
     # Assert
