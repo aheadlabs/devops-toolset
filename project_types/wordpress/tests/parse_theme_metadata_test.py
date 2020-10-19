@@ -16,7 +16,7 @@ def test_parse_theme_metadata_from_path_when_path_exists_then_calls_parse_theme_
     tokens[token1], tokens[token2] = value1, value2
     css_file_data = b"Sometoken1: Somevalue1\r\nSometoken2: Somevalue2\r\n"
     # Act
-    with patch("builtins.open", new_callable=mock_open, read_data=css_file_data) as file_data:
+    with patch("builtins.open", new_callable=mock_open, read_data=css_file_data):
         sut.main(css_file_path, tokens)
         # Assert
         parse_theme_metadata_mock.assert_called_once_with(css_file_data, tokens, True)

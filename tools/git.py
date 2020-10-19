@@ -122,7 +122,7 @@ def git_init(path: str, skip: bool):
 def purge_gitkeep(path: str = None):
     """Deletes .gitkeep file if exists and there are more files in the path."""
 
-    if not filesystem.paths.is_valid_path(path):
+    if not filesystem.paths.is_valid_path(path, True):
         raise ValueError(literals.get("git_non_valid_dir_path"))
 
     path_object = pathlib.Path(path)

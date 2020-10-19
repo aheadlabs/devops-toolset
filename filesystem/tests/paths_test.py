@@ -304,7 +304,7 @@ def test_is_valid_path_given_non_existent_path_returns_false(paths):
     path = paths.non_existent_path
 
     # Act
-    result = sut.is_valid_path(path)
+    result = sut.is_valid_path(path, True)
 
     # Assert
     assert not result
