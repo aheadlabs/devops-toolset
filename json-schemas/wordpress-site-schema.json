@@ -366,11 +366,7 @@
           ]
         },
         "options": {
-          "type": "array",
-          "items": {
-            "$ref": "http://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"
-          },
-          "default": []
+          "$ref": "http://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"
         }
       },
       "additionalProperties": false,

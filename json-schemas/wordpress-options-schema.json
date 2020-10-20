@@ -27,16 +27,9 @@
     }
   },
 
-  "type": "object",
-
-  "properties": {
-    "options": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/option"
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    }
-  }
+  "type": "array",
+  "items": {
+      "$ref": "#/definitions/option"
+  },
+  "uniqueItems": true
 }
