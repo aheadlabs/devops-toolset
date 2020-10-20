@@ -364,6 +364,13 @@
             "auto_update_core",
             "image_edit_overwrite"
           ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "http://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"
+          },
+          "default": []
         }
       },
       "additionalProperties": false,
