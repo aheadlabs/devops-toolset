@@ -27,11 +27,13 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
     prompt_mock.return_value = False
     # Act
     with pytest.raises(ValueError) as value_error:
-        sut.main(root_path, "root", "root", "root", environment, False)
+        sut.main(root_path, "root", "root", "root", environment, [''], [''], False)
     # Assert
     assert str(value_error.value) == sut.literals.get("wp_required_files_not_found").format(path=root_path)
 
 
+@patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
+@patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("logging.info")
 @patch("core.log_tools.log_indented_list")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
@@ -52,7 +54,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
         files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock, get_wordpress_path,
         start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock, set_wordpress_config_mock,
         install_wordpress_site_mock, install_theme_mock, install_plugins_mock, log_indented_mock, build_theme_mock,
-        get_db_admin_mock, logging_mock, wordpressdata):
+        get_db_admin_mock, logging_mock ,generate_environments_mock, delete_sample_mock, wordpressdata):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
@@ -61,11 +63,13 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
     root_path = wordpressdata.root_path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
     # Act
-    sut.main(root_path, "root", "root", "root", environment, False)
+    sut.main(root_path, "root", "root", "root", environment, [''], [''], False)
     # Assert
     get_required_files_mock.assert_called_with(root_path, required_files_pattern_suffixes)
 
 
+@patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
+@patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("core.log_tools.log_indented_list")
 @patch("clint.textui.prompt.yn")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
@@ -86,7 +90,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
         files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock, get_wordpress_path,
         start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock, set_wordpress_config_mock,
         install_wordpress_site_mock, install_theme_mock, install_plugins_mock, build_theme_mock, get_db_admin_mock,
-        prompt_yn_mock, log_indented_mock, wordpressdata, mocks):
+        prompt_yn_mock, log_indented_mock, generate_environments_mock, delete_sample_mock, wordpressdata, mocks):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
@@ -99,7 +103,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
     expected_content = b"sample response in bytes"
     # Act
     with patch(wordpressdata.builtins_open, m, create=True):
-        sut.main(root_path, "root", "root", "root", environment, False)
+        sut.main(root_path, "root", "root", "root", environment, [''], [''], False)
         # Assert
         handler = m()
         calls = []
