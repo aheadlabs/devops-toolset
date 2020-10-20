@@ -1,9 +1,14 @@
 """Contains tools for working with the command line"""
 
-import subprocess
 import core.log_tools
+import logging
+import subprocess
+from core.LiteralsCore import LiteralsCore
 from pyfiglet import Figlet
 from typing import List
+
+from tools.Literals import Literals as ToolsLiterals
+literals = LiteralsCore([ToolsLiterals])
 
 
 def print_title(text: str):
@@ -20,6 +25,8 @@ def call_subprocess_with_result(command: str) -> str:
         """
     process = subprocess.Popen(command.strip(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
+    process.wait()
+
     if out:
         return out.decode("utf-8")
 
@@ -51,12 +58,14 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
     out, err = process.communicate()
     process.wait()
 
+    logging.info(literals.get("cli_return_code").format(code=process.returncode))
+
     if out:
         core.log_tools.log_list(log_before_out, core.log_tools.LogLevel.info)
         core.log_tools.log_stdouterr(out, core.log_tools.LogLevel.info)
         core.log_tools.log_list(log_after_out, core.log_tools.LogLevel.info)
 
-    if err:
+    if err and process.returncode is not 0:
         core.log_tools.log_list(log_before_err, core.log_tools.LogLevel.error)
         core.log_tools.log_stdouterr(err, core.log_tools.LogLevel.error)
         core.log_tools.log_list(log_after_err, core.log_tools.LogLevel.error)
