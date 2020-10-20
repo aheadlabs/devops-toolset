@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-14 18:36+0200\n"
+"POT-Creation-Date: 2020-10-20 15:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,10 +47,16 @@ msgstr ""
 msgid "Status code got from Sonar* was not 200, but {statusCode}. Please check it out."
 msgstr ""
 
+msgid "Command: {command}"
+msgstr ""
+
 msgid "Please, download the packages from the Azure DevOps feed manually."
 msgstr ""
 
 msgid "Created environment variable {key} with value {value}"
+msgstr ""
+
+msgid "Status code for the request: {status_code}"
 msgstr ""
 
 msgid "Azure DevOps token was not found in the **kwargs parameter."
@@ -60,6 +66,9 @@ msgid "Project path is {path}."
 msgstr ""
 
 msgid "Composer file path is {path}."
+msgstr ""
+
+msgid "[{zip_file_name}] Added file: {added_file}"
 msgstr ""
 
 msgid "Path must be a dir, not a file."
@@ -151,6 +160,12 @@ msgid "The root path is: {path}"
 msgstr ""
 
 msgid "Please, install the theme/s manually."
+msgstr ""
+
+msgid "The plugin path is: {path}"
+msgstr ""
+
+msgid "The theme path is: {path}"
 msgstr ""
 
 msgid "The themes path is: {path}"
@@ -358,6 +373,9 @@ msgid "Theme {theme_name} could not be installed."
 msgstr ""
 
 msgid "Gulp build task has encountered an error for theme {theme_slug}. Please check above logs for more details."
+msgstr ""
+
+msgid "Process terminated with return code {code}"
 msgstr ""
 
 msgid "Purging .gitkeep file at {path}"

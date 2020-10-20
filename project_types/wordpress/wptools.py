@@ -586,6 +586,8 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
     wp_cli.install_theme(wordpress_path, child_theme_config["source"], child_theme_config["activate"],
                          debug_info, child_theme_config["name"])
 
+    # TODO(anyone) Clean up theme ZIP files for themes which sources are not ZIP
+
     # Backup database after theme install
     database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
     core_dump_path_converted = convert_wp_config_token(
