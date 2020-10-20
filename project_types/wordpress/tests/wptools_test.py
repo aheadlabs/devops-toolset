@@ -9,8 +9,7 @@ from project_types.wordpress.basic_structure_starter import BasicStructureStarte
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open, call
-from project_types.wordpress.tests.conftest import WordPressData, ThemesData, mocked_requests_get, MockResponse
-from conftest import Mocks
+from project_types.wordpress.tests.conftest import WordPressData, ThemesData, mocked_requests_get, PluginsData
 
 literals = LiteralsCore([WordpressLiterals])
 
@@ -488,84 +487,42 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
     # Assert
     install_plugin_mock.assert_not_called()
 
-
+@patch("logging.info")
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("project_types.wordpress.wp_cli.install_plugin")
-@patch("pathlib.Path.as_posix")
-def test_install_plugins_given_configuration_file_when_plugins_then_calls_wp_cli_install_plugin(
-        path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
-    """ Given the configuration values, when no plugins present, the no installation calls
-     should be made """
+@patch("project_types.wordpress.wptools.download_wordpress_plugin")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("project_types.wordpress.wptools.export_database")
+@pytest.mark.parametrize(
+    "plugins_content", [json.loads(PluginsData.plugins_content_single_url_source),
+                        json.loads(PluginsData.plugins_content_single_zip_source),
+                        json.loads(PluginsData.plugins_content_two_plugins_with_url_and_zip_sources)])
+def test_install_plugins_given_configuration_file_when_plugins_then_then_downloads_wordpress_plugin(
+        export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock, get_constants_mock,
+        logging_mock, plugins_content, wordpressdata, pluginsdata):
+    """ Given the configuration values, when url plugin present, then calls download_wordpress_plugin"""
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    root_path = wordpressdata.root_path
-    path_mock.return_value = wordpressdata.wordpress_path
+    site_config["plugins"] = plugins_content
+    constants = json.loads(wordpressdata.constants_file_content)
+    get_constants_mock.return_value = constants
+    root_path = pathlib.Path(wordpressdata.root_path)
+    wordpress_path = pathlib.Path.joinpath(root_path, constants["paths"]["wordpress"])
+    plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
     # Act
     sut.install_plugins_from_configuration_file(site_config, root_path)
     # Assert
     calls = []
     for plugin in site_config["plugins"]:
+        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
         plugin_call = call(plugin["name"],
-                           wordpressdata.wordpress_path,
+                           wordpress_path,
+                           plugin["activate"],
                            plugin["force"],
-                           plugin["source"],
+                           plugin_path,
                            site_config["wp_cli"]["debug"])
         calls.append(plugin_call)
     install_plugin_mock.assert_has_calls(calls)
-
-
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.install_plugin")
-@patch("pathlib.Path.as_posix")
-@patch("shutil.move")
-@patch("tools.git.purge_gitkeep")
-def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_shutil_move(
-        purge_gitkeep_mock, move_mock, path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
-    """ Given the configuration values, when no plugins present, the no installation calls
-     should be made """
-    # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
-    site_config["plugins"][0]["source_type"] = "zip"
-    site_config["plugins"][1]["source_type"] = "zip"
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    root_path = wordpressdata.root_path
-    path_mock.return_value = wordpressdata.wordpress_path
-    # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path)
-    # Assert
-    calls = []
-    for plugin in site_config["plugins"]:
-        move_call = call(plugin["source"],
-                         wordpressdata.wordpress_path)
-        calls.append(move_call)
-    move_mock.assert_has_calls(calls, any_order=True)
-
-
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.install_plugin")
-@patch("pathlib.Path.as_posix")
-@patch("shutil.move")
-@patch("tools.git.purge_gitkeep")
-def test_install_plugins_given_configuration_file_when_zip_plugins_then_calls_purge_git_keep(
-        purge_gitkeep_mock, move_mock, path_mock, install_plugin_mock, get_constants_mock, wordpressdata):
-    """ Given the configuration values, when no plugins present, the no installation calls
-     should be made """
-    # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = json.loads(wordpressdata.plugins_content)
-    site_config["plugins"][0]["source_type"] = "zip"
-    site_config["plugins"][1]["source_type"] = "zip"
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    root_path = wordpressdata.root_path
-    path_mock.return_value = wordpressdata.wordpress_path
-    # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path)
-    # Assert
-    purge_gitkeep_mock.assert_called()
-
 
 # endregion
 
