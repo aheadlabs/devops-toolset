@@ -8,6 +8,21 @@ import requests
 
 from unittest import mock
 
+
+class PluginsData:
+    """Class used to create the pluginsdata fixture"""
+    plugins_content_single_url_source = \
+        "[{\"name\":\"plugin-name\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
+        "\"activate\":true}]"
+    plugins_content_single_zip_source = \
+        "[{\"name\":\"plugin-name\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
+        "\"activate\":true}]"
+    plugins_content_two_plugins_with_url_and_zip_sources = \
+        "[{\"name\":\"plugin-name1\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
+        "\"activate\":true},{\"name\":\"plugin-name2\",\"source_type\":\"zip\",\"source\":\"plugin1.zip\"," \
+        "\"force\":true,\"activate\":true}]"
+
+
 class ThemesData:
     """Class used to create the themesdata fixture"""
     themes_content_with_three_themes_no_activate = \
@@ -97,10 +112,6 @@ class WordPressData:
                           "{\"name\":\"IMAGE_EDIT_OVERWRITE\",\"type\":\"constant\",\"value\":true}}," \
                           "\"skip_content_download\":false,\"concatenate_scripts\":true},\"multisite\":{}," \
                           "\"themes\":{},\"plugins\":[]}"
-    plugins_content = \
-        "[{\"name\":\"plugin-1\",\"source_type\":\"wordpress\",\"source\":\"path-to-source1\",\"force\":true}," \
-        "{\"name\":\"plugin-2\",\"source_type\":\"wordpress\",\"source\":\"path-to-source2\",\"force\":true}]"
-
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
@@ -138,6 +149,14 @@ class WordPressData:
     condition_key = 'condition'
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
+
+
+@pytest.fixture
+def pluginsdata():
+    """ Sample plugins configuration data for testing"""
+    yield PluginsData()
+    # Below code is executed as a TearDown
+    print("Teardown finished.")
 
 
 @pytest.fixture
