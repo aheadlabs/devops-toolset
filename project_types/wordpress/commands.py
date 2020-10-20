@@ -27,8 +27,14 @@ class Commands(ValueDictsBase):
         "wpcli_db_query_create_user":
             "wp db query \"create user '{user}'@'{host}' identified by '{password}'\" "
             "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
+        "wpcli_db_query_db_exists": "wp db query \"select exists (select 1 from information_schema.schemata where "
+                                    "schema_name = '{schema}')\" --dbuser={admin_user} --dbpass={admin_password} "
+                                      "--path={path}",
         "wpcli_db_query_grant": "wp db query \"grant {privileges} on {schema}.* to '{user}'@'{host}'\" "
             "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
+        "wpcli_db_query_user_exists": "wp db query \"select exists (select 1 from mysql.user where user='{user}' "
+                                      "and host='{host}')\" --dbuser={admin_user} --dbpass={admin_password} "
+                                      "--path={path}",
         "wpcli_eval": "wp eval \"{php_code}\" --path={path}",
         "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
                         "--filename_format={date}_UTC-content{suffix}.xml",

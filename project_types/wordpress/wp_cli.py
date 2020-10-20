@@ -147,22 +147,32 @@ def create_configuration_file(wordpress_path: str, db_host: str, db_name: str, d
     )
 
 
-def create_database(wordpress_path: str, debug: bool, db_user: str = "", db_pass: str = ""):
+def create_database(wordpress_path: str, debug: bool, db_user: str, db_password: str, schema: str):
     """ Calls wp db create with the parameters
     Args
         wordpress_path: Path to WordPress files
-        debug: If present, --debug will be added to the command showing all debug trace information.
+        debug: If True, --debug will be added to the command showing all debug trace information.
         db_user: Database user
         db_pass: Database password
-
+        schema: Schema name to be checked for existence
     """
-    tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
-        path=wordpress_path,
-        db_user=convert_wp_parameter_db_user(db_user),
-        db_pass=convert_wp_parameter_db_pass(db_pass),
-        debug_info=convert_wp_parameter_debug(debug)
-    ), log_before_process=[literals.get("wp_wpcli_db_create_before")]
-    )
+    # Check if the database exists
+    output = cli.call_subprocess_with_result(commands.get("wpcli_db_query_db_exists").format(
+        schema=schema,
+        admin_user=db_user,
+        admin_password=db_password,
+        path=wordpress_path
+    ))
+    database_exsits = True if output.split("\r\n")[1] == '1' else False
+
+    # Create the database
+    if not database_exsits:
+        tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
+            path=wordpress_path,
+            db_user=convert_wp_parameter_db_user(db_user),
+            db_pass=convert_wp_parameter_db_pass(db_password),
+            debug_info=convert_wp_parameter_debug(debug)
+        ), log_before_process=[literals.get("wp_wpcli_db_create_before")])
 
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
@@ -194,17 +204,28 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
                 https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
                 e.g.: 'process'
     """
-    # Create user
-    cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
+    # Check if the user exists
+    output = cli.call_subprocess_with_result(commands.get("wpcli_db_query_user_exists").format(
         user=user,
         host=host,
-        password=password,
         admin_user=admin_user,
         admin_password=admin_password,
-        path=wordpress_path),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user, host=host)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
-    )
+        path=wordpress_path
+    ))
+    user_exsits = True if output.split("\r\n")[1] == '1' else False
+
+    # Create user
+    if not user_exsits:
+        cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
+            user=user,
+            host=host,
+            password=password,
+            admin_user=admin_user,
+            admin_password=admin_password,
+            path=wordpress_path),
+            log_before_out=[literals.get("wp_wpcli_db_query_user_creating").format(user=user, host=host)],
+            log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
+        )
 
     # Grant user privileges on the database
     cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
