@@ -11,7 +11,7 @@ class Literals(ValueDictsBase):
 
     # Add your core literal dictionaries here
     _info = {
-
+        "cli_return_code": _("Process terminated with return code {code}"),
         "git_purging_gitkeep": _("Purging .gitkeep file at {path}"),
         "git_repo_to_be_created": _("The repository is going to be created"),
         "git_repo_created": _("The repository has been created"),

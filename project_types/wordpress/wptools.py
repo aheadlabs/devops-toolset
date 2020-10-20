@@ -9,6 +9,7 @@ import os
 import pathlib
 import project_types.wordpress.wp_cli as wp_cli
 import project_types.node.npm as npm
+import re
 import requests
 import stat
 import sys
@@ -25,7 +26,7 @@ from typing import List, Tuple
 
 
 app: App = App()
-platform_specific = app.load_platform_specific("artifacts")
+platform_specific_restapi = app.load_platform_specific("restapi")
 literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
 
@@ -191,13 +192,19 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
     source_type: str = theme_config["source_type"]
 
     if source_type == "feed":
-        # TODO(anyone) not working via command line
-        #  platform_specific.download_artifact_from_feed_cli(theme_config["feed"], destination_path, **kwargs)
-        pass
+        feed_config = theme_config["feed"]
+        matches = re.search(r"https:\/\/dev.azure.com\/(\w+)\/", feed_config["organization_url"])
+        organization = matches.group(1)
+        if "azdevops_user" in kwargs and "azdevops_token" in kwargs:
+            platform_specific_restapi.get_last_artifact(organization, feed_config["name"], feed_config["package"],
+                                                        destination_path, kwargs["azdevops_user"],
+                                                        kwargs["azdevops_token"])
+        else:
+            logging.warning(literals.get("azdevops_token_not_found"))
+            logging.warning(literals.get("azdevops_download_package_manually"))
+        # TODO(ivan.sainz) Unit tests
     elif source_type == "url":
-        with open(destination_path, "wb") as file:
-            response = requests.get(theme_config["source"])
-            file.write(response.content)
+        paths.download_file(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
 
 
 def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
@@ -559,7 +566,7 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
 
         # Download theme if needed
         if theme["source_type"] in ["url", "feed"]:
-            download_wordpress_theme(theme, theme_path, **kwargs)
+            download_wordpress_theme(theme, themes_path, **kwargs)
 
         # Get template for the theme if it has one
         style_content: bytes = filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
@@ -700,8 +707,10 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
     # Backup database
     core_dump_path_converted = \
         convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
-    database_core_dump_path = pathlib.Path.joinpath(root_path_obj, database_path, core_dump_path_converted)
+    database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
+    database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
     export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
+    git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
@@ -738,11 +747,11 @@ def setup_database(site_config: dict, wordpress_path: str, db_user_password: str
         admin_db_user: Database administrator user name.
         admin_db_password:  Database administrator user password.
     """
-    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_password)
-
     db_user = site_config["database"]["user"]
     schema = site_config["database"]["name"]
     db_host = site_config["database"]["host"]
+
+    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_password, schema)
 
     wp_cli.create_wordpress_database_user(
         wordpress_path, admin_db_user, admin_db_password, db_user, db_user_password, schema, db_host)

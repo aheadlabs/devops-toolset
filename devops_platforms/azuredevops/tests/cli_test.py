@@ -1,4 +1,4 @@
-"""Unit tests for the artifacts.py file"""
+"""Unit tests for the cli.py file"""
 
 import json
 from unittest.mock import patch, call
@@ -11,13 +11,13 @@ from core.LiteralsCore import LiteralsCore
 from devops_platforms.azuredevops.Literals import Literals as PlatformSpecificLiterals
 from devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
 
-import devops_platforms.azuredevops.artifacts as sut
+import devops_platforms.azuredevops.cli as sut
 
 app: App = App()
 literals = LiteralsCore([PlatformSpecificLiterals])
 commands = CommandsCore([PlatformSpecificCommands])
 
-# region download_artifact_from_feed_cli()
+# region download_artifact_from_feed()
 
 
 @patch("logging.warning")
@@ -32,7 +32,7 @@ def test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_l
     destination_path = artifactsdata.artifact_destination_path
     expected_error = literals.get("azdevops_token_not_found")
     # Act
-    sut.download_artifact_from_feed_cli(feed_config, destination_path, **kwargs)
+    sut.download_artifact_from_feed(feed_config, destination_path, **kwargs)
     # Assert
     logging_err_mock.assert_called_once_with(expected_error)
 
@@ -56,7 +56,7 @@ def test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_comm
                 organization=feed_config["organization_url"])
 
     # Act
-    sut.download_artifact_from_feed_cli(feed_config, destination_path, **kwargs)
+    sut.download_artifact_from_feed(feed_config, destination_path, **kwargs)
     # Assert
     expected_calls = [call(expected_azdevops_login_command), call(expected_azdevops_univ_download)]
     subprocess_mock.assert_has_calls(expected_calls)

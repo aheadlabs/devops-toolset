@@ -14,7 +14,7 @@ literals = LiteralsCore([PlatformSpecificLiterals])
 commands = CommandsCore([PlatformSpecificCommands])
 
 
-def download_artifact_from_feed_cli(feed_config: dict, destination_path: str, **kwargs):
+def download_artifact_from_feed(feed_config: dict, destination_path: str, **kwargs):
     """Downloads an artifact from a feed
 
     Args:
@@ -37,11 +37,6 @@ def download_artifact_from_feed_cli(feed_config: dict, destination_path: str, **
                                 path=f"\"{destination_path}\"",
                                 version=feed_config["version"],
                                 organization=feed_config["organization_url"]))
-
-
-def download_artifact_from_feed_rest(feed_config: dict, destination_path: str, **kwargs):
-    """"""
-    pass
 
 
 if __name__ == "__main__":

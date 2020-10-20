@@ -32,7 +32,7 @@ def download_file(url: str, destination: str, save_as: str = None, headers: dict
     """
 
     if not os.path.isdir(destination):
-        raise ValueError("fs_not_dir")
+        raise ValueError(literals.get("fs_not_dir"))
 
     destination_path = pathlib.Path(destination)
     file_name = save_as if save_as else get_file_name_from_url(url)
