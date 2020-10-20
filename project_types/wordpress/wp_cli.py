@@ -163,10 +163,10 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
         admin_password=db_password,
         path=wordpress_path
     ))
-    database_exsits = True if output.split("\r\n")[1] == '1' else False
+    database_exists = True if output.split("\r\n")[1] == '1' else False
 
     # Create the database
-    if not database_exsits:
+    if not database_exists:
         tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
             path=wordpress_path,
             db_user=convert_wp_parameter_db_user(db_user),

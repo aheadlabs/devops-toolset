@@ -65,7 +65,7 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
         core.log_tools.log_stdouterr(out, core.log_tools.LogLevel.info)
         core.log_tools.log_list(log_after_out, core.log_tools.LogLevel.info)
 
-    if err and process.returncode is not 0:
+    if err and process.returncode != 0:
         core.log_tools.log_list(log_before_err, core.log_tools.LogLevel.error)
         core.log_tools.log_stdouterr(err, core.log_tools.LogLevel.error)
         core.log_tools.log_list(log_after_err, core.log_tools.LogLevel.error)

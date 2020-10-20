@@ -75,20 +75,20 @@ class BasicStructureStarter(object):
         """
         if item["source"] == "raw":
             logging.debug(literals.get("wp_write_default_content").format(
-                file=item["name"],
+                file="",
                 source=f"raw data => {item['source']}"
             ))
             return item["value"]
         elif item["source"] == "from_file":
             with open(item["value"], "r") as default_content_file:
                 logging.debug(literals.get("wp_write_default_content").format(
-                    file=item["name"],
+                    file="",
                     source=f"file => {item['source']}"
                 ))
                 return default_content_file.read()
         elif item["source"] == "from_url":
             logging.debug(literals.get("wp_write_default_content").format(
-                file=item["name"],
+                file="",
                 source=f"URL => {item['source']}"
             ))
             response = requests.get(item["value"])
