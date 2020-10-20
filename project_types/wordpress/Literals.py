@@ -35,6 +35,7 @@ class Literals(ValueDictsBase):
         "wp_required_file_paths_found": _("The following file paths were found:"),
         "wp_root_path": _("The root path is: {path}"),
         "wp_themes_install_manually": _("Please, install the theme/s manually."),
+        "wp_plugin_path": _("The plugin path is: {path}"),
         "wp_theme_path": _("The theme path is: {path}"),
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),

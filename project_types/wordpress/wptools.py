@@ -10,7 +10,6 @@ import pathlib
 import project_types.wordpress.wp_cli as wp_cli
 import project_types.node.npm as npm
 import requests
-import shutil
 import stat
 import sys
 import tools.git as git_tools
@@ -161,6 +160,22 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     git_tools.purge_gitkeep(destination_path)
 
 
+def download_wordpress_plugin(plugin_config: dict, destination_path: str):
+    """Downloads a WordPress plugin from an URL.
+
+    NOTE: The URL must download a zip file that contains the plugin. If the ZIP
+        contains a non-standard inner structure, the calling process will
+        produce side-effects.
+
+    Args:
+        plugin_config: Plugin configuration.
+        destination_path: Path where the plugin will be downloaded.
+    """
+    with open(destination_path, "wb") as file:
+        response = requests.get(plugin_config["source"])
+        file.write(response.content)
+
+
 def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs):
     """Downloads a WordPress theme from a feed or a URL.
 
@@ -180,11 +195,9 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         #  platform_specific.download_artifact_from_feed_cli(theme_config["feed"], destination_path, **kwargs)
         pass
     elif source_type == "url":
-        destination_file_path = pathlib.Path.joinpath(pathlib.Path(destination_path), f"{theme_config['name']}.zip")
-        with open(destination_file_path, "wb") as file:
+        with open(destination_path, "wb") as file:
             response = requests.get(theme_config["source"])
             file.write(response.content)
-    # TODO(ivan.sainz) Unit tests
 
 
 def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
@@ -382,7 +395,7 @@ def get_themes_path_from_root_path(root_path) -> str:
     """ Gets the themes path based on the constants.json from a desired root path
 
     Args:
-        path: Full path of the project
+        root_path: Full path of the project
     """
     # Add constants
     wp_constants = get_constants()
@@ -430,7 +443,7 @@ def import_database(site_configuration: dict, wordpress_path: str, dump_file_pat
 
 
 def install_plugins_from_configuration_file(site_configuration: dict, root_path: str):
-    """Installs WordPress's plugin files (and child themes also) using WP-CLI.
+    """Installs WordPress's plugin files using WP-CLI.
 
        For more information see:
            https://developer.wordpress.org/cli/commands/plugin/install/
@@ -439,24 +452,39 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
            site_configuration: parsed site configuration.
            root_path: Path to project root.
        """
-    # Add constants
+    # Get data needed in the process
+    plugins: dict = site_configuration["plugins"]
     constants = get_constants()
+    root_path_obj = pathlib.Path(root_path)
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
+    plugins_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["content"]["plugins"])
+    debug_info = site_configuration["wp_cli"]["debug"]
 
-    # Set/expand variables before using WP CLI
-    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"]).as_posix()
-    # For each plugin in config, invoke the command
-    for plugin in site_configuration["plugins"]:
-        plugin_name = plugin["name"]
-        plugin_source = plugin["source"]
-        plugins_path = pathlib.Path.joinpath(
-            pathlib.Path(root_path), constants["paths"]["content"]["plugins"]).as_posix()
-        wp_cli.install_plugin(plugin_name, wordpress_path,  plugin["force"], plugin_source,
-                              site_configuration["wp_cli"]["debug"])
-        # When source is zipped, move source to the plugins content path
+    for plugin in plugins:
+        # Get plugin path
+        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+        logging.info(literals.get("wp_plugin_path").format(path=plugin_path))
+
+        # Download theme if needed
+        if plugin["source_type"] == "url":
+            download_wordpress_plugin(plugin, plugin_path)
+
+            # Once downloaded, should have a .zip under plugins path, so can freely add this source as a .zip one for
+            # further installing this plugin as a zip
+            plugin["source_type"] = "zip"
+
         if plugin["source_type"] == "zip":
-            shutil.move(plugin_source, plugins_path)
-            # Clean up
-            git_tools.purge_gitkeep(plugins_path)
+            plugin["source"] = plugin_path
+
+        wp_cli.install_plugin(plugin["name"], wordpress_path, plugin["activate"], plugin["force"], plugin["source"],
+                              debug_info)
+
+        # Backup database after plugin install
+        database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+        core_dump_path_converted = convert_wp_config_token(
+            site_configuration["database"]["dumps"]["plugins"], wordpress_path)
+        database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
+        export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
 
 
 def install_recommended_plugins():
@@ -770,4 +798,3 @@ def triage_themes(themes: dict) -> (dict, dict):
 
 if __name__ == "__main__":
     help(__name__)
-

@@ -367,7 +367,7 @@ def install_theme(wordpress_path: str, source: str, activate: bool, debug: bool,
         log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
 
 
-def install_plugin(plugin_name: str, wordpress_path: str, force: bool, source: str, debug: bool):
+def install_plugin(plugin_name: str, wordpress_path: str, activate: bool, force: bool, source: str, debug: bool):
     """ Uses WP-CLI command to install a plugin with 'wp plugin install <source>'.
 
            All parameters are obtained from a site configuration file.
@@ -378,12 +378,14 @@ def install_plugin(plugin_name: str, wordpress_path: str, force: bool, source: s
            Args:
                plugin_name: Plugin name / slug
                wordpress_path: Path to the wordpress installation.
+               activate: Activates the plugin.
                force: Forces install by removing previous version of the plugin.
                source: Source of the installation.
                debug: Adds optional --debug parameter in order to better track the command result.
            """
     cli.call_subprocess(commands.get("wpcli_plugin_install").format(
         path=wordpress_path,
+        activate=convert_wp_parameter_activate(activate),
         force=convert_wp_parameter_force(force),
         source=source,
         debug_info=convert_wp_parameter_debug(debug)
@@ -497,7 +499,6 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
         wordpress_path: Path to WordPress files.
         debug_info: Toggles debug info on the command.
     """
-    debug_info = convert_wp_parameter_debug(debug_info)
     cli.call_subprocess(commands.get("wpcli_option_update").format(
         option_name=option_name,
         option_value=option_value,
