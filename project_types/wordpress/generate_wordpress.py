@@ -123,7 +123,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, **kwargs)
 
     # Install site plugins
-    # TODO(ivan.sainz) wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path)
+    wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path)
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(environment_file_path, additional_environments,
@@ -165,7 +165,7 @@ def generate_additional_wpconfig_files(environments_file_path: str, environments
         shutil.move(wp_config_path, wp_config_path_temp)
 
     i = 0
-    while i < len(environments):
+    while environments[i] and i < len(environments):
         site_config = wordpress.wptools.get_site_configuration_from_environment(environments_file_path, environments[i])
         wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path,
                                                                        additional_environment_db_user_passwords[i])
