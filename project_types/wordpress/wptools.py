@@ -31,6 +31,18 @@ literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
 
 
+def add_wp_options(wp_options: dict, wordpress_path: str, debug: bool = False):
+    """Adds or updates WordPress options in the wp_options table
+
+    Args:
+        wp_options: WordPress options.
+        wordpress_path: Path to the WordPress installation.
+        debug: If True logs debug information.
+    """
+    for option in wp_options:
+        wp_cli.add_update_option(option, wordpress_path, debug)
+
+
 def check_themes_configuration(themes: dict) -> bool:
     """Checks that the themes configuration is correct.
 

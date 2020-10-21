@@ -22,6 +22,51 @@ class ValueType(Enum):
     VARIABLE = 2
 
 
+def add_update_option(option: dict, wordpress_path: str, debug: bool = False, update_permalinks: bool = True):
+    """Adds a WordPress option or updates it if exists.
+
+    Args:
+        option: WordPress option.
+        wordpress_path: Path to the WordPress installation.
+        update_permalinks: If True updates the permalink structure.
+        debug: It True logs debug information.
+    """
+    option_exists = cli.call_subprocess_with_result(commands.get("wpcli_option_get").format(
+        option_name=option["name"],
+        autoload=convert_wp_parameter_autoload(option["autoload"]),
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if option_exists:
+        command = commands.get("wpcli_option_update")
+    else:
+        command = commands.get("wpcli_option_add")
+
+    cli.call_subprocess(command.format(
+        option_name=option["name"],
+        autoload=convert_wp_parameter_autoload(option["autoload"]),
+        option_value=option["value"],
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if option["name"] == "permalink_structure" and update_permalinks:
+        cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
+            structure=option["value"],
+            path=wordpress_path,
+            debug_info=convert_wp_parameter_debug(debug)
+        ))
+
+
+def convert_wp_parameter_autoload(autoload: bool):
+    """Converts a boolean value to a --autoload parameter."""
+    if autoload:
+        return "--autoload=yes"
+    else:
+        return "--autoload=no"
+
+
 def convert_wp_parameter_db_user(db_user: str):
     """Converts a str value to a --db_user parameter."""
     if db_user:

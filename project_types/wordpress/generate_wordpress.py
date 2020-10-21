@@ -52,7 +52,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             (after installing WordPress, themes and plugins).
         kwargs: Platform-specific arguments
     """
-    global_constants = project_types.wordpress.wptools.get_constants()
+    global_constants = wordpress.wptools.get_constants()
     root_path_obj = pathlib.Path(root_path)
     database_path = global_constants["paths"]["database"]
 
@@ -87,7 +87,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
                 fw.write(response.content)
 
     # Determine required file paths
-    required_file_paths = project_types.wordpress.wptools.get_required_file_paths(
+    required_file_paths = wordpress.wptools.get_required_file_paths(
         root_path, required_files_pattern_suffixes)
     environment_file_path = required_file_paths[1]
     project_structure_file_path = required_file_paths[2]
@@ -126,9 +126,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Install WordPress site
     wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password, skip_partial_dumps)
 
-    #TODO(anyone) Automate addition of wp_options from the site configuration files
-    #TODO(anyone) Call "wp rewrite structure" to update all the permalinks based on the permalink_structure wp_option
-    # https: // developer.wordpress.org / cli / commands / rewrite / structure /
+    # Add / update WordPress options
+    wordpress.wptools.add_wp_options(site_config["settings"]["options"], wordpress_path, site_config["wp_cli"]["debug"])
 
     # Install site theme
     wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, skip_partial_dumps, **kwargs)
@@ -144,11 +143,11 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     delete_sample_wp_config_file(wordpress_path)
 
     # Backup database
-    core_dump_path_converted = project_types.wordpress.wptools.convert_wp_config_token(
+    core_dump_path_converted = wordpress.wptools.convert_wp_config_token(
         site_config["database"]["dumps"]["core"], wordpress_path)
     database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
     database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
-    project_types.wordpress.wptools.export_database(
+    wordpress.wptools.export_database(
         site_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
     git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 

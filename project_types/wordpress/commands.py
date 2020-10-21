@@ -39,8 +39,12 @@ class Commands(ValueDictsBase):
         "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
                         "--filename_format={date}_UTC-content{suffix}.xml",
         "wpcli_info": "wp --info",
-        "wpcli_option_update": "wp option update {option_name} \"{option_value}\" --path={path} {debug_info}",
+        "wpcli_option_add": "wp option add {option_name} \"{option_value}\" {autoload} --path={path} {debug_info}",
+        "wpcli_option_get": "wp option get {option_name} --path={path} {debug_info}",
+        "wpcli_option_update": "wp option update {option_name} \"{option_value}\" {autoload} "
+                               "--path={path} {debug_info}",
         "wpcli_plugin_install": "wp plugin install {source} --path={path} {force} {debug_info}",
+        "wpcli_rewrite_structure": "wp rewrite structure {structure} --path={path} {debug_info}",
         "wpcli_theme_install": "wp theme install {source} --path={path} {activate} --force {debug_info}",
         "wp_theme_src_build": "gulp build --theme-slug=\"{theme_slug}\" --dist=\"{path}\"",
         "wp_theme_src_watch":
