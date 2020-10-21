@@ -257,7 +257,7 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
         admin_password=admin_password,
         path=wordpress_path
     ))
-    user_exists = True if output is not None and len(output.split("\r\n")) > 0 \
+    user_exists = True if output is not None and len(output.split("\r\n")) > 1 \
                           and output.split("\r\n")[1] == '1' else False
 
     # Create user
