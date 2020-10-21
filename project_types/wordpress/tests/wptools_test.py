@@ -485,7 +485,7 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
     get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
     root_path = wordpressdata.root_path
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path)
+    sut.install_plugins_from_configuration_file(site_config, root_path, True)
     # Assert
     install_plugin_mock.assert_not_called()
 
@@ -512,7 +512,7 @@ def test_install_plugins_given_configuration_file_when_plugins_then_then_downloa
     wordpress_path = pathlib.Path.joinpath(root_path, constants["paths"]["wordpress"])
     plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path)
+    sut.install_plugins_from_configuration_file(site_config, root_path, True)
     # Assert
     calls = []
     for plugin in site_config["plugins"]:
@@ -544,7 +544,7 @@ def test_install_theme_given_configuration_file_when_wrong_themes_configuration_
     root_path = wordpressdata.root_path
     get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
     # Act
-    sut.install_themes_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path, True)
     # Assert
     install_theme_mock.assert_not_called()
 
@@ -577,7 +577,7 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
     get_constants_mock.return_value = constants
     triage_themes_mock.return_value = None, json.loads(themesdata.themes_content_with_child_activated)[0]
     # Act
-    sut.install_themes_from_configuration_file(site_config, root_path)
+    sut.install_themes_from_configuration_file(site_config, root_path, True)
     # Assert
     install_theme_mock.assert_called_once_with(wordpress_path, themesdata.child_url_source, True,
                                                site_config["wp_cli"]["debug"], themesdata.child_name)
