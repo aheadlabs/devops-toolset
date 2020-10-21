@@ -7,8 +7,8 @@ from core.LiteralsCore import LiteralsCore
 from pyfiglet import Figlet
 from typing import List
 
-from tools.Literals import Literals as ToolsLiterals
-literals = LiteralsCore([ToolsLiterals])
+# from tools.Literals import Literals as ToolsLiterals
+# literals = LiteralsCore([ToolsLiterals])
 
 
 def print_title(text: str):
@@ -58,7 +58,7 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
     out, err = process.communicate()
     process.wait()
 
-    logging.info(literals.get("cli_return_code").format(code=process.returncode))
+    # logging.info(literals.get("cli_return_code").format(code=process.returncode))
 
     if out:
         core.log_tools.log_list(log_before_out, core.log_tools.LogLevel.info)
