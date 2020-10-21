@@ -550,7 +550,8 @@ def set_configuration_value(name: str, value: str, value_type: ValueType, wordpr
     )
 
 
-def update_database_option(option_name: str, option_value: str, wordpress_path: str, debug_info: bool):
+def update_database_option(option_name: str, option_value: str, wordpress_path: str,
+                           debug_info: bool, autoload: bool = False):
     """Updates an option at the wp_options (*) table in the WordPress
     database using WP-CLI.
 
@@ -564,10 +565,12 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
         option_value: Value for the option.
         wordpress_path: Path to WordPress files.
         debug_info: Toggles debug info on the command.
+        autoload: If True converts the value to yes, no otherwise.
     """
     cli.call_subprocess(commands.get("wpcli_option_update").format(
         option_name=option_name,
         option_value=option_value,
+        autoload=convert_wp_parameter_autoload(autoload),
         path=wordpress_path,
         debug_info=convert_wp_parameter_debug(debug_info)),
         log_before_process=[literals.get("wp_wpcli_option_update_before").format(
