@@ -4,15 +4,15 @@ import os
 import pathlib
 import requests
 from core.app import App
-from core.LiteralsCore import LiteralsCore
-from filesystem.Literals import Literals as FileSystemLiterals
+# from core.LiteralsCore import LiteralsCore
+# from filesystem.Literals import Literals as FileSystemLiterals
 from filesystem.constants import Directions, FileNames, FileType
 from typing import List, Tuple, Union
 from urllib.parse import urlparse
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")
-literals = LiteralsCore([FileSystemLiterals])
+# literals = LiteralsCore([FileSystemLiterals])
 
 
 # noinspection PyTypeChecker
@@ -32,7 +32,7 @@ def download_file(url: str, destination: str, save_as: str = None, headers: dict
     """
 
     if not os.path.isdir(destination):
-        raise ValueError(literals.get("fs_not_dir"))
+        raise ValueError("fs_not_dir")
 
     destination_path = pathlib.Path(destination)
     file_name = save_as if save_as else get_file_name_from_url(url)

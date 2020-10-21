@@ -1,9 +1,9 @@
 """Contains tools for working with the command line"""
 
 import core.log_tools
-import logging
+# import logging
 import subprocess
-from core.LiteralsCore import LiteralsCore
+# from core.LiteralsCore import LiteralsCore
 from pyfiglet import Figlet
 from typing import List
 
