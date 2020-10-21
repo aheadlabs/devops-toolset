@@ -132,6 +132,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Delete sample configuration file
     delete_sample_wp_config_file(wordpress_path)
 
+    #TODO(anyone) Automate addition of wp_options from the site configuration files
+    #TODO(anyone) Call "wp rewrite structure" to update all the permalinks based on the permalink_structure wp_option
+    # https: // developer.wordpress.org / cli / commands / rewrite / structure /
+
 
 def setup_devops_toolset(root_path: str):
     """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
