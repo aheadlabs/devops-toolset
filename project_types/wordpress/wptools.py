@@ -449,7 +449,7 @@ def import_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.import_database(wordpress_path_as_posix, dump_file_path_as_posix, site_configuration["wp_cli"]["debug"])
 
 
-def install_plugins_from_configuration_file(site_configuration: dict, root_path: str):
+def install_plugins_from_configuration_file(site_configuration: dict, root_path: str, skip_partial_dumps: bool):
     """Installs WordPress's plugin files using WP-CLI.
 
        For more information see:
@@ -458,6 +458,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
        Args:
            site_configuration: parsed site configuration.
            root_path: Path to project root.
+           skip_partial_dumps: If True skips database dumps.
        """
     # Get data needed in the process
     plugins: dict = site_configuration["plugins"]
@@ -487,11 +488,12 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
                               debug_info)
 
         # Backup database after plugin install
-        database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
-        core_dump_path_converted = convert_wp_config_token(
-            site_configuration["database"]["dumps"]["plugins"], wordpress_path)
-        database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
-        export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
+        if not skip_partial_dumps:
+            database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+            core_dump_path_converted = convert_wp_config_token(
+                site_configuration["database"]["dumps"]["plugins"], wordpress_path)
+            database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
+            export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
 
 
 def install_recommended_plugins():
@@ -528,7 +530,8 @@ def install_wordpress_core(site_config: dict, wordpress_path: str, admin_passwor
                                   skip_email, debug_info)
 
 
-def install_themes_from_configuration_file(site_configuration: dict, root_path: str, **kwargs):
+def install_themes_from_configuration_file(site_configuration: dict, root_path: str,
+                                           skip_partial_dumps: bool, **kwargs):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 
     For more information see:
@@ -537,6 +540,7 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
     Args:
         site_configuration: parsed site configuration.
         root_path: Path to project root.
+        skip_partial_dumps: If True skips database dumps.
     """
 
     child_theme_config: dict
@@ -589,11 +593,12 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
     # TODO(anyone) Clean up theme ZIP files for themes which sources are not ZIP
 
     # Backup database after theme install
-    database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
-    core_dump_path_converted = convert_wp_config_token(
-        site_configuration["database"]["dumps"]["theme"], wordpress_path)
-    database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
-    export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
+    if not skip_partial_dumps:
+        database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+        core_dump_path_converted = convert_wp_config_token(
+            site_configuration["database"]["dumps"]["theme"], wordpress_path)
+        database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
+        export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
 
 
 def build_theme(themes_config: dict, theme_path: str):
@@ -677,7 +682,8 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str):
+def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str,
+                           skip_partial_dumps: bool = False):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -689,6 +695,7 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         site_configuration: parsed site configuration.
         root_path: Path to site installation.
         admin_password: Password for the WordPress administrator user.
+        skip_partial_dumps: If True skips database dump.
     """
     # Add constants
     constants = get_constants()
@@ -707,12 +714,13 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
 
     # Backup database
-    core_dump_path_converted = \
-        convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
-    database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
-    database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
-    export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
-    git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
+    if not skip_partial_dumps:
+        core_dump_path_converted = \
+            convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+        database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
+        database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
+        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
+        git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
 
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
