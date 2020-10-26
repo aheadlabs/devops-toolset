@@ -208,7 +208,7 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
         admin_password=db_password,
         path=wordpress_path
     ))
-    database_exists = True if output.split("\r\n")[1] == '1' else False
+    database_exists = True if output is not None and output.split("\r\n")[1] == '1' else False
 
     # Create the database
     if not database_exists:
@@ -257,10 +257,11 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
         admin_password=admin_password,
         path=wordpress_path
     ))
-    user_exsits = True if output.split("\r\n")[1] == '1' else False
+    user_exists = True if output is not None and len(output.split("\r\n")) > 1 \
+                          and output.split("\r\n")[1] == '1' else False
 
     # Create user
-    if not user_exsits:
+    if not user_exists:
         cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
             user=user,
             host=host,
