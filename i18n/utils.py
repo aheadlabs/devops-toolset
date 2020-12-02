@@ -9,13 +9,10 @@ Args:
     --merge: If present it merges the .pot file with the existing po files.
 """
 
-# from core.LiteralsCore import LiteralsCore
-# from i18n.Literals import Literals as I18nLiterals
 from typing import List
 import argparse
 import core.app
 import core.log_tools
-# import logging
 import os
 import pathlib
 import tools.cli as tools_cli
@@ -29,7 +26,6 @@ parser.add_argument("--merge", action="store_true")
 args, args_unknown = parser.parse_known_args()
 
 app: core.app.App = core.app.App(args.skip_i18n)
-# literals = LiteralsCore([I18nLiterals])
 
 
 def get_files(starting_path: str, glob: str) -> List[pathlib.Path]:
@@ -50,20 +46,15 @@ def generate_pot_file():
     """Generates the .pot file from the strings found in the code"""
 
     pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
-    # logging.info(literals.get("i18n_pot_file_path").format(path=pot_file))
 
     if pathlib.Path(pot_file).exists():
         os.remove(str(pot_file))
-        # logging.info(literals.get("i18n_pot_file_removed").format(path=pot_file))
 
     files = get_files(str(app.settings.root_path), "**/*.py")
-    # core.log_tools.log_indented_list(literals.get("i18n_pot_file_list"), files, core.log_tools.LogLevel.info)
 
     script = "pygettext.py" if args.py else "xgettext"
-    # logging.info(literals.get("i18n_pot_script").format(script=script))
 
     command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
-    # logging.info(literals.get("i18n_pot_command").format(command=command))
 
     tools_cli.call_subprocess(command)
 
@@ -72,7 +63,6 @@ def compile_po_files():
     """Compiles .po files to .mo files"""
 
     paths = get_files(str(app.settings.locales_path), "**/*.po")
-    # core.log_tools.log_indented_list(literals.get("i18n_po_file_list"), paths, core.log_tools.LogLevel.info)
 
     for file in paths:
         po_file = pathlib.Path(file)
@@ -80,11 +70,9 @@ def compile_po_files():
 
         if pathlib.Path(mo_file).exists():
             os.remove(mo_file)
-            # logging.info(literals.get("i18n_mo_file_removed").format(path=mo_file))
 
         py = ".py" if args.py else ""
         command = f"msgfmt{py} -o {mo_file} {file}"
-        # logging.info(literals.get("i18n_po_command").format(command=command))
 
         tools_cli.call_subprocess(command)
 

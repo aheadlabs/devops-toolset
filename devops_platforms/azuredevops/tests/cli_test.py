@@ -37,7 +37,6 @@ def test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_l
     logging_err_mock.assert_called_once_with(expected_error)
 
 
-@pytest.mark.skip(reason="failing for the moment, waiting for a final implementation to test.")
 @patch("tools.cli.call_subprocess")
 def test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_commands(subprocess_mock, artifactsdata):
     """Given kwargs, when azdevops_token present, then calls azdevops_login and azdevops_universal_download"""
@@ -46,9 +45,9 @@ def test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_comm
     kwargs["azdevops_token"] = "my_token"
     feed_config = json.loads(artifactsdata.feed_content)
     destination_path = artifactsdata.artifact_destination_path
-    expected_azdevops_login_command = commands.get("azdevops_login")\
+    expected_azdevops_login_command = commands.get("azdevops_cli_login")\
         .format(token=kwargs["azdevops_token"], organization=feed_config["organization_url"])
-    expected_azdevops_univ_download = commands.get("azdevops_universal_download")\
+    expected_azdevops_univ_download = commands.get("azdevops_cli_universal_download")\
         .format(feed=feed_config["name"],
                 name=feed_config["package"],
                 path=f"\"{destination_path}\"",

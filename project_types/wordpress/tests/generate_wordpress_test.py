@@ -1,6 +1,5 @@
 """ Unit tests for the generate wordpress script """
 
-# region main
 import json
 import pathlib
 from unittest.mock import patch, mock_open, call
@@ -11,6 +10,7 @@ import project_types.wordpress.generate_wordpress as sut
 from project_types.wordpress import constants
 from project_types.wordpress.tests.conftest import mocked_requests_get
 
+# region main
 
 @patch("clint.textui.prompt.yn")
 @patch("logging.critical")
@@ -122,6 +122,25 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
         handler.write.assert_has_calls(calls)
 
 # endregion main
+
+# region delete_sample_wp_config_file
+
+
+@patch("pathlib.Path.exists")
+@patch("os.remove")
+def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_mock, path_exists_mock, wordpressdata):
+    """ Given wordpress_path, when config-sample.php exist, then calls os.remove """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config-sample.php")
+    path_exists_mock.return_value = True
+    # Act
+    sut.delete_sample_wp_config_file(wordpress_path)
+    # Assert
+    remove_mock.assert_called_once_with((str(file_path)))
+
+
+# endregion delete_sample_wp_config_file
 
 # region setup_devops_toolset
 
