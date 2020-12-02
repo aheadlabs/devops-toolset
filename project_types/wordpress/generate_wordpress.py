@@ -31,7 +31,6 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 
 
-# TODO (alberto.carbonell) Check .gitkeep not deleted on /database
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
          environment: str, additional_environments: list, additional_environment_db_user_passwords: list,
          create_db: bool, skip_partial_dumps: bool, **kwargs):
