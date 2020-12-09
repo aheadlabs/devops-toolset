@@ -139,6 +139,18 @@ def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_moc
     # Assert
     remove_mock.assert_called_once_with((str(file_path)))
 
+@patch("pathlib.Path.exists")
+@patch("os.remove")
+def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_mock, path_exists_mock, wordpressdata):
+    """ Given wordpress_path, when config-sample.php exist, then calls os.remove """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    path_exists_mock.return_value = False
+    # Act
+    sut.delete_sample_wp_config_file(wordpress_path)
+    # Assert
+    remove_mock.assert_not_called()
+
 
 # endregion delete_sample_wp_config_file
 
