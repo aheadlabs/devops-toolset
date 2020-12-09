@@ -12,6 +12,67 @@ app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
 
+# region convert_wp_parameter_autoload
+
+
+@pytest.mark.parametrize("value, expected", [
+    (True, "--autoload=yes"),
+    (False, "--autoload=no")])
+def test_convert_wp_parameter_autoload(value, expected):
+    """When True , returns a --autoload="yes".
+    When False , returns a --autoload="no".
+    """
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_autoload(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region convert_wp_parameter_db_user
+
+
+@pytest.mark.parametrize("value, expected", [
+    ("user", "--dbuser=\"user\""),
+    ("", ""),
+    (None, "")])
+def test_convert_wp_parameter_db_user(value, expected):
+    """When not None or "", returns a --dbuser="value"."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_db_user(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region convert_wp_parameter_db_pass
+
+
+@pytest.mark.parametrize("value, expected", [
+    ("password", "--dbpass=\"password\""),
+    ("", ""),
+    (None, "")])
+def test_convert_wp_parameter_db_pass(value, expected):
+    """When not None or "", returns a --dbpass="value"."""
+
+    # Arrange
+
+    # Act
+    result = sut.convert_wp_parameter_db_pass(value)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
 # region convert_wp_parameter_activate
 
 
