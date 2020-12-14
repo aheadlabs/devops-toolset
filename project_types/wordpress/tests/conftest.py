@@ -87,6 +87,7 @@ class WordPressData:
                           "\"settings\":{\"title\":\"Wordpress Playground\"," \
                           "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
                           "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
                           "\"wp_config\":{\"site_url\":{\"name\":\"WP_SITEURL\",\"type\":\"constant\"," \
                           "\"value\":\"http://localhost/wordpress-playground\"},\"home_url\":{\"name\":\"WP_HOME\"," \
                           "\"type\":\"constant\",\"value\":\"http://localhost/wordpress-playground\"}," \
@@ -112,7 +113,7 @@ class WordPressData:
                           "\"type\":\"constant\",\"value\":\"minor\"},\"image_edit_overwrite\":" \
                           "{\"name\":\"IMAGE_EDIT_OVERWRITE\",\"type\":\"constant\",\"value\":true}}," \
                           "\"skip_content_download\":false,\"concatenate_scripts\":true},\"multisite\":{}," \
-                          "\"themes\":{},\"plugins\":[]}"
+                          "\"themes\":[],\"plugins\":[]}"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
