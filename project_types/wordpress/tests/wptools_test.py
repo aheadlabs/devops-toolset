@@ -208,38 +208,49 @@ def test_download_wordpress_given_valid_arguments_calls_subprocess(
 
 # region download_wordpress_theme()
 
-
-@pytest.mark.skip(reason="Need to fix this test")
-def test_download_wordpress_theme_given_theme_config_when_source_type_is_feed_then_calls_download_artifact_from_feed(
+def test_download_wordpress_theme_given_theme_config_when_source_type_is_feed_then_calls_get_last_artifact(
         themesdata):
-    """ Given theme config, when source type is feed, then should call download_artifact_from_feed"""
+    """ Given theme config, when source type is feed, then should call get_last_artifact"""
+    # Arrange
+    theme_config = json.loads(themesdata.theme_single_content_with_correct_feed)
+    destination_path = "path/to/destination"
+    azdevops_user = "user"
+    azdevops_token = "my_token"
+    feed_config = theme_config["feed"]
+    # Act
+    with patch.object(sut, "platform_specific_restapi") as platform_specific_mock:
+        with patch.object(platform_specific_mock, "get_last_artifact") as get_last_artifact_mock:
+            sut.download_wordpress_theme(theme_config, destination_path,
+                                         azdevops_user=azdevops_user, azdevops_token=azdevops_token)
+            # Assert
+            get_last_artifact_mock.called_once_with("organization", feed_config["name"], feed_config["package"],
+                                                    destination_path, azdevops_user, azdevops_token)
+
+
+@patch("logging.warning")
+def test_download_wordpress_theme_given_theme_config_when_source_type_is_feed_and_not_kwargs_then_warns(
+        log_warning_mock, themesdata):
+    """ Given theme config, when source type is feed, then should call get_last_artifact"""
     # Arrange
     theme_config = json.loads(themesdata.theme_single_content_with_correct_feed)
     destination_path = "path/to/destination"
     # Act
-    with patch.object(sut, "platform_specific_restapi") as platform_specific_mock:
-        with patch.object(platform_specific_mock, "download_artifact_from_feed") as download_artifact_mock:
-            sut.download_wordpress_theme(theme_config, destination_path)
-            # Assert
-            download_artifact_mock.called_once_with(theme_config["feed"], destination_path)
+    sut.download_wordpress_theme(theme_config, destination_path)
+    # Assert
+    log_warning_mock.assert_called()
 
 
-@pytest.mark.skip(reason="Need to fix this test")
-def test_download_wordpress_theme_given_theme_config_when_source_type_is_url_then_gets_and_writes_the_content(
-        wordpressdata, themesdata, mocks):
+@patch("filesystem.paths.download_file")
+def test_download_wordpress_theme_given_theme_config_when_source_type_is_url_then_calls_paths_download_file(
+        download_file_mock, themesdata):
     """ Given theme config, when source type is url, then downloads content to the destination path"""
     # Arrange
     theme_config = json.loads(themesdata.theme_single_content_with_url)
-    destination_path = "path/to/destination"
-    mocks.requests_get_mock.side_effect = mocked_requests_get
-    m = mock_open()
+    destination_path = "path/to/destination/"
     # Act
-    with patch(wordpressdata.builtins_open, m, create=True):
-        sut.download_wordpress_theme(theme_config, destination_path)
-        # Assert
-        handler = m()
-        handler.write.assert_called_once_with(b"sample response in bytes")
-
+    sut.download_wordpress_theme(theme_config, destination_path)
+    # Assert
+    download_file_mock.assert_called_once_with(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
 
 # endregion
 

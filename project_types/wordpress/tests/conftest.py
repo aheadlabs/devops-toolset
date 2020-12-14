@@ -42,7 +42,8 @@ class ThemesData:
         "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"}"
     theme_single_content_with_correct_feed = \
         "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"," \
-        "\"feed\": {\"name\": \"testfeed\", \"package\": \"testpackage\", \"version\": \"1.0\"}}"
+        "\"feed\": {\"name\": \"testfeed\", \"organization_url\": \"https://dev.azure.com/organization/\"," \
+        " \"package\": \"testpackage\", \"version\": \"1.0\"}}"
     theme_single_content_with_url = \
         "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http::\\theme.zip\"}"
     theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"source1.zip\"}]"
