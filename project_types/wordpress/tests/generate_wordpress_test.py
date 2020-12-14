@@ -141,7 +141,7 @@ def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_moc
 
 @patch("pathlib.Path.exists")
 @patch("os.remove")
-def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_mock, path_exists_mock, wordpressdata):
+def test_delete_sample_wp_config_file_when_file_exist_then_remove(remove_mock, path_exists_mock, wordpressdata):
     """ Given wordpress_path, when config-sample.php exist, then calls os.remove """
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
