@@ -1,5 +1,7 @@
 """ Unit tests for the download_devops_toolset_file """
-from unittest.mock import patch, call
+import pathlib
+from unittest.mock import patch, call, mock_open
+from toolset.tests.conftest import mocked_requests_get
 import toolset.download_devops_toolset as sut
 
 # region cleanup()
@@ -118,20 +120,68 @@ def test_decompress_toolset_given_paths_should_return_internal_full_path_and_tem
 # region download_toolset()
 
 
-# TODO (alberto.carbonell) Implement this tests
-def test_download_toolset_given_args_when_not_exist_destination_path_then_create_it():
+@patch("os.mkdir")
+@patch("pathlib.Path.joinpath")
+@patch("toolset.download_devops_toolset.logger.info")
+@patch("os.path.exists")
+def test_download_toolset_given_args_when_not_exist_destination_path_then_create_it(path_exists_mock, logging_mock,
+    joinpath_mock, mkdir_mock, pathsdata):
     """ Given destination path when it doesn't exist then use os.mkdir to create it """
-    pass
+    # Arrange
+    destination_path = pathsdata.destination_path
+    branch = pathsdata.branch
+    toolset_name = pathsdata.toolset_name
+    path_exists_mock.return_value = False
+    # Act
+    with patch(pathsdata.builtins_open, new_callable=mock_open, read_data=pathsdata.full_destination_path):
+        sut.download_toolset(branch, destination_path, toolset_name)
+
+    # Assert
+    mkdir_mock.assert_called_once_with(destination_path)
 
 
-def test_download_toolset_given_args_then_write_response_content_to_full_destination_path():
+@patch("requests.get", side_effect=mocked_requests_get)
+@patch("pathlib.Path.joinpath")
+@patch("toolset.download_devops_toolset.logger.info")
+@patch("os.path.exists")
+def test_download_toolset_given_args_then_write_response_content_to_full_destination_path(path_exists_mock,
+    logging_mock, joinpath_mock, requests_get, pathsdata):
     """  Given destination path then write the zip content response to full destination path """
-    pass
+    # Arrange
+    destination_path = pathsdata.destination_path
+    branch = pathsdata.branch
+    toolset_name = pathsdata.toolset_name
+    path_exists_mock.return_value = True
+    m = mock_open()
+    # Act
+    with patch(pathsdata.builtins_open, m, create=True):
+        sut.download_toolset(branch, destination_path, toolset_name)
+        # Assert
+        handler = m()
+        handler.write.assert_called_once_with(b"sample response in bytes")
 
 
-def test_download_toolset_given_args_then_returns_destination_path_and_full_destination_path():
+@patch("requests.get", side_effect=mocked_requests_get)
+@patch("toolset.download_devops_toolset.logger.info")
+@patch("os.path.exists")
+def test_download_toolset_given_args_then_returns_destination_path_and_full_destination_path(path_exists_mock,
+    logging_mock, requests_get, pathsdata):
     """  Given destination path then returns a tuple with destination_path and full_destination_path """
-    pass
+    # Arrange
+    destination_path = pathsdata.destination_path
+    branch = pathsdata.branch
+    toolset_name = pathsdata.toolset_name
+    path_exists_mock.return_value = True
+    m = mock_open()
+    expected_destination_path = pathlib.Path(destination_path)
+    expected_full_destination_path = pathlib.Path.joinpath(expected_destination_path, f"{toolset_name}.zip")
+    # Act
+    with patch(pathsdata.builtins_open, m, create=True):
+        result_destination_path, result_full_destination_path = \
+            sut.download_toolset(branch, destination_path, toolset_name)
+        # Assert
+        assert expected_destination_path == result_destination_path and \
+               expected_full_destination_path == result_full_destination_path
 
 # endregion
 

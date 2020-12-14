@@ -18,7 +18,6 @@ logging.Formatter("%(asctime)s %(levelname)-8s %(module)-15s %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# TODO(ivan.sainz) Unit tests
 def main(destination_path: str, branch: str):
     """Downloads devops-toolset from the GitHub repository
 
