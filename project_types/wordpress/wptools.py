@@ -19,6 +19,7 @@ from project_types.wordpress.basic_structure_starter import BasicStructureStarte
 from core.app import App
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
+from devops_platforms.azuredevops.Literals import Literals as AzDevopsLiterals
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 from project_types.wordpress.commands import Commands as WordpressCommands
 from tools import cli
@@ -28,6 +29,7 @@ from typing import List, Tuple
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
 literals = LiteralsCore([WordpressLiterals])
+azdevops_literals = LiteralsCore([AzDevopsLiterals])
 commands = CommandsCore([WordpressCommands])
 
 
@@ -212,8 +214,8 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
                                                         destination_path, kwargs["azdevops_user"],
                                                         kwargs["azdevops_token"])
         else:
-            logging.warning(literals.get("azdevops_token_not_found"))
-            logging.warning(literals.get("azdevops_download_package_manually"))
+            logging.warning(azdevops_literals.get("azdevops_token_not_found"))
+            logging.warning(azdevops_literals.get("azdevops_download_package_manually"))
         # TODO(ivan.sainz) Unit tests
     elif source_type == "url":
         paths.download_file(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
