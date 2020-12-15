@@ -35,7 +35,6 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 
 
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
@@ -45,7 +44,6 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("project_types.wordpress.wptools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wptools.install_themes_from_configuration_file")
-@patch("project_types.wordpress.wptools.setup_database")
 @patch("project_types.wordpress.wptools.install_wordpress_site")
 @patch("project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("project_types.wordpress.wptools.download_wordpress")
@@ -60,10 +58,9 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 def test_main_given_required_files_when_present_then_calls_wptools_get_required_file_paths(
         constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock,
         get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock,
-        set_wordpress_config_mock, install_wordpress_site_mock, setup_database_mock, install_theme_mock,
+        set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
         install_plugins_mock, build_theme_mock, get_db_admin_mock, log_indented_mock, logging_mock,
-        generate_environments_mock, delete_sample_mock, export_database_mock, convert_wp_config_token_mock,
-        purge_gitkeep_mock, wordpressdata):
+        generate_environments_mock, delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
@@ -189,6 +186,7 @@ def test_delete_sample_wp_config_file_when_file_not_exist_then_remove(remove_moc
     sut.delete_sample_wp_config_file(wordpress_path)
     # Assert
     remove_mock.assert_called_once_with((str(file_path)))
+
 
 @patch("pathlib.Path.exists")
 @patch("os.remove")
