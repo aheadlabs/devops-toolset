@@ -12,7 +12,6 @@ platform_specific = app.load_platform_specific("environment")
 literals = LiteralsCore([FileSystemLiterals])
 
 
-# TODO(ivan.sainz) Unit tests
 def parse_composer_json_data(add_environment_variables: bool = True, composer_json_path: str = None) -> dict:
     """Reads the composer.json file and returns a dict with its data.
 
