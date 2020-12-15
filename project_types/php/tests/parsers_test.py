@@ -19,7 +19,7 @@ def test_parse_composer_json_data_given_path_when_none_then_get_default_composer
     joinpath_mock.return_value = pathlib.Path(parsersdata.composer_json_file_path)
     add_environment_variables = False
     # Act
-    sut.parse_composer_json_data(add_environment_variables, None)
+    sut.parse_composer_json_data(add_environment_variables)
     # Assert
     joinpath_mock.assert_called_once()
 
