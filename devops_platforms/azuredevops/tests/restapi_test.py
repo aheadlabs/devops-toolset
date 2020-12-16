@@ -206,7 +206,25 @@ def test_get_artifact_given_args_when_get_build_returns_download_url_then_calls_
 
 # region get_last_artifact
 
-
+@patch("devops_platforms.azuredevops.restapi.get_last_build_id")
+@patch("devops_platforms.azuredevops.restapi.get_artifact")
+def test_get_last_artifact_given_args_when_last_build_id_retrieved_then_calls_get_artifact(get_artifact_mock,
+    get_last_build_id_mock, platformdata, artifactsdata):
+    """ Given args, when last build id is retrieved, then calls get_artifact """
+    # Arrange
+    organization = platformdata.organization
+    project = platformdata.project
+    user_name = platformdata.user_name
+    access_token = platformdata.access_token
+    build_id = artifactsdata.build_id
+    artifact_name = artifactsdata.artifact_name
+    destination = "path/to/destination"
+    get_last_build_id_mock.return_value = build_id
+    # Act
+    sut.get_last_artifact(organization, project, artifact_name, destination, user_name, access_token)
+    # Assert
+    get_artifact_mock.assert_called_once_with(organization, project, build_id, artifact_name, destination, user_name,
+                                              access_token)
 # endregion get_last_artifact
 
 
