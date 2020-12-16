@@ -42,7 +42,8 @@ class ThemesData:
         "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"}"
     theme_single_content_with_correct_feed = \
         "{\"name\":\"theme\",\"source_type\":\"feed\",\"activate\":true,\"source\":\"source1.zip\"," \
-        "\"feed\": {\"name\": \"testfeed\", \"package\": \"testpackage\", \"version\": \"1.0\"}}"
+        "\"feed\": {\"name\": \"testfeed\", \"organization_url\": \"https://dev.azure.com/organization/\"," \
+        " \"package\": \"testpackage\", \"version\": \"1.0\"}}"
     theme_single_content_with_url = \
         "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http::\\theme.zip\"}"
     theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"source1.zip\"}]"
@@ -86,6 +87,7 @@ class WordPressData:
                           "\"settings\":{\"title\":\"Wordpress Playground\"," \
                           "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
                           "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
                           "\"wp_config\":{\"site_url\":{\"name\":\"WP_SITEURL\",\"type\":\"constant\"," \
                           "\"value\":\"http://localhost/wordpress-playground\"},\"home_url\":{\"name\":\"WP_HOME\"," \
                           "\"type\":\"constant\",\"value\":\"http://localhost/wordpress-playground\"}," \
@@ -111,7 +113,7 @@ class WordPressData:
                           "\"type\":\"constant\",\"value\":\"minor\"},\"image_edit_overwrite\":" \
                           "{\"name\":\"IMAGE_EDIT_OVERWRITE\",\"type\":\"constant\",\"value\":true}}," \
                           "\"skip_content_download\":false,\"concatenate_scripts\":true},\"multisite\":{}," \
-                          "\"themes\":{},\"plugins\":[]}"
+                          "\"themes\":[],\"plugins\":[]}"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
@@ -149,6 +151,7 @@ class WordPressData:
     condition_key = 'condition'
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
+    default_pwd = "root"
 
 
 @pytest.fixture

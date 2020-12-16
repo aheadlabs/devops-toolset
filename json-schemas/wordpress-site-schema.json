@@ -340,7 +340,10 @@
             },
             "image_edit_overwrite": {
               "$ref": "#/definitions/wp_config_property_boolean"
-            }
+            },
+            "wpml_auto_updates": {
+              "$ref": "#/definitions/wp_config_property_boolean"
+            },
           },
           "additionalProperties": false,
           "additionalItems": false,
