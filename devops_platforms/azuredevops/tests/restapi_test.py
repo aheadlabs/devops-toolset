@@ -61,7 +61,7 @@ def test_call_api_given_command_and_credentials_when_status_code_is_not_200_then
     generate_mock.return_value = headers
     command = "my_command"
     # Act
-    with pytest.raises(ValueError) as value_error:
+    with pytest.raises(ValueError):
         sut.call_api(command, platformdata.user_name, platformdata.access_token)
         # Assert
         request_get_mock.assert_called_once_with(command, headers=headers)
