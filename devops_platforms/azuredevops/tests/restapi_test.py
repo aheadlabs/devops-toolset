@@ -1,5 +1,5 @@
 """Unit tests for the restapi file"""
-
+import json
 from unittest.mock import patch
 
 import pytest
@@ -114,4 +114,99 @@ def test_get_build_given_args_call_api_with_args(call_api_mock, platformdata, ar
     call_api_mock.assert_called_once_with(command, user_name, access_token)
 
 # endregion get_build
+
+# region get_last_build
+
+
+@patch("devops_platforms.azuredevops.restapi.get_last_build_id")
+@patch("devops_platforms.azuredevops.restapi.get_build")
+def test_get_last_build_given_args_retrieves_build_id_and_calls_get_build(get_build_mock, get_last_build_mock,
+                                                                          platformdata, artifactsdata):
+    """ Given parameters, then retrieves build id and calls get_build """
+    # Arrange
+    organization = platformdata.organization
+    project = platformdata.project
+    user_name = platformdata.user_name
+    access_token = platformdata.access_token
+    artifact_name = artifactsdata.artifact_name
+    build_id = artifactsdata.build_id
+    get_last_build_mock.return_value = build_id
+    # Act
+    sut.get_last_build(organization, project, artifact_name, user_name, access_token)
+    # Assert
+    get_build_mock.assert_called_once_with(organization, project, build_id, artifact_name, user_name, access_token)
+
+# endregion get_last_build
+
+# region get_last_build_id
+
+
+@patch("devops_platforms.azuredevops.restapi.get_build_list")
+def test_get_last_build_id_given_args_when_build_list_is_empty_then_return_none(get_build_list_mock, platformdata):
+    """ Given args, when get_build_list returns no builds, then return None"""
+    # Arrange
+    organization = platformdata.organization
+    project = platformdata.project
+    user_name = platformdata.user_name
+    access_token = platformdata.access_token
+    build_list = json.loads("{\"count\": 0}")
+    get_build_list_mock.return_value = build_list
+    # Act
+    result = sut.get_last_build_id(organization, project, user_name, access_token)
+    # Assert
+    assert result is None
+
+
+@patch("devops_platforms.azuredevops.restapi.get_build_list")
+def test_get_last_build_id_given_args_when_build_list_is_not_empty_then_return_first_build_id(get_build_list_mock,
+                                                                                              platformdata,
+                                                                                              artifactsdata):
+    """ Given args, when get_build_list returns builds, then return the first build id"""
+    # Arrange
+    organization = platformdata.organization
+    project = platformdata.project
+    user_name = platformdata.user_name
+    access_token = platformdata.access_token
+    build_list = json.loads("{\"count\": 1, \"value\": [{\"id\": \"123456\"}]}")
+    get_build_list_mock.return_value = build_list
+    # Act
+    result = sut.get_last_build_id(organization, project, user_name, access_token)
+    # Assert
+    assert result == artifactsdata.build_id
+
+# endregion get_last_build_id
+
+# region get_artifact
+
+
+@patch("devops_platforms.azuredevops.restapi.get_build")
+@patch("devops_platforms.azuredevops.restapi.generate_authentication_header")
+@patch("filesystem.paths.download_file")
+def test_get_artifact_given_args_when_get_build_returns_download_url_then_calls_download_file(download_file_mock,
+    auth_header_mock, get_build_mock, platformdata, artifactsdata):
+    """ Given arguments, when get_build retrieves a build with download url, then calls filesystem.download_file """
+    # Arrange
+    organization = platformdata.organization
+    project = platformdata.project
+    user_name = platformdata.user_name
+    access_token = platformdata.access_token
+    build_id = artifactsdata.build_id
+    artifact_name = artifactsdata.artifact_name
+    destination = "path/to/destination"
+    headers = "my_headers"
+    build = json.loads("{\"resource\": {\"downloadUrl\": \"my_url\"}}")
+    get_build_mock.return_value = build
+    auth_header_mock.return_value = headers
+    # Act
+    sut.get_artifact(organization, project, build_id, artifact_name, destination, user_name, access_token)
+    # Assert
+    download_file_mock.assert_called_once_with("my_url", destination, f"{artifact_name}.zip", headers)
+
+# endregion get_artifact
+
+# region get_last_artifact
+
+
+# endregion get_last_artifact
+
 
