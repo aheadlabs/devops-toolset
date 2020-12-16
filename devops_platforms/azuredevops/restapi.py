@@ -5,7 +5,7 @@ from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from devops_platforms.azuredevops.Literals import Literals as PlatformSpecificLiterals
 from devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
-from filesystem.paths import download_file
+import filesystem.paths
 from tools.xcoding64 import encode
 from typing import Union
 import logging
@@ -138,7 +138,8 @@ def get_artifact(organization: str, project: str, build_id: int, artifact_name: 
     download_url = build["resource"]["downloadUrl"]
     if download_url:
         headers = generate_authentication_header(user_name, access_token)
-        download_file(build["resource"]["downloadUrl"], destination_path, f"{artifact_name}.zip", headers)
+        filesystem.paths.download_file(build["resource"]["downloadUrl"], destination_path, f"{artifact_name}.zip",
+                                       headers)
 
 
 def get_last_artifact(organization: str, project: str, artifact_name: str, destination_path: str,
