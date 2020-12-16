@@ -12,10 +12,14 @@ class PlatformData(object):
     description = "Lorem ipsum dolor sit amet"
     user_name = "user_name"
     access_token = "test_token"
+    organization = "my_organization"
+    project = "my_project"
 
 
 class ArtifactsData(object):
     """Class used to create the artifactsdata fixture"""
+    artifact_name = "my_artifact"
+    build_id = "123456"
     artifact_destination_path = "/pathto/artifact/destination"
     feed_content = "{\"name\":\"feed_name\",\"package\":\"package_name\",\"version\":\"1.0.1\"," \
                    "\"organization_url\":\"https://my-organization\"}"
