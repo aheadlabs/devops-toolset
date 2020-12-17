@@ -45,7 +45,6 @@ def download_file(url: str, destination: str, save_as: str = None, headers: dict
         file.write(response.content)
 
     return file_name, full_destination_path
-    # TODO(ivan.sainz) Unit tests
 
 
 def files_exist(path: str, file_names: List[str]) -> List[Tuple[str, bool]]:
@@ -200,7 +199,6 @@ def get_project_root() -> str:
 
 
 def is_empty_dir(path: str = None) -> bool:
-    # TODO (alberto.carbonell) Cover this method with tests
     """Checks if the current path is an empty directory
 
        Args:
