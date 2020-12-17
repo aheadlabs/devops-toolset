@@ -12,7 +12,6 @@ platform_specific = app.load_platform_specific("environment")
 literals = LiteralsCore([FileSystemLiterals])
 
 
-# TODO(ivan.sainz) Unit tests
 def parse_composer_json_data(add_environment_variables: bool = True, composer_json_path: str = None) -> dict:
     """Reads the composer.json file and returns a dict with its data.
 
@@ -22,7 +21,7 @@ def parse_composer_json_data(add_environment_variables: bool = True, composer_js
     Args:
         add_environment_variables: If True it adds every element of the dict as
             an environment variable.
-        composer_json_path: Path to the project.xml file.
+        composer_json_path: Path to the composer.json file.
     """
 
     if composer_json_path is None:

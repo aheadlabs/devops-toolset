@@ -216,7 +216,6 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         else:
             logging.warning(platform_literals.get("azdevops_token_not_found"))
             logging.warning(platform_literals.get("azdevops_download_package_manually"))
-        # TODO(ivan.sainz) Unit tests
     elif source_type == "url":
         paths.download_file(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
 

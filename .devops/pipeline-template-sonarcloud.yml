@@ -10,6 +10,7 @@ steps:
       configFile: '.devops/sonar-project.properties'
       extraProperties: |
         sonar.branch.name=$(CURRENT_BRANCH)
+        sonar.projectVersion=$(PROJECT_VERSION)
   - task: SonarCloudPrepare@1
     displayName: Prepare SonarCloud analysis (PR)
     condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
@@ -21,6 +22,7 @@ steps:
       configFile: '.devops/sonar-project.properties'
       extraProperties: |
         sonar.pullrequest.branch=$(CURRENT_BRANCH)
+        sonar.projectVersion=$(VERSION)
   - task: SonarCloudAnalyze@1
     displayName: Run SonarCloud analysis
   - task: SonarCloudPublish@1
