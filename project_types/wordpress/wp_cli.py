@@ -84,7 +84,7 @@ def convert_wp_parameter_db_pass(db_pass: str):
 
 
 def convert_wp_parameter_activate(activate: bool):
-    """Converts a str value to a --admin_password parameter."""
+    """Converts a str value to a --activate."""
     if activate:
         return "--activate"
     else:
