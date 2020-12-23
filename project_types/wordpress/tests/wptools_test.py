@@ -481,6 +481,32 @@ def test_import_database_given_config_then_call_cli_import_database(import_datab
 
 # endregion
 
+# region import_content_from_configuration_file()
+
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+@patch("project_types.wordpress.wp_cli.delete_post_type_content")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(get_constants_mock,
+    delete_content_mock, import_wxr_content, wordpressdata):
+    """ Given args, for every content type present, should call delete_post_type_content with required data """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    admin_db_user = "root"
+    admin_db_password = "root"
+    wordpress_path = wordpressdata.wordpress_path
+    expected_content_imported = ["page", "nav_menu_item"]
+    # Act
+    sut.import_content_from_configuration_file(site_config, wordpress_path, admin_db_user, admin_db_password)
+    expected_calls = [call(wordpress_path, expected_content_imported[0], admin_db_user, admin_db_password, False),
+                      call(wordpress_path, expected_content_imported[1], admin_db_user, admin_db_password, False)]
+
+    # Assert
+    delete_content_mock.assert_has_calls(expected_calls)
+
+# endregion import_content_from_configuration_file
+
 # region install_plugins_from_configuration_file()
 
 
