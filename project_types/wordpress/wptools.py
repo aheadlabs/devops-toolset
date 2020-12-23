@@ -447,6 +447,34 @@ def get_wordpress_path_from_root_path(root_path) -> str:
     return wordpress_path
 
 
+def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str, admin_db_user: str = "",
+                                           admin_db_password: str = ""):
+    """ Imports WordPress posts content specified on a site_configuration file .
+
+    Args:
+        site_configuration: parsed site configuration.
+        wordpress_path: Path to WordPress files.
+        admin_db_user: User with admin rights (needed for database manipulation)
+        admin_db_password: Password of user with admin rights (needed for database manipulation)
+    """
+    # Add constants
+    wp_constants = get_constants()
+
+    # Get wxr path from the constants
+    wxr_path = pathlib.Path(wp_constants["paths"]["content"]["wxr"])
+    authors = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+    if not pathlib.Path.exists(authors):
+        authors = "skip"
+    debug_info = site_configuration["wp_cli"]["debug"]
+    for content_type in site_configuration["content"]:
+        # File name will be the {wxr_path}/{content_type}.xml
+        content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+        # Delete content before importing (to avoid duplicating content)
+        wp_cli.delete_post_type_content(wordpress_path, content_type, admin_db_user, admin_db_password, debug_info)
+        # Import new content
+        wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
+
+
 def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
     """Imports a WordPress database from a dump file based on a site_configuration file.
 

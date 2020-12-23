@@ -61,6 +61,8 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_wordpress": _("Downloading WordPress core files version {version}, locale {locale}"),
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
         "wp_wpcli_export": _("Exporting WordPress content to {path}"),
+        "wp_wpcli_import_after": _("{type} content imported successfully. "),
+        "wp_wpcli_import_before": _("Importing {type} content..."),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
