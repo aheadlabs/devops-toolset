@@ -526,6 +526,7 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
     # Assert
     install_plugin_mock.assert_not_called()
 
+
 @patch("logging.info")
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("project_types.wordpress.wp_cli.install_plugin")

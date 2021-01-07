@@ -63,6 +63,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_export": _("Exporting WordPress content to {path}"),
         "wp_wpcli_import_after": _("{type} content imported successfully. "),
         "wp_wpcli_import_before": _("Importing {type} content..."),
+        "wp_wpcli_import_error": _("There was an error when importing {type} content..."),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
