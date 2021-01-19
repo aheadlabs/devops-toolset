@@ -45,7 +45,7 @@ def main(destination_path: str, branch: str):
 
 
 def cleanup(full_destination_path, internal_directory_full_path, temporary_extraction_path):
-    """Downloads devops-toolset from the GitHub repository
+    """Deletes temporary files
 
     Args:
         full_destination_path: Path where devops-toolset will be downloaded and decompressed joined to the toolset-name
@@ -63,7 +63,7 @@ def cleanup(full_destination_path, internal_directory_full_path, temporary_extra
 
 
 def decompress_toolset(destination_path_object, full_destination_path, internal_directory):
-    """Downloads devops-toolset from the GitHub repository
+    """Decompresses devops-toolset
 
     Args:
         destination_path_object: Path where devops-toolset will be downloaded and decompressed.
