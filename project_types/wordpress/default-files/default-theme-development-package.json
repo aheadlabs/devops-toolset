@@ -1,0 +1,31 @@
+{
+  "name": "my-wordpress-project",
+  "version": "0.1.0",
+  "description": "Ad hoc WordPress theme.",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp build --theme-slug=${npm_package_name} --dist=dist --wordpress-theme-path=../../../wordpress/wp-content/themes/${npm_package_name}",
+    "watch": "gulp watch --theme-slug=${npm_package_name} --dist=dist --wordpress-theme-path=../../../wordpress/wp-content/themes/${npm_package_name} --dev-proxy=localhost/${npm_package_name}",
+    "i18n-pot": "wp i18n make-pot . src/languages/mytheme.pot",
+    "i18n-compile": "msgfmt -o src/languages/en_US.mo src/languages/en_US.po && msgfmt -o src/languages/es_ES.mo src/languages/es_ES.po"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "framework",
+    "w74",
+    "aheadlabs"
+  ],
+  "author": "@aheadlabs",
+  "license": "ISC",
+  "homepage": "https://example.com",
+  "devDependencies": {
+    "@aheadlabs/gulp-w74framework": "latest",
+    "bootstrap": "latest",
+    "gulp": "latest"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "latest"
+  }
+}

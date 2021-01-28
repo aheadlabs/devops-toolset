@@ -1,0 +1,26 @@
+/*!
+Theme Name: MyTheme WordPress theme
+Theme URI: https://example.com/
+Description: Ad hoc WordPres theme.
+Author: Ahead Labs, S.L.
+Author URI: https://aheadlabs.com
+Tags: ahead-labs, theme
+Version: {{version}}
+Requires at least: 5.6
+Tested up to: 5.6
+Requires PHP: 7.4.11
+License: Copyright
+Text Domain: mytheme
+Template: w74-framework
+*/
+
+// NOTE Version number is replaced by the version number of the package.json file. Please do not delete the version token.
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "fontawesome";
+
+@import "variables";
+
+// TODO Write your theme styles below this line

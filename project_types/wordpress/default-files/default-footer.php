@@ -1,0 +1,3 @@
+I am your footer...
+<?php
+// TODO Implement your footer page here
