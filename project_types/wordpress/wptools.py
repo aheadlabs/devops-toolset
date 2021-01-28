@@ -470,7 +470,7 @@ def import_content_from_configuration_file(site_configuration: dict, wordpress_p
         # File name will be the {wxr_path}/{content_type}.xml
         content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
         # Delete content before importing (to avoid duplicating content)
-        wp_cli.delete_post_type_content(wordpress_path, content_type, admin_db_user, admin_db_password, debug_info)
+        wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
         # Import new content
         wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
 

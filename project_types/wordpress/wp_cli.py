@@ -304,9 +304,19 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
     )
 
 
-def delete_post_type_content(wordpress_path: str, content_type: str, admin_db_user: str, admin_db_password: str,
-                             debug_info: bool = False):
-    return None
+def delete_post_type_content(wordpress_path: str, content_type: str, debug_info: bool = False):
+    """ Calls db in order to delete content from a concrete post type
+    Args:
+        wordpress_path: Path to WordPress files.
+        content_type: Type of the content to be deleted
+        debug_info: If true, --debug will be added to the command showing all debug trace information.
+    """
+    cli.call_subprocess(commands.get("wpcli_post_delete_posttype").format(
+        path=wordpress_path,
+        post_type=content_type,
+        debug_info=debug_info),
+        log_before_out=[literals.get("wp_wpcli_post_delete_posttype_before").format(post_type=content_type)],
+        log_before_err=[literals.get("wp_wpcli_post_delete_posttype_err").format(post_type=content_type)])
 
 
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):

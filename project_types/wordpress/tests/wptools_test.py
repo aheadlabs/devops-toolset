@@ -499,8 +499,8 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     expected_content_imported = ["page", "nav_menu_item"]
     # Act
     sut.import_content_from_configuration_file(site_config, wordpress_path, admin_db_user, admin_db_password)
-    expected_calls = [call(wordpress_path, expected_content_imported[0], admin_db_user, admin_db_password, False),
-                      call(wordpress_path, expected_content_imported[1], admin_db_user, admin_db_password, False)]
+    expected_calls = [call(wordpress_path, expected_content_imported[0], False),
+                      call(wordpress_path, expected_content_imported[1], False)]
 
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)

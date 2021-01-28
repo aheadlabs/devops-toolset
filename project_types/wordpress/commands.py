@@ -35,6 +35,8 @@ class Commands(ValueDictsBase):
         "wpcli_db_query_user_exists": "wp db query \"select exists (select 1 from mysql.user where user='{user}' "
                                       "and host='{host}')\" --dbuser={admin_user} --dbpass={admin_password} "
                                       "--path={path}",
+        "wpcli_post_delete_posttype": "wp post delete $(wp post list --post_type={post_type} --path={path} "
+                                      "--format=ids) --force {debug_info}",
         "wpcli_eval": "wp eval \"{php_code}\" --path={path}",
         "wpcli_export": "wp export --path=\"{path}\" --dir=\"{destination_path}\" "
                         "--filename_format={date}_UTC-content{suffix}.xml",
