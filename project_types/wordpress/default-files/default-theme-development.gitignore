@@ -1,0 +1,15 @@
+# Node.js artifact files
+node_modules/
+
+# IDEs
+.idea/
+.vscode/
+
+# Dist files
+dist/
+
+# Multilanguage
+src/languages/*.mo
+
+# Thirdparties
+src/vendor/
