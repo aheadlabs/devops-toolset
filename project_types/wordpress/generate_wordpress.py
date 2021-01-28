@@ -135,8 +135,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
 
     # Import wxr content
-    wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path, db_admin_user,
-                                                             db_admin_password)
+    wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(environment_file_path, additional_environments,

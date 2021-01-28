@@ -493,12 +493,10 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
     get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    admin_db_user = "root"
-    admin_db_password = "root"
     wordpress_path = wordpressdata.wordpress_path
     expected_content_imported = ["page", "nav_menu_item"]
     # Act
-    sut.import_content_from_configuration_file(site_config, wordpress_path, admin_db_user, admin_db_password)
+    sut.import_content_from_configuration_file(site_config, wordpress_path)
     expected_calls = [call(wordpress_path, expected_content_imported[0], False),
                       call(wordpress_path, expected_content_imported[1], False)]
 

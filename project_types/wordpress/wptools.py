@@ -447,15 +447,12 @@ def get_wordpress_path_from_root_path(root_path) -> str:
     return wordpress_path
 
 
-def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str, admin_db_user: str = "",
-                                           admin_db_password: str = ""):
+def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str):
     """ Imports WordPress posts content specified on a site_configuration file .
 
     Args:
         site_configuration: parsed site configuration.
         wordpress_path: Path to WordPress files.
-        admin_db_user: User with admin rights (needed for database manipulation)
-        admin_db_password: Password of user with admin rights (needed for database manipulation)
     """
     # Add constants
     wp_constants = get_constants()
