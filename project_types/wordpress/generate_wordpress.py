@@ -134,6 +134,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Install site plugins
     wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
 
+    # Import wxr content
+    wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
+
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(environment_file_path, additional_environments,
                                        additional_environment_db_user_passwords, wordpress_path)

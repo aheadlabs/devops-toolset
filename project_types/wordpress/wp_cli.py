@@ -304,6 +304,21 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
     )
 
 
+def delete_post_type_content(wordpress_path: str, content_type: str, debug_info: bool = False):
+    """ Calls db in order to delete content from a concrete post type
+    Args:
+        wordpress_path: Path to WordPress files.
+        content_type: Type of the content to be deleted
+        debug_info: If true, --debug will be added to the command showing all debug trace information.
+    """
+    cli.call_subprocess(commands.get("wpcli_post_delete_posttype").format(
+        path=wordpress_path,
+        post_type=content_type,
+        debug_info=debug_info),
+        log_before_out=[literals.get("wp_wpcli_post_delete_posttype_before").format(post_type=content_type)],
+        log_before_err=[literals.get("wp_wpcli_post_delete_posttype_err").format(post_type=content_type)])
+
+
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
     """ Downloads the latest version of the WordPress core files using WP-CLI.
 
@@ -406,6 +421,25 @@ def import_database(wordpress_path: str, dump_file_path: str, debug: bool):
         file=dump_file_path, path=wordpress_path, debug_info=convert_wp_parameter_debug(debug)),
                         log_before_process=[literals.get("wp_wpcli_db_import_before"), dump_file_path],
                         log_after_err=[literals.get("wp_wpcli_db_import_error")])
+
+
+def import_wxr_content(wordpress_path: str, wxr_path: str, authors: str, debug: bool):
+    """ Imports wxr files as content for the current WordPress from the wxr_path
+
+    All parameters are obtained from a site configuration file.
+    For more info, see: https://developer.wordpress.org/cli/commands/import/
+
+     Args:
+        wordpress_path: Path to WordPress files.
+        wxr_path: Path the wxr files will be imported from.
+        authors: Value for the authors argument.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+
+    """
+    cli.call_subprocess(commands.get("wpcli_import").format(
+        file=wxr_path, path=wordpress_path, authors=authors, debug_info=convert_wp_parameter_debug(debug)),
+        log_before_process=[literals.get("wp_wpcli_import_before"), wxr_path],
+        log_after_err=[literals.get("wp_wpcli_import_error")])
 
 
 def install_theme(wordpress_path: str, source: str, activate: bool, debug: bool, theme_name: str):

@@ -113,14 +113,15 @@ class WordPressData:
                           "\"type\":\"constant\",\"value\":\"minor\"},\"image_edit_overwrite\":" \
                           "{\"name\":\"IMAGE_EDIT_OVERWRITE\",\"type\":\"constant\",\"value\":true}}," \
                           "\"skip_content_download\":false,\"concatenate_scripts\":true},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
                           "\"themes\":[],\"plugins\":[]}"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \
                              "\"defaults\":{\"version\":\"latest\",\"locale\":\"en_US\"},\"paths\":{\"devops\":" \
                              "\"/.devops\",\"database\":\"/database\",\"wordpress\":\"/wordpress\",\"content\":" \
-                             "{\"themes\":\"/content/themes\",\"plugins\":\"/content/plugins\"}},\"packages\":" \
-                             "{\"devops_toolset\":" \
+                             "{\"themes\":\"/content/themes\",\"plugins\":\"/content/plugins\"," \
+                             "\"wxr\":\"/content/wxr\"}},\"packages\":{\"devops_toolset\":" \
                              "\"https://github.com/aheadlabs/devops-toolset/archive/master.zip\"},\"regex_base64\":" \
                              "[{\"key\":\"wordpress-theme\",\"value\":" \
                              "\"d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8=\"}]}"

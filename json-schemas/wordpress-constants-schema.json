@@ -41,12 +41,16 @@
                         },
                         "plugins": {
                             "type": "string"
+                        },
+                         "wxr": {
+                            "type": "string"
                         }
                     },
                     "additionalProperties": false,
                     "required": [
                         "themes",
-                        "plugins"
+                        "plugins",
+                        "wxr"
                     ]
                 }
             },
