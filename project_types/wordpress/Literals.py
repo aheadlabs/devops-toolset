@@ -61,10 +61,14 @@ class Literals(ValueDictsBase):
         "wp_wpcli_downloading_wordpress": _("Downloading WordPress core files version {version}, locale {locale}"),
         "wp_wpcli_downloading_wordpress_ok": _("WordPress core files were successfully downloaded."),
         "wp_wpcli_export": _("Exporting WordPress content to {path}"),
+        "wp_wpcli_import_after": _("{type} content imported successfully. "),
+        "wp_wpcli_import_before": _("Importing {type} content..."),
+        "wp_wpcli_import_error": _("There was an error when importing {type} content..."),
         "wp_wpcli_info": _("Here is the WP-CLI information:"),
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
+        "wp_wpcli_post_delete_posttype_before": _("Deleting posts of type {post_type}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
         "wp_write_default_content": _("Writing default content to file \"{file}\" from {source}"),
@@ -113,7 +117,8 @@ class Literals(ValueDictsBase):
         "wp_wpcli_export_err": _("WordPress content could not be exported to {path}"),
         "wp_wpcli_option_update_error":
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
-        "wp_wpcli_plugin_install_error": _("Plugin {plugin_name} could not be installed due to an error."),
+        "wp_wpcli_plugin_install_err": _("Plugin {plugin_name} could not be installed due to an error."),
+        "wp_wpcli_post_delete_posttype_err": _("Unable to delete content from type {post_type} due to an error."),
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
         "wp_gulp_build_error":
             _("Gulp build task has encountered an error for theme {theme_slug}. "

@@ -343,7 +343,7 @@
             },
             "wpml_auto_updates": {
               "$ref": "#/definitions/wp_config_property_boolean"
-            },
+            }
           },
           "additionalProperties": false,
           "additionalItems": false,
@@ -400,7 +400,8 @@
         "$ref": "#/definitions/wp_plugin"
       },
       "default": []
-    }
+    },
+    "content": {"type": "array", "contains":  {"type" : "string" }}
   },
   "required": [
     "wp_cli",

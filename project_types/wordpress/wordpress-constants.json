@@ -10,7 +10,8 @@
         "wordpress":"wordpress",
         "content":{
             "themes":"content/themes",
-            "plugins":"content/plugins"
+            "plugins":"content/plugins",
+            "wxr":"content/wxr"
         }
     },
     "packages": {

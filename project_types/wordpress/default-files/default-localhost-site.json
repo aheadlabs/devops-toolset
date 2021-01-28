@@ -67,5 +67,9 @@
          "source": "wordpress-importer",
          "force": true
         }
+    ],
+    "content": [
+        "page",
+        "nav_menu_item"
     ]
 }
