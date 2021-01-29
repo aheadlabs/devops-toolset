@@ -21,6 +21,7 @@ from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 from devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
+from devops_platforms import constants as devops_platforms_constants
 from project_types.wordpress.commands import Commands as WordpressCommands
 from tools import cli
 from typing import List, Tuple
@@ -268,21 +269,21 @@ def get_constants() -> dict:
     return data
 
 
-def get_project_structure(path: str) -> dict:
-    """Gets the project structure from a WordPress project structure file.
+def get_project_structure(url_resource: str) -> dict:
+    """Gets the project structure from a WordPress project structure file located on an url resource.
 
     For more information see:
         http://dev.aheadlabs.com/schemas/json/project-structure-schema.json
 
     Args:
-        path: Full path to the WordPress project structure file.
+        url_resource: Full url resource to the WordPress project structure file.
 
     Returns:
         Project structure in a dict object.
     """
-    with open(path, "r") as project_structure_file:
-        data = project_structure_file.read()
-        return json.loads(data)
+    request = requests.get(url_resource)
+    data = request.json()
+    return json.loads(data)
 
 
 def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tuple:
@@ -805,18 +806,17 @@ def setup_database(site_config: dict, wordpress_path: str, db_user_password: str
         wordpress_path, admin_db_user, admin_db_password, db_user, db_user_password, schema, db_host)
 
 
-def start_basic_project_structure(root_path: str, project_structure_path: str) -> None:
+def start_basic_project_structure(root_path: str) -> None:
     """ Creates a basic structure of a wordpress project based on the project-structure.json
 
     Args:
         root_path: Full path where the structure will be created
-        project_structure_path: Full path to the json containing the structure
     """
 
     logging.info(literals.get("wp_creating_project_structure"))
 
     # Parse project structure configuration
-    project_structure = get_project_structure(project_structure_path)
+    project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
     project_starter = BasicStructureStarter()
 
     # Iterate through every item recursively

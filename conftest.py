@@ -37,6 +37,7 @@ def filenames():
     """Sample file names for testing file system related functionality"""
     return FileNames()
 
+
 @pytest.fixture
 def mocks():
     """ General testing mocks """

@@ -55,7 +55,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     root_path_obj = pathlib.Path(root_path)
     database_path = global_constants["paths"]["database"]
 
-    # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
+    # Look for *site.json and *site-environments.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{ x[1]}", constants.required_files_suffixes.items()))
     required_files_not_present = paths.files_exist_filtered(root_path, False, required_files_pattern_suffixes)
 
@@ -103,7 +103,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
 
     # Create project structure & prepare devops-toolset
-    wordpress.wptools.start_basic_project_structure(root_path, project_structure_file_path)
+    wordpress.wptools.start_basic_project_structure(root_path)
 
     # Check for updates / download devops-toolset
     setup_devops_toolset(root_path)
