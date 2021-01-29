@@ -4,13 +4,14 @@
 class Urls(object):
     """URL constants"""
     GITHUB_RAW_CONTENT = "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/"
-    DEVOPS_TOOLSET_MASTER = GITHUB_RAW_CONTENT + "project_types/wordpress/default-project.xml"
+    DEVOPS_TOOLSET_MASTER = GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default-project.xml"
     SONAR_QUALITY_GATE_PARTIAL_URL = "/api/qualitygates/project_status?projectKey="
-    DEFAULT_PROJECT_XML = GITHUB_RAW_CONTENT + "project_types/wordpress/default-project.xml"
-    DEFAULT_README = GITHUB_RAW_CONTENT + "project_types/wordpress/default-README.md"
-    DEFAULT_GITIGNORE = GITHUB_RAW_CONTENT + "project_types/wordpress/default.gitignore"
-    DEFAULT_SITE_CONFIG = GITHUB_RAW_CONTENT + "project_types/wordpress/default-localhost-site.json"
-    DEFAULT_SITE_ENVIRONMENTS = GITHUB_RAW_CONTENT + "project_types/wordpress/default-site-environments.json"
+    DEFAULT_PROJECT_XML = GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default-project.xml"
+    DEFAULT_README = GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default-README.md"
+    DEFAULT_GITIGNORE = GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default.gitignore"
+    DEFAULT_SITE_CONFIG = GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default-localhost-site.json"
+    DEFAULT_SITE_ENVIRONMENTS = GITHUB_RAW_CONTENT + \
+        "project_types/wordpress/default-files/default-site-environments.json"
     DEFAULT_WORDPRESS_PROJECT_STRUCTURE = \
         GITHUB_RAW_CONTENT + "project_types/wordpress/default-wordpress-project-structure.json"
 
