@@ -89,7 +89,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     required_file_paths = wordpress.wptools.get_required_file_paths(
         root_path, required_files_pattern_suffixes)
     environment_file_path = required_file_paths[1]
-    project_structure_file_path = required_file_paths[2]
 
     # Get database admin user from environment
     db_admin_user = wordpress.wptools.get_db_admin_from_environment(environment_file_path, environment)
