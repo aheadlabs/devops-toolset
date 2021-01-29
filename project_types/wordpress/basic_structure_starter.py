@@ -41,10 +41,11 @@ class BasicStructureStarter(object):
                 os.mkdir(final_path)
                 logging.debug(literals.get("wp_directory_created").format(directory=final_path))
             elif item["type"] == "file":
-                with open(final_path, "a") as new_file:
+                with open(final_path, "w", newline="\n") as new_file:
                     # Add default content if applies
                     if "default_content" in item:
-                        new_file.write(self.get_default_content(item["default_content"]))
+                        default_content = self.get_default_content(item["default_content"])
+                        new_file.write(default_content)
                         logging.debug(literals.get("wp_file_created").format(file=final_path))
 
         # Iterate through children if any
