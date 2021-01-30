@@ -220,6 +220,7 @@ if __name__ == "__main__":
     parser.add_argument("--additional-environment-db-user-passwords", default="")
     parser.add_argument("--create-db", action="store_true", default=False)
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
+    parser.add_argument("--create-development-theme", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
