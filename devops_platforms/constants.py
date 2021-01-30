@@ -13,7 +13,7 @@ class Urls(object):
     DEFAULT_SITE_ENVIRONMENTS = GITHUB_RAW_CONTENT + \
         "project_types/wordpress/default-files/default-site-environments.json"
     DEFAULT_WORDPRESS_PROJECT_STRUCTURE = \
-        GITHUB_RAW_CONTENT + "project_types/wordpress/default-wordpress-project-structure.json"
+        GITHUB_RAW_CONTENT + "project_types/wordpress/default-files/default-wordpress-project-structure.json"
 
     bootstrap_required_files = {
         "*site.json": DEFAULT_SITE_CONFIG,

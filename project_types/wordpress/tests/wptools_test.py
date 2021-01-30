@@ -314,7 +314,7 @@ def test_get_project_structure_given_resource_reads_and_parses_content(wordpress
     result = sut.get_project_structure(url_resource)
 
     # Assert
-    assert result == json.loads(WordPressData.structure_file_content)
+    assert result == WordPressData.structure_file_content
 
 
 # endregion

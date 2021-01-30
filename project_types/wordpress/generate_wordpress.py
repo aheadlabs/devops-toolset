@@ -64,9 +64,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         core.log_tools.log_indented_list(literals.get("wp_required_files_not_found_detail").format(path=root_path),
                                          required_files_not_present, core.log_tools.LogLevel.warning)
 
-        core.log_tools.log_indented_list(literals.get("wp_default_files"), [
-            Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE, Urls.DEFAULT_SITE_ENVIRONMENTS, Urls.DEFAULT_SITE_CONFIG],
-                                         core.log_tools.LogLevel.info)
+        core.log_tools.log_indented_list(literals.get("wp_default_files"), [Urls.DEFAULT_SITE_ENVIRONMENTS,
+            Urls.DEFAULT_SITE_CONFIG], core.log_tools.LogLevel.info)
 
         # Ask to use defaults
         use_defaults = prompt.yn(literals.get("wp_use_default_files"))

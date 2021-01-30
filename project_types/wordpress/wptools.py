@@ -282,8 +282,7 @@ def get_project_structure(url_resource: str) -> dict:
         Project structure in a dict object.
     """
     request = requests.get(url_resource)
-    data = request.json()
-    return json.loads(data)
+    return request.json()
 
 
 def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tuple:
