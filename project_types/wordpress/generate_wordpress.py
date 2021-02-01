@@ -33,7 +33,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
          environment: str, additional_environments: list, additional_environment_db_user_passwords: list,
-         create_db: bool, skip_partial_dumps: bool, **kwargs):
+         create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs):
     """Generates a new Wordpress site based on the required configuration files
 
     Args:
@@ -49,6 +49,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         create_db: If True it creates the database and the user.
         skip_partial_dumps: If True skips partial database dumps
             (after installing WordPress, themes and plugins).
+        create_development_theme: If true, creates the structure of a development theme.
         kwargs: Platform-specific arguments
     """
     global_constants = wordpress.wptools.get_constants()
@@ -108,6 +109,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Download WordPress core files
     wordpress.wptools.download_wordpress(site_config, wordpress_path)
+
+    # Create development theme (if needed)
+    if create_development_theme:
+        wordpress.wptools.create_development_theme(site_config["themes"], themes_path)
 
     # Set development themes / plugins ready
     wordpress.wptools.build_theme(site_config["themes"], themes_path)
@@ -218,15 +223,16 @@ if __name__ == "__main__":
     parser.add_argument("--additional-environment-db-user-passwords", default="")
     parser.add_argument("--create-db", action="store_true", default=False)
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
+    parser.add_argument("--create-development-theme", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
-        splited = str(kwarg).split("=")
-        kwargs[splited[0]] = splited[1]
+        splitted = str(kwarg).split("=")
+        kwargs[splitted[0]] = splitted[1]
 
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
     main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password,
          args.environment,
          args.additional_environments.split(","),
          args.additional_environment_db_user_passwords.split(","),
-         args.create_db, args.skip_partial_dumps, **kwargs)
+         args.create_db, args.skip_partial_dumps, args.create_development_theme, **kwargs)

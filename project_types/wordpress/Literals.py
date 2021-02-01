@@ -68,6 +68,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_install_ok": _("WP-CLI installation was successful."),
         "wp_wpcli_option_update_before": _("Updating database option {option_name}..."),
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
+        "wp_wpcli_plugin_install_error": _("An error occurred installing plugin {plugin_name}..."),
         "wp_wpcli_post_delete_posttype_before": _("Deleting posts of type {post_type}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),

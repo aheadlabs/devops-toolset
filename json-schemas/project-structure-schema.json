@@ -27,6 +27,7 @@
                 },
                 "type": {
                     "enum": [
+                        "bfile",
                         "file",
                         "directory"
                     ]

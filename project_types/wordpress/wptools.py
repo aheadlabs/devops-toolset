@@ -155,6 +155,21 @@ def create_configuration_file(site_configuration: dict, wordpress_path: str, dat
                                      )
 
 
+def create_development_theme(theme_configuration: dict, destination_path: str):
+    """ Creates the structure of a development theme.
+
+    Args:
+        theme_configuration: The themes configuration node
+        destination_path: The desired destination path of the theme
+    """
+
+    # Extract theme name from the themes configuration dict
+    theme_name = filter(lambda t: t["source"] == "src", theme_configuration)["name"]
+    #
+    str
+    # Replace necessary theme files with the theme name.
+
+
 def download_wordpress(site_configuration: dict, destination_path: str):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
@@ -821,6 +836,28 @@ def start_basic_project_structure(root_path: str) -> None:
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, root_path)
+
+    logging.info(literals.get("wp_created_project_structure"))
+
+
+def start_basic_theme_structure(path: str, theme_name: str) -> None:
+    """ Creates a basic structure of a wordpress development theme based on its default theme-structure.json
+
+        Args:
+            path: Full path where the structure will be created
+            theme_name: Name of the theme to be used to create the root folder
+        """
+
+    logging.info(literals.get("wp_creating_theme_structure"))  # TODO: Add this literal
+
+    # Parse project structure configuration
+    project_structure = get_project_structure(
+        devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
+    project_starter = BasicStructureStarter()
+
+    # Iterate through every item recursively
+    for item in project_structure["items"]:
+        project_starter.add_item(item, path)
 
     logging.info(literals.get("wp_created_project_structure"))
 
