@@ -165,8 +165,8 @@ def create_development_theme(theme_configuration: dict, destination_path: str):
 
     # Extract theme name from the themes configuration dict
     theme_name = filter(lambda t: t["source"] == "src", theme_configuration)["name"]
-    #
-    str
+    # Create the structure based on the theme_name
+    start_basic_theme_structure(destination_path, theme_name)
     # Replace necessary theme files with the theme name.
 
 
@@ -848,18 +848,21 @@ def start_basic_theme_structure(path: str, theme_name: str) -> None:
             theme_name: Name of the theme to be used to create the root folder
         """
 
-    logging.info(literals.get("wp_creating_theme_structure"))  # TODO: Add this literal
+    logging.info(literals.get("wp_creating_theme_structure"))
 
     # Parse project structure configuration
     project_structure = get_project_structure(
         devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
     project_starter = BasicStructureStarter()
 
+    # Change the main folder's name of the theme to the theme_name
+    project_structure["items"][0]["name"] = theme_name
+
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, path)
 
-    logging.info(literals.get("wp_created_project_structure"))
+    logging.info(literals.get("wp_created_theme_structure"))
 
 
 def triage_themes(themes: dict) -> (dict, dict):
