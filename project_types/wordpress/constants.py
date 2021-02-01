@@ -2,8 +2,7 @@
 
 required_files_suffixes = {
     "site_configuration_file_path": "site.json",
-    "site_environments_file_path": "site-environments.json",
-    "project_structure_file_path": "project-structure.json"
+    "site_environments_file_path": "site-environments.json"
 }
 
 theme_metadata_parse_regex = ":\s([\w\d\sáéíóú'-.]+)\r\n"
