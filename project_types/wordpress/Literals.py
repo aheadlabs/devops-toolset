@@ -20,7 +20,10 @@ class Literals(ValueDictsBase):
         "wp_created_project_structure": _("Finished creation of the project structure."),
         "wp_creating_project_structure": _("Starting to create the project structure."),
         "wp_created_theme_structure": _("Finished creation of the development theme {theme_name} structure."),
-        "wp_creating_theme_structure": _("Starting to create the development theme {theme_name} structure."),
+        "wp_theme_structure_creating_from_file": _("Creating development theme [{theme_name}] structure from "
+                                                   "{file_name}"),
+        "wp_theme_structure_creating_from_default_file": _("Creating default development theme structure from "
+                                                   "{resource}"),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),

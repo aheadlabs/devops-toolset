@@ -155,18 +155,25 @@ def create_configuration_file(site_configuration: dict, wordpress_path: str, dat
                                      )
 
 
-def create_development_theme(theme_configuration: dict, destination_path: str):
+def create_development_theme(theme_configuration: dict, root_path: str):
     """ Creates the structure of a development theme.
 
     Args:
         theme_configuration: The themes configuration node
-        destination_path: The desired destination path of the theme
+        root_path: The desired destination path of the theme
     """
 
+    constants = get_constants()
+    root_path = pathlib.Path(root_path)
+    destination_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["themes"])
     # Extract theme name from the themes configuration dict
-    theme_name = filter(lambda t: t["source"] == "src", theme_configuration)["name"]
+    src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))
+    theme_slug = src_theme[0]["source"]
+    # Determine if we have a theme structure file available (should be named as [theme-slug]-wordpress-theme-structure
+    structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
+    structure_file_path = pathlib.Path.joinpath(root_path, structure_file_name)
     # Create the structure based on the theme_name
-    start_basic_theme_structure(destination_path, theme_name)
+    start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
     # Replace necessary theme files with the theme name.
 
 
@@ -829,8 +836,13 @@ def start_basic_project_structure(root_path: str) -> None:
 
     logging.info(literals.get("wp_creating_project_structure"))
 
+    structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), "wordpress-project-structure.json")
     # Parse project structure configuration
-    project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+    if pathlib.Path.exists(structure_file_path):
+        project_structure = get_site_configuration(structure_file_path)
+    else:
+        project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+
     project_starter = BasicStructureStarter()
 
     # Iterate through every item recursively
@@ -840,29 +852,40 @@ def start_basic_project_structure(root_path: str) -> None:
     logging.info(literals.get("wp_created_project_structure"))
 
 
-def start_basic_theme_structure(path: str, theme_name: str) -> None:
+def start_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
     """ Creates a basic structure of a wordpress development theme based on its default theme-structure.json
 
         Args:
             path: Full path where the structure will be created
             theme_name: Name of the theme to be used to create the root folder
+            structure_file_path: Optional parameter containing the structure file path to be used. If ignored, the
+            default structure file will be used.
         """
 
-    logging.info(literals.get("wp_creating_theme_structure"))
-
     # Parse project structure configuration
-    project_structure = get_project_structure(
-        devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
+    if pathlib.Path.exists(structure_file_path):
+        project_structure = get_site_configuration(structure_file_path)
+        logging.info(literals.get("wp_theme_structure_creating_from_file").format(theme_name=theme_name,
+                                                                                  file_name=structure_file_path))
+    else:
+        project_structure = get_project_structure(
+            devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
+        logging.info(literals.get("wp_theme_structure_creating_from_default_file").format(
+            resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
+
     project_starter = BasicStructureStarter()
 
     # Change the main folder's name of the theme to the theme_name
     project_structure["items"][0]["name"] = theme_name
 
+    # Purge .gitkeep
+    git_tools.purge_gitkeep(path)
+
     # Iterate through every item recursively
     for item in project_structure["items"]:
         project_starter.add_item(item, path)
 
-    logging.info(literals.get("wp_created_theme_structure"))
+    logging.info(literals.get("wp_created_theme_structure").format(theme_name=theme_name))
 
 
 def triage_themes(themes: dict) -> (dict, dict):

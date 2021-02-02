@@ -112,7 +112,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Create development theme (if needed)
     if create_development_theme:
-        wordpress.wptools.create_development_theme(site_config["themes"], themes_path)
+        wordpress.wptools.create_development_theme(site_config["themes"], root_path)
 
     # Set development themes / plugins ready
     wordpress.wptools.build_theme(site_config["themes"], themes_path)
