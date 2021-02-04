@@ -12,6 +12,7 @@ import filesystem.paths as paths
 import os
 import project_types.wordpress.constants as constants
 import project_types.wordpress.wptools
+import project_types.wordpress.wp_theme_tools as themetools
 import shutil
 import tools.argument_validators
 import tools.cli
@@ -99,7 +100,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Get future paths (from the constants.json file)
     wordpress_path = wordpress.wptools.get_wordpress_path_from_root_path(root_path)
     wordpress_path_as_posix = pathlib.Path(wordpress_path).as_posix()
-    themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
+    themes_path = themetools.get_themes_path_from_root_path(root_path)
 
     # Create project structure & prepare devops-toolset
     wordpress.wptools.start_basic_project_structure(root_path)
@@ -112,10 +113,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Create development theme (if needed)
     if create_development_theme:
-        wordpress.wptools.create_development_theme(site_config["themes"], root_path)
+        themetools.create_development_theme(site_config["themes"], root_path)
 
     # Set development themes / plugins ready
-    wordpress.wptools.build_theme(site_config["themes"], themes_path)
+    themetools.build_theme(site_config["themes"], themes_path)
 
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path, db_user_password)
@@ -132,7 +133,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.add_wp_options(site_config["settings"]["options"], wordpress_path, site_config["wp_cli"]["debug"])
 
     # Install site theme
-    wordpress.wptools.install_themes_from_configuration_file(site_config, root_path, skip_partial_dumps, **kwargs)
+    themetools.install_themes_from_configuration_file(site_config, root_path, skip_partial_dumps, **kwargs)
 
     # Install site plugins
     wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
