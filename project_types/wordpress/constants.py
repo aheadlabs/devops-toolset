@@ -6,6 +6,7 @@ required_files_suffixes = {
 }
 
 theme_metadata_parse_regex = ":\s([\w\d\sáéíóú'-.]+)\r\n"
+functions_php_mytheme_regex = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
 
 wordpress_constants_json_resource = \
     "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/project_types/wordpress/wordpress-constants.json"

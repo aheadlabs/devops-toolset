@@ -14,7 +14,7 @@ import requests
 import stat
 import sys
 import tools.git as git_tools
-from project_types.wordpress.constants import wordpress_constants_json_resource
+import project_types.wordpress.constants as wp_constants
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from core.app import App
 from core.CommandsCore import CommandsCore
@@ -166,15 +166,20 @@ def create_development_theme(theme_configuration: dict, root_path: str):
     constants = get_constants()
     root_path = pathlib.Path(root_path)
     destination_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["themes"])
+
     # Extract theme name from the themes configuration dict
-    src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))
-    theme_slug = src_theme[0]["source"]
+    src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))[0]
+    theme_slug = src_theme["source"]
+
     # Determine if we have a theme structure file available (should be named as [theme-slug]-wordpress-theme-structure
     structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
     structure_file_path = pathlib.Path.joinpath(root_path, structure_file_name)
+
     # Create the structure based on the theme_name
     start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
+
     # Replace necessary theme files with the theme name.
+    set_theme_metadata(root_path, src_theme)
 
 
 def download_wordpress(site_configuration: dict, destination_path: str):
@@ -285,7 +290,7 @@ def get_constants() -> dict:
         All the constants in a dict object.
     """
 
-    response = requests.get(wordpress_constants_json_resource)
+    response = requests.get(wp_constants.wordpress_constants_json_resource)
     data = json.loads(response.content)
 
     return data
@@ -783,6 +788,129 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
 
+def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):
+    """ From the theme configuration, creates a replacements dict and replaces the file_path
+    Args:
+        file_path: The path of the file to be replaced.
+        src_theme_configuration: Dict containing src theme configuration.
+    """
+    replacements = {"name": src_theme_configuration["source"]}
+    if "description" in src_theme_configuration:
+        replacements["description"] = src_theme_configuration["description"]
+    if "keywords" in src_theme_configuration:
+        replacements["keywords"] = src_theme_configuration["tags"]
+    if "author" in src_theme_configuration:
+        replacements["author"]["name"] = src_theme_configuration["author"]
+    if "author_uri" in src_theme_configuration:
+        replacements["author"]["url"] = src_theme_configuration["author_uri"]
+
+    # Open the package_json file
+    with open(file_path, 'r') as package_json_file:
+        json_data = json.load(package_json_file)
+        for key, value in json_data.items():
+            if key in replacements:
+                json_data[key] = replacements[key]
+
+    with open(file_path, 'w') as package_json_file:
+        json.dump(json_data, package_json_file, indent=2)
+
+
+def replace_theme_meta_data_in_scss_file(file_path: str, src_theme_configuration: dict):
+    """ From the theme configuration, creates a replacements dict and replaces the file_path
+    Args:
+        file_path: The path of the file to be replaced.
+        src_theme_configuration: Dict containing src theme configuration.
+        """
+
+    # Create a dict of replacements for the style.scss file based on the content of the src theme configuration
+    replacements = {"Theme Name": src_theme_configuration["name"], "Text Domain": src_theme_configuration["source"]}
+    if "description" in src_theme_configuration:
+        replacements["Description"] = src_theme_configuration["description"]
+    if "uri" in src_theme_configuration:
+        replacements["Theme URI"] = src_theme_configuration["uri"]
+    if "author" in src_theme_configuration:
+        replacements["Author"] = src_theme_configuration["author"]
+    if "author_uri" in src_theme_configuration:
+        replacements["Author URI"] = src_theme_configuration["author_uri"]
+    if "tags" in src_theme_configuration:
+        replacements["Tags"] = src_theme_configuration["tags"]
+
+    replace_theme_meta_data(file_path, replacements, wp_constants.theme_metadata_parse_regex)
+
+
+def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration: dict):
+    """ From the theme configuration, creates a replacements dict and replaces the file_path
+    Args:
+        file_path: The path of the file to be replaced.
+        src_theme_configuration: Dict containing src theme configuration.
+    """
+    theme_slug = src_theme_configuration["source"]
+    core_php_file = open(file_path, 'r+')
+    file_content = core_php_file.read()
+
+    file_content = re.sub(wp_constants.functions_php_mytheme_regex, theme_slug, file_content)
+
+    # Write replaced content to the file
+    with open(file_path, 'w', newline='\n') as core_php_file:
+        core_php_file.write(file_content)
+
+
+def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
+    """ Opens the file path and rewrites it replacing matches from the replacements dict
+    Args:
+        path: The file path to be replaced.
+        replacements: The replacements content.
+        regex_str: The regex string used to match and replace the replacements dict.
+    """
+
+    replace_file = open(path, 'r', newline='\r\n')
+    file_content = replace_file.read()
+
+    for key, replacement in replacements.items():
+        # Build the regex to retrieve data: This regex would match the lines containing [key]:value.
+        # For example, in the string Author: Ahead Labs, S.L -> $1 = Author and $2 = Ahead Labs, S.L
+        regex = f'({key}){regex_str}'
+
+        # Search with regex
+        matches = re.search(regex, file_content)
+
+        if matches is not None and matches.group(1):
+            # Build the replacement string
+            target = f'{matches.group(1)}: {replacement}\r\n'
+            # Apply the replacement
+            file_content = file_content.replace(matches.group(0), target)
+
+    # Write replaced content to the file
+    with open(path, 'w', newline='\n') as scss_file:
+        scss_file.write(file_content)
+
+
+def set_theme_metadata(root_path: str, src_theme_configuration: dict):
+    """ Replaces theme meta-data values on required theme files
+    Args:
+        root_path: The path of the project
+        src_theme_configuration: The src theme configuration to be set.
+    """
+
+    constants = get_constants()
+    theme_slug = src_theme_configuration["source"]
+
+    # Get scss file path and content from the theme slug
+    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["themes"])
+
+    # Replace meta-data obtained inside theme .scss
+    scss_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "assets", "css", "style.scss")
+    replace_theme_meta_data_in_scss_file(scss_file_path, src_theme_configuration)
+
+    # Replace meta-data on the package.json file
+    package_json_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "package.json")
+    replace_theme_meta_data_in_package_file(package_json_file_path, src_theme_configuration)
+
+    # Replace theme slug on the functions_core.php
+    package_json_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php")
+    replace_theme_slug_in_functions_php(package_json_file_path, src_theme_configuration )
+
+
 def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
@@ -879,7 +1007,7 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
     project_structure["items"][0]["name"] = theme_name
 
     # Purge .gitkeep
-    git_tools.purge_gitkeep(path)
+    git_tools.purge_gitkeep(pathlib.Path(path).as_posix())
 
     # Iterate through every item recursively
     for item in project_structure["items"]:

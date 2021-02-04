@@ -48,6 +48,23 @@
             "package",
             "version"
           ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "uri": { 
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "author_uri": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array", "contains":  {
+            "type" : "string" 
+            }
         }
       },
       "additionalProperties": false,
