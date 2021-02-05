@@ -87,9 +87,7 @@ def create_development_theme(theme_configuration: dict, root_path: str):
         root_path: The desired destination path of the theme
     """
 
-    constants = wptools.get_constants()
-    root_path = pathlib.Path(root_path)
-    destination_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["themes"])
+    destination_path = get_themes_path_from_root_path(root_path)
 
     # Extract theme name from the themes configuration dict
     src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))
@@ -99,7 +97,7 @@ def create_development_theme(theme_configuration: dict, root_path: str):
 
         # Check if a structure file is available (should be named as [theme-slug]-wordpress-theme-structure
         structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
-        structure_file_path = pathlib.Path.joinpath(root_path, structure_file_name)
+        structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), structure_file_name)
 
         # Create the structure based on the theme_name
         start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
