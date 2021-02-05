@@ -22,14 +22,6 @@ jobs:
   - job: Main
     displayName: Main job
     steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.9.1'
-        addToPath: true
-        architecture: 'x64'
-    - task: CmdLine@2
-      inputs:
-        script: 'python3 --version'
     - template: pipeline-template-python-setup.yml
     - template: pipeline-template-i18n.yml
     - template: pipeline-template-project-info.yml
