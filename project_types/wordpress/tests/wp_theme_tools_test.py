@@ -15,8 +15,8 @@ literals = LiteralsCore([WordpressLiterals])
 
 @patch("logging.info")
 @patch("os.path.exists")
-def test_build_theme_given_site_config_when_no_src_themes_then_logs\
-                (path_exists_mock, logging_mock, wordpressdata, themesdata):
+def test_build_theme_given_site_config_when_no_src_themes_then_logs(path_exists_mock, logging_mock, wordpressdata,
+                                                                    themesdata):
     """ Given site configuration, when no src themes present, then logs info """
     # Arrange
     theme_path = wordpressdata.theme_path
@@ -202,7 +202,64 @@ def test_check_theme_configuration_given_theme_when_feed_expected_and_not_source
 
 # endregion
 
+# region create_development_theme()
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("logging.warning")
+def test_create_development_theme_given_theme_config_when_no_src_theme_then_should_log_warning(
+    log_warn_mock, constants_mock, themesdata, wordpressdata):
+    """ Given theme config, when there is no source_typed src themes, then should log a warning message """
+    # Arrange
+    root_path = wordpressdata.root_path
+    theme = json.loads(themesdata.theme_single_no_src)
+    constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    # Act
+    sut.create_development_theme(theme, root_path)
+    # Assert
+    log_warn_mock.assert_called_once()
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
+@patch("project_types.wordpress.wp_theme_tools.set_theme_metadata")
+def test_create_development_theme_given_theme_config_when_src_theme_then_should_start_basic_theme_structure(
+        set_theme_metadata_mock, start_structure_mock, constants_mock, wordpressdata, themesdata):
+    """ Given theme config, when there is a source_typed src theme, then should call the start_basic_theme_structure """
+    # Arrange
+    theme = json.loads(themesdata.theme_single_src)
+    theme_slug = theme[0]["source"]
+    root_path = pathlib.Path(wordpressdata.root_path)
+    structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
+    structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), structure_file_name)
+    constants = json.loads(wordpressdata.constants_file_content)
+    constants_mock.return_value = constants
+    destination_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["themes"])
+    # Act
+    sut.create_development_theme(theme, wordpressdata.root_path)
+    # Assert
+    start_structure_mock.assert_called_once_with(destination_path, theme_slug, structure_file_path)
+
+
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
+@patch("project_types.wordpress.wp_theme_tools.set_theme_metadata")
+def test_create_development_theme_given_theme_config_when_src_theme_then_should_set_theme_metadata(
+    set_theme_metadata_mock, start_structure_mock, constants_mock, wordpressdata, themesdata):
+    """ Given theme config, when there is a source_typed src theme, then should call the set_theme_metadata """
+    # Arrange
+    theme = json.loads(themesdata.theme_single_src)
+    root_path = pathlib.Path(wordpressdata.root_path)
+    constants = json.loads(wordpressdata.constants_file_content)
+    constants_mock.return_value = constants
+    # Act
+    sut.create_development_theme(theme, wordpressdata.root_path)
+    # Assert
+    set_theme_metadata_mock.assert_called_once_with(root_path, theme[0])
+
+# endregion create_development_theme()
+
 # region download_wordpress_theme()
+
 
 def test_download_wordpress_theme_given_theme_config_when_source_type_is_feed_then_calls_get_last_artifact(
         themesdata):

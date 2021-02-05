@@ -4,9 +4,6 @@ Add here whatever you want to pass as a fixture in your texts."""
 import pathlib
 
 import pytest
-import requests
-
-from unittest import mock
 
 
 class PluginsData:
@@ -46,7 +43,7 @@ class ThemesData:
         " \"package\": \"testpackage\", \"version\": \"1.0\"}}"
     theme_single_content_with_url = \
         "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http::\\theme.zip\"}"
-    theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"source1.zip\"}]"
+    theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"mytheme\"}]"
     theme_single_no_src = "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"source1.zip\"}]"
     child_name = "child_theme"
     child_url_source = "path-to-source1.zip"

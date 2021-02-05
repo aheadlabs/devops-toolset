@@ -92,18 +92,22 @@ def create_development_theme(theme_configuration: dict, root_path: str):
     destination_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["themes"])
 
     # Extract theme name from the themes configuration dict
-    src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))[0]
-    theme_slug = src_theme["source"]
+    src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))
+    if src_theme.__len__() == 1:
+        src_theme = src_theme[0]
+        theme_slug = src_theme["source"]
 
-    # Determine if we have a theme structure file available (should be named as [theme-slug]-wordpress-theme-structure
-    structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
-    structure_file_path = pathlib.Path.joinpath(root_path, structure_file_name)
+        # Check if a structure file is available (should be named as [theme-slug]-wordpress-theme-structure
+        structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
+        structure_file_path = pathlib.Path.joinpath(root_path, structure_file_name)
 
-    # Create the structure based on the theme_name
-    start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
+        # Create the structure based on the theme_name
+        start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
 
-    # Replace necessary theme files with the theme name.
-    set_theme_metadata(root_path, src_theme)
+        # Replace necessary theme files with the theme name.
+        set_theme_metadata(root_path, src_theme)
+    else:
+        logging.warning(literals.get("wp_src_theme_not_found"))
 
 
 def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs):
