@@ -1,8 +1,10 @@
 """Contains paths-related operations."""
 
+import logging
 import os
 import pathlib
 import requests
+import shutil
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from filesystem.Literals import Literals as FileSystemLiterals
@@ -235,6 +237,40 @@ def is_valid_path(path: str = None, check_existence: bool = False) -> bool:
         return False
 
     return True
+
+
+def move_files(origin: str, destination: str, glob: str, recursive: bool = False):
+    """Moves one or more files from one path to another.
+
+    Args:
+        origin: Path where files and directories should be found.
+        destination: Path where files and directories will be moved.
+        glob: Files to be matched to be moved.
+        recursive: If True files are searched recursively
+    """
+
+    destination_directory_path = pathlib.Path(destination)
+
+    if recursive:
+        # Convert file list to a list
+        files = [*pathlib.Path(origin).rglob(glob)]
+    else:
+        # Keep file list in a generator
+        files = pathlib.Path(origin).glob(glob)
+
+    # Iterate through files to move them
+    for origin_file_path in files:
+        # Get paths related to the file
+        origin_directory_path: str = pathlib.Path(os.path.commonprefix([origin, origin_file_path]))
+        relative_path: str = origin_file_path.as_posix().removeprefix(origin_directory_path.as_posix()).lstrip("/")
+        destination_file_path: str = pathlib.Path.joinpath(destination_directory_path, relative_path)
+
+        # Move file
+        logging.info(literals.get("fs_file_moving").format(
+            origin_file_path=origin_file_path,
+            destination_file_path=destination_file_path
+        ))
+        shutil.move(origin_file_path, destination_file_path)
 
 
 if __name__ == "__main__":
