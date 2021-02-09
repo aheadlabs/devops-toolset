@@ -2,11 +2,7 @@
 
 Add here whatever you want to pass as a fixture in your texts."""
 import pathlib
-
 import pytest
-import requests
-
-from unittest import mock
 
 
 class PluginsData:
@@ -147,12 +143,19 @@ class WordPressData:
     wp_cli_install_path = "/pathto/wp-cli"
     wp_cli_phar = "wp-cli.phar"
     wp_cli_file_path = pathlib.Path.joinpath(pathlib.Path(wp_cli_install_path), wp_cli_phar)
+    wp_option = {
+        "name": "permalink_structure",
+        "value": "/%category%/%postname%/",
+        "autoload": "true"
+    }
     builtins_open = 'builtins.open'
     parent_not_empty_value = 'when_parent_not_empty'
     condition_key = 'condition'
     dump_file_path = "/pathto/dump_file_1.sql"
     path = "/pathto"
+    url_resource = "https://url/resource"
     default_pwd = "root"
+
 
 
 @pytest.fixture
@@ -190,8 +193,26 @@ def mocked_requests_get(url: str, *args, **kwargs):
     return MockResponse(bytes_content, text_content)
 
 
+def mocked_requests_get_json_content(url: str, *args, **kwargs):
+    """Mock to replace requests.get()"""
+
+    # Return instance
+    return MockJsonResponse(WordPressData.structure_file_content)
+
+
 class MockResponse:
     """This is the mocked Response object returned by requests.get()"""
     def __init__(self, b_content, text_content):
         self.content = b_content
         self.text = text_content
+
+
+class MockJsonResponse:
+    """This is the mocked Response object returned by requests.get()"""
+    def __init__(self, json_content):
+        self.json_content = json_content
+
+    def json(self):
+        return self.json_content
+
+

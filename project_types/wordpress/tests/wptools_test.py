@@ -6,10 +6,12 @@ import json
 import pathlib
 import project_types.wordpress.wptools as sut
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
+from devops_platforms import constants as devops_platform_constants
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open, call
-from project_types.wordpress.tests.conftest import WordPressData, ThemesData, mocked_requests_get, PluginsData
+from project_types.wordpress.tests.conftest import WordPressData, ThemesData, mocked_requests_get, \
+    mocked_requests_get_json_content, PluginsData
 
 literals = LiteralsCore([WordpressLiterals])
 
@@ -301,18 +303,18 @@ def test_get_db_admin_from_environment_return_db_admin_user_from_environment_fil
 # region get_project_structure()
 
 
-@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.structure_file_content)
-def test_get_project_structure_given_path_reads_and_parses_content(open_file_mock, wordpressdata):
-    """Given a path, reads the file and parses the JSON content."""
+def test_get_project_structure_given_resource_reads_and_parses_content(wordpressdata, mocks):
+    """Given a path, reads the file obtained from the resource and parses the JSON content."""
 
     # Arrange
-    path = wordpressdata.project_structure_path
+    url_resource = wordpressdata.url_resource
+    mocks.requests_get_mock.side_effect = mocked_requests_get_json_content
 
     # Act
-    result = sut.get_project_structure(path)
+    result = sut.get_project_structure(url_resource)
 
     # Assert
-    assert result == json.loads(WordPressData.structure_file_content)
+    assert result == WordPressData.structure_file_content
 
 
 # endregion
@@ -825,13 +827,13 @@ def test_install_wordpress_site_then_calls_cli_export_database(
 def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
     """Given arguments, must call get_project_structure with passed project_path"""
     # Arrange
-    project_structure_path = wordpressdata.project_structure_path
+    project_structure_resource = devops_platform_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
     root_path = wordpressdata.wordpress_path
     get_project_structure_mock.return_value = {"items": {}}
     # Act
-    sut.start_basic_project_structure(root_path, project_structure_path)
+    sut.start_basic_project_structure(root_path)
     # Assert
-    get_project_structure_mock.assert_called_once_with(project_structure_path)
+    get_project_structure_mock.assert_called_once_with(project_structure_resource)
 
 
 @patch.object(sut, "get_project_structure")
@@ -839,12 +841,11 @@ def test_main_given_parameters_must_call_wptools_get_project_structure(get_proje
 def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
     """Given arguments, must call get_project_structure with passed project_path"""
     # Arrange
-    project_structure_path = wordpressdata.project_structure_path
     root_path = wordpressdata.wordpress_path
     items_data = {"items": {'foo_item': 'foo_value'}}
     get_project_structure_mock.return_value = items_data
     # Act
-    sut.start_basic_project_structure(root_path, project_structure_path)
+    sut.start_basic_project_structure(root_path)
     # Assert
     add_item_mock.assert_called_once_with('foo_item', root_path)
 

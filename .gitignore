@@ -3,8 +3,9 @@
 .vscode
 .vs
 
-# Python cache
+# Python cache and virtual environments
 **/__pycache__
+venv/
 
 # Coverage files
 .pytest*/

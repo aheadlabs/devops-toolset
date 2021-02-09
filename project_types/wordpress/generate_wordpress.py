@@ -33,7 +33,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
          environment: str, additional_environments: list, additional_environment_db_user_passwords: list,
-         create_db: bool, skip_partial_dumps: bool, **kwargs):
+         create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs):
     """Generates a new Wordpress site based on the required configuration files
 
     Args:
@@ -49,13 +49,15 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         create_db: If True it creates the database and the user.
         skip_partial_dumps: If True skips partial database dumps
             (after installing WordPress, themes and plugins).
+        create_development_theme: If True generates the file structure for a
+            development theme
         kwargs: Platform-specific arguments
     """
     global_constants = wordpress.wptools.get_constants()
     root_path_obj = pathlib.Path(root_path)
     database_path = global_constants["paths"]["database"]
 
-    # Look for *site.json, *site-environments.json and *project-structure.json files in the project path
+    # Look for *site.json and *site-environments.json files in the project path
     required_files_pattern_suffixes = list(map(lambda x: f"*{ x[1]}", constants.required_files_suffixes.items()))
     required_files_not_present = paths.files_exist_filtered(root_path, False, required_files_pattern_suffixes)
 
@@ -64,9 +66,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         core.log_tools.log_indented_list(literals.get("wp_required_files_not_found_detail").format(path=root_path),
                                          required_files_not_present, core.log_tools.LogLevel.warning)
 
-        core.log_tools.log_indented_list(literals.get("wp_default_files"), [
-            Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE, Urls.DEFAULT_SITE_ENVIRONMENTS, Urls.DEFAULT_SITE_CONFIG],
-                                         core.log_tools.LogLevel.info)
+        core.log_tools.log_indented_list(literals.get("wp_default_files"), [Urls.DEFAULT_SITE_ENVIRONMENTS,
+            Urls.DEFAULT_SITE_CONFIG], core.log_tools.LogLevel.info)
 
         # Ask to use defaults
         use_defaults = prompt.yn(literals.get("wp_use_default_files"))
@@ -89,7 +90,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     required_file_paths = wordpress.wptools.get_required_file_paths(
         root_path, required_files_pattern_suffixes)
     environment_file_path = required_file_paths[1]
-    project_structure_file_path = required_file_paths[2]
 
     # Get database admin user from environment
     db_admin_user = wordpress.wptools.get_db_admin_from_environment(environment_file_path, environment)
@@ -103,7 +103,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     themes_path = wordpress.wptools.get_themes_path_from_root_path(root_path)
 
     # Create project structure & prepare devops-toolset
-    wordpress.wptools.start_basic_project_structure(root_path, project_structure_file_path)
+    wordpress.wptools.start_basic_project_structure(root_path)
 
     # Check for updates / download devops-toolset
     setup_devops_toolset(root_path)
@@ -135,7 +135,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
 
     # Import wxr content
-    wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
+    if not create_development_theme:
+        wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(environment_file_path, additional_environments,
@@ -152,6 +153,14 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.export_database(
         site_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
     git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
+
+    # Move config files to devops directory
+    paths.move_files(
+        root_path,
+        pathlib.Path.joinpath(pathlib.Path(root_path), wordpress.wptools.get_constants()["paths"]["devops"]),
+        "*.json",
+        False
+    )
 
 
 def setup_devops_toolset(root_path: str):
@@ -220,6 +229,7 @@ if __name__ == "__main__":
     parser.add_argument("--additional-environment-db-user-passwords", default="")
     parser.add_argument("--create-db", action="store_true", default=False)
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
+    parser.add_argument("--create-development-theme", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
@@ -231,4 +241,7 @@ if __name__ == "__main__":
          args.environment,
          args.additional_environments.split(","),
          args.additional_environment_db_user_passwords.split(","),
-         args.create_db, args.skip_partial_dumps, **kwargs)
+         args.create_db,
+         args.skip_partial_dumps,
+         args.create_development_theme,
+         **kwargs)
