@@ -29,7 +29,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
     prompt_mock.return_value = False
     # Act
     with pytest.raises(ValueError) as value_error:
-        sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True)
+        sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True, False)
     # Assert
     assert str(value_error.value) == sut.literals.get("wp_required_files_not_found").format(path=root_path)
 
@@ -69,7 +69,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
     root_path = wordpressdata.root_path
     required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
     # Act
-    sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True)
+    sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True, False)
     # Assert
     get_required_files_mock.assert_called_with(root_path, required_files_pattern_suffixes)
 
@@ -116,7 +116,7 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
     create_db = True
     site_config = json.loads(wordpressdata.site_config_content)
     # Act
-    sut.main(root_path, "root", "root", "root", environment, [''], [''], create_db, True)
+    sut.main(root_path, "root", "root", "root", environment, [''], [''], create_db, True, False)
     # Assert
     setup_database_mock.assert_called_with(site_config, wordpressdata.wordpress_path, "root", "root", "root")
 
@@ -160,7 +160,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
     expected_content = b"sample response in bytes"
     # Act
     with patch(wordpressdata.builtins_open, m, create=True):
-        sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True)
+        sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True, False)
         # Assert
         handler = m()
         calls = []
