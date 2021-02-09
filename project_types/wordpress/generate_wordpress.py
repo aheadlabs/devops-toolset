@@ -156,6 +156,14 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         site_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
     git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
+    # Move config files to devops directory
+    paths.move_files(
+        root_path,
+        pathlib.Path.joinpath(pathlib.Path(root_path), wordpress.wptools.get_constants()["paths"]["devops"]),
+        "*.json",
+        False
+    )
+
 
 def setup_devops_toolset(root_path: str):
     """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
@@ -210,11 +218,6 @@ def delete_sample_wp_config_file(wordpress_path: str):
     file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config-sample.php")
     if file_path.exists():
         os.remove(str(file_path))
-
-
-def move_configuration_files_to_devops_directory():
-    # TODO Method not implemented
-    pass
 
 
 if __name__ == "__main__":
