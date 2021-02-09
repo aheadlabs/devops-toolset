@@ -2,15 +2,258 @@
 import pytest
 import project_types.wordpress.wp_cli as sut
 from core.app import App
-from unittest.mock import patch, ANY
+from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
-from core.CommandsCore import CommandsCore
 from project_types.wordpress.commands import Commands as WordpressCommands
+from unittest.mock import patch, ANY
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
 commands = CommandsCore([WordpressCommands])
+
+# region add_update_option
+
+
+@patch("project_types.wordpress.wp_cli.add_database_option")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+def test_add_update_option_should_check_if_exists(
+        check_if_option_exists_mock,
+        update_database_option_mock,
+        add_database_option_mock,
+        wordpressdata):
+    """Given an option, should check if it exists in the database"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+    update_permalinks = False
+
+    check_if_option_exists_mock.return_value = True, ""
+
+    # Act
+    sut.add_update_option(option, wordpress_path, debug, update_permalinks)
+
+    # Assert
+    check_if_option_exists_mock.assert_called_once()
+
+
+@patch("project_types.wordpress.wp_cli.add_database_option")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+def test_add_update_option_when_exists_calls_update_function(
+        check_if_option_exists_mock,
+        update_database_option_mock,
+        add_database_option_mock,
+        wordpressdata):
+    """Given an option that exists, should call the update function"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+    update_permalinks = False
+
+    check_if_option_exists_mock.return_value = True, ""
+
+    # Act
+    sut.add_update_option(option, wordpress_path, debug, update_permalinks)
+
+    # Assert
+    update_database_option_mock.assert_called_once()
+
+
+@patch("project_types.wordpress.wp_cli.add_database_option")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+def test_add_update_option_when_not_exists_calls_add_function(
+        check_if_option_exists_mock,
+        update_database_option_mock,
+        add_database_option_mock,
+        wordpressdata):
+    """Given an option that doesn't exist, should call the update function"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+    update_permalinks = False
+
+    check_if_option_exists_mock.return_value = False, None
+
+    # Act
+    sut.add_update_option(option, wordpress_path, debug, update_permalinks)
+
+    # Assert
+    add_database_option_mock.assert_called_once()
+
+
+@patch("project_types.wordpress.wp_cli.add_database_option")
+@patch("project_types.wordpress.wp_cli.update_database_option")
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+@patch("tools.cli.call_subprocess")
+def test_add_update_option_should_update_permalinks_when_structure_is_updated(
+        call_subprocess_mock,
+        check_if_option_exists_mock,
+        update_database_option_mock,
+        add_database_option_mock,
+        wordpressdata):
+    """Given an option, if it is the permalink_structure option, permalinks
+    should be updated afterwards"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+    update_permalinks = True
+
+    check_if_option_exists_mock.return_value = True, wordpressdata.wp_option["value"]
+
+    # Act
+    sut.add_update_option(option, wordpress_path, debug, update_permalinks)
+
+    # Assert
+    call_subprocess_mock.assert_called_once()
+
+# endregion
+
+# region add_database_option
+
+
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+@patch("tools.cli.call_subprocess")
+def test_add_database_option_should_check_if_exists(
+        call_subprocess_mock,
+        check_if_option_exists_mock,
+        wordpressdata):
+    """Given an option, should check if it exists in the database"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+
+    check_if_option_exists_mock.return_value = True, wordpressdata.wp_option["value"]
+
+    # Act
+    sut.add_database_option(
+        option["name"], option["value"],
+        wordpress_path, debug, option["autoload"])
+
+    # Assert
+    check_if_option_exists_mock.assert_called_once()
+
+
+@patch("project_types.wordpress.wp_cli.check_if_option_is_valid")
+@patch("project_types.wordpress.wp_cli.check_if_option_exists")
+@patch("tools.cli.call_subprocess")
+def test_add_database_option_when_not_exists_calls_add_function(
+        call_subprocess_mock,
+        check_if_option_exists_mock,
+        check_if_option_is_valid_mock,
+        wordpressdata):
+    """Given an option, if it doesn't exist must call add function"""
+
+    # Arrange
+    option = wordpressdata.wp_option
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+
+    check_if_option_exists_mock.return_value = False, None
+    check_if_option_is_valid_mock.return_value = True
+
+    # Act
+    sut.add_database_option(
+        option["name"], option["value"],
+        wordpress_path, debug, option["autoload"])
+
+    # Assert
+    call_subprocess_mock.assert_called_once()
+
+# endregion
+
+# region check_if_option_exists
+
+
+# @patch("tools.cli.call_subprocess_with_result")
+# @pytest.mark.parametrize("exists, option_value, expected", [
+#     (True, "value\n", (True, "value")),
+#     (False, None, (False, None))
+# ])
+# def test_check_if_option_exists_must_get_option_value_from_db(
+#         call_subprocess_with_result_mock,
+#         exists,
+#         option_value,
+#         expected,
+#         wordpressdata
+# ):
+#     """Must try to get the option value from database"""
+#
+#     # Arrange
+#     option_name = "name"
+#     wordpress_path = wordpressdata.wordpress_path
+#     debug = False
+#
+#     # Act
+#     result = sut.check_if_option_exists(option_name, wordpress_path, debug)
+#
+#     # Assert
+#     assert result == expected
+
+
+@patch("tools.cli.call_subprocess_with_result")
+@pytest.mark.parametrize("exists, option_value, expected", [
+    (True, "value\n", (True, "value")),
+    (False, None, (False, None))
+])
+def test_check_if_option_exists_returns_boolean(
+        call_subprocess_with_result_mock,
+        exists,
+        option_value,
+        expected,
+        wordpressdata):
+    """Given an option name, must return a boolean that indicates if exists"""
+
+    # Arrange
+    option_name = "name"
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+
+    call_subprocess_with_result_mock.return_value = option_value
+
+    # Act
+    result = sut.check_if_option_exists(option_name, wordpress_path, debug)
+
+    # Assert
+    assert result == expected
+
+# endregion
+
+# region check_if_option_is_valid
+
+
+@pytest.mark.parametrize("name, value, autoload, expected", [
+    ("name", "", True, True),
+    ("name", None, True, False),
+    ("", "value", True, False),
+    (None, "value", True, False),
+    ("name", "value", None, False)
+])
+def test_check_if_option_is_valid(name, value, autoload, expected):
+    """When option data is given, returns True when all three parameters are
+    valid"""
+
+    # Arrange
+
+    # Act
+    result = sut.check_if_option_is_valid(name, value, autoload)
+
+    # Assert
+    assert result == expected
+
+# endregion
 
 # region convert_wp_parameter_autoload
 
