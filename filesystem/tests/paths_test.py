@@ -1,6 +1,7 @@
 """Unit tests for the paths file"""
 
 import filesystem.paths as sut
+import os
 import pathlib
 import pytest
 from conftest import FileNames as FileNameFixtures
@@ -308,5 +309,81 @@ def test_is_valid_path_given_non_existent_path_returns_false(paths):
 
     # Assert
     assert not result
+
+
+def test_is_valid_path_given_invalid_path_returns_false():
+    """Given None as path, raises ValueError"""
+
+    # Arrange
+
+    # Act
+    result = sut.is_valid_path(None)
+
+    # Assert
+    assert result is False
+
+# endregion
+
+# region move_files()
+
+
+@patch("pathlib.Path.rglob")
+def test_move_files_if_recursive_use_rglob(rglob_mock, tmp_path, paths):
+    """If the glob is recursive, create a list of files to be iterated and use
+    rglob()"""
+
+    # Arrange
+    origin_path: str = str(pathlib.Path.joinpath(tmp_path, "origin"))
+    destination_path: str = str(pathlib.Path.joinpath(tmp_path, "destination"))
+    glob: str = paths.glob
+    recursive: bool = True
+
+    # Act
+    sut.move_files(origin_path, destination_path, glob, recursive)
+
+    # Assert
+    rglob_mock.assert_called_once_with(glob)
+
+
+@patch("pathlib.Path.glob")
+def test_move_files_if_recursive_use_glob(glob_mock, tmp_path, paths):
+    """If the glob is not recursive, create a generator of files to be
+    iterated and use glob()"""
+
+    # Arrange
+    origin_path: str = str(pathlib.Path.joinpath(tmp_path, "origin"))
+    destination_path: str = str(pathlib.Path.joinpath(tmp_path, "destination"))
+    glob: str = "*.txt"
+    recursive: bool = False
+
+    # Act
+    sut.move_files(origin_path, destination_path, glob, recursive)
+
+    # Assert
+    glob_mock.assert_called_once_with(glob)
+
+
+@patch("shutil.move")
+@patch("logging.info")
+def test_move_files_moves_n_files(info_mock, shutil_mock, tmp_path, paths):
+    """Given a list of paths, shutil.move must be called exactly that number
+    of times"""
+
+    # Arrange
+    origin_path: str = str(pathlib.Path.joinpath(tmp_path, "origin"))
+    destination_path: str = str(pathlib.Path.joinpath(tmp_path, "destination"))
+    glob: str = "*.txt"
+    recursive: bool = False
+
+    os.makedirs(origin_path)
+    os.makedirs(destination_path)
+    with open(os.path.join(origin_path, "test_file.txt"), "w") as test_file:
+        test_file.write("test")
+
+    # Act
+    sut.move_files(origin_path, destination_path, glob, recursive)
+
+    # Assert
+    shutil_mock.assert_called_once()
 
 # endregion

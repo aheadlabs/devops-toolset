@@ -8,6 +8,7 @@ import requests
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
+from typing import Union
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])
@@ -41,11 +42,16 @@ class BasicStructureStarter(object):
                 os.mkdir(final_path)
                 logging.debug(literals.get("wp_directory_created").format(directory=final_path))
             elif item["type"] == "file":
-                with open(final_path, "a") as new_file:
-                    # Add default content if applies
+                with open(final_path, "w", newline="\n") as new_file:
                     if "default_content" in item:
-                        new_file.write(self.get_default_content(item["default_content"]))
-                        logging.debug(literals.get("wp_file_created").format(file=final_path))
+                        default_content = self.get_default_content(item["default_content"], False)
+                        new_file.write(default_content)
+                    logging.debug(literals.get("wp_file_created").format(file=final_path))
+            elif item["type"] == "bfile" and "default_content" in item:
+                default_content = self.get_default_content(item["default_content"], True)
+                with open(final_path, "wb") as new_file:
+                    new_file.write(default_content)
+                    logging.debug(literals.get("wp_file_created").format(file=final_path))
 
         # Iterate through children if any
         if "children" in item:
@@ -67,11 +73,15 @@ class BasicStructureStarter(object):
         return True
 
     @staticmethod
-    def get_default_content(item) -> str:
+    def get_default_content(item, is_binary: bool = False) -> Union[str, bytes]:
         """ Gets the default content of the files based on the json item passed
 
             Args:
                 item : the object containing the type and the value of the default content
+                is_binary: if True returns content as bytes, otherwise as str
+
+            Returns:
+                Content in text or binary format
         """
         if item["source"] == "raw":
             logging.debug(literals.get("wp_write_default_content").format(
@@ -92,4 +102,4 @@ class BasicStructureStarter(object):
                 source=f"URL => {item['source']}"
             ))
             response = requests.get(item["value"])
-            return response.text
+            return response.content if is_binary else response.text

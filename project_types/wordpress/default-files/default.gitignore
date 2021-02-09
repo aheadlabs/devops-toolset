@@ -1,6 +1,7 @@
-# WordPress core with default twentytwenty theme installed (to be replaced)
+# WordPress core
 wordpress/wp-admin/
-wordpress/wp-content/themes/twentytwenty/
+wordpress/wp-content/themes/
+wordpress/wp-content/plugins/
 wordpress/wp-content/upgrade/
 wordpress/wp-includes/
 wordpress/wp*.php
@@ -11,6 +12,9 @@ wordpress/xmlrpc.php
 
 # devops-toolset
 .devops/devops-toolset/
+
+# temporary development files
+content/themes/*.zip
 
 # scripts in root
 *.ps1

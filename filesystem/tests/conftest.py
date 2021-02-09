@@ -15,6 +15,7 @@ class Paths(object):
     test_path = "/pathto/foo"
     non_existent_path = "/nonexistentpath"
     file_name = "filename.txt"
+    glob = "*.txt"
     url = f"https://example.com/{file_name}"
     directory_path = "/pathto"
     file_name_list = ["file1.txt", "file2.txt"]
