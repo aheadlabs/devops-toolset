@@ -315,10 +315,9 @@ def test_is_valid_path_given_invalid_path_returns_false():
     """Given None as path, raises ValueError"""
 
     # Arrange
-    path = None
 
     # Act
-    result = sut.is_valid_path(path)
+    result = sut.is_valid_path(None)
 
     # Assert
     assert result is False

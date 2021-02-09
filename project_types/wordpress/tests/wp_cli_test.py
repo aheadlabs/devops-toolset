@@ -177,32 +177,6 @@ def test_add_database_option_when_not_exists_calls_add_function(
 # region check_if_option_exists
 
 
-# @patch("tools.cli.call_subprocess_with_result")
-# @pytest.mark.parametrize("exists, option_value, expected", [
-#     (True, "value\n", (True, "value")),
-#     (False, None, (False, None))
-# ])
-# def test_check_if_option_exists_must_get_option_value_from_db(
-#         call_subprocess_with_result_mock,
-#         exists,
-#         option_value,
-#         expected,
-#         wordpressdata
-# ):
-#     """Must try to get the option value from database"""
-#
-#     # Arrange
-#     option_name = "name"
-#     wordpress_path = wordpressdata.wordpress_path
-#     debug = False
-#
-#     # Act
-#     result = sut.check_if_option_exists(option_name, wordpress_path, debug)
-#
-#     # Assert
-#     assert result == expected
-
-
 @patch("tools.cli.call_subprocess_with_result")
 @pytest.mark.parametrize("exists, option_value, expected", [
     (True, "value\n", (True, "value")),
