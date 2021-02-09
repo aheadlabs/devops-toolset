@@ -219,7 +219,7 @@ def is_empty_dir(path: str = None) -> bool:
     return False
 
 
-def is_valid_path(path: str = None, check_existence: bool = False) -> bool:
+def is_valid_path(path: Union[str, None] = None, check_existence: bool = False) -> bool:
     """Checks if it is a valid path.
 
     Args:
