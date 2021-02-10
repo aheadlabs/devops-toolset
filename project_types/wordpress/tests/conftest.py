@@ -22,6 +22,24 @@ class PluginsData:
 
 class ThemesData:
     """Class used to create the themesdata fixture"""
+    default_scss_file_example = "/*!\r\nTheme Name: MyTheme WordPress theme\r\nTheme URI: https://example.com/\r\n" \
+                                "Description: Ad hoc WordPres theme.\r\nAuthor: Ahead Labs, S.L.\r\nAuthor URI: " \
+                                "https://aheadlabs.com\r\nTags: ahead-labs, theme\r\nVersion: {{version}}\r\n" \
+                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\n" \
+                                "License: Copyright\r\nText Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
+    default_scss_file_expected = "/*!\r\nTheme Name: theme\r\nTheme URI: https://mytheme\r\n" \
+                                "Description: mytheme-description\r\nAuthor: theme-author\r\nAuthor URI: " \
+                                "https://example.com\r\nTags: tag1, tag2\r\nVersion: {{version}}\r\n" \
+                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\nLicense: Copyright\r\n" \
+                                "Text Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
+    default_functions_core_php_example = "function mytheme_register_styles()\n{\n\n}\nadd_action('wp_enqueue_scripts', " \
+                                         "'mytheme_register_styles')"
+    default_functions_core_php_example_expected = "function mytheme_replaced_register_styles()\n{\n\n}\n" \
+                                                  "add_action('wp_enqueue_scripts', 'mytheme_replaced_register_styles')"
+    replacements_on_scss_file = "{\"Theme Name\":\"theme\", \"Text Domain\":\"mytheme\", " \
+                                "\"Description\":\"mytheme-description\", \"Theme URI\":\"https://mytheme\"," \
+                                "\"Author\":\"theme-author\", \"Author URI\":\"https://example.com\", " \
+                                "\"Tags\": \"tag1, tag2\"}"
     themes_content_with_three_themes_no_activate = \
         "[{\"name\":\"theme1\",\"source_type\":\"zip\",\"source\":\"source1.zip\"}," \
         "{\"name\":\"theme2\",\"source_type\":\"zip\",\"source\":\"source2.zip\"}," \
@@ -42,8 +60,12 @@ class ThemesData:
         "\"feed\": {\"name\": \"testfeed\", \"organization_url\": \"https://dev.azure.com/organization/\"," \
         " \"package\": \"testpackage\", \"version\": \"1.0\"}}"
     theme_single_content_with_url = \
-        "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http::\\theme.zip\"}"
+        "{\"name\":\"theme\",\"source_type\":\"url\",\"activate\":true,\"source\":\"http://theme.zip\"}"
     theme_single_src = "[{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"mytheme\"}]"
+    theme_single_src_with_metadata = "{\"name\":\"theme\",\"source_type\":\"src\",\"source\":\"mytheme\"," \
+                                     "\"description\":\"mytheme-description\",\"uri\":\"https://mytheme\"," \
+                                     "\"author\":\"theme-author\",\"author_uri\":\"https://example.com\"," \
+                                     "\"tags\":[\"tag1\",\"tag2\"]}"
     theme_single_no_src = "[{\"name\":\"theme\",\"source_type\":\"zip\",\"source\":\"source1.zip\"}]"
     child_name = "child_theme"
     child_url_source = "path-to-source1.zip"
@@ -141,6 +163,20 @@ class WordPressData:
                              "default-project.xml\"}},{\"name\":\"README.md\",\"type\":\"file\",\"default_content\":" \
                              "{\"source\":\"from_url\",\"value\":\"https://raw.githubusercontent.com/aheadlabs/" \
                              "devops-toolset/master/wordpress/default-README.md\"}}]}"
+    package_json_example_content = "{\"name\":\"my-wordpress-project\",\"version\":\"0.1.0\"," \
+                           "\"description\":\"Ad hoc WordPress theme.\",\"main\":\"index.php\"," \
+                           "\"keywords\":[\"wordpress\",\"theme\",\"framework\",\"w74\",\"aheadlabs\"]," \
+                           "\"author\":{\"name\":\"@aheadlabs\",\"url\":\"https://example.com\"}," \
+                           "\"license\":\"ISC\",\"homepage\":\"https://example.com\"," \
+                           "\"devDependencies\":{\"@aheadlabs/gulp-w74framework\":\"latest\",\"bootstrap\":\"latest\","\
+                           "\"gulp\":\"latest\"},\"dependencies\":{\"@fortawesome/fontawesome-free\":\"latest\"}}"
+    package_json_expected_content = "{\"name\":\"mytheme\",\"version\":\"0.1.0\"," \
+                           "\"description\":\"mytheme-description\",\"main\":\"index.php\"," \
+                           "\"keywords\":[\"tag1\",\"tag2\"]," \
+                           "\"author\":{\"name\":\"theme-author\",\"url\":\"https://example.com\"}," \
+                           "\"license\":\"ISC\",\"homepage\":\"https://example.com\"," \
+                           "\"devDependencies\":{\"@aheadlabs/gulp-w74framework\":\"latest\",\"bootstrap\":\"latest\","\
+                           "\"gulp\":\"latest\"},\"dependencies\":{\"@fortawesome/fontawesome-free\":\"latest\"}}"
     wp_cli_install_path = "/pathto/wp-cli"
     wp_cli_phar = "wp-cli.phar"
     wp_cli_file_path = pathlib.Path.joinpath(pathlib.Path(wp_cli_install_path), wp_cli_phar)

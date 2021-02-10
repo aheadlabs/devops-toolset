@@ -3,10 +3,11 @@ import json
 import pathlib
 import project_types.wordpress.wp_theme_tools as sut
 import pytest
+import project_types.wordpress.constants as wp_constants
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
-from project_types.wordpress.tests.conftest import ThemesData
-from unittest.mock import patch, call
+from project_types.wordpress.tests.conftest import WordPressData, ThemesData
+from unittest.mock import patch, call, mock_open, ANY
 
 literals = LiteralsCore([WordpressLiterals])
 
@@ -241,17 +242,17 @@ def test_create_development_theme_given_theme_config_when_src_theme_then_should_
     start_structure_mock.assert_called_once_with(destination_path, theme_slug, structure_file_path)
 
 
-@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
 @patch("project_types.wordpress.wp_theme_tools.set_theme_metadata")
 def test_create_development_theme_given_theme_config_when_src_theme_then_should_set_theme_metadata(
-    set_theme_metadata_mock, start_structure_mock, constants_mock, wordpressdata, themesdata):
+    set_theme_metadata_mock, start_structure_mock, get_themes_from_root_path_mock, wordpressdata, themesdata):
     """ Given theme config, when there is a source_typed src theme, then should call the set_theme_metadata """
     # Arrange
     theme = json.loads(themesdata.theme_single_src)
-    root_path = pathlib.Path(wordpressdata.root_path)
-    constants = json.loads(wordpressdata.constants_file_content)
-    constants_mock.return_value = constants
+    root_path = wordpressdata.root_path
+    themes_path = wordpressdata.theme_path
+    get_themes_from_root_path_mock.return_value = pathlib.Path.joinpath(pathlib.Path(root_path), themes_path)
     # Act
     sut.create_development_theme(theme, wordpressdata.root_path)
     # Assert
@@ -364,5 +365,156 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
 
 
 # endregion
+
+# region replace_theme_meta_data_in_package_file()
+
+@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.package_json_example_content)
+@patch("json.dump")
+def test_replace_theme_meta_data_in_package_file_given_src_theme_then_replace_data_in_file_path(jsondump_mock,
+                                                                            fileopen_mock, themesdata, wordpressdata):
+    """ Given src theme config, then open json file and replace data based on src theme """
+    # Arrange
+    theme_config = json.loads(themesdata.theme_single_src_with_metadata)
+    expected_json_content = json.loads(wordpressdata.package_json_expected_content)
+    file_path = wordpressdata.path
+    # Act
+    sut.replace_theme_meta_data_in_package_file(file_path, theme_config)
+    # Assert
+    jsondump_mock.assert_called_once_with(expected_json_content, ANY, indent=2)
+
+# endregion replace_theme_meta_data_in_package_file()
+
+# region replace_theme_meta_data_in_scss_file()
+
+
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data")
+def test_replace_theme_meta_data_in_scss_file_given_src_theme_then_replace_data_in_file_path(
+        replace_theme_metadata_mock, themesdata, wordpressdata):
+    """ Given src theme config, then open the style.scss file and replace data based on src theme """
+    # Arrange
+    theme_config = json.loads(themesdata.theme_single_src_with_metadata)
+    file_path = wordpressdata.path
+    replacements = json.loads(themesdata.replacements_on_scss_file)
+    # Act
+    sut.replace_theme_meta_data_in_scss_file(file_path, theme_config)
+    # Assert
+    replace_theme_metadata_mock.assert_called_once_with(file_path, replacements, ANY)
+
+# endregion replace_theme_meta_data_in_scss_file()
+
+# region replace_theme_slug_in_functions_php()
+
+
+def test_replace_theme_slug_in_functions_php_given_src_theme_then_replace_data_in_core_functions_php(
+    themesdata, wordpressdata):
+    """ Given src theme config, then open the core/functions.php file and replaces data based on src theme """
+    # Arrange
+    theme_config = json.loads(themesdata.theme_single_src_with_metadata)
+    theme_config["source"] = "mytheme_replaced"
+    file_path = wordpressdata.path
+    expected_content = themesdata.default_functions_core_php_example_expected
+    # Act
+    with patch(wordpressdata.builtins_open, new_callable=mock_open,
+               read_data=themesdata.default_functions_core_php_example) as m:
+        sut.replace_theme_slug_in_functions_php(file_path, theme_config)
+        # Assert
+        handler = m()
+        handler.write.assert_called_once_with(expected_content)
+
+# endregion replace_theme_slug_in_functions_php()
+
+# region replace_theme_meta_data()
+
+
+def test_replace_theme_meta_data_given_path_and_replacements_then_replaces_file_matches_with_regex(
+    themesdata, wordpressdata):
+    """ Given a path file and replacements dict, should iterate for the replacements and replace with regex """
+    # Arrange
+    file_path = wordpressdata.path
+    replacements = json.loads(themesdata.replacements_on_scss_file)
+    regex = wp_constants.theme_metadata_parse_regex
+    expected_content = themesdata.default_scss_file_expected
+    # Act
+    with patch(wordpressdata.builtins_open, new_callable=mock_open,
+               read_data=themesdata.default_scss_file_example) as m:
+        sut.replace_theme_meta_data(file_path, replacements, regex)
+        # Assert
+        handler = m()
+        handler.write.assert_called_once_with(expected_content)
+
+# endregion replace_theme_meta_data()
+
+# region set_theme_metadata()
+
+
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_scss_file(
+        get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
+        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+    """ Given src theme config, then calls replace_theme_metadata_in_scss file method, using the themes path"""
+    # Arrange
+    root_path = wordpressdata.root_path
+    wpconstants = json.loads(wordpressdata.constants_file_content)
+    src_theme = json.loads(themesdata.theme_single_src)[0]
+    get_constants_mock.return_value = wpconstants
+    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path),
+                                        wpconstants["paths"]["content"]["themes"])
+    scss_file_path = pathlib.Path.joinpath(themes_path, src_theme["source"], "src", "assets", "css", "style.scss")
+    # Act
+    sut.set_theme_metadata(root_path, src_theme)
+    # Assert
+    replace_theme_metadata_in_scss_mock.assert_called_once_with(scss_file_path, src_theme)
+
+
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_package_json_file(
+        get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
+        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+    """ Given src theme config, then calls replace_theme_metadata_in_package_json file method, using the themes path"""
+    # Arrange
+    root_path = wordpressdata.root_path
+    wpconstants = json.loads(wordpressdata.constants_file_content)
+    src_theme = json.loads(themesdata.theme_single_src)[0]
+    get_constants_mock.return_value = wpconstants
+    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path),
+                                        wpconstants["paths"]["content"]["themes"])
+    package_json_path = pathlib.Path.joinpath(themes_path, src_theme["source"], "package.json")
+    # Act
+    sut.set_theme_metadata(root_path, src_theme)
+    # Assert
+    replace_theme_metadata_in_package_mock.assert_called_once_with(package_json_path, src_theme)
+
+
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug_in_functions_php_file(
+        get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
+        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+    """ Given src theme config, then calls replace_theme_slug_in_functions_php file method, using the themes path"""
+    # Arrange
+    root_path = wordpressdata.root_path
+    wpconstants = json.loads(wordpressdata.constants_file_content)
+    src_theme = json.loads(themesdata.theme_single_src)[0]
+    get_constants_mock.return_value = wpconstants
+    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path),
+                                        wpconstants["paths"]["content"]["themes"])
+    functions_php_file_path = pathlib.Path.joinpath(themes_path,
+                                                    src_theme["source"], "src", "functions_php", "_core.php")
+    # Act
+    sut.set_theme_metadata(root_path, src_theme)
+    # Assert
+    replace_theme_slug_in_functions_mock.assert_called_once_with(functions_php_file_path, src_theme)
+
+# endregion set_theme_metadata()
+
+
 
 

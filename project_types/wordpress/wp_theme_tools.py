@@ -278,10 +278,10 @@ def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configurat
         file_path: The path of the file to be replaced.
         src_theme_configuration: Dict containing src theme configuration.
     """
-    replacements = {"name": src_theme_configuration["source"]}
+    replacements = {"name": src_theme_configuration["source"], "author": {}}
     if "description" in src_theme_configuration:
         replacements["description"] = src_theme_configuration["description"]
-    if "keywords" in src_theme_configuration:
+    if "tags" in src_theme_configuration:
         replacements["keywords"] = src_theme_configuration["tags"]
     if "author" in src_theme_configuration:
         replacements["author"]["name"] = src_theme_configuration["author"]
@@ -317,7 +317,7 @@ def replace_theme_meta_data_in_scss_file(file_path: str, src_theme_configuration
     if "author_uri" in src_theme_configuration:
         replacements["Author URI"] = src_theme_configuration["author_uri"]
     if "tags" in src_theme_configuration:
-        replacements["Tags"] = src_theme_configuration["tags"]
+        replacements["Tags"] = ", ".join(src_theme_configuration["tags"])
 
     replace_theme_meta_data(file_path, replacements, wp_constants.theme_metadata_parse_regex)
 
@@ -329,7 +329,7 @@ def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration:
         src_theme_configuration: Dict containing src theme configuration.
     """
     theme_slug = src_theme_configuration["source"]
-    core_php_file = open(file_path, 'r+')
+    core_php_file = open(file_path, 'r')
     file_content = core_php_file.read()
 
     file_content = re.sub(wp_constants.functions_php_mytheme_regex, theme_slug, file_content)
@@ -391,8 +391,8 @@ def set_theme_metadata(root_path: str, src_theme_configuration: dict):
     replace_theme_meta_data_in_package_file(package_json_file_path, src_theme_configuration)
 
     # Replace theme slug on the functions_core.php
-    package_json_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php")
-    replace_theme_slug_in_functions_php(package_json_file_path, src_theme_configuration)
+    functions_php_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php")
+    replace_theme_slug_in_functions_php(functions_php_file_path, src_theme_configuration)
 
 
 def start_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
@@ -406,7 +406,7 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
         """
 
     # Parse project structure configuration
-    if pathlib.Path.exists(structure_file_path):
+    if pathlib.Path.exists(pathlib.Path(structure_file_path)):
         project_structure = wptools.get_site_configuration(structure_file_path)
         logging.info(literals.get("wp_theme_structure_creating_from_file").format(theme_name=theme_name,
                                                                                   file_name=structure_file_path))
