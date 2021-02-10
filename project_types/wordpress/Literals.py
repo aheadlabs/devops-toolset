@@ -19,6 +19,11 @@ class Literals(ValueDictsBase):
     _info = {
         "wp_created_project_structure": _("Finished creation of the project structure."),
         "wp_creating_project_structure": _("Starting to create the project structure."),
+        "wp_created_theme_structure": _("Finished creation of the development theme {theme_name} structure."),
+        "wp_theme_structure_creating_from_file": _("Creating development theme [{theme_name}] structure from "
+                                                   "{file_name}"),
+        "wp_theme_structure_creating_from_default_file": _("Creating default development theme structure from "
+                                                   "{resource}"),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
@@ -125,6 +130,8 @@ class Literals(ValueDictsBase):
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
         "wp_wpcli_plugin_install_err": _("Plugin {plugin_name} could not be installed due to an error."),
         "wp_wpcli_post_delete_posttype_err": _("Unable to delete content from type {post_type} due to an error."),
+        "wp_src_theme_not_found": _("Create development theme was called but no src themes found. Please check your "
+                                    "themes configuration and try again."),
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
         "wp_gulp_build_error":
             _("Gulp build task has encountered an error for theme {theme_slug}. "

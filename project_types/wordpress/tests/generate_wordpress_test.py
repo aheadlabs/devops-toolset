@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from unittest.mock import patch, mock_open, call
+from unittest.mock import patch, mock_open, call, ANY
 
 import pytest
 
@@ -41,9 +41,9 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("logging.info")
 @patch("core.log_tools.log_indented_list")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
-@patch("project_types.wordpress.wptools.build_theme")
+@patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
-@patch("project_types.wordpress.wptools.install_themes_from_configuration_file")
+@patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
 @patch("project_types.wordpress.wptools.install_wordpress_site")
 @patch("project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("project_types.wordpress.wptools.download_wordpress")
@@ -52,7 +52,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
-@patch("project_types.wordpress.wptools.get_themes_path_from_root_path")
+@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
 def test_main_given_required_files_when_present_then_calls_wptools_get_required_file_paths(
@@ -82,9 +82,9 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 @patch("logging.info")
 @patch("core.log_tools.log_indented_list")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
-@patch("project_types.wordpress.wptools.build_theme")
+@patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
-@patch("project_types.wordpress.wptools.install_themes_from_configuration_file")
+@patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
 @patch("project_types.wordpress.wptools.setup_database")
 @patch("project_types.wordpress.wptools.install_wordpress_site")
 @patch("project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
@@ -94,7 +94,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
-@patch("project_types.wordpress.wptools.get_themes_path_from_root_path")
+@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
 def test_main_given_required_files_when_present_and_create_db_then_calls_setup_database(
@@ -128,9 +128,9 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 @patch("core.log_tools.log_indented_list")
 @patch("clint.textui.prompt.yn")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
-@patch("project_types.wordpress.wptools.build_theme")
+@patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
-@patch("project_types.wordpress.wptools.install_themes_from_configuration_file")
+@patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
 @patch("project_types.wordpress.wptools.install_wordpress_site")
 @patch("project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("project_types.wordpress.wptools.download_wordpress")
@@ -139,7 +139,7 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
-@patch("project_types.wordpress.wptools.get_themes_path_from_root_path")
+@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
 def test_main_given_required_files_when_not_present_and_use_defaults_then_download_required_files(
@@ -168,6 +168,44 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
         while len(calls) != len(required_files):
             calls.append(call(expected_content))
         handler.write.assert_has_calls(calls)
+
+
+@patch("tools.git.purge_gitkeep")
+@patch("project_types.wordpress.wptools.export_database")
+@patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
+@patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
+@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
+@patch("project_types.wordpress.wp_theme_tools.build_theme")
+@patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
+@patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
+@patch("project_types.wordpress.wptools.install_wordpress_site")
+@patch("project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
+@patch("project_types.wordpress.wptools.download_wordpress")
+@patch("project_types.wordpress.generate_wordpress.setup_devops_toolset")
+@patch("project_types.wordpress.wptools.start_basic_project_structure")
+@patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
+@patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
+@patch("project_types.wordpress.wptools.get_required_file_paths")
+@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
+@patch("filesystem.paths.files_exist_filtered")
+@patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wp_theme_tools.create_development_theme")
+def test_main_given_required_files_when_create_development_theme_then_calls_create_development_theme(
+        create_dev_theme_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
+        get_site_config_mock, get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock,
+        download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
+        install_plugins_mock, build_theme_mock, get_db_admin_mock, generate_environments_mock,
+        delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata, mocks):
+    """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
+    # Arrange
+    required_files = []
+    files_exist_mock.return_value = required_files
+    environment = "any"
+    root_path = wordpressdata.root_path
+    # Act
+    sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True, True)
+    # Assert
+    create_dev_theme_mock.assert_called_once_with(ANY, root_path)
 
 # endregion main
 

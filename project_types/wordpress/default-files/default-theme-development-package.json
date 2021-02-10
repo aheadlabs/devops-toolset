@@ -17,7 +17,10 @@
     "w74",
     "aheadlabs"
   ],
-  "author": "@aheadlabs",
+  "author": {
+    "name": "@aheadlabs",
+    "url": "https://example.com"
+  },
   "license": "ISC",
   "homepage": "https://example.com",
   "devDependencies": {
