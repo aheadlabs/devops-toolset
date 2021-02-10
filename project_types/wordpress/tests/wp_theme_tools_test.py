@@ -1,6 +1,8 @@
 """Unit tests for the wp_theme_tools file"""
 import json
 import pathlib
+
+from devops_platforms import constants as devops_platforms_constants
 import project_types.wordpress.wp_theme_tools as sut
 import pytest
 import project_types.wordpress.constants as wp_constants
@@ -514,6 +516,47 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug
     replace_theme_slug_in_functions_mock.assert_called_once_with(functions_php_file_path, src_theme)
 
 # endregion set_theme_metadata()
+
+# region start_basic_theme_structure()
+
+
+@patch("logging.info")
+@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("pathlib.Path.exists")
+@patch("tools.git.purge_gitkeep")
+def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_gets_site_configuration(
+        purge_gitkeep_mock, path_exists_mock, get_site_configuration_mock, logging_mock, wordpressdata):
+    """ Given structure file, when file exists, should call wptools.get_site_configuration """
+    # Arrange
+    destination_path = wordpressdata.path
+    path_exists_mock.return_value = True
+    theme_name = "test-theme"
+    structure_file_path = wordpressdata.project_structure_path
+    # Act
+    sut.start_basic_theme_structure(destination_path, theme_name, structure_file_path)
+    # Assert
+    get_site_configuration_mock.assert_called_once_with(structure_file_path)
+
+
+@patch("logging.info")
+@patch("project_types.wordpress.wptools.get_project_structure")
+@patch("pathlib.Path.exists")
+@patch("tools.git.purge_gitkeep")
+def test_start_basic_theme_structure_given_structure_file_path_when_not_exists_then_gets_project_structure(
+        purge_gitkeep_mock, path_exists_mock, get_project_structure_mock, logging_mock, wordpressdata):
+    """ Given structure file, when file exists, should call wptools.get_project_structure """
+    # Arrange
+    destination_path = wordpressdata.path
+    resource = devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE
+    path_exists_mock.return_value = False
+    theme_name = "test-theme"
+    structure_file_path = wordpressdata.project_structure_path
+    # Act
+    sut.start_basic_theme_structure(destination_path, theme_name, structure_file_path)
+    # Assert
+    get_project_structure_mock.assert_called_once_with(resource)
+
+# endregion start_basic_theme_structure()
 
 
 

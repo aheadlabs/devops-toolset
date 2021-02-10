@@ -405,13 +405,13 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
             default structure file will be used.
         """
 
-    # Parse project structure configuration
+    # Parse theme structure configuration
     if pathlib.Path.exists(pathlib.Path(structure_file_path)):
-        project_structure = wptools.get_site_configuration(structure_file_path)
+        theme_structure = wptools.get_site_configuration(structure_file_path)
         logging.info(literals.get("wp_theme_structure_creating_from_file").format(theme_name=theme_name,
                                                                                   file_name=structure_file_path))
     else:
-        project_structure = wptools.get_project_structure(
+        theme_structure = wptools.get_project_structure(
             devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
         logging.info(literals.get("wp_theme_structure_creating_from_default_file").format(
             resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
@@ -419,13 +419,13 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
     project_starter = BasicStructureStarter()
 
     # Change the main folder's name of the theme to the theme_name
-    project_structure["items"][0]["name"] = theme_name
+    theme_structure["items"][0]["name"] = theme_name
 
     # Purge .gitkeep
     git_tools.purge_gitkeep(pathlib.Path(path).as_posix())
 
     # Iterate through every item recursively
-    for item in project_structure["items"]:
+    for item in theme_structure["items"]:
         project_starter.add_item(item, path)
 
     logging.info(literals.get("wp_created_theme_structure").format(theme_name=theme_name))
