@@ -2,7 +2,7 @@
 get_header();
 ?>
 
-I am your front page...
+<p>I am your front page...</p>
 
 <?php
 get_footer();
