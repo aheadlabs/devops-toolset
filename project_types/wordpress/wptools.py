@@ -601,8 +601,11 @@ def start_basic_project_structure(root_path: str) -> None:
     # Parse project structure configuration
     if pathlib.Path.exists(structure_file_path):
         project_structure = get_site_configuration(structure_file_path)
+        logging.info(literals.get("wp_project_structure_creating_from_file").format(file_name=structure_file_path))
     else:
         project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+        logging.info(literals.get("wp_project_structure_creating_from_default_file").format(
+            resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
 
     project_starter = BasicStructureStarter()
 

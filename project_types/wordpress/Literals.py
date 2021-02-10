@@ -20,6 +20,9 @@ class Literals(ValueDictsBase):
         "wp_created_project_structure": _("Finished creation of the project structure."),
         "wp_creating_project_structure": _("Starting to create the project structure."),
         "wp_created_theme_structure": _("Finished creation of the development theme {theme_name} structure."),
+        "wp_project_structure_creating_from_file": ("Creating project structure from {file_name}"),
+        "wp_project_structure_creating_from_default_file": _("Creating default project structure from "
+                                                           "{resource}"),
         "wp_theme_structure_creating_from_file": _("Creating development theme [{theme_name}] structure from "
                                                    "{file_name}"),
         "wp_theme_structure_creating_from_default_file": _("Creating default development theme structure from "
