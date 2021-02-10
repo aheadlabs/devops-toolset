@@ -174,8 +174,6 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
-@patch("core.log_tools.log_indented_list")
-@patch("clint.textui.prompt.yn")
 @patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
@@ -196,13 +194,12 @@ def test_main_given_required_files_when_create_development_theme_then_calls_crea
         create_dev_theme_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
         get_site_config_mock, get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock,
         download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
-        install_plugins_mock, build_theme_mock, get_db_admin_mock, prompt_yn_mock, log_indented_mock,
-        generate_environments_mock, delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata, mocks):
+        install_plugins_mock, build_theme_mock, get_db_admin_mock, generate_environments_mock,
+        delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata, mocks):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
     files_exist_mock.return_value = required_files
-    prompt_yn_mock.return_value = True
     environment = "any"
     root_path = wordpressdata.root_path
     # Act
