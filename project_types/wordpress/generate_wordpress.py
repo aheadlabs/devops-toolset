@@ -50,7 +50,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         create_db: If True it creates the database and the user.
         skip_partial_dumps: If True skips partial database dumps
             (after installing WordPress, themes and plugins).
-        create_development_theme: If true, creates the structure of a development theme.
+        create_development_theme: If True generates the file structure for a
+            development theme
         kwargs: Platform-specific arguments
     """
     global_constants = wordpress.wptools.get_constants()
@@ -139,7 +140,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
 
     # Import wxr content
-    wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
+    if not create_development_theme:
+        wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(environment_file_path, additional_environments,
@@ -156,6 +158,14 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress.wptools.export_database(
         site_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
     git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
+
+    # Move config files to devops directory
+    paths.move_files(
+        root_path,
+        pathlib.Path.joinpath(pathlib.Path(root_path), wordpress.wptools.get_constants()["paths"]["devops"]),
+        "*.json",
+        False
+    )
 
 
 def setup_devops_toolset(root_path: str):
@@ -236,4 +246,7 @@ if __name__ == "__main__":
          args.environment,
          args.additional_environments.split(","),
          args.additional_environment_db_user_passwords.split(","),
-         args.create_db, args.skip_partial_dumps, args.create_development_theme, **kwargs)
+         args.create_db,
+         args.skip_partial_dumps,
+         args.create_development_theme,
+         **kwargs)

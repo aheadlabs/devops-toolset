@@ -1,6 +1,7 @@
 """Contains wrappers for WP CLI commands"""
 
 import datetime
+import logging
 import tools.cli as cli
 import tools.git
 from core.app import App
@@ -31,25 +32,14 @@ def add_update_option(option: dict, wordpress_path: str, debug: bool = False, up
         update_permalinks: If True updates the permalink structure.
         debug: It True logs debug information.
     """
-    option_exists = cli.call_subprocess_with_result(commands.get("wpcli_option_get").format(
-        option_name=option["name"],
-        autoload=convert_wp_parameter_autoload(option["autoload"]),
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
+
+    # Check if the option exists
+    option_exists, existing_option_value = check_if_option_exists(option["name"], wordpress_path, debug)
 
     if option_exists:
-        command = commands.get("wpcli_option_update")
+        update_database_option(option["name"], option["value"], wordpress_path, debug, option["autoload"])
     else:
-        command = commands.get("wpcli_option_add")
-
-    cli.call_subprocess(command.format(
-        option_name=option["name"],
-        autoload=convert_wp_parameter_autoload(option["autoload"]),
-        option_value=option["value"],
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
+        add_database_option(option["name"], option["value"], wordpress_path, debug, option["autoload"])
 
     if option["name"] == "permalink_structure" and update_permalinks:
         cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
@@ -57,6 +47,92 @@ def add_update_option(option: dict, wordpress_path: str, debug: bool = False, up
             path=wordpress_path,
             debug_info=convert_wp_parameter_debug(debug)
         ))
+
+
+def add_database_option(option_name: str, option_value: str, wordpress_path: str,
+                        debug_info: bool, autoload: bool = False):
+    """Adds an option at the wp_options (*) table in the WordPress
+    database using WP-CLI.
+
+    (*) wp_ prefix could change, but this function will work anyway because
+        its value is obtained from the wp-config.php configuration file.
+    For more information see:
+        https://developer.wordpress.org/cli/commands/option/update/
+
+    Args:
+        option_name: Name for the option.
+        option_value: Value for the option.
+        wordpress_path: Path to WordPress files.
+        debug_info: Toggles debug info on the command.
+        autoload: If True converts the value to yes, no otherwise.
+    """
+
+    # Check if the option exists
+    option_exists, existing_option_value = check_if_option_exists(option_name, wordpress_path, debug_info)
+
+    # Adds the option if it does not exist
+    if not option_exists and check_if_option_is_valid(option_name, option_value, autoload):
+        cli.call_subprocess(commands.get("wpcli_option_add").format(
+            option_name=option_name,
+            option_value=option_value,
+            autoload=convert_wp_parameter_autoload(autoload),
+            path=wordpress_path,
+            debug_info=convert_wp_parameter_debug(debug_info)),
+            log_before_process=[literals.get("wp_wpcli_option_add_before").format(
+                option_name=option_name,
+                option_value=option_value)],
+            log_after_err=[literals.get("wp_wpcli_option_add_error").format(
+                option_name=option_name,
+                option_value=option_value)])
+
+
+def check_if_option_exists(option_name: str, wordpress_path: str, debug_info: bool = False) -> (bool, str):
+    """Checks if an option exists in the wp_options (*) table in the
+    WordPress database using WP-CLI.
+
+    (*) wp_ prefix could change, but this function will work anyway because
+        its value is obtained from the wp-config.php configuration file.
+    For more information see:
+        https://developer.wordpress.org/cli/commands/option/get/
+
+    Args:
+        option_name: Name for the option.
+        wordpress_path: Path to WordPress files.
+        debug_info: Toggles debug info on the command.
+
+    Returns:
+        The option value if it exists
+    """
+
+    value = cli.call_subprocess_with_result(commands.get("wpcli_option_get").format(
+        option_name=option_name,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug_info)
+    ))
+
+    option_exists: bool = True if value is not None else False
+    option_value: str = value.rstrip("\n") if option_exists else None
+
+    return option_exists, option_value
+
+
+def check_if_option_is_valid(name: str, value: str, autoload: bool) -> bool:
+    """Checks if the name, value and autoload flag are valid (not empty
+    or None)
+
+    Args:
+        name: Option name
+        value: Option value
+        autoload: Option autoload flag
+
+    Returns:
+        True if the option is valid, False otherwise
+    """
+    if name is not None and name != "" and value is not None \
+            and autoload is not None:
+        return True
+
+    return False
 
 
 def convert_wp_parameter_autoload(autoload: bool):
@@ -391,9 +467,6 @@ def export_content_to_wxr(wordpress_path: str, destination_path: str, wrx_file_s
         wordpress_path: Path to WordPress files.
         destination_path: Path where the files will be generated.
         wrx_file_suffix: Suffix to be added to the generated XML file.
-
-    Returns:
-
     """
     date = datetime.datetime.utcnow().strftime("%Y.%m.%d")
     suffix = "" if wrx_file_suffix is None else f"-{wrx_file_suffix}"
@@ -602,18 +675,26 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
         debug_info: Toggles debug info on the command.
         autoload: If True converts the value to yes, no otherwise.
     """
-    cli.call_subprocess(commands.get("wpcli_option_update").format(
-        option_name=option_name,
-        option_value=option_value,
-        autoload=convert_wp_parameter_autoload(autoload),
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug_info)),
-        log_before_process=[literals.get("wp_wpcli_option_update_before").format(
+
+    # Check if the option exists
+    option_exists, existing_option_value = check_if_option_exists(option_name, wordpress_path, debug_info)
+
+    # Update the option if the new value is different than the existing one
+    if option_exists and existing_option_value != option_value:
+        cli.call_subprocess(commands.get("wpcli_option_update").format(
             option_name=option_name,
-            option_value=option_value)],
-        log_after_err=[literals.get("wp_wpcli_option_update_error").format(
-            option_name=option_name,
-            option_value=option_value)])
+            option_value=option_value,
+            autoload=convert_wp_parameter_autoload(autoload),
+            path=wordpress_path,
+            debug_info=convert_wp_parameter_debug(debug_info)),
+            log_before_process=[literals.get("wp_wpcli_option_update_before").format(
+                option_name=option_name,
+                option_value=option_value)],
+            log_after_err=[literals.get("wp_wpcli_option_update_error").format(
+                option_name=option_name,
+                option_value=option_value)])
+    else:
+        logging.warning(literals.get("wp_wpcli_option_skipping").format(option_name=option_name))
 
 
 def wp_cli_info():
