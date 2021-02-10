@@ -1,4 +1,5 @@
 """Contains several tools and utils for WordPress Themes"""
+import filesystem.parsers
 import filesystem.paths as paths
 import filesystem.zip
 import json
