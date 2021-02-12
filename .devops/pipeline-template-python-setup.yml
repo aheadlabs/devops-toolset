@@ -9,5 +9,5 @@ steps:
     displayName: Install pip packages
     inputs:
       script: |
-        python3 -m pip -r requirements.txt
+        python3 -m pip install -r requirements.txt
         python3 -m pip list 
