@@ -1,11 +1,14 @@
 """ This script will hold tools to install and update software in a remote linux host """
-
 from core.app import App
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from project_types.linux.commands import Commands as LinuxCommands
 from project_types.linux.Literals import Literals as LinuxLiterals
 from tools import cli
+import argparse
+import json
+import tools.argument_validators
+
 
 app: App = App()
 literals = LiteralsCore([LinuxLiterals])
@@ -55,4 +58,12 @@ def install_package(package: str, version: str = None):
 
 
 if __name__ == "__main__":
-    help(__name__)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("instance-config-path", action=tools.argument_validators.PathValidator)
+    args, args_unknown = parser.parse_known_args()
+    with open(args.instance_config_path) as instance_file:
+        instance_dict = json.load(instance_file)
+        check_and_update_instance_software(instance_dict["software-packages"])
+
+
+
