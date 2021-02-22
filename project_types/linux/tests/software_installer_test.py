@@ -53,7 +53,6 @@ def test_check_package_installed_given_package_when_package_exist_then_returns_t
     # Arrange
     package = "package_that_exists"
     call_subprocess_with_result_mock.return_value = value
-    expected_result = expected_result
     # Act
     result = sut.check_package_installed(package)
     # Assert
