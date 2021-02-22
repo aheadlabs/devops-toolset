@@ -11,4 +11,6 @@ class Commands(ValueDictsBase):
 
     # Add your linux literal dictionaries here
     _commands = {
+        "deb_which": "which {package}",
+        "deb_package_install": "sudo apt install -y {package} {version}"
     }
