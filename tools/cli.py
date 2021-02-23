@@ -46,7 +46,7 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
     """
 
     core.log_tools.log_list([command], core.log_tools.LogLevel.debug)
-    core.log_tools.log_list(log_before_process, core.log_tools.LogLevel.debug)
+    core.log_tools.log_list(log_before_process, core.log_tools.LogLevel.info)
 
     process = subprocess.Popen(command.strip(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
