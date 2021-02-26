@@ -65,7 +65,7 @@ def test_parse_theme_metadata_when_tokens_matched_then_return_matches_dict(loggi
     # Arrange
     token1, value1, token2, value2 = "Sometoken1", "Somevalue1", "Sometoken2", "Somevalue2"
     tokens = [token1, token2]
-    css_file_data = b"Sometoken1: Somevalue1\r\nSometoken2: Somevalue2\r\n"
+    css_file_data = b"Sometoken1: Somevalue1\nSometoken2: Somevalue2\n"
     # Act
     result = sut.parse_theme_metadata(css_file_data, tokens)
     # Assert
@@ -81,7 +81,7 @@ def test_parse_theme_metadata_when_token_and_not_matched_then_warns(
     # Arrange
     token1, value1 = "Sometoken1", "Somevalue1"
     tokens = [token1]
-    css_file_data = b"Sometoken2: Somevalue2\r\n"
+    css_file_data = b"Sometoken2: Somevalue2\n"
     literal_expected = wp_literals.get("wp_parsing_theme_no_matches_found").format(token=token1)
     # Act
     sut.parse_theme_metadata(css_file_data, tokens)
@@ -98,7 +98,7 @@ def test_parse_theme_metadata_when_tokens_matched_and_add_environment_variables_
     tokens, env_variable = dict(), dict()
     token, value = "Sometoken", "Somevalue"
     tokens[token] = value
-    css_file_data = b"Sometoken: Somevalue\r\n"
+    css_file_data = b"Sometoken: Somevalue\n"
     env_variable[f"theme_{token}".upper()] = value
     # Act
     with patch.object(sut, "platform_specific") as platform_specific_mock:

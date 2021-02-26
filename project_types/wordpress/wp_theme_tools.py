@@ -348,7 +348,7 @@ def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
         regex_str: The regex string used to match and replace the replacements dict.
     """
 
-    replace_file = open(path, 'r', newline='\r\n')
+    replace_file = open(path, 'r', newline='\n')
     file_content = replace_file.read()
 
     for key, replacement in replacements.items():
@@ -361,7 +361,7 @@ def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
 
         if matches is not None and matches.group(1):
             # Build the replacement string
-            target = f'{matches.group(1)}: {replacement}\r\n'
+            target = f'{matches.group(1)}: {replacement}'
             # Apply the replacement
             file_content = file_content.replace(matches.group(0), target)
 
