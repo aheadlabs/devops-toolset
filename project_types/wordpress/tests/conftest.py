@@ -21,16 +21,16 @@ class PluginsData:
 
 class ThemesData:
     """Class used to create the themesdata fixture"""
-    default_scss_file_example = "/*!\r\nTheme Name: MyTheme WordPress theme\r\nTheme URI: https://example.com/\r\n" \
-                                "Description: Ad hoc WordPres theme.\r\nAuthor: Ahead Labs, S.L.\r\nAuthor URI: " \
-                                "https://aheadlabs.com\r\nTags: ahead-labs, theme\r\nVersion: {{version}}\r\n" \
-                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\n" \
-                                "License: Copyright\r\nText Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
-    default_scss_file_expected = "/*!\r\nTheme Name: theme\r\nTheme URI: https://mytheme\r\n" \
-                                "Description: mytheme-description\r\nAuthor: theme-author\r\nAuthor URI: " \
-                                "https://example.com\r\nTags: tag1, tag2\r\nVersion: {{version}}\r\n" \
-                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\nLicense: Copyright\r\n" \
-                                "Text Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
+    default_scss_file_example = "/*!\nTheme Name: MyTheme WordPress theme\nTheme URI: https://example.com/\n" \
+                                "Description: Ad hoc WordPres theme.\nAuthor: Ahead Labs, S.L.\nAuthor URI: " \
+                                "https://aheadlabs.com\nTags: ahead-labs, theme\nVersion: {{version}}\n" \
+                                "Requires at least: 5.6\nTested up to: 5.6\nRequires PHP: 7.4.11\n" \
+                                "License: Copyright\nText Domain: mytheme\nTemplate: w74-framework\n*/"
+    default_scss_file_expected = "/*!\nTheme Name: theme\nTheme URI: https://mytheme\n" \
+                                "Description: mytheme-description\nAuthor: theme-author\nAuthor URI: " \
+                                "https://example.com\nTags: tag1, tag2\nVersion: {{version}}\n" \
+                                "Requires at least: 5.6\nTested up to: 5.6\nRequires PHP: 7.4.11\nLicense: Copyright\n" \
+                                "Text Domain: mytheme\nTemplate: w74-framework\n*/"
     default_functions_core_php_example = "function mytheme_register_styles()\n{\n\n}\nadd_action('wp_enqueue_scripts', " \
                                          "'mytheme_register_styles')"
     default_functions_core_php_example_expected = "function mytheme_replaced_register_styles()\n{\n\n}\n" \
