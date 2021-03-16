@@ -355,6 +355,9 @@ def import_content_from_configuration_file(site_configuration: dict, wordpress_p
         site_configuration: parsed site configuration.
         wordpress_path: Path to WordPress files.
     """
+    if "content" not in site_configuration:
+        return
+
     # Add constants
     constants = get_constants()
 

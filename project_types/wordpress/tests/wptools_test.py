@@ -386,6 +386,23 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
 
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+@patch("project_types.wordpress.wp_cli.delete_post_type_content")
+@patch("project_types.wordpress.wptools.get_constants")
+def test_import_content_from_configuration_file_given_args_when_no_content_then_return(get_constants_mock,
+    delete_content_mock, import_wxr_content, wordpressdata):
+    """ Given args, when no content key supplied inside site_config_content, should not call any mock """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config.pop('content', None)
+    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    wordpress_path = wordpressdata.wordpress_path
+    # Act
+    sut.import_content_from_configuration_file(site_config, wordpress_path)
+    # Assert
+    import_wxr_content.assert_not_called()
+
 # endregion import_content_from_configuration_file
 
 # region install_plugins_from_configuration_file()

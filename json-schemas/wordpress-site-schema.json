@@ -418,7 +418,11 @@
       },
       "default": []
     },
-    "content": {"type": "array", "contains":  {"type" : "string" }}
+    "content": {
+      "type": "array",
+      "contains":  {"type" : "string" },
+      "default": []
+    }
   },
   "required": [
     "wp_cli",
