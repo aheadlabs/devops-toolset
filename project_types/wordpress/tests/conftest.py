@@ -191,6 +191,55 @@ class WordPressData:
     path = "/pathto"
     url_resource = "https://url/resource"
     default_pwd = "root"
+    site_config_content_additional_settings = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+    site_config_content_false_aws_cloudfront = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{ \"aws_cloudfront\":false}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+    site_config_content_true_aws_cloudfront = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{ \"aws_cloudfront\":true}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+
 
 
 
