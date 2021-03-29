@@ -23,6 +23,8 @@ from project_types.wordpress.Literals import Literals as WordpressLiterals
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from project_types.wordpress.commands import Commands as WordpressCommands
 
+import re
+
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
 literals = LiteralsCore([WordpressLiterals])
@@ -568,6 +570,48 @@ def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_pa
         raw = type(value) != str
         wp_cli.set_configuration_value(
             prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
+
+    # Add cloudfront snippet to wp_config.php
+    if "additional_settings" not in site_config["settings"]:
+        return
+    if "aws_cloudfront" not in site_config["settings"]["additional_settings"]:
+        return
+    if site_config["settings"]["additional_settings"]["aws_cloudfront"]:
+        add_cloudfront_forwarded_proto_to_config(wordpress_path)
+
+
+def add_cloudfront_forwarded_proto_to_config(wordpress_path: str):
+    """ Add HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
+
+    Args:
+        wordpress_path: Path to wordpress installation.
+
+    """
+    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config.php")
+    if file_path.exists():
+        with open(file_path, "r+") as config:
+            config_content = config.read()
+            pattern = r'/\*\*.*\nrequire_once.*'
+            match = re.search(pattern, config_content)
+            if match:
+                content_new = re.sub(pattern, get_snippet_cloudfront() + '\n' + match.group(), config_content)
+                config.seek(0)
+                config.write(content_new)
+
+
+def get_snippet_cloudfront():
+    """ Gets HTTP_CLOUDFRONT_FORWARDED_PROTO snippet from a default file.
+
+    Returns:
+        HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
+    """
+    file_path = pathlib.Path('default-files/default-cloudfront-forwarded-proto.php')
+    if file_path.exists():
+        with open(file_path, "r") as snippet_content:
+            snippet = snippet_content.read()
+            return snippet
+    else:
+        logging.error(literals.get("wp_file_not_found").format(file=file_path))
 
 
 def setup_database(site_config: dict, wordpress_path: str, db_user_password: str,
