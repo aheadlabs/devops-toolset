@@ -8,25 +8,6 @@
     "settings": {
       "type": "object",
       "properties": {
-        "dumps": {
-          "type": "object",
-          "properties": {
-            "core": {"type": "string"},
-            "theme": {"type": "string"},
-            "plugins": {"type": "string"},
-            "regular": {"type": "string"}
-          },
-          "additionalProperties": false,
-          "required": ["core","theme","plugins","regular"]
-        },
-        "options": {"$ref": "https://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"}
-      },
-      "additionalProperties": false,
-      "required": ["dumps","options"]
-    },
-    "wordpress_customization": {
-      "type": "object",
-      "properties": {
         "title": {"type": "string"},
         "description": {"type": "string"},
         "version": {"type": "string"},
@@ -56,10 +37,22 @@
             "$ref": "#/definitions/wp_plugin"
           },
           "default": []
-        }
+        },
+        "dumps": {
+          "type": "object",
+          "properties": {
+            "core": {"type": "string"},
+            "theme": {"type": "string"},
+            "plugins": {"type": "string"},
+            "regular": {"type": "string"}
+          },
+          "additionalProperties": false,
+          "required": ["core","theme","plugins","regular"]
+        },
+        "options": {"$ref": "https://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"}
       },
       "additionalProperties": false,
-      "required": ["title","description","version","locale","wp_admin","themes","plugins"]
+      "required": ["title","description","version","locale","wp_admin","themes","plugins","dumps","options"]
     },
     "database": {
       "type": "object",
@@ -320,5 +313,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["settings","wordpress_customization","environments"]
+  "required": ["settings","environments"]
 }
