@@ -8,6 +8,7 @@ import sys
 from typing import List, Tuple
 
 import requests
+from pip._internal.utils.deprecation import deprecated
 
 import core.log_tools
 import filesystem.paths as paths
@@ -75,7 +76,7 @@ def create_wp_cli_bat_file(phar_path: str):
         bat.write(f"php \"{phar_path}\" %*")
 
 
-def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+def create_configuration_file(environment_configuration: dict, wordpress_path: str, database_user_password: str):
     """Creates the wp-config-php WordPress configuration file using WP-CLI.
 
     All parameters are obtained from a site configuration file.
@@ -84,25 +85,25 @@ def create_configuration_file(site_configuration: dict, wordpress_path: str, dat
         https://developer.wordpress.org/cli/commands/config/create/
 
     Args:
-        site_configuration: parsed site configuration.
+        environment_configuration: Parsed environment configuration.
         wordpress_path: Path to WordPress files.
         database_user_password: Password for the database user configured in at the wp-config.php file.
     """
-    database_props = site_configuration["database"]
+
     wp_cli.create_configuration_file(wordpress_path=wordpress_path,
-                                     db_host=database_props["host"],
-                                     db_name=database_props["name"],
-                                     db_user=database_props["user"],
+                                     db_host=environment_configuration["database"]["host"],
+                                     db_name=environment_configuration["database"]["db_name"],
+                                     db_user=environment_configuration["database"]["db_user"],
                                      db_pass=database_user_password,
-                                     db_prefix=database_props["prefix"],
-                                     db_charset=database_props["charset"],
-                                     db_collate=database_props["collate"],
-                                     skip_check=database_props["skip_check"],
-                                     debug=site_configuration["wp_cli"]["debug"]
+                                     db_prefix=environment_configuration["database"]["table_prefix"],
+                                     db_charset=environment_configuration["database"]["charset"],
+                                     db_collate=environment_configuration["database"]["collate"],
+                                     skip_check=environment_configuration["database"]["skip_check"],
+                                     debug=environment_configuration["wp_cli_debug"]
                                      )
 
 
-def download_wordpress(site_configuration: dict, destination_path: str):
+def download_wordpress(site_configuration: dict, destination_path: str, environment_name: str = None):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
     For more information see:
@@ -111,14 +112,20 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     Args:
         site_configuration: parsed site configuration.
         destination_path: Path where WP-CLI will be downloaded.
+        environment_name: Name of the environment.
     """
     if not paths.is_valid_path(destination_path):
         raise ValueError(literals.get("wp_non_valid_dir_path"))
 
+    if environment_name is not None:
+        environment_config = get_environment(site_configuration, environment_name)
+        debug = environment_config['wp_cli_debug']
+    else:
+        debug = False
+
     version = site_configuration["settings"]["version"]
     locale = site_configuration["settings"]["locale"]
     skip_content = site_configuration["settings"]["skip_content_download"]
-    debug = site_configuration["wp_cli"]["debug"]
     wp_cli.download_wordpress(destination_path, version, locale, skip_content, debug)
     git_tools.purge_gitkeep(destination_path)
 
@@ -155,19 +162,20 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
 
 
-def get_db_admin_from_environment(environment_path: str, environment_name: str = None) -> str:
-    """ Gets the db_admin user from the environment path
-
-        Args:
-             environment_path: Path to the environments file.
-             environment_name: Name of the environment.
-
-    """
-    environment_obj = get_site_environments(environment_path, environment_name)
-    db_admin_user = environment_obj["db_admin_user"]
-    logging.info(literals.get("wp_got_db_admin_user").format(db_admin_user=db_admin_user))
-
-    return db_admin_user
+# TODO Delete this deprecated code
+# def get_db_admin_from_environment(environment_path: str, environment_name: str = None) -> str:
+#     """ Gets the db_admin user from the environment path
+#
+#         Args:
+#              environment_path: Path to the environments file.
+#              environment_name: Name of the environment.
+#
+#     """
+#     environment_obj = get_site_environments(environment_path, environment_name)
+#     db_admin_user = environment_obj["db_admin_user"]
+#     logging.info(literals.get("wp_got_db_admin_user").format(db_admin_user=db_admin_user))
+#
+#     return db_admin_user
 
 
 def get_constants() -> dict:
@@ -254,91 +262,114 @@ def get_site_configuration(path: str) -> dict:
         return json.loads(data)
 
 
-def get_site_configuration_from_environment(environment_path: str, environment_name: str = None) -> dict:
-    """Gets the WordPress site configuration from a environment.
+def get_environment(site_config: dict, environment_name: str) -> dict:
+    """Gets the environment that matches the name passed as a parameter.
 
     Args:
-        environment_path: Path to the environments file.
-        environment_name: Name of the environment.
-
-    Returns:
-        A dict with the site's configuration.
+        site_config: Site configuration.
+        environment_name: Name of the environment to be retrieved.
     """
 
-    site_configuration_path = get_site_configuration_path_from_environment(environment_path, environment_name)
+    filtered = filter(lambda environment_x: environment_x['name'] == environment_name, site_config['environments'])
+    environment_list = list(filtered)
 
-    return get_site_configuration(site_configuration_path)
+    if len(environment_list) == 0:
+        raise ValueError(literals.get('wp_env_x_not_found').format(environment=environment_name))
 
+    if len(environment_list) > 1:
+        logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
 
-def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
-    """Gets the path to the WordPress site configuration from a environment.
-
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
-
-    Args:
-        environment_path: Path to the WordPress environment file.
-        environment_name: Environment name that exists in the environment file.
-
-    Returns:
-        Site configuration path.
-    """
-
-    if environment_path is None:
-        raise ValueError(literals.get("wp_environment_path_not_found"))
-    if environment_name is None:
-        raise ValueError(literals.get("wp_environment_name_not_found"))
-
-    environment_obj = get_site_environments(environment_path, environment_name)
-
-    directory = pathlib.Path(environment_path).parent
-    file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
-    if not file_path.exists() or not file_path.is_file():
-        raise ValueError(literals.get("wp_file_not_found").format(file=file_path))
-    logging.info(literals.get("wp_environment_file_used").format(file=file_path))
-
-    return str(file_path)
+    return environment_list[0]
 
 
-def get_site_environments(environment_path: str, environment_name: str = None) -> dict:
-    """Gets the site environments from a WordPress site environment file.
+# TODO Delete this deprecated code
+# def get_site_configuration_from_environment(environment_path: str, environment_name: str = None) -> dict:
+#     """Gets the WordPress site configuration from a environment.
+#
+#     Args:
+#         environment_path: Path to the environments file.
+#         environment_name: Name of the environment.
+#
+#     Returns:
+#         A dict with the site's configuration.
+#     """
+#
+#     site_configuration_path = get_site_configuration_path_from_environment(environment_path, environment_name)
+#
+#     return get_site_configuration(site_configuration_path)
+#
+#
+# def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
+#     """Gets the path to the WordPress site configuration from a environment.
+#
+#     For more information see:
+#         http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+#         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
+#
+#     Args:
+#         environment_path: Path to the WordPress environment file.
+#         environment_name: Environment name that exists in the environment file.
+#
+#     Returns:
+#         Site configuration path.
+#     """
+#
+#     if environment_path is None:
+#         raise ValueError(literals.get("wp_environment_path_not_found"))
+#     if environment_name is None:
+#         raise ValueError(literals.get("wp_environment_name_not_found"))
+#
+#     environment_obj = get_site_environments(environment_path, environment_name)
+#
+#     directory = pathlib.Path(environment_path).parent
+#     file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
+#     if not file_path.exists() or not file_path.is_file():
+#         raise ValueError(literals.get("wp_file_not_found").format(file=file_path))
+#     logging.info(literals.get("wp_environment_file_used").format(file=file_path))
+#
+#     return str(file_path)
+#
+#
+# def get_site_environments(environment_path: str, environment_name: str = None) -> dict:
+#     """Gets the site environments from a WordPress site environment file.
+#
+#     For more information see:
+#         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
+#
+#     Args:
+#         environment_path: Full path to the WordPress site environment file.
+#         environment_name: Name of the environment to be got. If no name is
+#             given, default environment is obtained.
+#
+#     Returns:
+#         Site environments in a dict object.
+#     """
+#     with open(environment_path, "r") as environment_file:
+#         json_data = json.loads(environment_file.read())
+#
+#     matching_environments = list(filter(lambda e: e["name"] == environment_name, json_data["environments"]))
+#
+#     if len(matching_environments) == 0:
+#         raise ValueError(literals.get("wp_env_not_found"))
+#
+#     if len(matching_environments) > 1:
+#         raise ValueError(literals.get("wp_env_gt1"))
+#
+#     return matching_environments[0]
 
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
 
-    Args:
-        environment_path: Full path to the WordPress site environment file.
-        environment_name: Name of the environment to be got. If no name is
-            given, default environment is obtained.
-
-    Returns:
-        Site environments in a dict object.
-    """
-    with open(environment_path, "r") as environment_file:
-        json_data = json.loads(environment_file.read())
-
-    matching_environments = list(filter(lambda e: e["name"] == environment_name, json_data["environments"]))
-
-    if len(matching_environments) == 0:
-        raise ValueError(literals.get("wp_env_not_found"))
-
-    if len(matching_environments) > 1:
-        raise ValueError(literals.get("wp_env_gt1"))
-
-    return matching_environments[0]
-
-
-def get_wordpress_path_from_root_path(root_path) -> str:
+def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:
     """ Gets the wordpress path based on the constants.json from a desired root path
 
     Args:
-        root_path: Full path of the project
+        root_path: Full path of the project.
+        constants: WordPress constants.
     """
     logging.info(literals.get("wp_root_path").format(path=root_path))
 
-    # Add constants
-    constants = get_constants()
+    # Get constants if not passed
+    if constants is None:
+        constants = get_constants()
 
     # Get wordpress path from the constants
     wordpress_relative_path = constants["paths"]["wordpress"]
@@ -544,19 +575,22 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
 
-def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
+def set_wordpress_config_from_configuration_file(environment_config: dict, wordpress_path: str,
+                                                 db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
-        site_config: parsed site configuration.
+        environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
         db_user_password: Database user password.
 
     """
+
     # Create wp-config.php file
-    create_configuration_file(site_config, wordpress_path, db_user_password)
+    create_configuration_file(environment_config, wordpress_path, db_user_password)
+
     # Get config properties to set from site configuration
-    wp_config_properties = site_config["settings"]["wp_config"]
-    debug = site_config["wp_cli"]["debug"]
+    wp_config_properties = environment_config["wp_config"]
+    debug = environment_config["wp_cli_debug"]
 
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():

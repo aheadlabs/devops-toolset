@@ -19,6 +19,7 @@ class Commands(ValueDictsBase):
                                "{skip_content} {debug_info}",
         "wpcli_core_install": "wp core install --path={path} --url={url} --title=\"{title}\" --admin_user={admin_user} "
                               "--admin_email={admin_email} {admin_password} {skip_email} {debug_info}",
+        "wpcli_core_version": "wp core version --path={path}",
         "wpcli_db_create": "wp db create {db_user} {db_pass} --path={path} {debug_info}",
         "wpcli_db_export": "wp db export \"{core_dump_path}\" --path={path} --extended-insert=false {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes} {debug_info}",

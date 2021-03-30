@@ -138,14 +138,16 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         paths.download_file(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
 
 
-def get_themes_path_from_root_path(root_path) -> str:
+def get_themes_path_from_root_path(root_path: str, constants: dict = None) -> str:
     """ Gets the themes path based on the constants.json from a desired root path
 
     Args:
-        root_path: Full path of the project
+        root_path: Full path of the project.
+        constants: WordPress constants.
     """
-    # Add constants
-    constants = wptools.get_constants()
+    # Get constants if not passed
+    if constants is None:
+        constants = wptools.get_constants()
 
     # Get wordpress path from the constants
     themes_relative_path = constants["paths"]["content"]["themes"]

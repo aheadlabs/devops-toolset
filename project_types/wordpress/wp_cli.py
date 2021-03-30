@@ -395,6 +395,26 @@ def delete_post_type_content(wordpress_path: str, content_type: str, debug_info:
         log_before_err=[literals.get("wp_wpcli_post_delete_posttype_err").format(post_type=content_type)])
 
 
+def wordpress_is_downloaded(path: str) -> bool:
+    """Checks if WordPress is downloaded at the specified path.
+
+    Args:
+        path: Path to be checked for WordPress files.
+
+    Returns:
+        True if WordPress files are present at the specified path.
+    """
+
+    version = cli.call_subprocess_with_result(commands.get("wpcli_core_version").format(path=path))
+
+    if version:
+        logging.warning(literals.get("wp_wpcli_core_version_already_downloaded")
+                        .format(version=version.replace("\n", "")))
+        return True
+    else:
+        return False
+
+
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
     """ Downloads the latest version of the WordPress core files using WP-CLI.
 
@@ -408,21 +428,22 @@ def download_wordpress(destination_path: str, version: str, locale: str, skip_co
         skip_content: --skip-content parameter
         debug: If present, --debug will be added to the command showing all debug trace information.
     """
-    cli.call_subprocess(commands.get("wpcli_core_download").format(
-        version=version,
-        locale=locale,
-        path=destination_path,
-        skip_content=convert_wp_parameter_skip_content(skip_content),
-        debug_info=convert_wp_parameter_debug(debug)
-    ), log_before_process=[
-        literals.get("wp_wpcli_downloading_wordpress").format(version=version, locale=locale, content=skip_content),
-        literals.get("wp_wpcli_downloading_path").format(path=destination_path),
-        literals.get("wp_wpcli_downloading_content").format(content=skip_content)],
-        log_after_out=[
-            literals.get("wp_wpcli_downloading_wordpress_ok")],
-        log_after_err=[
-            literals.get("wp_wpcli_downloading_wordpress_err")]
-    )
+    if not wordpress_is_downloaded(destination_path):
+        cli.call_subprocess(commands.get("wpcli_core_download").format(
+            version=version,
+            locale=locale,
+            path=destination_path,
+            skip_content=convert_wp_parameter_skip_content(skip_content),
+            debug_info=convert_wp_parameter_debug(debug)
+        ), log_before_process=[
+            literals.get("wp_wpcli_downloading_wordpress").format(version=version, locale=locale, content=skip_content),
+            literals.get("wp_wpcli_downloading_path").format(path=destination_path),
+            literals.get("wp_wpcli_downloading_content").format(content=skip_content)],
+            log_after_out=[
+                literals.get("wp_wpcli_downloading_wordpress_ok")],
+            log_after_err=[
+                literals.get("wp_wpcli_downloading_wordpress_err")]
+        )
 
 
 def eval_code(php_code: str, wordpress_path: str) -> str:
