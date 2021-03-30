@@ -103,7 +103,7 @@ def create_configuration_file(environment_configuration: dict, wordpress_path: s
                                      )
 
 
-def download_wordpress(site_configuration: dict, destination_path: str, environment_name: str = None):
+def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_debug: bool = False):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
     For more information see:
@@ -112,21 +112,17 @@ def download_wordpress(site_configuration: dict, destination_path: str, environm
     Args:
         site_configuration: parsed site configuration.
         destination_path: Path where WP-CLI will be downloaded.
-        environment_name: Name of the environment.
+        wp_cli_debug: True if logging must be verbose.
     """
+
     if not paths.is_valid_path(destination_path):
         raise ValueError(literals.get("wp_non_valid_dir_path"))
 
-    if environment_name is not None:
-        environment_config = get_environment(site_configuration, environment_name)
-        debug = environment_config['wp_cli_debug']
-    else:
-        debug = False
 
     version = site_configuration["settings"]["version"]
     locale = site_configuration["settings"]["locale"]
     skip_content = site_configuration["settings"]["skip_content_download"]
-    wp_cli.download_wordpress(destination_path, version, locale, skip_content, debug)
+    wp_cli.download_wordpress(destination_path, version, locale, skip_content, wp_cli_debug)
     git_tools.purge_gitkeep(destination_path)
 
 
