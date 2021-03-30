@@ -155,27 +155,6 @@ def test_export_database_calls_wp_cli_export_database(export_database_mock, word
 
 # endregion
 
-# region get_db_admin_from_environment
-
-
-@patch("logging.info")
-@patch("project_types.wordpress.wptools.get_site_environments")
-def test_get_db_admin_from_environment_return_db_admin_user_from_environment_file_path(
-        get_site_environments_mock, logging_mock, wordpressdata):
-    """Given environment_file path and name, should parse the db_admin_user property and return it"""
-    # Arrange
-    env_file = json.loads(wordpressdata.environment_file_content)
-    get_site_environments_mock.return_value = env_file["environments"][0]
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    expected_result = "root"
-    # Act
-    result = sut.get_db_admin_from_environment(environment_path, environment_name)
-    # Assert
-    assert result == expected_result
-
-
-# endregion
 
 # region get_constants()
 
@@ -240,110 +219,6 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
 # endregion
 
-# region get_site_configuration_from_environment()
-
-
-@patch("project_types.wordpress.wptools.get_site_configuration")
-@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
-def test_get_site_configuration_from_environment(
-        get_site_configuration_path_from_environment, get_site_configuration, wordpressdata):
-    """Given environment data, calls get_site_configuration with the correct
-    path."""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    get_site_configuration_path_from_environment.return_value = json.loads(wordpressdata.site_config_content)
-
-    # Act
-    sut.get_site_configuration_from_environment(environment_path, environment_name)
-
-    # Assert
-    get_site_configuration.assert_called_with(get_site_configuration_path_from_environment.return_value)
-
-
-# endregion
-
-# region get_site_configuration_path_from_environment()
-
-
-@pytest.mark.parametrize("env_path, env_name, literal",
-                         [("path", None, "wp_environment_path_not_found"),
-                          (None, "localhost", "wp_environment_name_not_found")])
-def test_get_site_configuration_path_from_environment_when_environment_path_is_none_raises_error(
-        env_path, env_name, literal):
-    """Given arguments, when the environment is found in the JSON file, returns
-    the site configuration file path"""
-    # Arrange
-    expected_error = literals.get(literal)
-    # Act
-    with pytest.raises(ValueError) as error:
-        sut.get_site_configuration_path_from_environment(env_path, env_name)
-
-        # Assert
-        assert error.value == expected_error
-
-
-@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.environment_file_content)
-@patch("pathlib.Path.exists")
-@patch("pathlib.Path.is_file")
-def test_get_site_configuration_path_from_environment_when_environment_found_returns_config_path(
-        path_isfile_mock, path_exist_mock, builtins_open, wordpressdata):
-    """Given arguments, when the environment is found in the JSON file, returns
-    the site configuration file path"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    path_exist_mock.return_value = True
-    path_isfile_mock.return_value = True
-    expected_path = wordpressdata.site_config_path_from_json
-
-    # Act
-    result = sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert pathlib.Path(result).as_posix() == expected_path
-
-
-@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.environment_file_content)
-def test_get_site_configuration_path_from_environment_when_environment_not_found_raises_valuerror(
-        builtins_open, wordpressdata):
-    """Given arguments, when the environment is not found in the JSON file,
-    raises Value error with message"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name_fake
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_env_not_found")
-
-
-@patch("builtins.open", new_callable=mock_open,
-       read_data=WordPressData.environment_file_content_duplicated_environment)
-def test_get_site_configuration_path_from_environment_when_more_than_1_environment_found_raises_valuerror(
-        builtins_open, wordpressdata):
-    """Given arguments, when more than one environment is found in the JSON
-    file, raises Value error with message"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_env_gt1")
-
-
-# endregion convert_wp_parameter_skip_content()
 
 # region import_database()
 

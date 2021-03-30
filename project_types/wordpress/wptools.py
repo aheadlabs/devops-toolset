@@ -162,22 +162,6 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
 
 
-# TODO Delete this deprecated code
-# def get_db_admin_from_environment(environment_path: str, environment_name: str = None) -> str:
-#     """ Gets the db_admin user from the environment path
-#
-#         Args:
-#              environment_path: Path to the environments file.
-#              environment_name: Name of the environment.
-#
-#     """
-#     environment_obj = get_site_environments(environment_path, environment_name)
-#     db_admin_user = environment_obj["db_admin_user"]
-#     logging.info(literals.get("wp_got_db_admin_user").format(db_admin_user=db_admin_user))
-#
-#     return db_admin_user
-
-
 def get_constants() -> dict:
     """Gets all the constants from a WordPress constants resource.
 
@@ -280,82 +264,6 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
         logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
 
     return environment_list[0]
-
-
-# TODO Delete this deprecated code
-# def get_site_configuration_from_environment(environment_path: str, environment_name: str = None) -> dict:
-#     """Gets the WordPress site configuration from a environment.
-#
-#     Args:
-#         environment_path: Path to the environments file.
-#         environment_name: Name of the environment.
-#
-#     Returns:
-#         A dict with the site's configuration.
-#     """
-#
-#     site_configuration_path = get_site_configuration_path_from_environment(environment_path, environment_name)
-#
-#     return get_site_configuration(site_configuration_path)
-#
-#
-# def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
-#     """Gets the path to the WordPress site configuration from a environment.
-#
-#     For more information see:
-#         http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
-#         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
-#
-#     Args:
-#         environment_path: Path to the WordPress environment file.
-#         environment_name: Environment name that exists in the environment file.
-#
-#     Returns:
-#         Site configuration path.
-#     """
-#
-#     if environment_path is None:
-#         raise ValueError(literals.get("wp_environment_path_not_found"))
-#     if environment_name is None:
-#         raise ValueError(literals.get("wp_environment_name_not_found"))
-#
-#     environment_obj = get_site_environments(environment_path, environment_name)
-#
-#     directory = pathlib.Path(environment_path).parent
-#     file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
-#     if not file_path.exists() or not file_path.is_file():
-#         raise ValueError(literals.get("wp_file_not_found").format(file=file_path))
-#     logging.info(literals.get("wp_environment_file_used").format(file=file_path))
-#
-#     return str(file_path)
-#
-#
-# def get_site_environments(environment_path: str, environment_name: str = None) -> dict:
-#     """Gets the site environments from a WordPress site environment file.
-#
-#     For more information see:
-#         http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
-#
-#     Args:
-#         environment_path: Full path to the WordPress site environment file.
-#         environment_name: Name of the environment to be got. If no name is
-#             given, default environment is obtained.
-#
-#     Returns:
-#         Site environments in a dict object.
-#     """
-#     with open(environment_path, "r") as environment_file:
-#         json_data = json.loads(environment_file.read())
-#
-#     matching_environments = list(filter(lambda e: e["name"] == environment_name, json_data["environments"]))
-#
-#     if len(matching_environments) == 0:
-#         raise ValueError(literals.get("wp_env_not_found"))
-#
-#     if len(matching_environments) > 1:
-#         raise ValueError(literals.get("wp_env_gt1"))
-#
-#     return matching_environments[0]
 
 
 def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:
