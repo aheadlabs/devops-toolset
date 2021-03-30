@@ -78,24 +78,23 @@ def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_d
         create_conf_file_mock, wordpressdata):
     """ Given database parameters, calls wp.cli.create_configuration_file """
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    database_props = site_config["database"]
+    environment_config = json.loads(wordpressdata.site_config_content)["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
     # Act
-    sut.create_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.create_configuration_file(environment_config, wordpress_path, database_user_pass)
     # Assert
     create_conf_file_mock.assert_called_once_with(
         wordpress_path=wordpress_path,
-        db_host=database_props["host"],
-        db_name=database_props["name"],
-        db_user=database_props["user"],
+        db_host=environment_config["database"]["host"],
+        db_name=environment_config["database"]["db_name"],
+        db_user=environment_config["database"]["db_user"],
         db_pass=database_user_pass,
-        db_prefix=database_props["prefix"],
-        db_charset=database_props["charset"],
-        db_collate=database_props["collate"],
-        skip_check=database_props["skip_check"],
-        debug=site_config["wp_cli"]["debug"])
+        db_prefix=environment_config["database"]["table_prefix"],
+        db_charset=environment_config["database"]["charset"],
+        db_collate=environment_config["database"]["collate"],
+        skip_check=environment_config["database"]["skip_check"],
+        debug=environment_config["wp_cli_debug"])
 
 
 # endregion
