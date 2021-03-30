@@ -12,6 +12,7 @@
         "description": {"type": "string"},
         "version": {"type": "string"},
         "locale": {"type": "string"},
+        "skip_content_download": {"type": "boolean"},
         "wp_admin": {
           "type": "object",
           "properties": {

@@ -18,6 +18,7 @@
     "description": "My site description",
     "version": "latest",
     "locale": "en_US",
+    "skip_content_download": true,
     "wp_admin": {
       "user": "wp_admin",
       "email": "admin@example.com",
