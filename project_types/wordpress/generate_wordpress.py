@@ -110,7 +110,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     setup_devops_toolset(root_path)
 
     # Download WordPress core files
-    wordpress.wptools.download_wordpress(site_config, wordpress_path)
+    wordpress.wptools.download_wordpress(site_config, wordpress_path, environment_config["wp_cli_debug"])
 
     # Create development theme (if needed)
     if create_development_theme:
@@ -118,10 +118,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Set development themes / plugins ready
     themetools.build_theme(site_config["settings"]["themes"], themes_path)
-    pass
 
     # Configure WordPress site
     #wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config, wordpress_path, db_user_password)
+    pass
 
     # # Create database and users
     # if create_db:

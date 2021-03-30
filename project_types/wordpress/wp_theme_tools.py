@@ -1,6 +1,7 @@
 """Contains several tools and utils for WordPress Themes"""
 import filesystem.parsers
 import filesystem.paths as paths
+import filesystem.tools
 import filesystem.zip
 import json
 import logging
@@ -274,6 +275,8 @@ def build_theme(themes_config: dict, theme_path: str):
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
 
+    # TODO Replace project.xml version
+
 
 def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):
     """ From the theme configuration, creates a replacements dict and replaces the file_path
@@ -396,6 +399,10 @@ def set_theme_metadata(root_path: str, src_theme_configuration: dict):
     # Replace theme slug on the functions_core.php
     functions_php_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php")
     replace_theme_slug_in_functions_php(functions_php_file_path, src_theme_configuration)
+
+    # Update project.xml name
+    project_xml_path = pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml").as_posix()
+    filesystem.tools.update_xml_file_entity_text("./name", theme_slug, project_xml_path)
 
 
 def start_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
