@@ -1,5 +1,5 @@
 """Contains several tools and utils for WordPress Themes"""
-import filesystem.parsers
+import filesystem.parsers as parsers
 import filesystem.paths as paths
 import filesystem.tools
 import filesystem.zip
@@ -229,12 +229,13 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
         wptools.export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
 
 
-def build_theme(themes_config: dict, theme_path: str):
+def build_theme(themes_config: dict, theme_path: str, root_path: str):
     """ Builds a theme source into a packaged theme distribution using npm tasks
 
     Args:
-        themes_config: Themes configuration
-        theme_path: Path to the theme in the WordPress repository
+        themes_config: Themes configuration.
+        theme_path: Path to the theme in the WordPress repository.
+        root_path: Path to the project root.
     """
     logging.info(literals.get("wp_looking_for_src_themes"))
 
@@ -275,7 +276,11 @@ def build_theme(themes_config: dict, theme_path: str):
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
 
-    # TODO Replace project.xml version
+    # Replace project.xml version with the one in the package.json file
+    package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
+    filesystem.tools.update_xml_file_entity_text(
+        "./version", package_json["version"],
+        pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
 
 
 def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):
