@@ -158,15 +158,17 @@ def get_themes_path_from_root_path(root_path: str, constants: dict = None) -> st
     return themes_path
 
 
-def install_themes_from_configuration_file(site_configuration: dict, root_path: str,
-                                           skip_partial_dumps: bool, **kwargs):
+def install_themes_from_configuration_file(site_configuration: dict, environment_config: dict, global_constants: dict,
+                                           root_path: str, skip_partial_dumps: bool, **kwargs):
     """Installs WordPress's theme files (and child themes also) using a site configuration file
 
     For more information see:
         https://developer.wordpress.org/cli/commands/theme/install/
 
     Args:
-        site_configuration: parsed site configuration.
+        site_configuration: Parsed site configuration.
+        environment_config: Parsed environment configuration.
+        global_constants: Global constants ofr WordPress.
         root_path: Path to project root.
         skip_partial_dumps: If True skips database dumps.
     """
@@ -175,12 +177,11 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
     parent_theme_config: dict
 
     # Get data needed in the process
-    themes: dict = site_configuration["themes"]
-    constants = wptools.get_constants()
+    themes: dict = site_configuration["settings"]["themes"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
-    themes_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["content"]["themes"])
-    debug_info = site_configuration["wp_cli"]["debug"]
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
+    themes_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["themes"])
+    debug_info = environment_config["wp_cli_debug"]
 
     # Check themes configuration
     if not check_themes_configuration(themes):
@@ -214,6 +215,7 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
         wp_cli.install_theme(wordpress_path, parent_theme_config["source"], parent_theme_config["activate"],
                              debug_info, parent_theme_config["name"])
 
+
     # Install child / single theme
     wp_cli.install_theme(wordpress_path, child_theme_config["source"], child_theme_config["activate"],
                          debug_info, child_theme_config["name"])
@@ -222,11 +224,15 @@ def install_themes_from_configuration_file(site_configuration: dict, root_path: 
 
     # Backup database after theme install
     if not skip_partial_dumps:
-        database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+        database_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["database"])
         core_dump_path_converted = wptools.convert_wp_config_token(
             site_configuration["database"]["dumps"]["theme"], wordpress_path)
         database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
         wptools.export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
+
+    # Warn the user we are skipping the backup dump
+    else:
+        logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="theme"))
 
 
 def build_theme(themes_config: dict, theme_path: str, root_path: str):

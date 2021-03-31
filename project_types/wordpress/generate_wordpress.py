@@ -131,11 +131,13 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         site_config, environment_config, global_constants, root_path, wp_admin_password, skip_partial_dumps)
 
     # Add / update WordPress options
-    #wordpress.wptools.add_wp_options(site_config["settings"]["options"], wordpress_path, site_config["wp_cli"]["debug"])
+    wordpress.wptools.add_wp_options(
+        site_config["settings"]["options"], wordpress_path, environment_config["wp_cli_debug"])
 
-    # # Install site theme
-    # themetools.install_themes_from_configuration_file(site_config, root_path, skip_partial_dumps, **kwargs)
-    #
+    # Install site theme
+    themetools.install_themes_from_configuration_file(
+        site_config, environment_config, global_constants, root_path, skip_partial_dumps, **kwargs)
+
     # # Install site plugins
     # wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
     #
