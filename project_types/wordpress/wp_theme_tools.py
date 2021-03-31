@@ -268,13 +268,13 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
     if parent_theme_config:
         wp_cli.install_theme(wordpress_path, parent_theme_config["source"], parent_theme_config["activate"],
                              debug_info, parent_theme_config["name"])
+        purge_theme_zip_installation_file_if_generated(parent_theme_config)
 
 
     # Install child / single theme
     wp_cli.install_theme(wordpress_path, child_theme_config["source"], child_theme_config["activate"],
                          debug_info, child_theme_config["name"])
-
-    # TODO(anyone) Clean up theme ZIP files for themes which sources are not ZIP
+    purge_theme_zip_installation_file_if_generated(child_theme_config)
 
     # Backup database after theme install
     if not skip_partial_dumps:
@@ -287,6 +287,18 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
     # Warn the user we are skipping the backup dump
     else:
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="theme"))
+
+
+def purge_theme_zip_installation_file_if_generated(theme_config: dict):
+    """Purges the ZIP file used for installing the theme if the ZIP has been
+    generated (source_type value is not zip in the theme configuration).
+
+    Args:
+        theme_config: Parsed theme configuration.
+    """
+
+    if theme_config["source_type"] != "zip":
+        os.remove(theme_config["source"])
 
 
 def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):
