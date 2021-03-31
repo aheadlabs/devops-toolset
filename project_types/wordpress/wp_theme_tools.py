@@ -297,8 +297,9 @@ def purge_theme_zip_installation_file_if_generated(theme_config: dict):
         theme_config: Parsed theme configuration.
     """
 
-    if theme_config["source_type"] != "zip":
+    if theme_config["source_type"] != "zip" and os.path.exists(theme_config["source"]):
         os.remove(theme_config["source"])
+        logging.info(literals.get("wp_file_deleted").format(file=theme_config["source"]))
 
 
 def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):

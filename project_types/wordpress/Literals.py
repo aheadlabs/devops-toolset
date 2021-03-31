@@ -31,6 +31,7 @@ class Literals(ValueDictsBase):
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
         "wp_file_created": _("File created: {file}"),
+        "wp_file_deleted": _("File deleted: {file}"),
         "wp_got_db_admin_user": _("I got the following database admin user from the environment configuration file: "
                                   "{db_admin_user}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
