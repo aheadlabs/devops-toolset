@@ -34,8 +34,8 @@ class Commands(ValueDictsBase):
                                       "--path={path}",
         "wpcli_db_query_grant": "wp db query \"grant {privileges} on {schema}.* to '{user}'@'{host}'\" "
             "--dbuser={admin_user} --dbpass={admin_password} --path={path}",
-        "wpcli_db_query_user_exists": "wp db query \"select exists (select 1 from mysql.user where user='{user}' "
-                                      "and host='{host}')\" --dbuser={admin_user} --dbpass={admin_password} "
+        "wpcli_db_query_user_exists": "wp db query \"select exists (select 1 from mysql.user where user='{user}')\" "
+                                      "--dbuser={admin_user} --dbpass={admin_password} "
                                       "--path={path}",
         "wpcli_post_delete_posttype": "wp post delete $(wp post list --post_type={post_type} --path={path} "
                                       "--format=ids) --force {debug_info}",

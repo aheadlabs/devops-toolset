@@ -121,16 +121,14 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config, wordpress_path, db_user_password)
-    pass
 
-    # # Create database and users
-    # if create_db:
-    #     wordpress.wptools.setup_database(
-    #         site_config, wordpress_path, db_user_password, db_admin_user, db_admin_password)
-    #
-    # # Install WordPress site
-    # wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password, skip_partial_dumps)
-    #
+    # Create database and users
+    if create_db:
+        wordpress.wptools.setup_database(environment_config, wordpress_path, db_user_password, db_admin_password)
+
+    # Install WordPress site
+    #wordpress.wptools.install_wordpress_site(site_config, root_path, wp_admin_password, skip_partial_dumps)
+
     # # Add / update WordPress options
     # wordpress.wptools.add_wp_options(site_config["settings"]["options"], wordpress_path, site_config["wp_cli"]["debug"])
     #

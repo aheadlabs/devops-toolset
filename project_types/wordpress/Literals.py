@@ -85,7 +85,15 @@ class Literals(ValueDictsBase):
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
         "wp_write_default_content": _("Writing default content to file \"{file}\" from {source}"),
         "wp_gulp_build_before": _("Gulp build task has launched for theme {theme_slug}."),
-        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}.")
+        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}."),
+    }
+    _warnings = {
+        "mysql_user_exists_grant_privileges_manually": _("User {user} exists in the {host} host and will not be "
+                                                         "altered. Please grant the following privileges manually to "
+                                                         "{host} for this user in the {schema} schema: "
+                                                         "(db privileges) {db_privileges}; "
+                                                         "(global privileges) {global_privileges};"),
+        "mysql_db_exists_skipping_creation": _("Database {schema} exists. I will not create any database..."),
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),
@@ -143,5 +151,5 @@ class Literals(ValueDictsBase):
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
         "wp_gulp_build_error":
             _("Gulp build task has encountered an error for theme {theme_slug}. "
-              "Please check above logs for more details.")
+              "Please check above logs for more details."),
     }

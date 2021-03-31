@@ -295,6 +295,10 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
             debug_info=convert_wp_parameter_debug(debug)
         ), log_before_process=[literals.get("wp_wpcli_db_create_before")])
 
+    # Warn the user we will not create the database
+    else:
+        logging.warning(literals.get("mysql_db_exists_skipping_creation").format(schema=schema))
+
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
@@ -349,35 +353,45 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
             log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
         )
 
-    # Grant user privileges on the database
-    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        privileges=db_privileges,
-        schema=schema,
-        user=user,
-        host=host,
-        admin_user=admin_user,
-        admin_password=admin_password,
-        path=wordpress_path),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user, host=host, schema=schema, privileges=db_privileges)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
-            user=user, host=host, schema=schema)]
-    )
+        # Grant user privileges on the database
+        cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+            privileges=db_privileges,
+            schema=schema,
+            user=user,
+            host=host,
+            admin_user=admin_user,
+            admin_password=admin_password,
+            path=wordpress_path),
+            log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+                user=user, host=host, schema=schema, privileges=db_privileges)],
+            log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+                user=user, host=host, schema=schema)]
+        )
 
-    # Grant user global privileges
-    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        privileges=global_privileges,
-        schema="*",
-        user=user,
-        host=host,
-        admin_user=admin_user,
-        admin_password=admin_password,
-        path=wordpress_path),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user, host=host, schema=schema, privileges=db_privileges)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
-            user=user, host=host, schema=schema)]
-    )
+        # Grant user global privileges
+        cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+            privileges=global_privileges,
+            schema="*",
+            user=user,
+            host=host,
+            admin_user=admin_user,
+            admin_password=admin_password,
+            path=wordpress_path),
+            log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+                user=user, host=host, schema=schema, privileges=db_privileges)],
+            log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+                user=user, host=host, schema=schema)]
+        )
+
+    # Warn the user we are not altering users and permissions
+    else:
+        logging.warning(literals.get("mysql_user_exists_grant_privileges_manually").format(
+            user=user,
+            host=host,
+            schema=schema,
+            db_privileges=db_privileges,
+            global_privileges=global_privileges
+        ))
 
 
 def delete_post_type_content(wordpress_path: str, content_type: str, debug_info: bool = False):
