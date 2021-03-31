@@ -14,7 +14,8 @@ class Commands(ValueDictsBase):
         "wpcli_config_create": "wp config create --path={path} --dbhost={db_host} --dbname={db_name} "
                                "--dbuser={db_user} --dbpass={db_pass} --dbprefix={db_prefix} --dbcharset={db_charset} "
                                "--dbcollate={db_collate} --force {skip_check} {debug_info}",
-        "wpcli_config_set": "wp config set {name} {value} {raw} --type={type} --path={path} {debug_info}",
+        "wpcli_config_set": "wp config set {name} {value} {raw} --type={type} --path={path} --separator=\\n "
+                            "{debug_info}",
         "wpcli_core_download": "wp core download --version={version} --locale={locale} --path={path} "
                                "{skip_content} {debug_info}",
         "wpcli_core_install": "wp core install --path={path} --url={url} --title=\"{title}\" --admin_user={admin_user} "

@@ -502,7 +502,8 @@ def set_wordpress_config_from_configuration_file(environment_config: dict, wordp
         value = prop.get("value")
         raw = type(value) != str
         wp_cli.set_configuration_value(
-            prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
+            prop.get("name"), value, prop.get("type"),
+            wordpress_path, raw, debug)
 
 
 def setup_database(site_config: dict, wordpress_path: str, db_user_password: str,

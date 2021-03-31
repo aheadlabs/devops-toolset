@@ -117,10 +117,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         themetools.create_development_theme(site_config["settings"]["themes"], root_path)
 
     # Set development themes / plugins ready
-    themetools.build_theme(site_config["settings"]["themes"], themes_path)
+    themetools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
 
     # Configure WordPress site
-    #wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config, wordpress_path, db_user_password)
+    wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config, wordpress_path, db_user_password)
     pass
 
     # # Create database and users
