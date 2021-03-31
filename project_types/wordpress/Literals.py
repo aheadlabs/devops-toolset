@@ -94,6 +94,7 @@ class Literals(ValueDictsBase):
                                                          "(db privileges) {db_privileges}; "
                                                          "(global privileges) {global_privileges};"),
         "mysql_db_exists_skipping_creation": _("Database {schema} exists. I will not create any database..."),
+        "wp_wpcli_export_db_skipping_as_set": _("I am skipping the {dump} database dump as configured in settings..."),
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),

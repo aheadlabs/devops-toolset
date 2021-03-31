@@ -5,10 +5,10 @@ import os
 import pathlib
 import stat
 import sys
+import tools.dicts
 from typing import List, Tuple
 
 import requests
-from pip._internal.utils.deprecation import deprecated
 
 import core.log_tools
 import filesystem.paths as paths
@@ -142,7 +142,7 @@ def download_wordpress_plugin(plugin_config: dict, destination_path: str):
         file.write(response.content)
 
 
-def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
+def export_database(environment_config: dict, wordpress_path: str, dump_file_path: str):
     """Exports a WordPress database to a dump file using a site configuration file.
 
     All parameters are obtained from a site configuration file.
@@ -151,11 +151,11 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
         https://developer.wordpress.org/cli/commands/db/export/
 
     Args:
-        site_configuration: parsed site configuration.
+        environment_config: parsed site configuration.
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to the destination dump file.
     """
-    wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
+    wp_cli.export_database(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
 
 def get_constants() -> dict:
@@ -259,7 +259,14 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     if len(environment_list) > 1:
         logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
 
-    return environment_list[0]
+    environment = environment_list[0]
+
+    # Update URL constants (with the _url suffix) prepending the base URL
+    url_keys = tools.dicts.filter_keys(environment["wp_config"], "_url$")
+    for key in url_keys:
+        environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
+
+    return environment
 
 
 def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:
@@ -382,24 +389,26 @@ def install_recommended_plugins():
     pass
 
 
-def install_wordpress_core(site_config: dict, wordpress_path: str, admin_password: str):
+def install_wordpress_core(site_config: dict, environment_config: dict, wordpress_path: str, admin_password: str):
     """Installs WordPress core files using a site configuration file.
 
         For more information see:
             https://developer.wordpress.org/cli/commands/core/install/
 
         Args:
-            site_config: parsed site configuration.
+            site_config: Parsed site configuration.
+            environment_config: Parsed environment configuration.
             wordpress_path: Path to WordPress files.
             admin_password: Password for the WordPress administrator user
         """
+
     # Set/expand variables before using WP CLI
-    debug_info = site_config["wp_cli"]["debug"]
-    admin_user = site_config["settings"]["admin"]["user"]
-    admin_email = site_config["settings"]["admin"]["email"]
-    url = site_config["settings"]["wp_config"]["site_url"]["value"]
+    admin_user = site_config["settings"]["wp_admin"]["user"]
+    admin_email = site_config["settings"]["wp_admin"]["email"]
+    skip_email = site_config["settings"]["wp_admin"]["skip_email"]
     title = site_config["settings"]["title"]
-    skip_email = site_config["settings"]["admin"]["skip_email"]
+    debug_info = environment_config["wp_cli_debug"]
+    url = environment_config["wp_config"]["site_url"]["value"]
     wp_cli.install_wordpress_core(wordpress_path, url, title, admin_user, admin_email, admin_password,
                                   skip_email, debug_info)
 
@@ -438,8 +447,8 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str,
-                           skip_partial_dumps: bool = False):
+def install_wordpress_site(site_configuration: dict, environment_config: dict, global_constants: dict,
+                           root_path: str, admin_password: str, skip_partial_dumps: bool = False):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -448,35 +457,39 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         https://developer.wordpress.org/cli/commands/core/install/
 
     Args:
-        site_configuration: parsed site configuration.
+        site_configuration: Parsed site configuration.
+        environment_config: Parsed environment configuration.
+        global_constants: Parsed global constants.
         root_path: Path to site installation.
         admin_password: Password for the WordPress administrator user.
         skip_partial_dumps: If True skips database dump.
     """
-    # Add constants
-    constants = get_constants()
 
-    database_path = constants["paths"]["database"]
+    database_path = global_constants["paths"]["database"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Install wordpress
-    install_wordpress_core(site_configuration, wordpress_path_as_posix, admin_password)
+    install_wordpress_core(site_configuration, environment_config, wordpress_path_as_posix, admin_password)
 
     # Update description option
     description = site_configuration["settings"]["description"]
     wp_cli.update_database_option(
-        "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
+        "blogdescription", description, wordpress_path_as_posix, environment_config["wp_cli_debug"])
 
     # Backup database
     if not skip_partial_dumps:
         core_dump_path_converted = \
-            convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+            convert_wp_config_token(site_configuration["settings"]["dumps"]["core"], wordpress_path)
         database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
         database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
-        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
+        export_database(environment_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
         git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
+
+    # Warn the user we are skipping the backup dump
+    else:
+        logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="core"))
 
 
 def set_wordpress_config_from_configuration_file(environment_config: dict, wordpress_path: str,
