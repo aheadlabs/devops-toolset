@@ -32,6 +32,79 @@ platform_literals = LiteralsCore([PlatformLiterals])
 commands = CommandsCore([WordpressCommands])
 
 
+def build_theme(themes_config: dict, theme_path: str, root_path: str):
+    """ Builds a theme source into a packaged theme distribution using npm tasks
+
+    Args:
+        themes_config: Themes configuration.
+        theme_path: Path to the theme in the WordPress repository.
+        root_path: Path to the project root.
+    """
+    logging.info(literals.get("wp_looking_for_src_themes"))
+
+    # Get configuration data and paths
+    src_theme_list = list(filter(lambda elem: elem["source_type"] == "src", themes_config))
+
+    if len(src_theme_list) == 0:
+        # Src theme not present
+        logging.info(literals.get("wp_no_src_themes"))
+        return
+
+    src_theme = src_theme_list[0]
+    theme_path_obj = pathlib.Path(theme_path)
+    theme_path_src = pathlib.Path.joinpath(theme_path_obj, src_theme["source"])
+    theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
+    theme_path_zip = pathlib.Path.joinpath(theme_path_obj, f"{src_theme['name']}.zip")
+
+    if os.path.exists(theme_path_src):
+
+        theme_slug = src_theme["name"]
+
+        # Change to the the theme's source directory
+        os.chdir(theme_path_src)
+
+        # Run npm install from the package.json path
+        npm.install()
+
+        # Run npm run build to execute the task build with the required parameters
+        cli.call_subprocess(commands.get("wp_theme_src_build").format(
+            theme_slug=theme_slug,
+            path=theme_path_dist
+        ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
+            log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
+            log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
+
+        # Zip dist
+        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
+    else:
+        logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
+
+    # Replace project.xml version with the one in the package.json file
+    package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
+    filesystem.tools.update_xml_file_entity_text(
+        "./version", package_json["version"],
+        pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
+
+
+def check_theme_configuration(theme: dict) -> bool:
+    """Checks that the themes configuration is correct.
+
+    Args:
+        theme: Themes configuration.
+
+    Returns:
+        True if the configuration is correct, False if incorrect.
+    """
+
+    # Check if feed-based themes contain feed information
+    if theme["source_type"] == "feed" and "feed" not in theme:
+        logging.error(literals.get("wp_theme_feed_no_info").format(theme=theme["name"]))
+        logging.warning(literals.get("wp_themes_install_manually"))
+        return False
+
+    return True
+
+
 def check_themes_configuration(themes: dict) -> bool:
     """Checks that the themes configuration is correct.
 
@@ -56,25 +129,6 @@ def check_themes_configuration(themes: dict) -> bool:
             themes_to_activate += 1
     if themes_to_activate == 0 or themes_to_activate > 1:
         logging.error(literals.get("wp_config_file_only_one_activated_theme").format(number=themes_to_activate))
-        logging.warning(literals.get("wp_themes_install_manually"))
-        return False
-
-    return True
-
-
-def check_theme_configuration(theme: dict) -> bool:
-    """Checks that the themes configuration is correct.
-
-    Args:
-        theme: Themes configuration.
-
-    Returns:
-        True if the configuration is correct, False if incorrect.
-    """
-
-    # Check if feed-based themes contain feed information
-    if theme["source_type"] == "feed" and "feed" not in theme:
-        logging.error(literals.get("wp_theme_feed_no_info").format(theme=theme["name"]))
         logging.warning(literals.get("wp_themes_install_manually"))
         return False
 
@@ -235,60 +289,6 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="theme"))
 
 
-def build_theme(themes_config: dict, theme_path: str, root_path: str):
-    """ Builds a theme source into a packaged theme distribution using npm tasks
-
-    Args:
-        themes_config: Themes configuration.
-        theme_path: Path to the theme in the WordPress repository.
-        root_path: Path to the project root.
-    """
-    logging.info(literals.get("wp_looking_for_src_themes"))
-
-    # Get configuration data and paths
-    src_theme_list = list(filter(lambda elem: elem["source_type"] == "src", themes_config))
-
-    if len(src_theme_list) == 0:
-        # Src theme not present
-        logging.info(literals.get("wp_no_src_themes"))
-        return
-
-    src_theme = src_theme_list[0]
-    theme_path_obj = pathlib.Path(theme_path)
-    theme_path_src = pathlib.Path.joinpath(theme_path_obj, src_theme["source"])
-    theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
-    theme_path_zip = pathlib.Path.joinpath(theme_path_obj, f"{src_theme['name']}.zip")
-
-    if os.path.exists(theme_path_src):
-
-        theme_slug = src_theme["name"]
-
-        # Change to the the theme's source directory
-        os.chdir(theme_path_src)
-
-        # Run npm install from the package.json path
-        npm.install()
-
-        # Run npm run build to execute the task build with the required parameters
-        cli.call_subprocess(commands.get("wp_theme_src_build").format(
-            theme_slug=theme_slug,
-            path=theme_path_dist
-        ), log_before_out=[literals.get("wp_gulp_build_before").format(theme_slug=theme_slug)],
-            log_after_out=[literals.get("wp_gulp_build_after").format(theme_slug=theme_slug)],
-            log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
-
-        # Zip dist
-        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
-    else:
-        logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
-
-    # Replace project.xml version with the one in the package.json file
-    package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
-    filesystem.tools.update_xml_file_entity_text(
-        "./version", package_json["version"],
-        pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
-
-
 def replace_theme_meta_data_in_package_file(file_path: str, src_theme_configuration: dict):
     """ From the theme configuration, creates a replacements dict and replaces the file_path
     Args:
@@ -339,23 +339,6 @@ def replace_theme_meta_data_in_scss_file(file_path: str, src_theme_configuration
     replace_theme_meta_data(file_path, replacements, wp_constants.theme_metadata_parse_regex)
 
 
-def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration: dict):
-    """ From the theme configuration, creates a replacements dict and replaces the file_path
-    Args:
-        file_path: The path of the file to be replaced.
-        src_theme_configuration: Dict containing src theme configuration.
-    """
-    theme_slug = src_theme_configuration["source"]
-    core_php_file = open(file_path, 'r')
-    file_content = core_php_file.read()
-
-    file_content = re.sub(wp_constants.functions_php_mytheme_regex, theme_slug, file_content)
-
-    # Write replaced content to the file
-    with open(file_path, 'w', newline='\n') as core_php_file:
-        core_php_file.write(file_content)
-
-
 def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
     """ Opens the file path and rewrites it replacing matches from the replacements dict
     Args:
@@ -384,6 +367,23 @@ def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
     # Write replaced content to the file
     with open(path, 'w', newline='\n') as scss_file:
         scss_file.write(file_content)
+
+
+def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration: dict):
+    """ From the theme configuration, creates a replacements dict and replaces the file_path
+    Args:
+        file_path: The path of the file to be replaced.
+        src_theme_configuration: Dict containing src theme configuration.
+    """
+    theme_slug = src_theme_configuration["source"]
+    core_php_file = open(file_path, 'r')
+    file_content = core_php_file.read()
+
+    file_content = re.sub(wp_constants.functions_php_mytheme_regex, theme_slug, file_content)
+
+    # Write replaced content to the file
+    with open(file_path, 'w', newline='\n') as core_php_file:
+        core_php_file.write(file_content)
 
 
 def set_theme_metadata(root_path: str, src_theme_configuration: dict):
@@ -463,7 +463,7 @@ def triage_themes(themes: dict) -> (dict, dict):
     """
     child = None
     parent = None
-    parent_guess: str
+    parent_guess: str = ""
 
     for theme in themes:
         if not theme["activate"]:
