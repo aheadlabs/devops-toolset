@@ -330,28 +330,31 @@ def import_database(site_configuration: dict, wordpress_path: str, dump_file_pat
     wp_cli.import_database(wordpress_path_as_posix, dump_file_path_as_posix, site_configuration["wp_cli"]["debug"])
 
 
-def install_plugins_from_configuration_file(site_configuration: dict, root_path: str, skip_partial_dumps: bool):
+def install_plugins_from_configuration_file(site_configuration: dict, environment_config: dict, global_constants: dict,
+                                            root_path: str, skip_partial_dumps: bool):
     """Installs WordPress's plugin files using WP-CLI.
 
        For more information see:
            https://developer.wordpress.org/cli/commands/plugin/install/
 
        Args:
-           site_configuration: parsed site configuration.
+           site_configuration: Parsed site configuration.
+           environment_config: Parsed environment configuration.
+           global_constants: Parsed global constants.
            root_path: Path to project root.
            skip_partial_dumps: If True skips database dumps.
        """
     # Get data needed in the process
-    plugins: dict = site_configuration["plugins"]
-    constants = get_constants()
+    plugins: dict = site_configuration["settings"]["plugins"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
-    plugins_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["content"]["plugins"])
-    debug_info = site_configuration["wp_cli"]["debug"]
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
+    plugins_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["plugins"])
+    debug_info = environment_config["wp_cli_debug"]
 
     for plugin in plugins:
         # Get plugin path
-        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+        #plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+        plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         logging.info(literals.get("wp_plugin_path").format(path=plugin_path))
 
         # Download theme if needed
@@ -370,11 +373,15 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
 
         # Backup database after plugin install
         if not skip_partial_dumps:
-            database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+            database_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["database"])
             core_dump_path_converted = convert_wp_config_token(
-                site_configuration["database"]["dumps"]["plugins"], wordpress_path)
+                site_configuration["settings"]["dumps"]["plugins"], wordpress_path)
             database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
             export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
+
+        # Warn the user we are skipping the backup dump
+        else:
+            logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="plugins"))
 
 
 def install_recommended_plugins():

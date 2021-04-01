@@ -138,9 +138,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     themetools.install_themes_from_configuration_file(
         site_config, environment_config, global_constants, root_path, skip_partial_dumps, **kwargs)
 
-    # # Install site plugins
-    # wordpress.wptools.install_plugins_from_configuration_file(site_config, root_path, skip_partial_dumps)
-    #
+    # Install site plugins
+    wordpress.wptools.install_plugins_from_configuration_file(
+        site_config, environment_config, global_constants, root_path, skip_partial_dumps)
+
     # # Import wxr content
     # if not create_development_theme:
     #     wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path)
