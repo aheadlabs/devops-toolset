@@ -23,6 +23,13 @@
           "additionalProperties": false,
           "required": ["user","email","skip_email"]
         },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/user"
+          },
+          "minItems": 0
+        },
         "themes": {
           "type": "array",
           "items": {
@@ -53,7 +60,21 @@
         "options": {"$ref": "https://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"}
       },
       "additionalProperties": false,
-      "required": ["title","description","version","locale","wp_admin","themes","plugins","dumps","options"]
+      "required": ["title","description","version","locale","wp_admin","users","themes","plugins","dumps","options"]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "user_login": {"type": "string"},
+        "user_email": {"type": "string"},
+        "role": {"type": "string"},
+        "display_name": {"type": "string"},
+        "first_name": {"type": "string"},
+        "last_name": {"type": "string"},
+        "send_email": {"type": "boolean"}
+      },
+      "additionalProperties": false,
+      "required": ["user_login","user_email"]
     },
     "database": {
       "type": "object",
@@ -302,17 +323,17 @@
       "type": "object",
       "$ref": "#/definitions/settings"
     },
-    "wordpress_customization": {
-      "type": "object",
-      "$ref": "#/definitions/wordpress_customization"
-    },
     "environments": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/environment"
       }
+    },
+    "content": {
+      "type": "array",
+      "items":{"type": "string"}
     }
   },
   "additionalProperties": false,
-  "required": ["settings","environments"]
+  "required": ["settings","environments","content"]
 }

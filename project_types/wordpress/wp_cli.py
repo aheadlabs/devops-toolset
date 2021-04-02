@@ -1,6 +1,7 @@
 """Contains wrappers for WP CLI commands"""
 
 import datetime
+import json
 import logging
 import tools.cli as cli
 import tools.git
@@ -203,6 +204,13 @@ def convert_wp_parameter_raw(value: bool):
     return ""
 
 
+def convert_wp_parameter_send_email(value: bool):
+    """Converts a boolean value to a --send-email string."""
+    if value:
+        return "--send-email"
+    return ""
+
+
 def convert_wp_parameter_skip_check(value: bool):
     """Converts a boolean value to a --skip-check string."""
     if value:
@@ -221,6 +229,24 @@ def convert_wp_parameter_skip_email(value: bool):
     """Converts a boolean value to a --skip-email string."""
     if value:
         return "--skip-email"
+    return ""
+
+
+def convert_wp_parameter_str_key_value(key: str, value: str, quoted: bool = False) -> str:
+    """Converts a string value to a --role string.
+
+    Args:
+        key: WordPress parameter name.
+        value: Value for the WordPress parameter.
+        quoted: If True quotes the value
+
+    Returns:
+        Parameter build as --key=value
+    """
+    quote = "\"" if quoted else ""
+
+    if value:
+        return "--" + key + "=" + quote + value + quote
     return ""
 
 
@@ -298,6 +324,56 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
     # Warn the user we will not create the database
     else:
         logging.warning(literals.get("mysql_db_exists_skipping_creation").format(schema=schema))
+
+
+def create_user(user: dict, wordpress_path: str, debug: bool):
+    """Creates a WordPress user.
+
+    Args:
+        user: User to be created based on #/definitions/user at
+            https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+    """
+
+    cli.call_subprocess(commands.get("wp_user_create").format(
+        user_login=user["user_login"],
+        user_email=user["user_email"],
+        role=convert_wp_parameter_str_key_value("role", user["role"]),
+        display_name=convert_wp_parameter_str_key_value("display_name", user["display_name"], True),
+        first_name=convert_wp_parameter_str_key_value("first_name", user["first_name"], True),
+        last_name=convert_wp_parameter_str_key_value("last_name", user["last_name"], True),
+        send_email=convert_wp_parameter_send_email(user["send_email"]),
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ),
+        log_before_process=[literals.get("wp_wpcli_user_creating").format(user=user["user_login"])],
+        log_after_out=[literals.get("wp_wpcli_user_created").format(user=user["user_login"])],
+        log_after_err=[literals.get("wp_wpcli_user_creating_err").format(user=user["user_login"])]
+    )
+
+
+def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
+    """Creates a WordPress user.
+
+    Args:
+        user_login: User login to be checked.
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+
+    Returns:
+        True if the user exists.
+    """
+
+    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
+        user_login=user_login,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if result is None:
+        return False
+    return True
 
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,

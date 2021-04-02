@@ -103,6 +103,26 @@ def create_configuration_file(environment_configuration: dict, wordpress_path: s
                                      )
 
 
+def create_users(users: dict, wordpress_path: str, debug: bool):
+    """Creates WordPress users.
+
+    Args:
+        users: Users based on #/definitions/user at
+            https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+    """
+
+    for user in users:
+        # Create the user if does not exist
+        if not wp_cli.user_exists(user["user_login"], wordpress_path, debug):
+            wp_cli.create_user(user, wordpress_path, debug)
+
+        # Warn the user I am skipping the creation
+        else:
+            logging.warning(literals.get("wp_wpcli_user_exists").format(user=user["user_login"]))
+
+
 def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_debug: bool = False):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
@@ -290,27 +310,31 @@ def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) ->
     return wordpress_path
 
 
-def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str):
+def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str, global_constants: dict):
     """ Imports WordPress posts content specified on a site_configuration file .
 
     Args:
-        site_configuration: parsed site configuration.
+        site_configuration: Parsed site configuration.
         wordpress_path: Path to WordPress files.
+        global_constants: Parsed global constants.
     """
-    # Add constants
-    constants = get_constants()
 
     # Get wxr path from the constants
-    wxr_path = pathlib.Path(constants["paths"]["content"]["wxr"])
+    wxr_path = pathlib.Path(global_constants["paths"]["content"]["wxr"])
     authors = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+
     if not pathlib.Path.exists(authors):
         authors = "skip"
+
     debug_info = site_configuration["wp_cli"]["debug"]
+
     for content_type in site_configuration["content"]:
         # File name will be the {wxr_path}/{content_type}.xml
         content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+
         # Delete content before importing (to avoid duplicating content)
         wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
+
         # Import new content
         wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
 
