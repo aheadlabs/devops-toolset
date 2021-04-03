@@ -8,23 +8,37 @@
     "settings": {
       "type": "object",
       "properties": {
-        "title": {"type": "string"},
-        "description": {"type": "string"},
-        "version": {"type": "string"},
-        "locale": {"type": "string"},
-        "skip_content_download": {"type": "boolean"},
+        "title": {
+          "description": "Title for the WordPress site",
+          "type": "string"},
+        "description": {
+          "description": "Description for the WordPress site",
+          "type": "string"},
+        "version": {
+          "description": "Version of the WordPress core files that will be downloaded",
+          "type": "string"},
+        "locale": {
+          "description": "Locale that will be used to install WordPress",
+          "type": "string"},
+        "skip_content_download": {
+          "description": "If true, no default themes or plugins will be downloaded",
+          "type": "boolean"},
         "wp_admin": {
           "type": "object",
+          "description": "WordPress administrator user",
           "properties": {
             "user": {"type": "string"},
             "email": {"type": "string"},
-            "skip_email": {"type": "boolean"}
+            "skip_email": {
+              "description": "If true, no welcome e-mail will be sent by WordPress on user creation",
+              "type": "boolean"}
           },
           "additionalProperties": false,
           "required": ["user","email","skip_email"]
         },
         "users": {
           "type": "array",
+          "description": "List of additional users that will be created besides the administrator",
           "items": {
             "$ref": "#/definitions/user"
           },
@@ -32,15 +46,23 @@
         },
         "themes": {
           "type": "array",
+          "description": "List ot themes that will be downloaded/installed",
           "items": {
             "$ref": "#/definitions/wp_theme"
           },
-          "default": [],
-          "minItems": 1,
+          "default": [
+            {
+              "name": "twentytwentyone",
+              "source_type": "wordpress",
+              "source": "twentytwentyone",
+              "activate": true
+            }
+          ],
           "maxItems": 2
         },
         "plugins": {
           "type": "array",
+          "description": "List of plugins that will be downloaded/installed",
           "items": {
             "$ref": "#/definitions/wp_plugin"
           },
@@ -48,6 +70,7 @@
         },
         "dumps": {
           "type": "object",
+          "description": "File name format for every automated dump",
           "properties": {
             "core": {"type": "string"},
             "theme": {"type": "string"},
@@ -57,7 +80,9 @@
           "additionalProperties": false,
           "required": ["core","theme","plugins","regular"]
         },
-        "options": {"$ref": "https://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"}
+        "options": {
+          "description": "WordPress options that will be added in the wp_options table",
+          "$ref": "https://dev.aheadlabs.com/schemas/json/wordpress-options-schema.json"}
       },
       "additionalProperties": false,
       "required": ["title","description","version","locale","wp_admin","users","themes","plugins","dumps","options"]
@@ -94,17 +119,29 @@
     "environment": {
       "type": "object",
       "properties": {
-        "name": {"type": "string"},
-        "type": {"enum": ["development", "devops", "integration", "qa", "staging", "production"]},
-        "is_default": {"type": "boolean"},
-        "wp_cli_debug": {"type": "boolean"},
-        "base_url": {"type": "string","format": "uri"},
+        "name": {
+          "description": "Name for the environment",
+          "type": "string"},
+        "type": {
+          "description": "Type of environment from a fixed list",
+          "enum": ["development", "devops", "integration", "qa", "staging", "production"]},
+        "is_default": {
+          "description": "If true, the environment is selected if no one is selected",
+          "type": "boolean"},
+        "wp_cli_debug": {
+          "description": "If true, all WP CLI logs go verbose",
+          "type": "boolean"},
+        "base_url": {
+          "description": "Base URL for the environment. The other URLs will be composed based on this one.",
+          "type": "string","format": "uri"},
         "database": {
           "type": "object",
+          "description": "Database connection data for the environment",
           "$ref": "#/definitions/database"
         },
         "wp_config": {
           "type": "object",
+          "description": "List of options to be created in the generated wp-config.php file for the environment.",
           "properties": {
             "site_url": {"$ref": "#/definitions/wp_config_property_string"},
             "home_url": {"$ref": "#/definitions/wp_config_property_string"},
@@ -325,12 +362,14 @@
     },
     "environments": {
       "type": "array",
+      "description": "List of environments. ie: development, staging, production...",
       "items": {
         "$ref": "#/definitions/environment"
       }
     },
     "content": {
       "type": "array",
+      "description": "Content types to be imported. ie: post,page",
       "items":{"type": "string"}
     }
   },
