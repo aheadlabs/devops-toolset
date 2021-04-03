@@ -50,14 +50,8 @@
           "items": {
             "$ref": "#/definitions/wp_theme"
           },
-          "default": [
-            {
-              "name": "twentytwentyone",
-              "source_type": "wordpress",
-              "source": "twentytwentyone",
-              "activate": true
-            }
-          ],
+          "default": [],
+          "minItems": 1,
           "maxItems": 2
         },
         "plugins": {
