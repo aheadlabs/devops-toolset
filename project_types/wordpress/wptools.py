@@ -12,6 +12,7 @@ import requests
 
 import core.log_tools
 import filesystem.paths as paths
+import filesystem.tools
 import project_types.wordpress.constants as wp_constants
 import project_types.wordpress.wp_cli as wp_cli
 import tools.git as git_tools
@@ -324,16 +325,19 @@ def import_content_from_configuration_file(site_configuration: dict, environment
         global_constants: Parsed global constants.
     """
 
-    # Get wxr path from the constants
+    # Get paths and parameters
     wxr_path = pathlib.Path(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
-    authors_path = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+    author_handling = site_configuration["content"]["author_handling"]
 
-    if not pathlib.Path.exists(authors_path):
-        authors_path = "skip"
+    if author_handling == "mapping.csv":
+        authors_path = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+        authors = authors_path if not filesystem.tools.is_file_empty(authors_path) else "skip"
+    else:
+        authors = author_handling
 
     debug_info = environment_config["wp_cli_debug"]
 
-    for content_type in site_configuration["content"]:
+    for content_type in site_configuration["content"]["sources"]:
         # File name will be the {wxr_path}/{content_type}.xml
         content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
 
@@ -341,7 +345,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
         wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
 
         # Import new content
-        wp_cli.import_wxr_content(wordpress_path, content_path, authors_path, debug_info)
+        wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
 
 
 def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):

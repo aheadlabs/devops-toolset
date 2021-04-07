@@ -362,9 +362,19 @@
       }
     },
     "content": {
-      "type": "array",
-      "description": "Content types to be imported. ie: post,page",
-      "items":{"type": "string"}
+      "type": "object",
+      "properties": {
+        "author_handling": {
+          "description": "How author mapping should be handled as documented at https://developer.wordpress.org/cli/commands/import/",
+          "enum": ["create","mapping.csv","skip"]
+        },
+        "sources": {
+          "type": "array",
+          "description": "Content types to be imported. ie: post, page",
+          "items": {"type": "string"}
+        }
+      },
+      "required": ["author_handling","sources"]
     }
   },
   "additionalProperties": false,
