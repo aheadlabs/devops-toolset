@@ -1,5 +1,6 @@
 """Tools for editing files"""
 
+import os
 import xml.etree.ElementTree as ElementTree
 
 from core.app import App
@@ -12,6 +13,19 @@ app: App = App()
 platform_specific = app.load_platform_specific("environment")
 literals = LiteralsCore([FileSystemLiterals])
 wp_literals = LiteralsCore([WordpressLiterals])
+
+
+def is_file_empty(path: str) -> bool:
+    """Checks if a file is empty.
+
+    Args:
+        path: Path to the file to be checked.
+
+    Returns:
+        True if file is empty.
+    """
+
+    return os.path.getsize(path) == 0
 
 
 def update_xml_file_entity_text(entity_xpath: str, entity_value: str, xml_file_path: str):
