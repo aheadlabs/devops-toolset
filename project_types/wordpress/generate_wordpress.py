@@ -248,11 +248,15 @@ if __name__ == "__main__":
         splitted = str(kwarg).split("=")
         kwargs[splitted[0]] = splitted[1]
 
+    # Parse long attributes to avoid lines longer that 120 characters
+    additional_environment_db_user_passwords = args.additional_environment_db_user_passwords.split(",") \
+        if args.additional_environment_db_user_passwords != "" else []
+
     tools.cli.print_title(literals.get("wp_title_generate_wordpress"))
     main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password,
          args.environment,
-         args.additional_environments.split(","),
-         args.additional_environment_db_user_passwords.split(","),
+         args.additional_environments.split(",") if args.additional_environments != "" else [],
+         additional_environment_db_user_passwords,
          args.create_db,
          args.skip_partial_dumps,
          args.create_development_theme,
