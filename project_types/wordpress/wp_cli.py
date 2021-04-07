@@ -477,12 +477,29 @@ def delete_post_type_content(wordpress_path: str, content_type: str, debug_info:
         content_type: Type of the content to be deleted
         debug_info: If true, --debug will be added to the command showing all debug trace information.
     """
-    cli.call_subprocess(commands.get("wpcli_post_delete_posttype").format(
+
+    id_list = get_post_type_ids(wordpress_path, content_type)
+
+    cli.call_subprocess(commands.get("wpcli_post_delete_post_type").format(
+        id_list=id_list,
         path=wordpress_path,
-        post_type=content_type,
-        debug_info=debug_info),
-        log_before_out=[literals.get("wp_wpcli_post_delete_posttype_before").format(post_type=content_type)],
-        log_before_err=[literals.get("wp_wpcli_post_delete_posttype_err").format(post_type=content_type)])
+        debug_info=convert_wp_parameter_debug(debug_info)),
+        log_before_out=[literals.get("wp_wpcli_post_delete_post_type_before").format(post_type=content_type)],
+        log_before_err=[literals.get("wp_wpcli_post_delete_post_type_err").format(post_type=content_type)])
+
+
+def get_post_type_ids(wordpress_path: str, post_type: str):
+    """Gets the ids for all the posts that match an specific post type.
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        post_type: Post type name to filter by.
+    """
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_post_list_ids").format(
+        post_type=post_type,
+        path=wordpress_path
+    ))
 
 
 def wordpress_is_downloaded(path: str) -> bool:

@@ -310,23 +310,28 @@ def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) ->
     return wordpress_path
 
 
-def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str, global_constants: dict):
-    """ Imports WordPress posts content specified on a site_configuration file .
+def import_content_from_configuration_file(site_configuration: dict, environment_config: dict,
+                                           root_path: str, wordpress_path: str, global_constants: dict):
+    """ Imports WordPress posts content specified on a site_configuration file.
+    NOTE: content entries in the configuration file must be named after post
+    types in singular form. Otherwise they will be ignored. ie: post, page.
 
     Args:
         site_configuration: Parsed site configuration.
+        environment_config: Parsed environment configuration.
+        root_path: Path to the root repository.
         wordpress_path: Path to WordPress files.
         global_constants: Parsed global constants.
     """
 
     # Get wxr path from the constants
-    wxr_path = pathlib.Path(global_constants["paths"]["content"]["wxr"])
-    authors = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+    wxr_path = pathlib.Path(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
+    authors_path = pathlib.Path.joinpath(wxr_path, "mapping.csv")
 
-    if not pathlib.Path.exists(authors):
-        authors = "skip"
+    if not pathlib.Path.exists(authors_path):
+        authors_path = "skip"
 
-    debug_info = site_configuration["wp_cli"]["debug"]
+    debug_info = environment_config["wp_cli_debug"]
 
     for content_type in site_configuration["content"]:
         # File name will be the {wxr_path}/{content_type}.xml
@@ -336,7 +341,7 @@ def import_content_from_configuration_file(site_configuration: dict, wordpress_p
         wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
 
         # Import new content
-        wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
+        wp_cli.import_wxr_content(wordpress_path, content_path, authors_path, debug_info)
 
 
 def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):

@@ -147,7 +147,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Import wxr content
     if not create_development_theme:
-        wordpress.wptools.import_content_from_configuration_file(site_config, wordpress_path, global_constants)
+        wordpress.wptools.import_content_from_configuration_file(
+            site_config, environment_config, root_path, wordpress_path, global_constants)
 
     # # Generate additional wp-config.php files
     # generate_additional_wpconfig_files(environment_file_path, additional_environments,

@@ -81,7 +81,7 @@ class Literals(ValueDictsBase):
                                       "existing one."),
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
         "wp_wpcli_plugin_install_error": _("An error occurred installing plugin {plugin_name}..."),
-        "wp_wpcli_post_delete_posttype_before": _("Deleting posts of type {post_type}..."),
+        "wp_wpcli_post_delete_post_type_before": _("Deleting posts of type {post_type}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
         "wp_wpcli_user_creating": _("Creating WordPress user {user}..."),
@@ -150,7 +150,7 @@ class Literals(ValueDictsBase):
         "wp_wpcli_option_update_error":
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
         "wp_wpcli_plugin_install_err": _("Plugin {plugin_name} could not be installed due to an error."),
-        "wp_wpcli_post_delete_posttype_err": _("Unable to delete content from type {post_type} due to an error."),
+        "wp_wpcli_post_delete_post_type_err": _("Unable to delete content from type {post_type} due to an error."),
         "wp_wpcli_user_creating_err": _("An error occurred creating the user {user}."),
         "wp_src_theme_not_found": _("Create development theme was called but no src themes found. Please check your "
                                     "themes configuration and try again."),
