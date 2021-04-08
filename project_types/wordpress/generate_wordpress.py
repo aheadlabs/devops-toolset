@@ -155,9 +155,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     generate_additional_wpconfig_files(site_config["environments"], additional_environments,
                                        additional_environment_db_user_passwords, wordpress_path)
 
-    # # Delete sample configuration file
-    # delete_sample_wp_config_file(wordpress_path)
-    #
+    # Delete sample configuration file
+    delete_sample_wp_config_file(wordpress_path)
+
     # # Backup database
     # core_dump_path_converted = wordpress.wptools.convert_wp_config_token(
     #     site_config["database"]["dumps"]["core"], wordpress_path)
