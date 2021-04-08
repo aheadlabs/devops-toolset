@@ -261,9 +261,9 @@ def move_files(origin: str, destination: str, glob: str, recursive: bool = False
     # Iterate through files to move them
     for origin_file_path in files:
         # Get paths related to the file
-        origin_directory_path: str = pathlib.Path(os.path.commonprefix([origin, origin_file_path]))
-        relative_path: str = origin_file_path.as_posix().removeprefix(origin_directory_path.as_posix()).lstrip("/")
-        destination_file_path: str = pathlib.Path.joinpath(destination_directory_path, relative_path)
+        origin_directory_path: str = pathlib.Path(os.path.commonprefix([origin, origin_file_path])).as_posix()
+        relative_path: str = origin_file_path.as_posix().removeprefix(origin_directory_path).lstrip("/")
+        destination_file_path: str = pathlib.Path.joinpath(destination_directory_path, relative_path).as_posix()
 
         # Move file
         logging.info(literals.get("fs_file_moving").format(

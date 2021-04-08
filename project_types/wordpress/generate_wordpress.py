@@ -55,7 +55,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Get basic settings
     global_constants: dict = wordpress.wptools.get_constants()
-    database_files_path: dict = global_constants["paths"]["database"]
+    database_files_path: str = global_constants["paths"]["database"]
     root_path_obj: pathlib.Path = pathlib.Path(root_path)
 
     # Look for *site.json files in the project path
@@ -158,22 +158,22 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Delete sample configuration file
     delete_sample_wp_config_file(wordpress_path)
 
-    # # Backup database
-    # core_dump_path_converted = wordpress.wptools.convert_wp_config_token(
-    #     site_config["database"]["dumps"]["core"], wordpress_path)
-    # database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_files_path)
-    # database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
-    # wordpress.wptools.export_database(
-    #     site_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
-    # git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
-    #
-    # # Move config files to devops directory
-    # paths.move_files(
-    #     root_path,
-    #     pathlib.Path.joinpath(pathlib.Path(root_path), wordpress.wptools.get_constants()["paths"]["devops"]),
-    #     "*.json",
-    #     False
-    # )
+    # Backup database
+    core_dump_path_converted = wordpress.wptools.convert_wp_config_token(
+        site_config["settings"]["dumps"]["core"], wordpress_path)
+    database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_files_path)
+    database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
+    wordpress.wptools.export_database(
+        environment_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
+    git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
+
+    # Move config files to devops directory
+    paths.move_files(
+        root_path,
+        pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["devops"]).as_posix(),
+        "*.json",
+        False
+    )
 
 
 def setup_devops_toolset(root_path: str):
@@ -182,7 +182,7 @@ def setup_devops_toolset(root_path: str):
         root_path: Project's root path
     """
     devops_path_constant = wordpress.wptools.get_constants()["paths"]["devops"]
-    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset")
+    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset").as_posix()
     logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
     tools.devops_toolset.update_devops_toolset(devops_path)
 
