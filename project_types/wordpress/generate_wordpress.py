@@ -13,7 +13,7 @@ import filesystem.paths as paths
 import os
 import project_types.wordpress.constants as constants
 import project_types.wordpress.wptools
-import project_types.wordpress.wp_theme_tools as themetools
+import project_types.wordpress.wp_theme_tools as theme_tools
 import shutil
 import tools.argument_validators
 import tools.cli
@@ -31,8 +31,8 @@ literals = LiteralsCore([WordpressLiterals])
 
 
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
-         environment: str, additional_environments: list, additional_environment_db_user_passwords: dict,
-         create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs):
+         environment: str, additional_environments: list, environments_db_user_passwords: dict,
+         create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs_):
     """Generates a new Wordpress site based on the site configuration file
 
     Args:
@@ -43,14 +43,14 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         environment: Name of the environment to be processed.
         additional_environments: Additional environments to create additional
             wp-config.php files.
-        additional_environment_db_user_passwords: Additional environment db
+        environments_db_user_passwords: Additional environment db
             user passwords.
         create_db: If True it creates the database and the user.
         skip_partial_dumps: If True skips partial database dumps
             (after installing WordPress, themes and plugins).
         create_development_theme: If True generates the file structure for a
             development theme
-        kwargs: Platform-specific arguments
+        kwargs_: Platform-specific arguments
     """
 
     # Get basic settings
@@ -68,8 +68,11 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         core.log_tools.log_indented_list(literals.get("wp_required_files_not_found_detail").format(path=root_path),
                                          required_files_not_present, core.log_tools.LogLevel.warning)
 
-        core.log_tools.log_indented_list(literals.get("wp_default_files"), [Urls.DEFAULT_SITE_ENVIRONMENTS,
-            Urls.DEFAULT_SITE_CONFIG], core.log_tools.LogLevel.info)
+        core.log_tools.log_indented_list(
+            literals.get("wp_default_files"),
+            [Urls.DEFAULT_SITE_ENVIRONMENTS,
+             Urls.DEFAULT_SITE_CONFIG],
+            core.log_tools.LogLevel.info)
 
         # Ask to use defaults
         use_defaults: bool = prompt.yn(literals.get("wp_use_default_files"))
@@ -96,13 +99,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     site_config: dict = wordpress.wptools.get_site_configuration(required_file_paths[0])
     environment_config = wordpress.wptools.get_environment(site_config, environment)
 
-    # Get database admin user from environment
-    db_admin_user: dict = environment_config['database']['db_admin_user']
-
     # Get future paths (from the constants.json file)
     wordpress_path: str = wordpress.wptools.get_wordpress_path_from_root_path(root_path, global_constants)
     wordpress_path_as_posix: str = pathlib.Path(wordpress_path).as_posix()
-    themes_path: str = themetools.get_themes_path_from_root_path(root_path, global_constants)
+    themes_path: str = theme_tools.get_themes_path_from_root_path(root_path, global_constants)
 
     # Create project structure & prepare devops-toolset
     wordpress.wptools.start_basic_project_structure(root_path)
@@ -115,10 +115,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Create development theme (if needed)
     if create_development_theme:
-        themetools.create_development_theme(site_config["settings"]["themes"], root_path)
+        theme_tools.create_development_theme(site_config["settings"]["themes"], root_path)
 
     # Set development themes / plugins ready
-    themetools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
+    theme_tools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
 
     # Configure WordPress site
     wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config, wordpress_path, db_user_password)
@@ -136,8 +136,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         site_config["settings"]["options"], wordpress_path, environment_config["wp_cli_debug"])
 
     # Install site theme
-    themetools.install_themes_from_configuration_file(
-        site_config, environment_config, global_constants, root_path, skip_partial_dumps, **kwargs)
+    theme_tools.install_themes_from_configuration_file(
+        site_config, environment_config, global_constants, root_path, skip_partial_dumps, **kwargs_)
 
     # Install site plugins
     wordpress.wptools.install_plugins_from_configuration_file(
@@ -153,7 +153,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(site_config["environments"], additional_environments,
-                                       additional_environment_db_user_passwords, wordpress_path)
+                                       environments_db_user_passwords, wordpress_path)
 
     # Delete sample configuration file
     delete_sample_wp_config_file(wordpress_path)
@@ -250,8 +250,8 @@ if __name__ == "__main__":
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
-        splitted = str(kwarg).split("=")
-        kwargs[splitted[0]] = splitted[1]
+        splited = str(kwarg).split("=")
+        kwargs[splited[0]] = splited[1]
 
     # Parse long attributes to avoid lines longer that 120 characters
     additional_environment_db_user_passwords = args.additional_environment_db_user_passwords.split(",") \
