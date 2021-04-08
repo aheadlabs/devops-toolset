@@ -3,6 +3,7 @@ required configuration files"""
 
 
 import argparse
+import json
 import logging
 import pathlib
 import requests
@@ -30,7 +31,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
-         environment: str, additional_environments: list, additional_environment_db_user_passwords: list,
+         environment: str, additional_environments: list, additional_environment_db_user_passwords: dict,
          create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs):
     """Generates a new Wordpress site based on the site configuration file
 
@@ -150,10 +151,10 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         wordpress.wptools.import_content_from_configuration_file(
             site_config, environment_config, root_path, wordpress_path, global_constants)
 
-    # # Generate additional wp-config.php files
-    # generate_additional_wpconfig_files(environment_file_path, additional_environments,
-    #                                    additional_environment_db_user_passwords, wordpress_path)
-    #
+    # Generate additional wp-config.php files
+    generate_additional_wpconfig_files(site_config["environments"], additional_environments,
+                                       additional_environment_db_user_passwords, wordpress_path)
+
     # # Delete sample configuration file
     # delete_sample_wp_config_file(wordpress_path)
     #
@@ -186,18 +187,20 @@ def setup_devops_toolset(root_path: str):
     tools.devops_toolset.update_devops_toolset(devops_path)
 
 
-def generate_additional_wpconfig_files(environments_file_path: str, environments: list,
-                                       additional_environment_db_user_passwords: list,
+def generate_additional_wpconfig_files(environments: dict, additional_environments: list,
+                                       environments_db_user_passwords: dict,
                                        wordpress_path: str):
     """Generates additional wp-config.php files for different environments.
 
     Args:
-        environments_file_path: Path to the environments file.
-        environments: List of environment configuration files to be generated.
-        additional_environment_db_user_passwords: Additional environment db
-            user passwords.
+        environments: All the available environment configurations.
+        additional_environments: Additional environments to generate
+            wp-config.php files for.
+        environments_db_user_passwords: Additional environment db user
+            passwords.
         wordpress_path: Path to the WordPress installation.
     """
+
     wordpress_path_obj = pathlib.Path(wordpress_path)
     wp_config_path = pathlib.Path.joinpath(wordpress_path_obj, "wp-config.php")
     wp_config_path_temp = pathlib.Path.joinpath(wordpress_path_obj, "wp-config-temp.php")
@@ -206,13 +209,15 @@ def generate_additional_wpconfig_files(environments_file_path: str, environments
     if paths.is_valid_path(wp_config_path.as_posix(), True):
         shutil.move(wp_config_path, wp_config_path_temp)
 
-    i = 0
-    while i < len(environments) and environments[i]:
-        site_config = wordpress.wptools.get_site_configuration_from_environment(environments_file_path, environments[i])
-        wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, wordpress_path,
-                                                                       additional_environment_db_user_passwords[i])
-        shutil.move(wp_config_path, pathlib.Path.joinpath(wordpress_path_obj, f"wp-config-{environments[i]}.php"))
-        i += 1
+    # Filter environments
+    filtered_environments = list(filter(lambda environment_x: environment_x["name"] in additional_environments,
+                                        environments))
+
+    # Create additional configuration files for the filtered environments
+    for environment in filtered_environments:
+        wordpress.wptools.set_wordpress_config_from_configuration_file(
+            environment, wordpress_path, environments_db_user_passwords[environment["name"]])
+        shutil.move(wp_config_path, pathlib.Path.joinpath(wordpress_path_obj, f"wp-config-{environment['name']}.php"))
 
     # Rename original file
     if paths.is_valid_path(str(wp_config_path_temp), True):
@@ -256,7 +261,7 @@ if __name__ == "__main__":
     main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password,
          args.environment,
          args.additional_environments.split(",") if args.additional_environments != "" else [],
-         additional_environment_db_user_passwords,
+         json.loads(args.additional_environment_db_user_passwords),
          args.create_db,
          args.skip_partial_dumps,
          args.create_development_theme,
