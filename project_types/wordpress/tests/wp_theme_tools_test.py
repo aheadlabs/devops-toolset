@@ -43,8 +43,8 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs(logging_mock
 @patch("filesystem.parsers.parse_json_file")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
-        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
-        logging_mock, wordpressdata, themesdata):
+        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock,
+        path_exists_mock, logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls npm install wrapper """
     # Arrange
     root_path = wordpressdata.root_path
@@ -66,8 +66,8 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
 @patch("filesystem.parsers.parse_json_file")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
-        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
-        logging_mock, wordpressdata, themesdata):
+        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
+        chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls npm install wrapper """
     # Arrange
     root_path = wordpressdata.root_path
@@ -90,8 +90,8 @@ def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
 @patch("filesystem.parsers.parse_json_file")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command(
-        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
-        logging_mock, wordpressdata, themesdata):
+        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
+        chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls subprocess with gulp_build command """
     # Arrange
     root_path = wordpressdata.root_path
@@ -125,8 +125,8 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_wit
 @patch("filesystem.parsers.parse_json_file")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_zips_dist(
-        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock, path_exists_mock,
-        logging_mock, wordpressdata, themesdata):
+        update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
+        chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
     """ Given site configuration, when src theme present, then calls zip_directory """
     # Arrange
     root_path = wordpressdata.root_path
@@ -148,8 +148,7 @@ def test_build_theme_given_site_config_when_src_themes_then_zips_dist(
 @patch("os.path.exists")
 @patch("logging.error")
 def test_build_theme_given_site_config_when_no_path_themes_src_then_logs_error(
-        logging_error_mock, path_exists_mock,
-        logging_info_mock, wordpressdata, themesdata):
+        logging_error_mock, path_exists_mock, logging_info_mock, wordpressdata, themesdata):
     """ Given site configuration, when theme path src not exists, then logs error """
     # Arrange
     root_path = wordpressdata.root_path
@@ -491,8 +490,8 @@ def test_replace_theme_meta_data_given_path_and_replacements_then_replaces_file_
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_scss_file(
-        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
-        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
+        replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
     """ Given src theme config, then calls replace_theme_metadata_in_scss file method, using the themes path"""
     # Arrange
     root_path = wordpressdata.root_path
@@ -514,8 +513,8 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_package_json_file(
-        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
-        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
+        replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
     """ Given src theme config, then calls replace_theme_metadata_in_package_json file method, using the themes path"""
     # Arrange
     root_path = wordpressdata.root_path
@@ -537,8 +536,8 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug_in_functions_php_file(
-        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock, replace_theme_metadata_in_package_mock,
-        replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
+        update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
+        replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
     """ Given src theme config, then calls replace_theme_slug_in_functions_php file method, using the themes path"""
     # Arrange
     root_path = wordpressdata.root_path

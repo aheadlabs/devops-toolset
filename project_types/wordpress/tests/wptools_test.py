@@ -16,6 +16,27 @@ from project_types.wordpress.tests.conftest import WordPressData, mocked_request
 
 literals = LiteralsCore([WordpressLiterals])
 
+# region add_wp_options
+
+
+@patch("project_types.wordpress.wp_cli.add_update_option")
+def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_update_option_mock, wordpressdata):
+    """ Given options dict, then calls wp_cli_add_update_option for every option """
+    # Arrange
+    options = json.loads(wordpressdata.site_config_content)["settings"]["options"]
+    wordpress_path = wordpressdata.wordpress_path
+
+    # Act
+    sut.add_wp_options(options, wordpress_path)
+
+    # Assert
+    calls = []
+    for option in options:
+        calls.append(call(option, wordpress_path, False))
+    add_update_option_mock.assert_has_calls(calls)
+
+# endregion add_wp_options
+
 
 # region convert_wp_config_token
 
@@ -207,7 +228,7 @@ def test_get_environment_given_site_config_then_update_url_constants(filter_keys
     result = sut.get_environment(site_config, environment_name)
 
     # Assert
-    result["wp_config"]["content_url"] == expected_content_url_value
+    assert result["wp_config"]["content_url"]["value"] == expected_content_url_value
 
 # endregion get_environment()
 
