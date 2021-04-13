@@ -1,4 +1,4 @@
-"""wordpress module literals"""
+"""node module literals"""
 
 from core.ValueDictsBase import ValueDictsBase
 from core.app import App
@@ -7,7 +7,7 @@ app: App = App()
 
 
 class Literals(ValueDictsBase):
-    """ValueDicts for the wordpress module."""
+    """ValueDicts for the node module."""
 
     _info = {
         "npm_run_before": _("Running npm task: {task}..."),

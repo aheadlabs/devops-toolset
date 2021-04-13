@@ -21,16 +21,16 @@ class PluginsData:
 
 class ThemesData:
     """Class used to create the themesdata fixture"""
-    default_scss_file_example = "/*!\r\nTheme Name: MyTheme WordPress theme\r\nTheme URI: https://example.com/\r\n" \
-                                "Description: Ad hoc WordPres theme.\r\nAuthor: Ahead Labs, S.L.\r\nAuthor URI: " \
-                                "https://aheadlabs.com\r\nTags: ahead-labs, theme\r\nVersion: {{version}}\r\n" \
-                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\n" \
-                                "License: Copyright\r\nText Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
-    default_scss_file_expected = "/*!\r\nTheme Name: theme\r\nTheme URI: https://mytheme\r\n" \
-                                "Description: mytheme-description\r\nAuthor: theme-author\r\nAuthor URI: " \
-                                "https://example.com\r\nTags: tag1, tag2\r\nVersion: {{version}}\r\n" \
-                                "Requires at least: 5.6\r\nTested up to: 5.6\r\nRequires PHP: 7.4.11\r\nLicense: Copyright\r\n" \
-                                "Text Domain: mytheme\r\nTemplate: w74-framework\r\n*/"
+    default_scss_file_example = "/*!\nTheme Name: MyTheme WordPress theme\nTheme URI: https://example.com/\n" \
+                                "Description: Ad hoc WordPres theme.\nAuthor: Ahead Labs, S.L.\nAuthor URI: " \
+                                "https://aheadlabs.com\nTags: ahead-labs, theme\nVersion: {{version}}\n" \
+                                "Requires at least: 5.6\nTested up to: 5.6\nRequires PHP: 7.4.11\n" \
+                                "License: Copyright\nText Domain: mytheme\nTemplate: w74-framework\n*/"
+    default_scss_file_expected = "/*!\nTheme Name: theme\nTheme URI: https://mytheme\n" \
+                                "Description: mytheme-description\nAuthor: theme-author\nAuthor URI: " \
+                                "https://example.com\nTags: tag1, tag2\nVersion: {{version}}\n" \
+                                "Requires at least: 5.6\nTested up to: 5.6\nRequires PHP: 7.4.11\nLicense: Copyright\n" \
+                                "Text Domain: mytheme\nTemplate: w74-framework\n*/"
     default_functions_core_php_example = "function mytheme_register_styles()\n{\n\n}\nadd_action('wp_enqueue_scripts', " \
                                          "'mytheme_register_styles')"
     default_functions_core_php_example_expected = "function mytheme_replaced_register_styles()\n{\n\n}\n" \
@@ -198,6 +198,55 @@ class WordPressData:
     path = "/pathto"
     url_resource = "https://url/resource"
     default_pwd = "root"
+    site_config_content_additional_settings = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+    site_config_content_false_aws_cloudfront = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{ \"aws_cloudfront\":false}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+    site_config_content_true_aws_cloudfront = "{\"wp_cli\":{\"debug\":false},\"database\":{\"host\":\"localhost\"," \
+                          "\"name\":\"wordpress-playground\",\"user\":\"wp_playground_db_user\",\"prefix\":\"wp_\"," \
+                          "\"charset\":\"utf8\",\"collate\":\"utf8_unicode_ci\",\"skip_check\":true," \
+                          "\"dumps\":{\"core\":\"[date|Y.m.d-Hisve]-db.core.sql\"," \
+                          "\"theme\":\"[date|Y.m.d-Hisve]-db.theme.sql\"," \
+                          "\"plugins\":\"[date|Y.m.d-Hisve]-db.plugins.sql\"," \
+                          "\"regular\":\"[date|Y.m.d-Hisve]-db-[commit].sql\"}}," \
+                          "\"settings\":{\"title\":\"Wordpress Playground\"," \
+                          "\"description\":\"This site\",\"version\":\"latest\",\"locale\":\"en_US\"," \
+                          "\"admin\":{\"user\":\"wp_admin\",\"email\":\"you@example.com\",\"skip_email\":true}," \
+                          "\"options\":[]," \
+                          "\"wp_config\":{}," \
+                          "\"skip_content_download\":false,\"concatenate_scripts\":true," \
+                          "\"additional_settings\":{ \"aws_cloudfront\":true}},\"multisite\":{}," \
+                          "\"content\":[\"page\", \"nav_menu_item\"]," \
+                          "\"themes\":[],\"plugins\":[]}"
+
 
 
 
