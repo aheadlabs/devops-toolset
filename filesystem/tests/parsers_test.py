@@ -2,7 +2,8 @@
 
 import filesystem.parsers as sut
 import pathlib
-from unittest.mock import patch
+import json
+from unittest.mock import patch, mock_open
 from core.app import App
 from core.LiteralsCore import LiteralsCore
 from project_types.wordpress.Literals import Literals as WordpressLiterals
@@ -109,3 +110,20 @@ def test_parse_theme_metadata_when_tokens_matched_and_add_environment_variables_
 
 # endregion
 
+
+# region Parse_json_file()
+
+
+@patch("builtins.open", new_callable=mock_open, read_data="{}")
+def test_parse_json_file_load_json(builtins_open):
+    """Given a JSON file path, returns dict with JSON content"""
+
+    # Arrange
+
+    # Act
+    result = sut.parse_json_file("file.json")
+
+    # Assert
+    assert result == json.loads("{}")
+
+# endregion
