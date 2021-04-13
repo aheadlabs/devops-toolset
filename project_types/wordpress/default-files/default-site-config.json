@@ -47,6 +47,8 @@
         "force": true,
         "activate": true
       }
+    ],
+    "users": [
     ]
   },
   "environments": [
@@ -88,5 +90,9 @@
         "wpml_auto_updates": {"name": "OTGS_DISABLE_AUTO_UPDATES", "type": "constant", "value": false}
       }
     }
-  ]
+  ],
+  "content": {
+    "author_handling": "skip",
+    "sources": []
+  }
 }

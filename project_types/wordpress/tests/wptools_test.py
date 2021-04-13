@@ -154,6 +154,63 @@ def test_export_database_calls_wp_cli_export_database(export_database_mock, word
 
 # endregion
 
+# region get_environment()
+
+
+def test_get_environment_given_env_name_when_not_match_then_raises_value_error(wordpressdata):
+    """ Given environment name, when no matches found in site_config, then raises ValueError """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_name = "non_existing_environment"
+    expected_error_message = literals.get('wp_env_x_not_found').format(environment=environment_name)
+
+    # Act
+    with pytest.raises(ValueError) as value_error:
+        sut.get_environment(site_config, environment_name)
+
+        # Assert
+        assert value_error == expected_error_message
+
+
+@patch("tools.dicts.filter_keys")
+@patch("logging.warning")
+def test_get_environment_given_env_name_when_multiple_match_then_warns(log_warning_mock, filter_keys_mock,
+                                                                       wordpressdata):
+    """ Given environment name, when multiples matches found in site_config, then warns with message"""
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment = site_config["environments"][0]
+    environment_name = environment["name"]
+    site_config["environments"].append(environment)
+    expected_message = literals.get('wp_environment_x_found_multiple').format(environment=environment_name)
+    filter_keys_mock.return_value = []
+
+    # Act
+    sut.get_environment(site_config, environment_name)
+
+    # Assert
+    log_warning_mock.assert_called_once_with(expected_message)
+
+
+@patch("tools.dicts.filter_keys")
+def test_get_environment_given_site_config_then_update_url_constants(filter_keys_mock, wordpressdata):
+    """ Given site_config, then updates url constants """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    url_keys = ["content_url"]
+    environment = site_config["environments"][0]
+    environment_name = environment["name"]
+    filter_keys_mock.return_value = url_keys
+    expected_content_url_value = environment["base_url"] + environment["wp_config"][url_keys[0]]["value"]
+
+    # Act
+    result = sut.get_environment(site_config, environment_name)
+
+    # Assert
+    result["wp_config"]["content_url"] == expected_content_url_value
+
+# endregion get_environment()
+
 # region get_project_structure()
 
 
