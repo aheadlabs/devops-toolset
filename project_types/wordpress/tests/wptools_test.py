@@ -5,6 +5,7 @@ import pytest
 import json
 import pathlib
 import project_types.wordpress.wptools as sut
+from filesystem import paths
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_platforms import constants as devops_platform_constants
 from core.LiteralsCore import LiteralsCore
@@ -265,25 +266,26 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
 # region install_plugins_from_configuration_file()
 
 
-@patch("project_types.wordpress.wptools.get_constants")
 @patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("logging.warning")
 def test_install_plugins_given_configuration_file_when_no_plugins_then_no_install(
-        install_plugin_mock, get_constants_mock, wordpressdata):
+        logging_warning_mock, install_plugin_mock, wordpressdata):
     """ Given the configuration values, when no plugins present, the no installation calls
      should be made """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = {}
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    site_config["settings"]["plugins"] = {}
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
     root_path = wordpressdata.root_path
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path, True)
+    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
     install_plugin_mock.assert_not_called()
 
 
 @patch("logging.info")
-@patch("project_types.wordpress.wptools.get_constants")
+@patch("logging.warning")
 @patch("project_types.wordpress.wp_cli.install_plugin")
 @patch("project_types.wordpress.wptools.download_wordpress_plugin")
 @patch("project_types.wordpress.wptools.convert_wp_config_token")
@@ -292,30 +294,30 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
     "plugins_content", [json.loads(PluginsData.plugins_content_single_url_source),
                         json.loads(PluginsData.plugins_content_single_zip_source),
                         json.loads(PluginsData.plugins_content_two_plugins_with_url_and_zip_sources)])
-def test_install_plugins_given_configuration_file_when_plugins_then_then_downloads_wordpress_plugin(
-        export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock, get_constants_mock,
-        logging_mock, plugins_content, wordpressdata, pluginsdata):
+def test_install_plugins_given_configuration_file_when_plugins_present_then_install_plugins(
+        export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock,
+        logging_mock, logging_warn_mock, plugins_content, wordpressdata, pluginsdata):
     """ Given the configuration values, when url plugin present, then calls download_wordpress_plugin"""
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = plugins_content
+    site_config["settings"]["plugins"] = plugins_content
+    environment_config = site_config["environments"][0]
     constants = json.loads(wordpressdata.constants_file_content)
-    get_constants_mock.return_value = constants
     root_path = pathlib.Path(wordpressdata.root_path)
     wordpress_path = pathlib.Path.joinpath(root_path, constants["paths"]["wordpress"])
     plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path, True)
+    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
     calls = []
-    for plugin in site_config["plugins"]:
-        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+    for plugin in site_config["settings"]["plugins"]:
+        plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         plugin_call = call(plugin["name"],
                            wordpress_path,
                            plugin["activate"],
                            plugin["force"],
                            plugin_path,
-                           site_config["wp_cli"]["debug"])
+                           environment_config["wp_cli_debug"])
         calls.append(plugin_call)
     install_plugin_mock.assert_has_calls(calls)
 

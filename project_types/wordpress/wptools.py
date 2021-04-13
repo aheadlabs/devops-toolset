@@ -386,11 +386,10 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
 
     for plugin in plugins:
         # Get plugin path
-        #plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
         plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         logging.info(literals.get("wp_plugin_path").format(path=plugin_path))
 
-        # Download theme if needed
+        # Download plugin if needed
         if plugin["source_type"] == "url":
             download_wordpress_plugin(plugin, plugin_path)
 

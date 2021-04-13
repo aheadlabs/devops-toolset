@@ -11,7 +11,7 @@ class PluginsData:
         "[{\"name\":\"plugin-name\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
         "\"activate\":true}]"
     plugins_content_single_zip_source = \
-        "[{\"name\":\"plugin-name\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
+        "[{\"name\":\"plugin-name\",\"source_type\":\"zip\",\"source\":\"plugin1.zip\",\"force\":true," \
         "\"activate\":true}]"
     plugins_content_two_plugins_with_url_and_zip_sources = \
         "[{\"name\":\"plugin-name1\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
