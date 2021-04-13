@@ -139,6 +139,7 @@ class WordPressData:
                           "\"type\":\"constant\",\"value\":true}," \
                           "\"wpml_auto_updates\":{\"name\":\"OTGS_DISABLE_AUTO_UPDATES\"," \
                           "\"type\":\"constant\",\"value\":false}}}]}"
+    import_content_skip_author = "{\"author_handling\":\"skip\",\"sources\":[\"page\",\"nav_menu_item\"]}"
     constants_file_name = "wordpress-constants.json"
     constants_file_content = "{\"$schema\":" \
                              "\"http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json\"," \

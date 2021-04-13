@@ -215,10 +215,10 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
 # region import_content_from_configuration_file()
 
-@pytest.mark.skip(reason="Fix later..")
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 @patch("project_types.wordpress.wp_cli.delete_post_type_content")
-def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock, import_wxr_content, wordpressdata):
+def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock,
+    import_wxr_content, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
@@ -227,6 +227,7 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     root_path = wordpressdata.root_path
     wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
     expected_content_imported = ["page", "nav_menu_item"]
+    site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
     # Act
     sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
     expected_calls = [call(wordpress_path, expected_content_imported[0], False),
@@ -235,6 +236,33 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
 
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+@patch("project_types.wordpress.wp_cli.delete_post_type_content")
+@pytest.mark.parametrize("authors_value", ["create", "skip", "mapping.csv"])
+def test_import_content_from_configuration_file_given_args_then_call_import_wxr_content(delete_content_mock,
+    import_wxr_content, authors_value, wordpressdata):
+    """ Given args, for every content type present, should call delete_post_type_content with required data """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
+    wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["wxr"])
+    expected_content_imported = ["page", "nav_menu_item"]
+    site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
+    site_config["authors_handling"] = authors_value
+
+    # Act
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+    expected_calls = []
+    for content_type in expected_content_imported:
+        content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+        expected_calls.append(call(wordpress_path, content_path, "skip", environment_config["wp_cli_debug"]))
+
+    # Assert
+    import_wxr_content.assert_has_calls(expected_calls)
+
 
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 def test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import(
@@ -242,7 +270,7 @@ def test_import_content_from_configuration_file_given_args_when_no_content_then_
     """ Given args, when no content present, then return without importing anything """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config.pop("content", None)  # This will force silently removing "content" from site_config.
+    site_config.pop("content", None)
     environment_config = {}
     root_path = wordpressdata.root_path
     constants = {}
