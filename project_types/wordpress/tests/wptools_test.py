@@ -235,6 +235,44 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
 
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+def test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import(
+        import_wxr_content, wordpressdata):
+    """ Given args, when no content present, then return without importing anything """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config.pop("content", None)  # This will force silently removing "content" from site_config.
+    environment_config = {}
+    root_path = wordpressdata.root_path
+    constants = {}
+
+    # Act
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+
+    # Assert
+    import_wxr_content.assert_not_called()
+
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+def test_import_content_from_configuration_file_given_args_when_empty_content_then_no_import(
+        import_wxr_content, wordpressdata):
+    """ Given args, when no content present, then return without importing anything """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["content"] = {}
+    site_config["content"]["author_handling"] = {}
+    site_config["content"]["sources"] = {}
+    environment_config = site_config["environments"][0]
+    root_path = wordpressdata.root_path
+    constants = json.loads(wordpressdata.constants_file_content)
+
+    # Act
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+
+    # Assert
+    import_wxr_content.assert_not_called()
+
 # endregion import_content_from_configuration_file
 
 # region install_plugins_from_configuration_file()

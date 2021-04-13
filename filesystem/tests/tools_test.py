@@ -2,6 +2,7 @@
 
 import filesystem.tools as sut
 from unittest.mock import patch
+import pytest
 
 
 
@@ -24,14 +25,18 @@ def test_update_xml_file_entity_text_parse_file(parse_mock):
 # region is_file_empty
 
 
-def test_is_file_empty_on_empty_file(tmp_path):
+@patch("os.path.getsize")
+@pytest.mark.parametrize("getsize_result, expected_result", [(0, True), (5, False)])
+def test_is_file_empty_given_path_when_empty_then_return_true(getsize_mock, getsize_result, expected_result, paths):
     """Given an empty file return True."""
 
+    # Arrange
+    path = paths.test_path
+    getsize_mock.return_value = getsize_result
     # Act
-    result = sut.is_file_empty(tmp_path)
+    result = sut.is_file_empty(path)
 
     # Assert
-    assert result
-
+    assert result == expected_result
 
 # endregion
