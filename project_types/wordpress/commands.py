@@ -24,7 +24,7 @@ class Commands(ValueDictsBase):
         "wpcli_db_create": "wp db create {db_user} {db_pass} --path={path} {debug_info}",
         "wpcli_db_export": "wp db export \"{core_dump_path}\" --path={path} --extended-insert=false {debug_info}",
         "wpcli_db_reset": "wp db reset --path={path} {yes} {debug_info}",
-        "wpcli_db_import": "wp db import {file} --authors={authors} --path={path} {debug_info}",
+        "wpcli_db_import": "wp db import {file} --path={path} {debug_info}",
         "wpcli_db_delete_transient": "wp transient delete --all --path={path}",
         "wpcli_db_query_create_user":
             "wp db query \"create user '{user}'@'{host}' identified by '{password}'\" "

@@ -76,14 +76,15 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
 
         # Zip dist
         filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
+
+        # Replace project.xml version with the one in the package.json file
+        package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
+        filesystem.tools.update_xml_file_entity_text(
+            "./version", package_json["version"],
+            pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
+
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
-
-    # Replace project.xml version with the one in the package.json file
-    package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
-    filesystem.tools.update_xml_file_entity_text(
-        "./version", package_json["version"],
-        pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
 
 
 def check_theme_configuration(theme: dict) -> bool:
@@ -135,15 +136,16 @@ def check_themes_configuration(themes: dict) -> bool:
     return True
 
 
-def create_development_theme(theme_configuration: dict, root_path: str):
+def create_development_theme(theme_configuration: dict, root_path: str, constants: dict):
     """ Creates the structure of a development theme.
 
     Args:
         theme_configuration: The themes configuration node
         root_path: The desired destination path of the theme
+        constants: WordPress constants.
     """
 
-    destination_path = get_themes_path_from_root_path(root_path)
+    destination_path = get_themes_path_from_root_path(root_path, constants)
 
     # Extract theme name from the themes configuration dict
     src_theme = list(filter(lambda t: t["source_type"] == "src", theme_configuration))
@@ -193,16 +195,13 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         paths.download_file(theme_config["source"], destination_path, f"{theme_config['name']}.zip")
 
 
-def get_themes_path_from_root_path(root_path: str, constants: dict = None) -> str:
+def get_themes_path_from_root_path(root_path: str, constants: dict) -> str:
     """ Gets the themes path based on the constants.json from a desired root path
 
     Args:
         root_path: Full path of the project.
         constants: WordPress constants.
     """
-    # Get constants if not passed
-    if constants is None:
-        constants = wptools.get_constants()
 
     # Get wordpress path from the constants
     themes_relative_path = constants["paths"]["content"]["themes"]
