@@ -434,10 +434,11 @@ def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wo
     """ Given configuration file, then calls install_wordpress_core from cli """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_core(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_core(site_config, environment_config, wordpress_path, admin_pass)
     # Assert
     install_wordpress_mock.assert_called_once()
 
@@ -460,13 +461,15 @@ def test_install_wordpress_site_then_calls_install_wordpress_core(
     """ Given site_configuration, then calls install_wordpress_core """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = root_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
-    install_wordpress_core.assert_called_with(site_config, wordpress_path, admin_pass)
+    install_wordpress_core.assert_called_with(site_config, environment_config, root_path, admin_pass)
 
 
 @patch("tools.git.purge_gitkeep")
@@ -483,14 +486,16 @@ def test_install_wordpress_site_then_calls_cli_update_option(
     """ Given site_configuration, then calls cli's update database  option """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = str(wordpress_path)
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = str(root_path)
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
     update_database.assert_called_with("blogdescription", site_config["settings"]["description"],
-                                       wordpress_path, site_config["wp_cli"]["debug"])
+                                       root_path, environment_config["wp_cli_debug"])
 
 
 @patch("tools.git.purge_gitkeep")
@@ -507,13 +512,15 @@ def test_install_wordpress_site_then_calls_cli_export_database(
     """ Given site_configuration, then calls cli's export_database"""
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = root_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
-    export_database.assert_called_with(site_config, wordpress_path, wordpress_path)
+    export_database.assert_called_with(environment_config, root_path, root_path)
 
 
 # endregion
