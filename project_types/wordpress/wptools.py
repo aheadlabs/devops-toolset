@@ -312,7 +312,7 @@ def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) ->
 
 
 def import_content_from_configuration_file(site_configuration: dict, environment_config: dict,
-                                           root_path: str, wordpress_path: str, global_constants: dict):
+                                           root_path: str, global_constants: dict):
     """ Imports WordPress posts content specified on a site_configuration file.
     NOTE: content entries in the configuration file must be named after post
     types in singular form. Otherwise they will be ignored. ie: post, page.
@@ -321,12 +321,15 @@ def import_content_from_configuration_file(site_configuration: dict, environment
         site_configuration: Parsed site configuration.
         environment_config: Parsed environment configuration.
         root_path: Path to the root repository.
-        wordpress_path: Path to WordPress files.
         global_constants: Parsed global constants.
     """
+    # If no content to import, then do nothing
+    if "content" not in site_configuration:
+        return
 
     # Get paths and parameters
-    wxr_path = pathlib.Path(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
+    wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["wordpress"])
     author_handling = site_configuration["content"]["author_handling"]
 
     if author_handling == "mapping.csv":
@@ -346,21 +349,6 @@ def import_content_from_configuration_file(site_configuration: dict, environment
 
         # Import new content
         wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
-
-
-def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
-    """Imports a WordPress database from a dump file based on a site_configuration file.
-
-    For more information see:
-           https://developer.wordpress.org/cli/commands/db/import/
-    Args:
-        site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
-        dump_file_path: Path to dump file to be imported.
-    """
-    dump_file_path_as_posix = str(pathlib.Path(dump_file_path).as_posix())
-    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-    wp_cli.import_database(wordpress_path_as_posix, dump_file_path_as_posix, site_configuration["wp_cli"]["debug"])
 
 
 def install_plugins_from_configuration_file(site_configuration: dict, environment_config: dict, global_constants: dict,
