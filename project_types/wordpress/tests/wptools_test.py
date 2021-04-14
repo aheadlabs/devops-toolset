@@ -381,22 +381,6 @@ def test_import_content_from_configuration_file_given_args_when_empty_content_th
     import_wxr_content.assert_not_called()
 
 
-@patch("project_types.wordpress.wp_cli.import_wxr_content")
-@patch("project_types.wordpress.wp_cli.delete_post_type_content")
-@patch("project_types.wordpress.wptools.get_constants")
-def test_import_content_from_configuration_file_given_args_when_no_content_then_return(get_constants_mock,
-    delete_content_mock, import_wxr_content, wordpressdata):
-    """ Given args, when no content key supplied inside site_config_content, should not call any mock """
-    # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    site_config.pop('content', None)
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    wordpress_path = wordpressdata.wordpress_path
-    # Act
-    sut.import_content_from_configuration_file(site_config, wordpress_path)
-    # Assert
-    import_wxr_content.assert_not_called()
-
 # endregion import_content_from_configuration_file
 
 # region install_plugins_from_configuration_file()
@@ -710,11 +694,13 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_additional_
 
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config, environment_config, wordpress_path,
+                                                     database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -729,12 +715,15 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfr
     function."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_additional_settings)
+    site_config_additional_settings = json.loads(wordpressdata.site_config_content_additional_settings)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_additional_settings, environment_config,
+                                                     wordpress_path, database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -749,12 +738,15 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_fal
     function."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_false_aws_cloudfront)
+    site_config_false_aws_cloudfront = json.loads(wordpressdata.site_config_content_false_aws_cloudfront)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_false_aws_cloudfront, environment_config,
+                                                     wordpress_path, database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -769,17 +761,20 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_tru
     add_cloudfront_forwarded_proto_to_config."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_true_aws_cloudfront)
+    site_config_true_cloudfront = json.loads(wordpressdata.site_config_content_true_aws_cloudfront)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_true_cloudfront, environment_config, wordpress_path,
+                                                     database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_called_once()
 
-# endregion
+# endregion set_wordpress_config_from_configuration_file
 
 # region add_cloudfront_forwarded_proto_to_config
 

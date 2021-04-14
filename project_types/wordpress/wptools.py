@@ -523,10 +523,11 @@ def install_wordpress_site(site_configuration: dict, environment_config: dict, g
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="core"))
 
 
-def set_wordpress_config_from_configuration_file(environment_config: dict, wordpress_path: str,
+def set_wordpress_config_from_configuration_file(site_config: dict, environment_config: dict, wordpress_path: str,
                                                  db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
+        site_config: Parsed site configuration.
         environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
         db_user_password: Database user password.
