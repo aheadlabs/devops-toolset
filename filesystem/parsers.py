@@ -1,5 +1,6 @@
 """Parses files for getting information from them"""
 
+import json
 import logging
 import pathlib
 import re
@@ -92,6 +93,20 @@ def parse_theme_metadata(css_file_content: bytes, tokens: List[str], add_environ
         platform_specific.create_environment_variables(environment_variables)
 
     return result
+
+
+def parse_json_file(path: str) -> dict:
+    """Parses a JSON file as a dict.
+
+    Args:
+        path: Path to the JSON file.
+
+    Returns:
+        Dictionary with the file contents.
+    """
+
+    with open(path, "r") as json_file:
+        return json.load(json_file)
 
 
 if __name__ == "__main__":

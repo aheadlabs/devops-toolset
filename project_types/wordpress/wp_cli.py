@@ -1,6 +1,7 @@
 """Contains wrappers for WP CLI commands"""
 
 import datetime
+import json
 import logging
 import tools.cli as cli
 import tools.git
@@ -203,6 +204,13 @@ def convert_wp_parameter_raw(value: bool):
     return ""
 
 
+def convert_wp_parameter_send_email(value: bool):
+    """Converts a boolean value to a --send-email string."""
+    if value:
+        return "--send-email"
+    return ""
+
+
 def convert_wp_parameter_skip_check(value: bool):
     """Converts a boolean value to a --skip-check string."""
     if value:
@@ -221,6 +229,24 @@ def convert_wp_parameter_skip_email(value: bool):
     """Converts a boolean value to a --skip-email string."""
     if value:
         return "--skip-email"
+    return ""
+
+
+def convert_wp_parameter_str_key_value(key: str, value: str, quoted: bool = False) -> str:
+    """Converts a string value to a --role string.
+
+    Args:
+        key: WordPress parameter name.
+        value: Value for the WordPress parameter.
+        quoted: If True quotes the value
+
+    Returns:
+        Parameter build as --key=value
+    """
+    quote = "\"" if quoted else ""
+
+    if value:
+        return "--" + key + "=" + quote + value + quote
     return ""
 
 
@@ -295,6 +321,60 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
             debug_info=convert_wp_parameter_debug(debug)
         ), log_before_process=[literals.get("wp_wpcli_db_create_before")])
 
+    # Warn the user we will not create the database
+    else:
+        logging.warning(literals.get("mysql_db_exists_skipping_creation").format(schema=schema))
+
+
+def create_user(user: dict, wordpress_path: str, debug: bool):
+    """Creates a WordPress user.
+
+    Args:
+        user: User to be created based on #/definitions/user at
+            https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+    """
+
+    cli.call_subprocess(commands.get("wp_user_create").format(
+        user_login=user["user_login"],
+        user_email=user["user_email"],
+        role=convert_wp_parameter_str_key_value("role", user["role"]),
+        display_name=convert_wp_parameter_str_key_value("display_name", user["display_name"], True),
+        first_name=convert_wp_parameter_str_key_value("first_name", user["first_name"], True),
+        last_name=convert_wp_parameter_str_key_value("last_name", user["last_name"], True),
+        send_email=convert_wp_parameter_send_email(user["send_email"]),
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ),
+        log_before_process=[literals.get("wp_wpcli_user_creating").format(user=user["user_login"])],
+        log_after_out=[literals.get("wp_wpcli_user_created").format(user=user["user_login"])],
+        log_after_err=[literals.get("wp_wpcli_user_creating_err").format(user=user["user_login"])]
+    )
+
+
+def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
+    """Creates a WordPress user.
+
+    Args:
+        user_login: User login to be checked.
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+
+    Returns:
+        True if the user exists.
+    """
+
+    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
+        user_login=user_login,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if result is None:
+        return False
+    return True
+
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
@@ -349,35 +429,45 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
             log_after_err=[literals.get("wp_wpcli_db_query_user_creating_err").format(user=user, host=host)]
         )
 
-    # Grant user privileges on the database
-    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        privileges=db_privileges,
-        schema=schema,
-        user=user,
-        host=host,
-        admin_user=admin_user,
-        admin_password=admin_password,
-        path=wordpress_path),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user, host=host, schema=schema, privileges=db_privileges)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
-            user=user, host=host, schema=schema)]
-    )
+        # Grant user privileges on the database
+        cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+            privileges=db_privileges,
+            schema=schema,
+            user=user,
+            host=host,
+            admin_user=admin_user,
+            admin_password=admin_password,
+            path=wordpress_path),
+            log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+                user=user, host=host, schema=schema, privileges=db_privileges)],
+            log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+                user=user, host=host, schema=schema)]
+        )
 
-    # Grant user global privileges
-    cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
-        privileges=global_privileges,
-        schema="*",
-        user=user,
-        host=host,
-        admin_user=admin_user,
-        admin_password=admin_password,
-        path=wordpress_path),
-        log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
-            user=user, host=host, schema=schema, privileges=db_privileges)],
-        log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
-            user=user, host=host, schema=schema)]
-    )
+        # Grant user global privileges
+        cli.call_subprocess(commands.get("wpcli_db_query_grant").format(
+            privileges=global_privileges,
+            schema="*",
+            user=user,
+            host=host,
+            admin_user=admin_user,
+            admin_password=admin_password,
+            path=wordpress_path),
+            log_before_out=[literals.get("wp_wpcli_db_query_user_granting").format(
+                user=user, host=host, schema=schema, privileges=db_privileges)],
+            log_after_err=[literals.get("wp_wpcli_db_query_user_granting_err").format(
+                user=user, host=host, schema=schema)]
+        )
+
+    # Warn the user we are not altering users and permissions
+    else:
+        logging.warning(literals.get("mysql_user_exists_grant_privileges_manually").format(
+            user=user,
+            host=host,
+            schema=schema,
+            db_privileges=db_privileges,
+            global_privileges=global_privileges
+        ))
 
 
 def delete_post_type_content(wordpress_path: str, content_type: str, debug_info: bool = False):
@@ -387,12 +477,49 @@ def delete_post_type_content(wordpress_path: str, content_type: str, debug_info:
         content_type: Type of the content to be deleted
         debug_info: If true, --debug will be added to the command showing all debug trace information.
     """
-    cli.call_subprocess(commands.get("wpcli_post_delete_posttype").format(
+
+    id_list = get_post_type_ids(wordpress_path, content_type)
+
+    cli.call_subprocess(commands.get("wpcli_post_delete_post_type").format(
+        id_list=id_list,
         path=wordpress_path,
-        post_type=content_type,
-        debug_info=debug_info),
-        log_before_out=[literals.get("wp_wpcli_post_delete_posttype_before").format(post_type=content_type)],
-        log_before_err=[literals.get("wp_wpcli_post_delete_posttype_err").format(post_type=content_type)])
+        debug_info=convert_wp_parameter_debug(debug_info)),
+        log_before_out=[literals.get("wp_wpcli_post_delete_post_type_before").format(post_type=content_type)],
+        log_before_err=[literals.get("wp_wpcli_post_delete_post_type_err").format(post_type=content_type)])
+
+
+def get_post_type_ids(wordpress_path: str, post_type: str):
+    """Gets the ids for all the posts that match an specific post type.
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        post_type: Post type name to filter by.
+    """
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_post_list_ids").format(
+        post_type=post_type,
+        path=wordpress_path
+    ))
+
+
+def wordpress_is_downloaded(path: str) -> bool:
+    """Checks if WordPress is downloaded at the specified path.
+
+    Args:
+        path: Path to be checked for WordPress files.
+
+    Returns:
+        True if WordPress files are present at the specified path.
+    """
+
+    version = cli.call_subprocess_with_result(commands.get("wpcli_core_version").format(path=path))
+
+    if version:
+        logging.warning(literals.get("wp_wpcli_core_version_already_downloaded")
+                        .format(version=version.replace("\n", "")))
+        return True
+    else:
+        return False
 
 
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
@@ -408,21 +535,22 @@ def download_wordpress(destination_path: str, version: str, locale: str, skip_co
         skip_content: --skip-content parameter
         debug: If present, --debug will be added to the command showing all debug trace information.
     """
-    cli.call_subprocess(commands.get("wpcli_core_download").format(
-        version=version,
-        locale=locale,
-        path=destination_path,
-        skip_content=convert_wp_parameter_skip_content(skip_content),
-        debug_info=convert_wp_parameter_debug(debug)
-    ), log_before_process=[
-        literals.get("wp_wpcli_downloading_wordpress").format(version=version, locale=locale, content=skip_content),
-        literals.get("wp_wpcli_downloading_path").format(path=destination_path),
-        literals.get("wp_wpcli_downloading_content").format(content=skip_content)],
-        log_after_out=[
-            literals.get("wp_wpcli_downloading_wordpress_ok")],
-        log_after_err=[
-            literals.get("wp_wpcli_downloading_wordpress_err")]
-    )
+    if not wordpress_is_downloaded(destination_path):
+        cli.call_subprocess(commands.get("wpcli_core_download").format(
+            version=version,
+            locale=locale,
+            path=destination_path,
+            skip_content=convert_wp_parameter_skip_content(skip_content),
+            debug_info=convert_wp_parameter_debug(debug)
+        ), log_before_process=[
+            literals.get("wp_wpcli_downloading_wordpress").format(version=version, locale=locale, content=skip_content),
+            literals.get("wp_wpcli_downloading_path").format(path=destination_path),
+            literals.get("wp_wpcli_downloading_content").format(content=skip_content)],
+            log_after_out=[
+                literals.get("wp_wpcli_downloading_wordpress_ok")],
+            log_after_err=[
+                literals.get("wp_wpcli_downloading_wordpress_err")]
+        )
 
 
 def eval_code(php_code: str, wordpress_path: str) -> str:

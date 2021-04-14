@@ -1,124 +1,79 @@
 {
-  "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-site-config-schema.json",
-  "common_site_settings": {
-    "backup_files_naming_policy": {
-      "core":"[date|Y.m.d-Hisve]-db.core.sql",
-      "theme":"[date|Y.m.d-Hisve]-db.theme.sql",
-      "plugins":"[date|Y.m.d-Hisve]-db.plugins.sql",
+  "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json",
+  "settings": {
+    "dumps": {
+      "core": "[date|Y.m.d-Hisve]-db.core.sql",
+      "theme": "[date|Y.m.d-Hisve]-db.theme.sql",
+      "plugins": "[date|Y.m.d-Hisve]-db.plugins.sql",
       "regular": "[date|Y.m.d-Hisve]-db-[commit].sql"
     },
-    "wordpress_core": {
-      "version": "latest",
-      "locale": "en_US",
-      "skip_content_download": true,
-      "concatenate_scripts": true,
-      "tables_prefix": "wp_"
-    },
-    "wordpress_customization": {
-      "title": "My site",
-      "description": "Description for my site",
-      "wordpress_admin": {
-          "user": "user1",
-          "email": "user1@mysite.com",
-          "skip_email": true
+    "options": [
+      {
+        "name": "permalink_structure",
+        "value": "/%category%/%postname%/",
+        "autoload": true
       }
+    ],
+    "title": "My site",
+    "description": "My site description",
+    "version": "latest",
+    "locale": "en_US",
+    "skip_content_download": true,
+    "wp_admin": {
+      "user": "wp_admin",
+      "email": "admin@example.com",
+      "skip_email": true
     },
-    "wordpress_themes": [
+    "themes": [
       {
-        "name": "mytheme",
-        "source_type": "src",
-        "source": "mytheme",
+        "name": "twentytwentyone",
+        "source_type": "wordpress",
+        "source": "twentytwentyone",
         "activate": true
-      },
-      {
-        "name": "w74-framework",
-        "source_type": "feed",
-        "source": "w74-framework",
-        "activate": false,
-        "feed": {
-          "name": "w74-framework",
-          "organization_url": "https://dev.azure.com/aheadlabs/",
-          "package": "w74-framework",
-          "version": "*"
-        },
-        "options": [
-          {
-            "name": "w74_google_analytics_id",
-            "value": "",
-            "autoload": true
-          },
-          {
-            "name": "w74_hotjar_id",
-            "value": "",
-            "autoload": true
-          },
-          {
-            "name": "w74_twitter_pixel_id",
-            "value": "",
-            "autoload": true
-          },
-          {
-            "name": "w74_page_header",
-            "value": "lognav",
-            "autoload": true
-          },
-          {
-            "name": "w74_page_title_suffix",
-            "value": "My site",
-            "autoload": true
-          },
-          {
-            "name": "w74_logotype_image_path",
-            "value": "logo-w74.svg",
-            "autoload": true
-          },
-          {
-            "name": "permalink_structure",
-            "value": "/%category%/%postname%/",
-            "autoload": false
-          }
-        ]
       }
     ],
     "plugins": [
-      {
-        "name": "wp-mail-smtp",
-        "source": "wp-mail-smtp",
-        "source_type": "wordpress",
-        "force": true,
-        "activate": true
-      },
       {
         "name": "wordpress-importer",
         "source": "wordpress-importer",
         "source_type": "wordpress",
         "force": true,
         "activate": true
+      },
+      {
+        "name": "wp-mail-smtp",
+        "source": "wp-mail-smtp",
+        "source_type": "wordpress",
+        "force": true,
+        "activate": true
       }
     ],
-    "wordpress_multisite": {}
+    "users": [
+    ]
   },
   "environments": [
     {
       "name": "localhost",
       "type": "development",
-      "default_environment": true,
+      "is_default": true,
       "wp_cli_debug": false,
+      "base_url": "https://localhost/mysite",
       "database": {
         "host": "localhost",
-        "name": "mysite_com",
-        "user": "dbuser_mysite",
-        "admin_user": "root",
+        "db_name": "mysite_com",
+        "db_user": "dbuser_mysite",
+        "table_prefix": "wp_",
         "charset": "utf8mb4",
         "collate": "utf8mb4_unicode_ci",
-        "skip_check": true
+        "skip_check": true,
+        "db_admin_user": "root"
       },
       "wp_config": {
-        "site_url": {"name": "WP_SITEURL", "type": "constant", "value": "https://localhost/mysite"},
-        "home_url": {"name": "WP_HOME", "type": "constant", "value": "https://localhost/mysite"},
-        "content_url": {"name": "WP_CONTENT_URL" , "type": "constant", "value": "https://localhost/mysite/wp-content"},
-        "plugin_url": {"name": "WP_PLUGIN_URL" , "type": "constant", "value": "https://localhost/mysite/wp-content/plugins"},
-        "noblogredirect_url": {"name": "NOBLOGREDIRECT", "type": "constant", "value": "https://localhost/mysite"},
+        "site_url": {"name": "WP_SITEURL", "type": "constant", "value": ""},
+        "home_url": {"name": "WP_HOME", "type": "constant", "value": ""},
+        "content_url": {"name": "WP_CONTENT_URL" , "type": "constant", "value": "/wp-content"},
+        "plugin_url": {"name": "WP_PLUGIN_URL" , "type": "constant", "value": "/wp-content/plugins"},
+        "noblogredirect_url": {"name": "NOBLOGREDIRECT", "type": "constant", "value": ""},
         "disable_fatal_error_handler": {"name": "WP_DISABLE_FATAL_ERROR_HANDLER", "type": "constant", "value": false},
         "debug_display": {"name": "WP_DEBUG_DISPLAY", "type": "constant", "value": false},
         "debug": {"name": "WP_DEBUG", "type": "constant", "value": true},
@@ -134,42 +89,10 @@
         "image_edit_overwrite": {"name": "IMAGE_EDIT_OVERWRITE", "type": "constant", "value": true},
         "wpml_auto_updates": {"name": "OTGS_DISABLE_AUTO_UPDATES", "type": "constant", "value": false}
       }
-    },
-    {
-      "name": "production",
-      "type": "production",
-      "default_environment": false,
-      "wp_cli_debug": false,
-      "database": {
-        "host": "db.mysite.com",
-        "name": "mysite_com",
-        "user": "dbuser_mysite",
-        "admin_user": "admin_user",
-        "charset": "utf8mb4",
-        "collate": "utf8mb4_unicode_ci",
-        "skip_check": true
-      },
-      "wp_config": {
-        "site_url": {"name": "WP_SITEURL", "type": "constant", "value": "https://mysite.com/"},
-        "home_url": {"name": "WP_HOME", "type": "constant", "value": "https://mysite.com/"},
-        "content_url": {"name": "WP_CONTENT_URL" , "type": "constant", "value": "https://mysite.com/wp-content"},
-        "plugin_url": {"name": "WP_PLUGIN_URL" , "type": "constant", "value": "https://mysite.com/wp-content/plugins"},
-        "noblogredirect_url": {"name": "NOBLOGREDIRECT", "type": "constant", "value": "https://mysite.com/"},
-        "disable_fatal_error_handler": {"name": "WP_DISABLE_FATAL_ERROR_HANDLER", "type": "constant", "value": true},
-        "debug_display": {"name": "WP_DEBUG_DISPLAY", "type": "constant", "value": false},
-        "debug": {"name": "WP_DEBUG", "type": "constant", "value": false},
-        "cache": {"name": "WP_CACHE", "type": "constant", "value": true},
-        "save_queries": {"name": "SAVEQUERIES", "type": "constant", "value": false},
-        "empty_trash_days": {"name": "EMPTY_TRASH_DAYS", "type": "constant", "value": 5},
-        "disallow_file_edit": {"name": "DISALLOW_FILE_EDIT", "type": "constant", "value": false},
-        "disallow_file_mods": {"name": "DISALLOW_FILE_MODS", "type": "constant", "value": false},
-        "force_ssl_admin": {"name": "FORCE_SSL_ADMIN", "type": "constant", "value": true},
-        "http_block_external": {"name": "WP_HTTP_BLOCK_EXTERNAL", "type": "constant", "value": false},
-        "accessible_hosts": {"name": "WP_ACCESIBLE_HOSTS", "type": "constant", "value": "api.wordpress.org,mysite.com,*.auth0.com"},
-        "auto_update_core": {"name": "WP_AUTO_UPDATE_CORE", "type": "constant", "value": "minor" },
-        "image_edit_overwrite": {"name": "IMAGE_EDIT_OVERWRITE", "type": "constant", "value": true},
-        "wpml_auto_updates": {"name": "OTGS_DISABLE_AUTO_UPDATES", "type": "constant", "value": false}
-      }
     }
-  ]
+  ],
+  "content": {
+    "author_handling": "skip",
+    "sources": []
+  }
 }

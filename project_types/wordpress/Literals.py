@@ -31,6 +31,7 @@ class Literals(ValueDictsBase):
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
         "wp_file_created": _("File created: {file}"),
+        "wp_file_deleted": _("File deleted: {file}"),
         "wp_got_db_admin_user": _("I got the following database admin user from the environment configuration file: "
                                   "{db_admin_user}"),
         "wp_init_git_repo": _("Do you want me to initialize a local Git repository for you?"),
@@ -80,12 +81,24 @@ class Literals(ValueDictsBase):
                                       "existing one."),
         "wp_wpcli_plugin_install_before": _("Installing plugin {plugin_name}..."),
         "wp_wpcli_plugin_install_error": _("An error occurred installing plugin {plugin_name}..."),
-        "wp_wpcli_post_delete_posttype_before": _("Deleting posts of type {post_type}..."),
+        "wp_wpcli_post_delete_post_type_before": _("Deleting posts of type {post_type}..."),
         "wp_wpcli_setting_value_ok": _("Config value {name} set as {value}"),
         "wp_wpcli_theme_install_before": _("Installing wordpress theme {theme_name}"),
+        "wp_wpcli_user_creating": _("Creating WordPress user {user}..."),
+        "wp_wpcli_user_created": _("Created WordPress user {user}."),
         "wp_write_default_content": _("Writing default content to file \"{file}\" from {source}"),
         "wp_gulp_build_before": _("Gulp build task has launched for theme {theme_slug}."),
-        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}.")
+        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}."),
+    }
+    _warnings = {
+        "mysql_user_exists_grant_privileges_manually": _("User {user} exists in the {host} host and will not be "
+                                                         "altered. Please grant the following privileges manually to "
+                                                         "{host} for this user in the {schema} schema: "
+                                                         "(db privileges) {db_privileges}; "
+                                                         "(global privileges) {global_privileges};"),
+        "mysql_db_exists_skipping_creation": _("Database {schema} exists. I will not create any database..."),
+        "wp_wpcli_export_db_skipping_as_set": _("I am skipping the {dump} database dump as configured in settings..."),
+        "wp_wpcli_user_exists": _("User {user} already exists. Skipping user creation..."),
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),
@@ -99,11 +112,14 @@ class Literals(ValueDictsBase):
         "wp_devops_toolset_obtaining": _("Obtaining latest version of devops-toolset from: {resource}"),
         "wp_devops_toolset_up_to_date": _("devops-toolset is up to date."),
         "wp_env_gt1": _("There are more than 1 matching environments in the environments JSON file."),
-        "wp_env_not_found": _("Environment not found in the environments JSON file."),
+        "wp_env_not_found": _("Environment not found in the environments list."),
+        "wp_env_x_not_found": _("Environment {environment} not found in the environments list."),
         "wp_environment_name_mandatory": _("environment-name is a mandatory parameter. I cannot continue."),
-        "wp_environment_path_mandatory": _("environment-path is a mandatory parameter. I cannot continue."),
         "wp_environment_name_not_found": _("Environment name was not found. I cannot continue."),
+        "wp_environment_path_mandatory": _("environment-path is a mandatory parameter. I cannot continue."),
         "wp_environment_path_not_found": _("Environment file path was not found. I cannot continue."),
+        "wp_environment_x_found_multiple": _("Multiple environments found with name {environment}. "
+                                             "I take the first one."),
         "wp_file_not_found": _("The following file was not found: {file}"),
         "wp_latest_version": _("Latest version: {version}"),
         "wp_not_dir": _("Path must be a dir, not a file."),
@@ -118,6 +134,8 @@ class Literals(ValueDictsBase):
         "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
         "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),
         "wp_wpcli_core_install_error": _("Wordpress installation could not be done."),
+        "wp_wpcli_core_version_already_downloaded": _("Wordpress {version} is already present in the specified path. "
+                                                      "Skipping download..."),
         "wp_wpcli_db_export_error": _("Database dump could not be exported due to an error."),
         "wp_wpcli_db_import_error": _("Dump file could not be imported due to an error."),
         "wp_wpcli_db_query_user_creating_err": _("Database user {user} for host {host} could not be created"),
@@ -132,11 +150,12 @@ class Literals(ValueDictsBase):
         "wp_wpcli_option_update_error":
             _("Database option {option_name} cannot be set to {option_value} due to an error."),
         "wp_wpcli_plugin_install_err": _("Plugin {plugin_name} could not be installed due to an error."),
-        "wp_wpcli_post_delete_posttype_err": _("Unable to delete content from type {post_type} due to an error."),
+        "wp_wpcli_post_delete_post_type_err": _("Unable to delete content from type {post_type} due to an error."),
+        "wp_wpcli_user_creating_err": _("An error occurred creating the user {user}."),
         "wp_src_theme_not_found": _("Create development theme was called but no src themes found. Please check your "
                                     "themes configuration and try again."),
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
         "wp_gulp_build_error":
             _("Gulp build task has encountered an error for theme {theme_slug}. "
-              "Please check above logs for more details.")
+              "Please check above logs for more details."),
     }

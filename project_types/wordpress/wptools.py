@@ -5,12 +5,14 @@ import os
 import pathlib
 import stat
 import sys
+import tools.dicts
 from typing import List, Tuple
 
 import requests
 
 import core.log_tools
 import filesystem.paths as paths
+import filesystem.tools
 import project_types.wordpress.constants as wp_constants
 import project_types.wordpress.wp_cli as wp_cli
 import tools.git as git_tools
@@ -77,7 +79,7 @@ def create_wp_cli_bat_file(phar_path: str):
         bat.write(f"php \"{phar_path}\" %*")
 
 
-def create_configuration_file(site_configuration: dict, wordpress_path: str, database_user_password: str):
+def create_configuration_file(environment_configuration: dict, wordpress_path: str, database_user_password: str):
     """Creates the wp-config-php WordPress configuration file using WP-CLI.
 
     All parameters are obtained from a site configuration file.
@@ -86,25 +88,45 @@ def create_configuration_file(site_configuration: dict, wordpress_path: str, dat
         https://developer.wordpress.org/cli/commands/config/create/
 
     Args:
-        site_configuration: parsed site configuration.
+        environment_configuration: Parsed environment configuration.
         wordpress_path: Path to WordPress files.
         database_user_password: Password for the database user configured in at the wp-config.php file.
     """
-    database_props = site_configuration["database"]
+
     wp_cli.create_configuration_file(wordpress_path=wordpress_path,
-                                     db_host=database_props["host"],
-                                     db_name=database_props["name"],
-                                     db_user=database_props["user"],
+                                     db_host=environment_configuration["database"]["host"],
+                                     db_name=environment_configuration["database"]["db_name"],
+                                     db_user=environment_configuration["database"]["db_user"],
                                      db_pass=database_user_password,
-                                     db_prefix=database_props["prefix"],
-                                     db_charset=database_props["charset"],
-                                     db_collate=database_props["collate"],
-                                     skip_check=database_props["skip_check"],
-                                     debug=site_configuration["wp_cli"]["debug"]
+                                     db_prefix=environment_configuration["database"]["table_prefix"],
+                                     db_charset=environment_configuration["database"]["charset"],
+                                     db_collate=environment_configuration["database"]["collate"],
+                                     skip_check=environment_configuration["database"]["skip_check"],
+                                     debug=environment_configuration["wp_cli_debug"]
                                      )
 
 
-def download_wordpress(site_configuration: dict, destination_path: str):
+def create_users(users: dict, wordpress_path: str, debug: bool):
+    """Creates WordPress users.
+
+    Args:
+        users: Users based on #/definitions/user at
+            https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+    """
+
+    for user in users:
+        # Create the user if does not exist
+        if not wp_cli.user_exists(user["user_login"], wordpress_path, debug):
+            wp_cli.create_user(user, wordpress_path, debug)
+
+        # Warn the user I am skipping the creation
+        else:
+            logging.warning(literals.get("wp_wpcli_user_exists").format(user=user["user_login"]))
+
+
+def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_debug: bool = False):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
     For more information see:
@@ -113,15 +135,17 @@ def download_wordpress(site_configuration: dict, destination_path: str):
     Args:
         site_configuration: parsed site configuration.
         destination_path: Path where WP-CLI will be downloaded.
+        wp_cli_debug: True if logging must be verbose.
     """
+
     if not paths.is_valid_path(destination_path):
         raise ValueError(literals.get("wp_non_valid_dir_path"))
+
 
     version = site_configuration["settings"]["version"]
     locale = site_configuration["settings"]["locale"]
     skip_content = site_configuration["settings"]["skip_content_download"]
-    debug = site_configuration["wp_cli"]["debug"]
-    wp_cli.download_wordpress(destination_path, version, locale, skip_content, debug)
+    wp_cli.download_wordpress(destination_path, version, locale, skip_content, wp_cli_debug)
     git_tools.purge_gitkeep(destination_path)
 
 
@@ -141,7 +165,7 @@ def download_wordpress_plugin(plugin_config: dict, destination_path: str):
         file.write(response.content)
 
 
-def export_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
+def export_database(environment_config: dict, wordpress_path: str, dump_file_path: str):
     """Exports a WordPress database to a dump file using a site configuration file.
 
     All parameters are obtained from a site configuration file.
@@ -150,26 +174,11 @@ def export_database(site_configuration: dict, wordpress_path: str, dump_file_pat
         https://developer.wordpress.org/cli/commands/db/export/
 
     Args:
-        site_configuration: parsed site configuration.
+        environment_config: parsed site configuration.
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to the destination dump file.
     """
-    wp_cli.export_database(wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
-
-
-def get_db_admin_from_environment(environment_path: str, environment_name: str = None) -> str:
-    """ Gets the db_admin user from the environment path
-
-        Args:
-             environment_path: Path to the environments file.
-             environment_name: Name of the environment.
-
-    """
-    environment_obj = get_site_environments(environment_path, environment_name)
-    db_admin_user = environment_obj["db_admin_user"]
-    logging.info(literals.get("wp_got_db_admin_user").format(db_admin_user=db_admin_user))
-
-    return db_admin_user
+    wp_cli.export_database(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
 
 def get_constants() -> dict:
@@ -256,91 +265,45 @@ def get_site_configuration(path: str) -> dict:
         return json.loads(data)
 
 
-def get_site_configuration_from_environment(environment_path: str, environment_name: str = None) -> dict:
-    """Gets the WordPress site configuration from a environment.
+def get_environment(site_config: dict, environment_name: str) -> dict:
+    """Gets the environment that matches the name passed as a parameter.
 
     Args:
-        environment_path: Path to the environments file.
-        environment_name: Name of the environment.
-
-    Returns:
-        A dict with the site's configuration.
+        site_config: Site configuration.
+        environment_name: Name of the environment to be retrieved.
     """
 
-    site_configuration_path = get_site_configuration_path_from_environment(environment_path, environment_name)
+    filtered = filter(lambda environment_x: environment_x['name'] == environment_name, site_config['environments'])
+    environment_list = list(filtered)
 
-    return get_site_configuration(site_configuration_path)
+    if len(environment_list) == 0:
+        raise ValueError(literals.get('wp_env_x_not_found').format(environment=environment_name))
 
+    if len(environment_list) > 1:
+        logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
 
-def get_site_configuration_path_from_environment(environment_path: str, environment_name: str = None) -> str:
-    """Gets the path to the WordPress site configuration from a environment.
+    environment = environment_list[0]
 
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
+    # Update URL constants (with the _url suffix) prepending the base URL
+    url_keys = tools.dicts.filter_keys(environment["wp_config"], "_url$")
+    for key in url_keys:
+        environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
 
-    Args:
-        environment_path: Path to the WordPress environment file.
-        environment_name: Environment name that exists in the environment file.
-
-    Returns:
-        Site configuration path.
-    """
-
-    if environment_path is None:
-        raise ValueError(literals.get("wp_environment_path_not_found"))
-    if environment_name is None:
-        raise ValueError(literals.get("wp_environment_name_not_found"))
-
-    environment_obj = get_site_environments(environment_path, environment_name)
-
-    directory = pathlib.Path(environment_path).parent
-    file_path = pathlib.Path.joinpath(directory, environment_obj["configuration_file"])
-    if not file_path.exists() or not file_path.is_file():
-        raise ValueError(literals.get("wp_file_not_found").format(file=file_path))
-    logging.info(literals.get("wp_environment_file_used").format(file=file_path))
-
-    return str(file_path)
+    return environment
 
 
-def get_site_environments(environment_path: str, environment_name: str = None) -> dict:
-    """Gets the site environments from a WordPress site environment file.
-
-    For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json
-
-    Args:
-        environment_path: Full path to the WordPress site environment file.
-        environment_name: Name of the environment to be got. If no name is
-            given, default environment is obtained.
-
-    Returns:
-        Site environments in a dict object.
-    """
-    with open(environment_path, "r") as environment_file:
-        json_data = json.loads(environment_file.read())
-
-    matching_environments = list(filter(lambda e: e["name"] == environment_name, json_data["environments"]))
-
-    if len(matching_environments) == 0:
-        raise ValueError(literals.get("wp_env_not_found"))
-
-    if len(matching_environments) > 1:
-        raise ValueError(literals.get("wp_env_gt1"))
-
-    return matching_environments[0]
-
-
-def get_wordpress_path_from_root_path(root_path) -> str:
+def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:
     """ Gets the wordpress path based on the constants.json from a desired root path
 
     Args:
-        root_path: Full path of the project
+        root_path: Full path of the project.
+        constants: WordPress constants.
     """
     logging.info(literals.get("wp_root_path").format(path=root_path))
 
-    # Add constants
-    constants = get_constants()
+    # Get constants if not passed
+    if constants is None:
+        constants = get_constants()
 
     # Get wordpress path from the constants
     wordpress_relative_path = constants["paths"]["wordpress"]
@@ -350,74 +313,74 @@ def get_wordpress_path_from_root_path(root_path) -> str:
     return wordpress_path
 
 
-def import_content_from_configuration_file(site_configuration: dict, wordpress_path: str):
-    """ Imports WordPress posts content specified on a site_configuration file .
+def import_content_from_configuration_file(site_configuration: dict, environment_config: dict,
+                                           root_path: str, global_constants: dict):
+    """ Imports WordPress posts content specified on a site_configuration file.
+    NOTE: content entries in the configuration file must be named after post
+    types in singular form. Otherwise they will be ignored. ie: post, page.
 
     Args:
-        site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
+        site_configuration: Parsed site configuration.
+        environment_config: Parsed environment configuration.
+        root_path: Path to the root repository.
+        global_constants: Parsed global constants.
     """
+    # If no content to import, then do nothing
     if "content" not in site_configuration:
         return
 
-    # Add constants
-    constants = get_constants()
+    # Get paths and parameters
+    wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["wordpress"])
+    author_handling = site_configuration["content"]["author_handling"]
 
-    # Get wxr path from the constants
-    wxr_path = pathlib.Path(constants["paths"]["content"]["wxr"])
-    authors = pathlib.Path.joinpath(wxr_path, "mapping.csv")
-    if not pathlib.Path.exists(authors):
-        authors = "skip"
-    debug_info = site_configuration["wp_cli"]["debug"]
-    for content_type in site_configuration["content"]:
+    if author_handling == "mapping.csv":
+        authors_path = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+        authors = authors_path if not filesystem.tools.is_file_empty(authors_path) else "skip"
+    else:
+        authors = author_handling
+
+    debug_info = environment_config["wp_cli_debug"]
+
+    for content_type in site_configuration["content"]["sources"]:
+
         # File name will be the {wxr_path}/{content_type}.xml
         content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+
         # Delete content before importing (to avoid duplicating content)
         wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
+
         # Import new content
         wp_cli.import_wxr_content(wordpress_path, content_path, authors, debug_info)
 
 
-def import_database(site_configuration: dict, wordpress_path: str, dump_file_path: str):
-    """Imports a WordPress database from a dump file based on a site_configuration file.
-
-    For more information see:
-           https://developer.wordpress.org/cli/commands/db/import/
-    Args:
-        site_configuration: parsed site configuration.
-        wordpress_path: Path to WordPress files.
-        dump_file_path: Path to dump file to be imported.
-    """
-    dump_file_path_as_posix = str(pathlib.Path(dump_file_path).as_posix())
-    wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
-    wp_cli.import_database(wordpress_path_as_posix, dump_file_path_as_posix, site_configuration["wp_cli"]["debug"])
-
-
-def install_plugins_from_configuration_file(site_configuration: dict, root_path: str, skip_partial_dumps: bool):
+def install_plugins_from_configuration_file(site_configuration: dict, environment_config: dict, global_constants: dict,
+                                            root_path: str, skip_partial_dumps: bool):
     """Installs WordPress's plugin files using WP-CLI.
 
        For more information see:
            https://developer.wordpress.org/cli/commands/plugin/install/
 
        Args:
-           site_configuration: parsed site configuration.
+           site_configuration: Parsed site configuration.
+           environment_config: Parsed environment configuration.
+           global_constants: Parsed global constants.
            root_path: Path to project root.
            skip_partial_dumps: If True skips database dumps.
        """
     # Get data needed in the process
-    plugins: dict = site_configuration["plugins"]
-    constants = get_constants()
+    plugins: dict = site_configuration["settings"]["plugins"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
-    plugins_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["content"]["plugins"])
-    debug_info = site_configuration["wp_cli"]["debug"]
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
+    plugins_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["plugins"])
+    debug_info = environment_config["wp_cli_debug"]
 
     for plugin in plugins:
         # Get plugin path
-        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+        plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         logging.info(literals.get("wp_plugin_path").format(path=plugin_path))
 
-        # Download theme if needed
+        # Download plugin if needed
         if plugin["source_type"] == "url":
             download_wordpress_plugin(plugin, plugin_path)
 
@@ -433,11 +396,15 @@ def install_plugins_from_configuration_file(site_configuration: dict, root_path:
 
         # Backup database after plugin install
         if not skip_partial_dumps:
-            database_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["database"])
+            database_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["database"])
             core_dump_path_converted = convert_wp_config_token(
-                site_configuration["database"]["dumps"]["plugins"], wordpress_path)
+                site_configuration["settings"]["dumps"]["plugins"], wordpress_path)
             database_core_dump_path = pathlib.Path.joinpath(database_path, core_dump_path_converted)
             export_database(site_configuration, wordpress_path, database_core_dump_path.as_posix())
+
+        # Warn the user we are skipping the backup dump
+        else:
+            logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="plugins"))
 
 
 def install_recommended_plugins():
@@ -452,24 +419,26 @@ def install_recommended_plugins():
     pass
 
 
-def install_wordpress_core(site_config: dict, wordpress_path: str, admin_password: str):
+def install_wordpress_core(site_config: dict, environment_config: dict, wordpress_path: str, admin_password: str):
     """Installs WordPress core files using a site configuration file.
 
         For more information see:
             https://developer.wordpress.org/cli/commands/core/install/
 
         Args:
-            site_config: parsed site configuration.
+            site_config: Parsed site configuration.
+            environment_config: Parsed environment configuration.
             wordpress_path: Path to WordPress files.
             admin_password: Password for the WordPress administrator user
         """
+
     # Set/expand variables before using WP CLI
-    debug_info = site_config["wp_cli"]["debug"]
-    admin_user = site_config["settings"]["admin"]["user"]
-    admin_email = site_config["settings"]["admin"]["email"]
-    url = site_config["settings"]["wp_config"]["site_url"]["value"]
+    admin_user = site_config["settings"]["wp_admin"]["user"]
+    admin_email = site_config["settings"]["wp_admin"]["email"]
+    skip_email = site_config["settings"]["wp_admin"]["skip_email"]
     title = site_config["settings"]["title"]
-    skip_email = site_config["settings"]["admin"]["skip_email"]
+    debug_info = environment_config["wp_cli_debug"]
+    url = environment_config["wp_config"]["site_url"]["value"]
     wp_cli.install_wordpress_core(wordpress_path, url, title, admin_user, admin_email, admin_password,
                                   skip_email, debug_info)
 
@@ -508,8 +477,8 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli.wp_cli_info()
 
 
-def install_wordpress_site(site_configuration: dict, root_path: str, admin_password: str,
-                           skip_partial_dumps: bool = False):
+def install_wordpress_site(site_configuration: dict, environment_config: dict, global_constants: dict,
+                           root_path: str, admin_password: str, skip_partial_dumps: bool = False):
     """Installs WordPress core files using WP-CLI.
 
     This operation requires cleaning the db and doing a backup after the process.
@@ -518,50 +487,58 @@ def install_wordpress_site(site_configuration: dict, root_path: str, admin_passw
         https://developer.wordpress.org/cli/commands/core/install/
 
     Args:
-        site_configuration: parsed site configuration.
+        site_configuration: Parsed site configuration.
+        environment_config: Parsed environment configuration.
+        global_constants: Parsed global constants.
         root_path: Path to site installation.
         admin_password: Password for the WordPress administrator user.
         skip_partial_dumps: If True skips database dump.
     """
-    # Add constants
-    constants = get_constants()
 
-    database_path = constants["paths"]["database"]
+    database_path = global_constants["paths"]["database"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, constants["paths"]["wordpress"])
+    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Install wordpress
-    install_wordpress_core(site_configuration, wordpress_path_as_posix, admin_password)
+    install_wordpress_core(site_configuration, environment_config, wordpress_path_as_posix, admin_password)
 
     # Update description option
     description = site_configuration["settings"]["description"]
     wp_cli.update_database_option(
-        "blogdescription", description, wordpress_path_as_posix, site_configuration["wp_cli"]["debug"])
+        "blogdescription", description, wordpress_path_as_posix, environment_config["wp_cli_debug"])
 
     # Backup database
     if not skip_partial_dumps:
         core_dump_path_converted = \
-            convert_wp_config_token(site_configuration["database"]["dumps"]["core"], wordpress_path)
+            convert_wp_config_token(site_configuration["settings"]["dumps"]["core"], wordpress_path)
         database_core_dump_directory_path = pathlib.Path.joinpath(root_path_obj, database_path)
         database_core_dump_path = pathlib.Path.joinpath(database_core_dump_directory_path, core_dump_path_converted)
-        export_database(site_configuration, wordpress_path_as_posix, database_core_dump_path.as_posix())
+        export_database(environment_config, wordpress_path_as_posix, database_core_dump_path.as_posix())
         git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
+    # Warn the user we are skipping the backup dump
+    else:
+        logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="core"))
 
-def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_path: str, db_user_password: str) -> None:
+
+def set_wordpress_config_from_configuration_file(site_config: dict, environment_config: dict, wordpress_path: str,
+                                                 db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
-        site_config: parsed site configuration.
+        site_config: Parsed site configuration.
+        environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
         db_user_password: Database user password.
 
     """
+
     # Create wp-config.php file
-    create_configuration_file(site_config, wordpress_path, db_user_password)
+    create_configuration_file(environment_config, wordpress_path, db_user_password)
+
     # Get config properties to set from site configuration
-    wp_config_properties = site_config["settings"]["wp_config"]
-    debug = site_config["wp_cli"]["debug"]
+    wp_config_properties = environment_config["wp_config"]
+    debug = environment_config["wp_cli_debug"]
 
     # Foreach variable to set: execute wp config set
     for prop in wp_config_properties.values():
@@ -569,7 +546,8 @@ def set_wordpress_config_from_configuration_file(site_config: dict, wordpress_pa
         value = prop.get("value")
         raw = type(value) != str
         wp_cli.set_configuration_value(
-            prop.get("name"), value, prop.get("type"), wordpress_path, raw, debug)
+            prop.get("name"), value, prop.get("type"),
+            wordpress_path, raw, debug)
 
     # Add cloudfront snippet to wp_config.php
     if "additional_settings" not in site_config["settings"]:
@@ -614,25 +592,26 @@ def get_snippet_cloudfront():
         logging.error(literals.get("wp_file_not_found").format(file=file_path))
 
 
-def setup_database(site_config: dict, wordpress_path: str, db_user_password: str,
-                   admin_db_user: str = "", admin_db_password: str = ""):
+def setup_database(environment_config: dict, wordpress_path: str, db_user_password: str, db_admin_password: str = ""):
     """ Uses wp cli create to create a new database from configuration file
 
     Args:
-        site_config: parsed site configuration.
+        environment_config: Parsed environment configuration.
         wordpress_path: Path to WordPress files.
         db_user_password: Password of the database user to be created.
-        admin_db_user: Database administrator user name.
-        admin_db_password:  Database administrator user password.
+        db_admin_password:  Database administrator user password.
     """
-    db_user = site_config["database"]["user"]
-    schema = site_config["database"]["name"]
-    db_host = site_config["database"]["host"]
 
-    wp_cli.create_database(wordpress_path, site_config["wp_cli"]["debug"], admin_db_user, admin_db_password, schema)
+    db_host = environment_config["database"]["host"]
+    schema = environment_config["database"]["db_name"]
+    db_admin_user = environment_config["database"]["db_admin_user"]
+    db_user = environment_config["database"]["db_user"]
+    wp_cli_debug = environment_config["wp_cli_debug"]
+
+    wp_cli.create_database(wordpress_path, wp_cli_debug, db_admin_user, db_admin_password, schema)
 
     wp_cli.create_wordpress_database_user(
-        wordpress_path, admin_db_user, admin_db_password, db_user, db_user_password, schema, db_host)
+        wordpress_path, db_admin_user, db_admin_password, db_user, db_user_password, schema, db_host)
 
 
 def start_basic_project_structure(root_path: str) -> None:
