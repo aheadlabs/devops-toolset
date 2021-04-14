@@ -34,13 +34,15 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
     assert str(value_error.value) == sut.literals.get("wp_required_files_not_found").format(path=root_path)
 
 
+@patch("project_types.wordpress.wptools.import_content_from_configuration_file")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("filesystem.paths.move_files")
 @patch("tools.git.purge_gitkeep")
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("logging.info")
 @patch("core.log_tools.log_indented_list")
-@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -50,17 +52,21 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("project_types.wordpress.generate_wordpress.setup_devops_toolset")
 @patch("project_types.wordpress.wptools.start_basic_project_structure")
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
-@patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
+@patch("project_types.wordpress.wptools.get_site_configuration")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wptools.get_environment")
+@patch("project_types.wordpress.wptools.add_wp_options")
+@patch("project_types.wordpress.wptools.create_users")
 def test_main_given_required_files_when_present_then_calls_wptools_get_required_file_paths(
-        constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock,
-        get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock,
-        set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
-        install_plugins_mock, build_theme_mock, get_db_admin_mock, log_indented_mock, logging_mock,
-        generate_environments_mock, delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata):
+        create_users_mock, add_wp_options_mock, get_environment_mock, constants_mock, files_exist_mock,
+        get_themes_path_mock, get_required_files_mock, get_site_config_mock, get_wordpress_path,
+        start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock, set_wordpress_config_mock,
+        install_wordpress_site_mock, install_theme_mock, install_plugins_mock, build_theme_mock, log_indented_mock,
+        logging_mock, generate_environments_mock, delete_sample_mock, export_database_mock, purge_gitkeep_mock,
+        move_files_mock, convert_wp_config_token_mock,  import_content_mock, wordpressdata):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
@@ -74,14 +80,13 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
     get_required_files_mock.assert_called_with(root_path, required_files_pattern_suffixes)
 
 
+@patch("project_types.wordpress.wptools.import_content_from_configuration_file")
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("logging.info")
 @patch("core.log_tools.log_indented_list")
-@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -92,42 +97,45 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 @patch("project_types.wordpress.generate_wordpress.setup_devops_toolset")
 @patch("project_types.wordpress.wptools.start_basic_project_structure")
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
-@patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
+@patch("project_types.wordpress.wptools.get_site_configuration")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wptools.get_environment")
+@patch("project_types.wordpress.wptools.add_wp_options")
+@patch("project_types.wordpress.wptools.create_users")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("filesystem.paths.move_files")
 def test_main_given_required_files_when_present_and_create_db_then_calls_setup_database(
-        constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock,
+        move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
+        constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,  get_site_config_mock,
         get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock,
         set_wordpress_config_mock, install_wordpress_site_mock, setup_database_mock, install_theme_mock,
-        install_plugins_mock, build_theme_mock, get_db_admin_mock, log_indented_mock, logging_mock,
-        generate_environments_mock, delete_sample_mock, export_database_mock, convert_wp_config_token_mock,
-        purge_gitkeep_mock, wordpressdata):
+        install_plugins_mock, build_theme_mock, log_indented_mock, logging_mock, generate_environments_mock,
+        delete_sample_mock, export_database_mock, purge_gitkeep_mock, import_content_mock, wordpressdata):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
     files_exist_mock.return_value = required_files
     environment = "any"
     root_path = wordpressdata.root_path
-    get_site_config_mock.return_value = json.loads(wordpressdata.site_config_content)
+    environment_config = json.loads(wordpressdata.site_config_content)["environments"][0]
+    get_environment_mock.return_value = environment_config
     get_wordpress_path.return_value = wordpressdata.wordpress_path
-    get_db_admin_mock.return_value = "root"
     create_db = True
-    site_config = json.loads(wordpressdata.site_config_content)
     # Act
     sut.main(root_path, "root", "root", "root", environment, [''], [''], create_db, True, False)
     # Assert
-    setup_database_mock.assert_called_with(site_config, wordpressdata.wordpress_path, "root", "root", "root")
+    setup_database_mock.assert_called_with(environment_config, wordpressdata.wordpress_path, "root", "root")
 
-
+@patch("project_types.wordpress.wptools.import_content_from_configuration_file")
 @patch("tools.git.purge_gitkeep")
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("core.log_tools.log_indented_list")
 @patch("clint.textui.prompt.yn")
-@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -137,17 +145,23 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 @patch("project_types.wordpress.generate_wordpress.setup_devops_toolset")
 @patch("project_types.wordpress.wptools.start_basic_project_structure")
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
-@patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
+@patch("project_types.wordpress.wptools.get_site_configuration")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
+@patch("project_types.wordpress.wptools.get_environment")
+@patch("project_types.wordpress.wptools.add_wp_options")
+@patch("project_types.wordpress.wptools.create_users")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("filesystem.paths.move_files")
 def test_main_given_required_files_when_not_present_and_use_defaults_then_download_required_files(
-        constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock, get_site_config_mock,
-        get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock, download_wordpress_mock,
-        set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock, install_plugins_mock,
-        build_theme_mock, get_db_admin_mock, prompt_yn_mock, log_indented_mock, generate_environments_mock,
-        delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata, mocks):
+        move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock,
+        get_environment_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
+        get_site_config_mock, get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock,
+        download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
+        install_plugins_mock, build_theme_mock, prompt_yn_mock, log_indented_mock, generate_environments_mock,
+        delete_sample_mock, export_database_mock, purge_gitkeep_mock, import_content_mock, wordpressdata, mocks):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
@@ -174,7 +188,6 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 @patch("project_types.wordpress.wptools.export_database")
 @patch("project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
-@patch("project_types.wordpress.wptools.get_db_admin_from_environment")
 @patch("project_types.wordpress.wp_theme_tools.build_theme")
 @patch("project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -184,28 +197,36 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 @patch("project_types.wordpress.generate_wordpress.setup_devops_toolset")
 @patch("project_types.wordpress.wptools.start_basic_project_structure")
 @patch("project_types.wordpress.wptools.get_wordpress_path_from_root_path")
-@patch("project_types.wordpress.wptools.get_site_configuration_from_environment")
+@patch("project_types.wordpress.wptools.get_site_configuration")
 @patch("project_types.wordpress.wptools.get_required_file_paths")
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("filesystem.paths.files_exist_filtered")
 @patch("project_types.wordpress.wptools.get_constants")
 @patch("project_types.wordpress.wp_theme_tools.create_development_theme")
+@patch("project_types.wordpress.wptools.get_environment")
+@patch("project_types.wordpress.wptools.add_wp_options")
+@patch("project_types.wordpress.wptools.create_users")
+@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("filesystem.paths.move_files")
 def test_main_given_required_files_when_create_development_theme_then_calls_create_development_theme(
+        move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
         create_dev_theme_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
         get_site_config_mock, get_wordpress_path, start_basic_structure_mock, setup_devops_toolset_mock,
         download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
-        install_plugins_mock, build_theme_mock, get_db_admin_mock, generate_environments_mock,
-        delete_sample_mock, export_database_mock, purge_gitkeep_mock, wordpressdata, mocks):
+        install_plugins_mock, build_theme_mock, generate_environments_mock, delete_sample_mock, export_database_mock,
+        purge_gitkeep_mock, wordpressdata, mocks):
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
     # Arrange
     required_files = []
     files_exist_mock.return_value = required_files
     environment = "any"
     root_path = wordpressdata.root_path
+    constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    constants = json.loads(wordpressdata.constants_file_content)
     # Act
     sut.main(root_path, "root", "root", "root", environment, [''], [''], False, True, True)
     # Assert
-    create_dev_theme_mock.assert_called_once_with(ANY, root_path)
+    create_dev_theme_mock.assert_called_once_with(ANY, root_path, constants)
 
 # endregion main
 
@@ -255,10 +276,17 @@ def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(
     get_constants_mock.return_value = constants_data
     devops_path_constant = "/.devops"
     root_path = wordpressdata.root_path
-    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset")
+    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset").as_posix()
     # Act
     sut.setup_devops_toolset(root_path)
     # Assert
     update_devops_toolset_mock.assert_called_once_with(devops_path)
+
+
+# endregion
+
+
+# region generate_additional_wpconfig_files
+
 
 # endregion

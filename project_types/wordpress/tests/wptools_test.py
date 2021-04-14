@@ -6,6 +6,7 @@ import pytest
 import json
 import pathlib
 import project_types.wordpress.wptools as sut
+from filesystem import paths
 from project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_platforms import constants as devops_platform_constants
 from core.LiteralsCore import LiteralsCore
@@ -15,6 +16,27 @@ from project_types.wordpress.tests.conftest import WordPressData, mocked_request
     mocked_requests_get_json_content, PluginsData
 
 literals = LiteralsCore([WordpressLiterals])
+
+# region add_wp_options
+
+
+@patch("project_types.wordpress.wp_cli.add_update_option")
+def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_update_option_mock, wordpressdata):
+    """ Given options dict, then calls wp_cli_add_update_option for every option """
+    # Arrange
+    options = json.loads(wordpressdata.site_config_content)["settings"]["options"]
+    wordpress_path = wordpressdata.wordpress_path
+
+    # Act
+    sut.add_wp_options(options, wordpress_path)
+
+    # Assert
+    calls = []
+    for option in options:
+        calls.append(call(option, wordpress_path, False))
+    add_update_option_mock.assert_has_calls(calls)
+
+# endregion add_wp_options
 
 
 # region convert_wp_config_token
@@ -79,24 +101,23 @@ def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_d
         create_conf_file_mock, wordpressdata):
     """ Given database parameters, calls wp.cli.create_configuration_file """
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    database_props = site_config["database"]
+    environment_config = json.loads(wordpressdata.site_config_content)["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
     # Act
-    sut.create_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.create_configuration_file(environment_config, wordpress_path, database_user_pass)
     # Assert
     create_conf_file_mock.assert_called_once_with(
         wordpress_path=wordpress_path,
-        db_host=database_props["host"],
-        db_name=database_props["name"],
-        db_user=database_props["user"],
+        db_host=environment_config["database"]["host"],
+        db_name=environment_config["database"]["db_name"],
+        db_user=environment_config["database"]["db_user"],
         db_pass=database_user_pass,
-        db_prefix=database_props["prefix"],
-        db_charset=database_props["charset"],
-        db_collate=database_props["collate"],
-        skip_check=database_props["skip_check"],
-        debug=site_config["wp_cli"]["debug"])
+        db_prefix=environment_config["database"]["table_prefix"],
+        db_charset=environment_config["database"]["charset"],
+        db_collate=environment_config["database"]["collate"],
+        skip_check=environment_config["database"]["skip_check"],
+        debug=environment_config["wp_cli_debug"])
 
 
 # endregion
@@ -140,47 +161,77 @@ def test_download_wordpress_given_valid_arguments_calls_subprocess(
 
 # region export_database()
 
-
 @patch("project_types.wordpress.wp_cli.export_database")
 def test_export_database_calls_wp_cli_export_database(export_database_mock, wordpressdata):
     """Given site configuration, should call wp_cli.export_database"""
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
     site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     dump_file_path = wordpressdata.dump_file_path
     # Act
-    sut.export_database(site_config, wordpress_path, dump_file_path)
+    sut.export_database(environment_config, wordpress_path, dump_file_path)
     # Assert
-    export_database_mock.assert_called_once_with(wordpress_path, dump_file_path, site_config["wp_cli"]["debug"])
-
+    export_database_mock.assert_called_once_with(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
 # endregion
 
-# region get_db_admin_from_environment
+# region get_environment()
 
 
-@patch("logging.info")
-@patch("project_types.wordpress.wptools.get_site_environments")
-def test_get_db_admin_from_environment_return_db_admin_user_from_environment_file_path(
-        get_site_environments_mock, logging_mock, wordpressdata):
-    """Given environment_file path and name, should parse the db_admin_user property and return it"""
+def test_get_environment_given_env_name_when_not_match_then_raises_value_error(wordpressdata):
+    """ Given environment name, when no matches found in site_config, then raises ValueError """
     # Arrange
-    env_file = json.loads(wordpressdata.environment_file_content)
-    get_site_environments_mock.return_value = env_file["environments"][0]
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    expected_result = "root"
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_name = "non_existing_environment"
+    expected_error_message = literals.get('wp_env_x_not_found').format(environment=environment_name)
+
     # Act
-    result = sut.get_db_admin_from_environment(environment_path, environment_name)
+    with pytest.raises(ValueError) as value_error:
+        sut.get_environment(site_config, environment_name)
+
+        # Assert
+        assert value_error == expected_error_message
+
+
+@patch("tools.dicts.filter_keys")
+@patch("logging.warning")
+def test_get_environment_given_env_name_when_multiple_match_then_warns(log_warning_mock, filter_keys_mock,
+                                                                       wordpressdata):
+    """ Given environment name, when multiples matches found in site_config, then warns with message"""
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment = site_config["environments"][0]
+    environment_name = environment["name"]
+    site_config["environments"].append(environment)
+    expected_message = literals.get('wp_environment_x_found_multiple').format(environment=environment_name)
+    filter_keys_mock.return_value = []
+
+    # Act
+    sut.get_environment(site_config, environment_name)
+
     # Assert
-    assert result == expected_result
+    log_warning_mock.assert_called_once_with(expected_message)
 
 
-# endregion
+@patch("tools.dicts.filter_keys")
+def test_get_environment_given_site_config_then_update_url_constants(filter_keys_mock, wordpressdata):
+    """ Given site_config, then updates url constants """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    url_keys = ["content_url"]
+    environment = site_config["environments"][0]
+    environment_name = environment["name"]
+    filter_keys_mock.return_value = url_keys
+    expected_content_url_value = environment["base_url"] + environment["wp_config"][url_keys[0]]["value"]
 
-# region get_constants()
+    # Act
+    result = sut.get_environment(site_config, environment_name)
 
-# endregion
+    # Assert
+    assert result["wp_config"]["content_url"]["value"] == expected_content_url_value
+
+# endregion get_environment()
 
 # region get_project_structure()
 
@@ -241,193 +292,120 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
 # endregion
 
-# region get_site_configuration_from_environment()
-
-
-@patch("project_types.wordpress.wptools.get_site_configuration")
-@patch("project_types.wordpress.wptools.get_site_configuration_path_from_environment")
-def test_get_site_configuration_from_environment(
-        get_site_configuration_path_from_environment, get_site_configuration, wordpressdata):
-    """Given environment data, calls get_site_configuration with the correct
-    path."""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    get_site_configuration_path_from_environment.return_value = json.loads(wordpressdata.site_config_content)
-
-    # Act
-    sut.get_site_configuration_from_environment(environment_path, environment_name)
-
-    # Assert
-    get_site_configuration.assert_called_with(get_site_configuration_path_from_environment.return_value)
-
-
-# endregion
-
-# region get_site_configuration_path_from_environment()
-
-
-@pytest.mark.parametrize("env_path, env_name, literal",
-                         [("path", None, "wp_environment_path_not_found"),
-                          (None, "localhost", "wp_environment_name_not_found")])
-def test_get_site_configuration_path_from_environment_when_environment_path_is_none_raises_error(
-        env_path, env_name, literal):
-    """Given arguments, when the environment is found in the JSON file, returns
-    the site configuration file path"""
-    # Arrange
-    expected_error = literals.get(literal)
-    # Act
-    with pytest.raises(ValueError) as error:
-        sut.get_site_configuration_path_from_environment(env_path, env_name)
-
-        # Assert
-        assert error.value == expected_error
-
-
-@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.environment_file_content)
-@patch("pathlib.Path.exists")
-@patch("pathlib.Path.is_file")
-def test_get_site_configuration_path_from_environment_when_environment_found_returns_config_path(
-        path_isfile_mock, path_exist_mock, builtins_open, wordpressdata):
-    """Given arguments, when the environment is found in the JSON file, returns
-    the site configuration file path"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-    path_exist_mock.return_value = True
-    path_isfile_mock.return_value = True
-    expected_path = wordpressdata.site_config_path_from_json
-
-    # Act
-    result = sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert pathlib.Path(result).as_posix() == expected_path
-
-
-@patch("builtins.open", new_callable=mock_open, read_data=WordPressData.environment_file_content)
-def test_get_site_configuration_path_from_environment_when_environment_not_found_raises_valuerror(
-        builtins_open, wordpressdata):
-    """Given arguments, when the environment is not found in the JSON file,
-    raises Value error with message"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name_fake
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_env_not_found")
-
-
-@patch("builtins.open", new_callable=mock_open,
-       read_data=WordPressData.environment_file_content_duplicated_environment)
-def test_get_site_configuration_path_from_environment_when_more_than_1_environment_found_raises_valuerror(
-        builtins_open, wordpressdata):
-    """Given arguments, when more than one environment is found in the JSON
-    file, raises Value error with message"""
-
-    # Arrange
-    environment_path = wordpressdata.environment_path
-    environment_name = wordpressdata.environment_name
-
-    # Act
-    with pytest.raises(ValueError) as value_error:
-        sut.get_site_configuration_path_from_environment(environment_path, environment_name)
-
-    # Assert
-    assert str(value_error.value) == literals.get("wp_env_gt1")
-
-
-# endregion convert_wp_parameter_skip_content()
-
-# region import_database()
-
-
-@patch("project_types.wordpress.wp_cli.import_database")
-def test_import_database_given_config_then_call_cli_import_database(import_database_mock, wordpressdata):
-    """ Given site configuration, then calls wp_cli.import database """
-    # Arrange
-    site_configuration = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    dump_file_path = wordpressdata.dump_file_path
-    # Act
-    sut.import_database(site_configuration, wordpress_path, dump_file_path)
-    # Assert
-    import_database_mock.assert_called_once_with(
-        wordpress_path, dump_file_path, site_configuration["wp_cli"]["debug"])
-
-
-# endregion
-
 # region import_content_from_configuration_file()
-
 
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 @patch("project_types.wordpress.wp_cli.delete_post_type_content")
-@patch("project_types.wordpress.wptools.get_constants")
-def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(get_constants_mock,
-    delete_content_mock, import_wxr_content, wordpressdata):
+def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock,
+    import_wxr_content, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    wordpress_path = wordpressdata.wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
     expected_content_imported = ["page", "nav_menu_item"]
+    site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
     # Act
-    sut.import_content_from_configuration_file(site_config, wordpress_path)
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
     expected_calls = [call(wordpress_path, expected_content_imported[0], False),
                       call(wordpress_path, expected_content_imported[1], False)]
 
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
 
-
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 @patch("project_types.wordpress.wp_cli.delete_post_type_content")
-@patch("project_types.wordpress.wptools.get_constants")
-def test_import_content_from_configuration_file_given_args_when_no_content_then_return(get_constants_mock,
-    delete_content_mock, import_wxr_content, wordpressdata):
-    """ Given args, when no content key supplied inside site_config_content, should not call any mock """
+@pytest.mark.parametrize("authors_value", ["create", "skip", "mapping.csv"])
+def test_import_content_from_configuration_file_given_args_then_call_import_wxr_content(delete_content_mock,
+    import_wxr_content, authors_value, wordpressdata):
+    """ Given args, for every content type present, should call delete_post_type_content with required data """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config.pop('content', None)
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
-    wordpress_path = wordpressdata.wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
+    wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["wxr"])
+    expected_content_imported = ["page", "nav_menu_item"]
+    site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
+    site_config["authors_handling"] = authors_value
+
     # Act
-    sut.import_content_from_configuration_file(site_config, wordpress_path)
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+    expected_calls = []
+    for content_type in expected_content_imported:
+        content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+        expected_calls.append(call(wordpress_path, content_path, "skip", environment_config["wp_cli_debug"]))
+
+    # Assert
+    import_wxr_content.assert_has_calls(expected_calls)
+
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+def test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import(
+        import_wxr_content, wordpressdata):
+    """ Given args, when no content present, then return without importing anything """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config.pop("content", None)
+    environment_config = {}
+    root_path = wordpressdata.root_path
+    constants = {}
+
+    # Act
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+
     # Assert
     import_wxr_content.assert_not_called()
+
+
+@patch("project_types.wordpress.wp_cli.import_wxr_content")
+def test_import_content_from_configuration_file_given_args_when_empty_content_then_no_import(
+        import_wxr_content, wordpressdata):
+    """ Given args, when no content present, then return without importing anything """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["content"] = {}
+    site_config["content"]["author_handling"] = {}
+    site_config["content"]["sources"] = {}
+    environment_config = site_config["environments"][0]
+    root_path = wordpressdata.root_path
+    constants = json.loads(wordpressdata.constants_file_content)
+
+    # Act
+    sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
+
+    # Assert
+    import_wxr_content.assert_not_called()
+
 
 # endregion import_content_from_configuration_file
 
 # region install_plugins_from_configuration_file()
 
 
-@patch("project_types.wordpress.wptools.get_constants")
 @patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("logging.warning")
 def test_install_plugins_given_configuration_file_when_no_plugins_then_no_install(
-        install_plugin_mock, get_constants_mock, wordpressdata):
+        logging_warning_mock, install_plugin_mock, wordpressdata):
     """ Given the configuration values, when no plugins present, the no installation calls
      should be made """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = {}
-    get_constants_mock.return_value = json.loads(wordpressdata.constants_file_content)
+    site_config["settings"]["plugins"] = {}
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
     root_path = wordpressdata.root_path
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path, True)
+    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
     install_plugin_mock.assert_not_called()
 
 
 @patch("logging.info")
-@patch("project_types.wordpress.wptools.get_constants")
+@patch("logging.warning")
 @patch("project_types.wordpress.wp_cli.install_plugin")
 @patch("project_types.wordpress.wptools.download_wordpress_plugin")
 @patch("project_types.wordpress.wptools.convert_wp_config_token")
@@ -436,30 +414,30 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
     "plugins_content", [json.loads(PluginsData.plugins_content_single_url_source),
                         json.loads(PluginsData.plugins_content_single_zip_source),
                         json.loads(PluginsData.plugins_content_two_plugins_with_url_and_zip_sources)])
-def test_install_plugins_given_configuration_file_when_plugins_then_then_downloads_wordpress_plugin(
-        export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock, get_constants_mock,
-        logging_mock, plugins_content, wordpressdata, pluginsdata):
+def test_install_plugins_given_configuration_file_when_plugins_present_then_install_plugins(
+        export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock,
+        logging_mock, logging_warn_mock, plugins_content, wordpressdata, pluginsdata):
     """ Given the configuration values, when url plugin present, then calls download_wordpress_plugin"""
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    site_config["plugins"] = plugins_content
+    site_config["settings"]["plugins"] = plugins_content
+    environment_config = site_config["environments"][0]
     constants = json.loads(wordpressdata.constants_file_content)
-    get_constants_mock.return_value = constants
     root_path = pathlib.Path(wordpressdata.root_path)
     wordpress_path = pathlib.Path.joinpath(root_path, constants["paths"]["wordpress"])
     plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
     # Act
-    sut.install_plugins_from_configuration_file(site_config, root_path, True)
+    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
     calls = []
-    for plugin in site_config["plugins"]:
-        plugin_path = pathlib.Path.joinpath(plugins_path, f"{plugin['name']}.zip")
+    for plugin in site_config["settings"]["plugins"]:
+        plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         plugin_call = call(plugin["name"],
                            wordpress_path,
                            plugin["activate"],
                            plugin["force"],
                            plugin_path,
-                           site_config["wp_cli"]["debug"])
+                           environment_config["wp_cli_debug"])
         calls.append(plugin_call)
     install_plugin_mock.assert_has_calls(calls)
 
@@ -579,10 +557,11 @@ def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wo
     """ Given configuration file, then calls install_wordpress_core from cli """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_core(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_core(site_config, environment_config, wordpress_path, admin_pass)
     # Assert
     install_wordpress_mock.assert_called_once()
 
@@ -605,13 +584,15 @@ def test_install_wordpress_site_then_calls_install_wordpress_core(
     """ Given site_configuration, then calls install_wordpress_core """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = root_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
-    install_wordpress_core.assert_called_with(site_config, wordpress_path, admin_pass)
+    install_wordpress_core.assert_called_with(site_config, environment_config, root_path, admin_pass)
 
 
 @patch("tools.git.purge_gitkeep")
@@ -628,14 +609,16 @@ def test_install_wordpress_site_then_calls_cli_update_option(
     """ Given site_configuration, then calls cli's update database  option """
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = str(wordpress_path)
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = str(root_path)
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
     update_database.assert_called_with("blogdescription", site_config["settings"]["description"],
-                                       wordpress_path, site_config["wp_cli"]["debug"])
+                                       root_path, environment_config["wp_cli_debug"])
 
 
 @patch("tools.git.purge_gitkeep")
@@ -652,13 +635,15 @@ def test_install_wordpress_site_then_calls_cli_export_database(
     """ Given site_configuration, then calls cli's export_database"""
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
-    wordpress_path = wordpressdata.wordpress_path
-    path_mock.return_value = wordpress_path
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    path_mock.return_value = root_path
     admin_pass = "root"
     # Act
-    sut.install_wordpress_site(site_config, wordpress_path, admin_pass)
+    sut.install_wordpress_site(site_config, environment_config, constants, root_path, admin_pass)
     # Assert
-    export_database.assert_called_with(site_config, wordpress_path, wordpress_path)
+    export_database.assert_called_with(environment_config, root_path, root_path)
 
 
 # endregion
@@ -709,11 +694,13 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_additional_
 
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config, environment_config, wordpress_path,
+                                                     database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -728,12 +715,15 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfr
     function."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_additional_settings)
+    site_config_additional_settings = json.loads(wordpressdata.site_config_content_additional_settings)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_additional_settings, environment_config,
+                                                     wordpress_path, database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -748,12 +738,15 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_fal
     function."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_false_aws_cloudfront)
+    site_config_false_aws_cloudfront = json.loads(wordpressdata.site_config_content_false_aws_cloudfront)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_false_aws_cloudfront, environment_config,
+                                                     wordpress_path, database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_not_called()
@@ -768,17 +761,20 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_tru
     add_cloudfront_forwarded_proto_to_config."""
 
     # Arrange
-    site_config = json.loads(wordpressdata.site_config_content_true_aws_cloudfront)
+    site_config_true_cloudfront = json.loads(wordpressdata.site_config_content_true_aws_cloudfront)
+    site_config = json.loads(wordpressdata.site_config_content)
+    environment_config = site_config["environments"][0]
     wordpress_path = wordpressdata.wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, wordpress_path, database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(site_config_true_cloudfront, environment_config, wordpress_path,
+                                                     database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_called_once()
 
-# endregion
+# endregion set_wordpress_config_from_configuration_file
 
 # region add_cloudfront_forwarded_proto_to_config
 
