@@ -1,0 +1,12 @@
+{
+    "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-site-environments-schema.json",
+    "environments": [
+        {
+            "name": "localhost",
+            "type": "development",
+            "default": true,
+            "configuration_file": "default-localhost-site.json",
+            "db_admin_user": "root"
+        }
+    ]
+}

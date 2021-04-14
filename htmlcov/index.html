@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="icon" sizes="32x32" href="favicon_32.png">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.ba-throttle-debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">93%</span>
+        </h1>
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+<div id="index">
+    <table class="index">
+        <thead>
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>4833</td>
+                <td>318</td>
+                <td>0</td>
+                <td class="right" data-ratio="4515 4833">93%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr class="file">
+                <td class="name left"><a href="setup_py.html">setup.py</a></td>
+                <td>4</td>
+                <td>4</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 4">0%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src___init___py.html">src\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_conftest_py.html">src\conftest.py</a></td>
+                <td>24</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="24 24">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_ColorFormatter_py.html">src\core\ColorFormatter.py</a></td>
+                <td>13</td>
+                <td>3</td>
+                <td>0</td>
+                <td class="right" data-ratio="10 13">77%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_CommandsCore_py.html">src\core\CommandsCore.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_LiteralsCore_py.html">src\core\LiteralsCore.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_ValueDictsBase_py.html">src\core\ValueDictsBase.py</a></td>
+                <td>16</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="16 16">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core___init___py.html">src\core\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_app_py.html">src\core\app.py</a></td>
+                <td>19</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="18 19">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_log_setup_py.html">src\core\log_setup.py</a></td>
+                <td>38</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="37 38">97%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_log_tools_py.html">src\core\log_tools.py</a></td>
+                <td>26</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="26 26">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_settings_py.html">src\core\settings.py</a></td>
+                <td>28</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="28 28">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_tests___init___py.html">src\core\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_tests_app_test_py.html">src\core\tests\app_test.py</a></td>
+                <td>14</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="14 14">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_tests_conftest_py.html">src\core\tests\conftest.py</a></td>
+                <td>21</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="20 21">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_tests_log_setup_test_py.html">src\core\tests\log_setup_test.py</a></td>
+                <td>90</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="90 90">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_core_tests_log_tools_test_py.html">src\core\tests\log_tools_test.py</a></td>
+                <td>24</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="24 24">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_Literals_py.html">src\devops_platforms\Literals.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms___init___py.html">src\devops_platforms\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_Literals_py.html">src\devops_platforms\azuredevops\Literals.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops___init___py.html">src\devops_platforms\azuredevops\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_cli_py.html">src\devops_platforms\azuredevops\cli.py</a></td>
+                <td>20</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="19 20">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_commands_py.html">src\devops_platforms\azuredevops\commands.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_environment_py.html">src\devops_platforms\azuredevops\environment.py</a></td>
+                <td>20</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="19 20">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_restapi_py.html">src\devops_platforms\azuredevops\restapi.py</a></td>
+                <td>50</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="49 50">98%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_tests___init___py.html">src\devops_platforms\azuredevops\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_tests_cli_test_py.html">src\devops_platforms\azuredevops\tests\cli_test.py</a></td>
+                <td>32</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="32 32">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_tests_conftest_py.html">src\devops_platforms\azuredevops\tests\conftest.py</a></td>
+                <td>35</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="35 35">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_tests_environment_test_py.html">src\devops_platforms\azuredevops\tests\environment_test.py</a></td>
+                <td>23</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="23 23">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_azuredevops_tests_restapi_test_py.html">src\devops_platforms\azuredevops\tests\restapi_test.py</a></td>
+                <td>120</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="120 120">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_constants_py.html">src\devops_platforms\constants.py</a></td>
+                <td>12</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="12 12">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_sonarx_py.html">src\devops_platforms\sonarx.py</a></td>
+                <td>53</td>
+                <td>2</td>
+                <td>0</td>
+                <td class="right" data-ratio="51 53">96%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_tests___init___py.html">src\devops_platforms\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_tests_conftest_py.html">src\devops_platforms\tests\conftest.py</a></td>
+                <td>32</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="31 32">97%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_devops_platforms_tests_sonarx_test_py.html">src\devops_platforms\tests\sonarx_test.py</a></td>
+                <td>65</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="65 65">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_Literals_py.html">src\filesystem\Literals.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem___init___py.html">src\filesystem\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_constants_py.html">src\filesystem\constants.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_parsers_py.html">src\filesystem\parsers.py</a></td>
+                <td>51</td>
+                <td>2</td>
+                <td>0</td>
+                <td class="right" data-ratio="49 51">96%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_paths_py.html">src\filesystem\paths.py</a></td>
+                <td>107</td>
+                <td>13</td>
+                <td>0</td>
+                <td class="right" data-ratio="94 107">88%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests___init___py.html">src\filesystem\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests_conftest_py.html">src\filesystem\tests\conftest.py</a></td>
+                <td>23</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="23 23">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests_parsers_test_py.html">src\filesystem\tests\parsers_test.py</a></td>
+                <td>64</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="64 64">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests_paths_test_py.html">src\filesystem\tests\paths_test.py</a></td>
+                <td>135</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="135 135">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests_tools_test_py.html">src\filesystem\tests\tools_test.py</a></td>
+                <td>14</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="14 14">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tests_zip_test_py.html">src\filesystem\tests\zip_test.py</a></td>
+                <td>41</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="41 41">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_tools_py.html">src\filesystem\tools.py</a></td>
+                <td>19</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="18 19">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_filesystem_zip_py.html">src\filesystem\zip.py</a></td>
+                <td>44</td>
+                <td>11</td>
+                <td>0</td>
+                <td class="right" data-ratio="33 44">75%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n_Literals_py.html">src\i18n\Literals.py</a></td>
+                <td>7</td>
+                <td>7</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 7">0%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n___init___py.html">src\i18n\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n_loader_py.html">src\i18n\loader.py</a></td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="4 4">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n_tests___init___py.html">src\i18n\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n_tests_utils_test_py.html">src\i18n\tests\utils_test.py</a></td>
+                <td>112</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="112 112">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_i18n_utils_py.html">src\i18n\utils.py</a></td>
+                <td>52</td>
+                <td>8</td>
+                <td>0</td>
+                <td class="right" data-ratio="44 52">85%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_locales___init___py.html">src\locales\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types___init___py.html">src\project_types\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_angular___init___py.html">src\project_types\angular\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_Literals_py.html">src\project_types\linux\Literals.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux___init___py.html">src\project_types\linux\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_apache_py.html">src\project_types\linux\apache.py</a></td>
+                <td>16</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="15 16">94%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_commands_py.html">src\project_types\linux\commands.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_software_installer_py.html">src\project_types\linux\software_installer.py</a></td>
+                <td>31</td>
+                <td>6</td>
+                <td>0</td>
+                <td class="right" data-ratio="25 31">81%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_tests___init___py.html">src\project_types\linux\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_tests_apache_test_py.html">src\project_types\linux\tests\apache_test.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_linux_tests_software_installer_test_py.html">src\project_types\linux\tests\software_installer_test.py</a></td>
+                <td>43</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="43 43">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_maven___init___py.html">src\project_types\maven\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_netcore___init___py.html">src\project_types\netcore\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node_Literals_py.html">src\project_types\node\Literals.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node___init___py.html">src\project_types\node\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node_commands_py.html">src\project_types\node\commands.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node_npm_py.html">src\project_types\node\npm.py</a></td>
+                <td>27</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="26 27">96%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node_tests___init___py.html">src\project_types\node\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_node_tests_npm_test_py.html">src\project_types\node\tests\npm_test.py</a></td>
+                <td>48</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="48 48">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_php___init___py.html">src\project_types\php\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_php_parsers_py.html">src\project_types\php\parsers.py</a></td>
+                <td>22</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="21 22">95%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_php_tests___init___py.html">src\project_types\php\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_php_tests_conftest_py.html">src\project_types\php\tests\conftest.py</a></td>
+                <td>9</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="9 9">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_php_tests_parsers_test_py.html">src\project_types\php\tests\parsers_test.py</a></td>
+                <td>23</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="23 23">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_Literals_py.html">src\project_types\wordpress\Literals.py</a></td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="8 8">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress___init___py.html">src\project_types\wordpress\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_basic_structure_starter_py.html">src\project_types\wordpress\basic_structure_starter.py</a></td>
+                <td>55</td>
+                <td>6</td>
+                <td>0</td>
+                <td class="right" data-ratio="49 55">89%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_bootstrap_repository_py.html">src\project_types\wordpress\bootstrap_repository.py</a></td>
+                <td>33</td>
+                <td>18</td>
+                <td>0</td>
+                <td class="right" data-ratio="15 33">45%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_commands_py.html">src\project_types\wordpress\commands.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_constants_py.html">src\project_types\wordpress\constants.py</a></td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="4 4">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_generate_wordpress_py.html">src\project_types\wordpress\generate_wordpress.py</a></td>
+                <td>114</td>
+                <td>30</td>
+                <td>0</td>
+                <td class="right" data-ratio="84 114">74%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_parse_theme_metadata_py.html">src\project_types\wordpress\parse_theme_metadata.py</a></td>
+                <td>10</td>
+                <td>4</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 10">60%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_rollback_database_py.html">src\project_types\wordpress\rollback_database.py</a></td>
+                <td>22</td>
+                <td>7</td>
+                <td>0</td>
+                <td class="right" data-ratio="15 22">68%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_site_config_init_py.html">src\project_types\wordpress\site_config_init.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests___init___py.html">src\project_types\wordpress\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_basic_structure_starter_test_py.html">src\project_types\wordpress\tests\basic_structure_starter_test.py</a></td>
+                <td>77</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="77 77">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_bootstrap_repository_test_py.html">src\project_types\wordpress\tests\bootstrap_repository_test.py</a></td>
+                <td>15</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="15 15">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_conftest_py.html">src\project_types\wordpress\tests\conftest.py</a></td>
+                <td>88</td>
+                <td>8</td>
+                <td>0</td>
+                <td class="right" data-ratio="80 88">91%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_generate_wordpress_test_py.html">src\project_types\wordpress\tests\generate_wordpress_test.py</a></td>
+                <td>194</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="194 194">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_parse_theme_metadata_test_py.html">src\project_types\wordpress\tests\parse_theme_metadata_test.py</a></td>
+                <td>12</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="12 12">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_rollback_database_test_py.html">src\project_types\wordpress\tests\rollback_database_test.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_wp_cli_test_py.html">src\project_types\wordpress\tests\wp_cli_test.py</a></td>
+                <td>185</td>
+                <td>8</td>
+                <td>0</td>
+                <td class="right" data-ratio="177 185">96%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_wp_theme_tools_test_py.html">src\project_types\wordpress\tests\wp_theme_tools_test.py</a></td>
+                <td>323</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="323 323">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_tests_wptools_test_py.html">src\project_types\wordpress\tests\wptools_test.py</a></td>
+                <td>433</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="433 433">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_wp_cli_py.html">src\project_types\wordpress\wp_cli.py</a></td>
+                <td>166</td>
+                <td>47</td>
+                <td>0</td>
+                <td class="right" data-ratio="119 166">72%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_wp_theme_tools_py.html">src\project_types\wordpress\wp_theme_tools.py</a></td>
+                <td>221</td>
+                <td>29</td>
+                <td>0</td>
+                <td class="right" data-ratio="192 221">87%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_project_types_wordpress_wptools_py.html">src\project_types\wordpress\wptools.py</a></td>
+                <td>236</td>
+                <td>37</td>
+                <td>0</td>
+                <td class="right" data-ratio="199 236">84%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_Literals_py.html">src\tools\Literals.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools___init___py.html">src\tools\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_argument_validators_py.html">src\tools\argument_validators.py</a></td>
+                <td>12</td>
+                <td>12</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 12">0%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_cli_py.html">src\tools\cli.py</a></td>
+                <td>29</td>
+                <td>8</td>
+                <td>0</td>
+                <td class="right" data-ratio="21 29">72%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_commands_py.html">src\tools\commands.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_constants_py.html">src\tools\constants.py</a></td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 5">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_devops_toolset_py.html">src\tools\devops_toolset.py</a></td>
+                <td>53</td>
+                <td>13</td>
+                <td>0</td>
+                <td class="right" data-ratio="40 53">75%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_dicts_py.html">src\tools\dicts.py</a></td>
+                <td>6</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="5 6">83%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_git_py.html">src\tools\git.py</a></td>
+                <td>75</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="74 75">99%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests___init___py.html">src\tools\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_cli_test_py.html">src\tools\tests\cli_test.py</a></td>
+                <td>36</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="36 36">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_conftest_py.html">src\tools\tests\conftest.py</a></td>
+                <td>50</td>
+                <td>6</td>
+                <td>0</td>
+                <td class="right" data-ratio="44 50">88%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_devops_toolset_test_py.html">src\tools\tests\devops_toolset_test.py</a></td>
+                <td>117</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="117 117">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_dicts_test_py.html">src\tools\tests\dicts_test.py</a></td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="7 7">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_git_test_py.html">src\tools\tests\git_test.py</a></td>
+                <td>148</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="148 148">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_xcoding_test_py.html">src\tools\tests\xcoding_test.py</a></td>
+                <td>11</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="11 11">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_tests_xmlparser_test_py.html">src\tools\tests\xmlparser_test.py</a></td>
+                <td>31</td>
+                <td>5</td>
+                <td>0</td>
+                <td class="right" data-ratio="26 31">84%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_xcoding64_py.html">src\tools\xcoding64.py</a></td>
+                <td>11</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="10 11">91%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_tools_xmlparser_py.html">src\tools\xmlparser.py</a></td>
+                <td>13</td>
+                <td>1</td>
+                <td>0</td>
+                <td class="right" data-ratio="12 13">92%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_toolset___init___py.html">src\toolset\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_toolset_download_devops_toolset_py.html">src\toolset\download_devops_toolset.py</a></td>
+                <td>64</td>
+                <td>9</td>
+                <td>0</td>
+                <td class="right" data-ratio="55 64">86%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_toolset_tests___init___py.html">src\toolset\tests\__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_toolset_tests_conftest_py.html">src\toolset\tests\conftest.py</a></td>
+                <td>24</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="24 24">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="src_toolset_tests_download_devops_toolset_test_py.html">src\toolset\tests\download_devops_toolset_test.py</a></td>
+                <td>167</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="167 167">100%</td>
+            </tr>
+        </tbody>
+    </table>
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.4</a>,
+            created at 2021-04-14 19:43 +0200
+        </p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+    "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json",
+    "defaults": {
+        "version":"latest",
+        "locale":"en_US"        
+    },
+    "paths": {
+        "devops":".devops",
+        "database":"database",
+        "wordpress":"wordpress",
+        "content":{
+            "themes":"content/themes",
+            "plugins":"content/plugins",
+            "wxr":"content/wxr"
+        }
+    },
+    "packages": {
+        "devops_toolset": "https://github.com/aheadlabs/devops-toolset/archive/master.zip",
+        "wp_cli": "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
+    },
+    "regex_base64": [
+        {
+            "key": "wordpress-theme",
+            "value": "d29yZHByZXNzL3dwLWNvbnRlbnQvdGhlbWVzLyhbXHdcLV0rKS8="
+        }
+    ],
+    "urls": {
+        "wp_theme_download": "https://downloads.wordpress.org/theme/{slug}{version}.zip"
+    }
+}

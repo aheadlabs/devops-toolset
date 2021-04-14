@@ -1,0 +1,12 @@
+steps:
+  - task: CmdLine@2
+    displayName: Compile .po files
+    inputs:
+      script: |
+        sudo apt-get install gettext tree
+        xgettext --from-code=utf-8 -d base -o $(System.DefaultWorkingDirectory)/locales/base.pot $(find $(System.DefaultWorkingDirectory) -name "*.py" -printf "%p ")
+        cp $(System.DefaultWorkingDirectory)/locales/base.pot $(System.DefaultWorkingDirectory)/locales/en/LC_MESSAGES/base.po
+        cp $(System.DefaultWorkingDirectory)/locales/base.pot $(System.DefaultWorkingDirectory)/locales/es/LC_MESSAGES/base.po
+        msgfmt -o $(System.DefaultWorkingDirectory)/locales/en/LC_MESSAGES/base.mo $(System.DefaultWorkingDirectory)/locales/en/LC_MESSAGES/base.po
+        msgfmt -o $(System.DefaultWorkingDirectory)/locales/es/LC_MESSAGES/base.mo $(System.DefaultWorkingDirectory)/locales/es/LC_MESSAGES/base.po
+        tree $(System.DefaultWorkingDirectory)/locales
