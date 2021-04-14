@@ -325,7 +325,6 @@ def import_content_from_configuration_file(site_configuration: dict, environment
         root_path: Path to the root repository.
         global_constants: Parsed global constants.
     """
-    
     # If no content to import, then do nothing
     if "content" not in site_configuration:
         return
