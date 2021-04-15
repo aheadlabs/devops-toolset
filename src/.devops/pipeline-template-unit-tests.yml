@@ -8,9 +8,9 @@ steps:
     displayName: Publish unit test results
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: '$(System.DefaultWorkingDirectory)/.pytest/test-results.xml'
+      testResultsFiles: '$(System.DefaultWorkingDirectory)/tests/.pytest/test-results.xml'
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage results
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/.pytest/coverage.xml'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/tests/.pytest/coverage.xml'
