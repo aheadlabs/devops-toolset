@@ -1,0 +1,7 @@
+pytest>=6.2.2
+pytest-cov>=2.11.1
+setuptools>=53.0.0
+requests>=2.25.1
+colorama>=0.4.4
+clint>=0.5.1
+pyfiglet>=0.8.post1
