@@ -7,7 +7,7 @@ steps:
       organization: 'ahead-labs'
       scannerMode: 'CLI'
       configMode: 'file'
-      configFile: '/src/.devops/sonar-project.properties'
+      configFile: 'src/.devops/sonar-project.properties'
       extraProperties: |
         sonar.branch.name=$(CURRENT_BRANCH)
         sonar.projectVersion=$(PROJECT_VERSION)
@@ -19,7 +19,7 @@ steps:
       organization: 'ahead-labs'
       scannerMode: 'CLI'
       configMode: 'file'
-      configFile: '/src/.devops/sonar-project.properties'
+      configFile: 'src/.devops/sonar-project.properties'
       extraProperties: |
         sonar.pullrequest.branch=$(CURRENT_BRANCH)
         sonar.projectVersion=$(VERSION)
