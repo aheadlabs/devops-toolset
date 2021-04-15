@@ -17,7 +17,7 @@ skip_covered = true
 
 [html]
 directory = .pytest/htmlcov/
-extra_css = .devops/coverage-report.css
+extra_css = ../src/.devops/coverage-report.css
 title = devops-toolset unit test coverage report
 
 [xml]
