@@ -118,12 +118,13 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     theme_tools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
 
     # Configure WordPress site
-    project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, environment_config, wordpress_path,
-                                                                                     db_user_password)
+    project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, environment_config,
+                                                                                 wordpress_path, db_user_password)
 
     # Create database and users
     if create_db:
-        project_types.wordpress.wptools.setup_database(environment_config, wordpress_path, db_user_password, db_admin_password)
+        project_types.wordpress.wptools.setup_database(environment_config, wordpress_path, db_user_password,
+                                                       db_admin_password)
 
     # Install WordPress site
     project_types.wordpress.wptools.install_wordpress_site(
@@ -142,7 +143,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         site_config, environment_config, global_constants, root_path, skip_partial_dumps)
 
     # Create additional users
-    project_types.wordpress.wptools.create_users(site_config["settings"]["users"], wordpress_path, environment_config["wp_cli_debug"])
+    project_types.wordpress.wptools.create_users(site_config["settings"]["users"], wordpress_path,
+                                                 environment_config["wp_cli_debug"])
 
     # Import wxr content
     if not create_development_theme:
@@ -214,9 +216,10 @@ def generate_additional_wpconfig_files(site_config: dict, environments: dict, ad
 
     # Create additional configuration files for the filtered environments
     for environment in filtered_environments:
-        project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, environment, wordpress_path,
-                                                                                         environments_db_user_passwords[
-                                                                           environment["name"]])
+        project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, environment,
+                                                                                     wordpress_path,
+                                                                                     environments_db_user_passwords[
+                                                                                         environment["name"]])
         shutil.move(wp_config_path, pathlib.Path.joinpath(wordpress_path_obj, f"wp-config-{environment['name']}.php"))
 
     # Rename original file

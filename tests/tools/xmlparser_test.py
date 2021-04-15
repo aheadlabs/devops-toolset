@@ -1,11 +1,22 @@
 """ Unit core for the xmlparser file"""
 from unittest.mock import patch
 
-import pytest
-
 from tools.xmlparser import XMLParser
 
 # region parse_from_path
+
+
+@patch("os.path.exists")
+def test_parse_from_path_when_xml_path_exist_then_calls_et_parse(exist_mock, paths):
+    """ Given xml path, when path exist, then should call ET.parse """
+    # Arrange
+    xml_path = paths.xml_path
+    exist_mock.return_value = True
+    # Act
+    sut = XMLParser()
+    sut.parse_from_path(xml_path)
+    # Assert
+    assert sut.xml_file is not None
 
 
 @patch("os.path.exists")

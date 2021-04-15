@@ -192,7 +192,7 @@ def test_download_toolset_given_args_then_returns_destination_path_and_full_dest
 def test_is_valid_path_given_path_when_path_is_none_then_return_false():
     """ Given path, when its None, then return false """
     # Arrange
-    path: str = None
+    path: str = ""
     # Act
     result = sut.is_valid_path(path)
     # Assert

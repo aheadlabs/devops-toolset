@@ -4,7 +4,10 @@ Add here whatever you want to pass as a fixture in your texts."""
 
 
 import pytest
+from core.app import App
+import pathlib
 
+app: App = App()
 
 class GitignoreData(object):
     """Class used to create the gitignoredata fixture"""
@@ -53,7 +56,7 @@ def clidata():
 class Paths(object):
     """Class used to create paths fixture"""
     invalid_path = "/invalid/path"
-    xml_path = "project.xml"
+    xml_path = pathlib.Path(app.settings.project_xml_path, "project.xml")
     devops_toolset_path_file = "/devops_toolset/path/file"
     devops_destination_path = "/devops_toolset/destination/path"
     devops_old_destination_path = "/devops_toolset/destination/old"
