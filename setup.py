@@ -9,8 +9,7 @@ with open(pathlib.Path(__file__, "..", "README.md"), "r", encoding="utf-8") as f
 with open(pathlib.Path(__file__, "..", "requirements.txt"), "r", encoding="utf-8") as req_file:
     install_requires = req_file.read().splitlines()
 
-project_xml_path = pathlib.Path(__file__, "..", "project.xml").as_posix()
-project_xml_parsed = src.filesystem.parsers.parse_project_xml_data(False, project_xml_path)
+project_xml_parsed = src.filesystem.parsers.parse_project_xml_data(False)
 name = project_xml_parsed["PROJECT_NAME"]
 version = project_xml_parsed["PROJECT_VERSION"]
 

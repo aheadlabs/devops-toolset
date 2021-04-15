@@ -32,7 +32,7 @@ def parse_project_xml_data(add_environment_variables: bool = True, project_xml_p
     """
 
     if project_xml_path is None:
-        project_xml_path = pathlib.Path.joinpath(app.settings.root_path, "project.xml")
+        project_xml_path = pathlib.Path.joinpath(app.settings.project_xml_path, "project.xml")
     else:
         project_xml_path = pathlib.Path(project_xml_path)
     logging.debug(literals.get("fs_project_path_is").format(path=project_xml_path))

@@ -16,6 +16,7 @@ class Settings(object):
 
     # defaults
     root_path: pathlib.Path = pathlib.Path(_CURRENT_PATH).parent.absolute()
+    project_xml_path = root_path.parent.absolute()
     devops_path: pathlib.Path = pathlib.Path.joinpath(root_path, _DEVOPS).absolute()
     locales_path: pathlib.Path = pathlib.Path.joinpath(root_path, _LOCALES).absolute()
     log_config_file_path: pathlib.Path = pathlib.Path.joinpath(root_path, _CORE, _CONFIG_SETTINGS_FILE_NAME).absolute()
