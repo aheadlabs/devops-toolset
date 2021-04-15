@@ -13,4 +13,4 @@ steps:
     displayName: Publish code coverage results
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage.xml'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/.pytest/coverage.xml'
