@@ -9,20 +9,6 @@ from tools.xmlparser import XMLParser
 
 
 @patch("os.path.exists")
-@pytest.mark.skip(reason="This test relies on project.xml, which no longer exist..")
-def test_parse_from_path_when_xml_path_exist_then_calls_et_parse(exist_mock, paths):
-    """ Given xml path, when path exist, then should call ET.parse """
-    # Arrange
-    xml_path = paths.xml_path
-    exist_mock.return_value = True
-    # Act
-    sut = XMLParser()
-    sut.parse_from_path(xml_path)
-    # Assert
-    assert sut.xml_file is not None
-
-
-@patch("os.path.exists")
 def test_parse_from_path_when_xml_path_not_exist_then_assigns_xml_file_as_empty(exist_mock, paths):
     """ Given xml path, when path not exist, then should set xml file as empty """
     # Arrange

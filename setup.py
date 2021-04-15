@@ -1,17 +1,22 @@
 """Project setup"""
-
+import pathlib
 import setuptools
-import os
+import src.filesystem.parsers
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open(pathlib.Path(__file__, "..", "README.md"), "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as req_file:
+with open(pathlib.Path(__file__, "..", "requirements.txt"), "r", encoding="utf-8") as req_file:
     install_requires = req_file.read().splitlines()
 
+project_xml_path = pathlib.Path(__file__, "..", "project.xml").as_posix()
+project_xml_parsed = src.filesystem.parsers.parse_project_xml_data(False, project_xml_path)
+name = project_xml_parsed["PROJECT_NAME"]
+version = project_xml_parsed["PROJECT_VERSION"]
+
 setuptools.setup(
-    name='devops-toolset',
-    version='1.0.0',
+    name=name,
+    version=version,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
