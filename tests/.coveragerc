@@ -7,8 +7,8 @@ omit =
     **/__init__.py
     **/conftest.py
     setup.py
-    project_types/wordpress/default_files/*
-    tools/argument_validators.py
+    src/project_types/wordpress/default_files/*
+    src/tools/argument_validators.py
 
 [report]
 exclude_lines =
