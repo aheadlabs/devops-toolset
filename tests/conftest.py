@@ -22,7 +22,7 @@ class FileNames(object):
     deep_path = "/deep/pathto"
     paths = ["/pathto/file1", "/pathto/file2"]
     no_paths = []
-    file = "../src/.gitignore"
+    file = ".gitignore"
     file__path = "filesystem.paths.__file__"
     glob_no_match = "**/no_match.file"
 
