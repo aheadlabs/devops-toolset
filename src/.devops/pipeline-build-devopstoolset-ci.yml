@@ -1,4 +1,4 @@
-# Pipeline /.devops/pipeline-build-devopstoolset-ci.yml
+# Pipeline src/.devops/pipeline-build-devopstoolset-ci.yml
 
 trigger:
   batch: true
@@ -25,7 +25,7 @@ jobs:
     - template: pipeline-template-python-setup.yml
     - template: pipeline-template-i18n.yml
     - template: pipeline-template-project-info.yml
-    - template: pipeline-template-unit-core.yml
+    - template: pipeline-template-unit-tests.yml
     - template: pipeline-template-sonarcloud.yml
     - template: pipeline-template-artifacts.yml
     - template: pipeline-template-intellicode.yml
