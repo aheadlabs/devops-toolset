@@ -1,5 +1,5 @@
 # Distribution files
-/devops_toolset.egg-info/
+**/devops_toolset.egg-info/
 /dist/
 /build/
 

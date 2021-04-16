@@ -1,4 +1,4 @@
-# Pipeline src/.devops/pipeline-build-devopstoolset-ci.yml
+# Pipeline devopstoolset/.devops/pipeline-build-devopstoolset-ci.yml
 
 trigger:
   batch: true

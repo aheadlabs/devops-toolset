@@ -15,7 +15,7 @@
 [![Donate PayPal](https://img.shields.io/badge/donate-PayPal-yellow.svg)](https://www.paypal.me/aheadlabs)  
 
 Everything than can be automated, must be automated!<br><br>
-![Logo](src/.media/devops-toolset-logo-216x100px.png)
+![Logo](devopstoolset/.media/devops-toolset-logo-216x100px.png)
 
 # Getting Started
 
@@ -31,7 +31,7 @@ You need Python 3.8.2+ installed on your machine. Please follow the instructions
 
 Reference the package in your pipeline to have these tools available:<br>
 1. Download the package from the [feed](https://dev.azure.com/aheadlabs/DevOps-toolset/_packaging?_a=feed&feed=devops-toolset). Click on "Connect to feed" for more information<br>
-![Connect to feed](src/.media/connect-to-feed.png)
+![Connect to feed](devopstoolset/.media/connect-to-feed.png)
 2. Unzip the package to a directory<br>
 e.g.: /devops-toolset
 3. Add this directory to the PYTHONPATH environment variable.

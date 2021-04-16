@@ -7,7 +7,7 @@ steps:
       organization: 'ahead-labs'
       scannerMode: 'CLI'
       configMode: 'file'
-      configFile: 'src/.devops/sonar-project.properties'
+      configFile: 'devopstoolset/.devops/sonar-project.properties'
       extraProperties: |
         sonar.branch.name=$(CURRENT_BRANCH)
         sonar.projectVersion=$(PROJECT_VERSION)
@@ -19,7 +19,7 @@ steps:
       organization: 'ahead-labs'
       scannerMode: 'CLI'
       configMode: 'file'
-      configFile: 'src/.devops/sonar-project.properties'
+      configFile: 'devopstoolset/.devops/sonar-project.properties'
       extraProperties: |
         sonar.pullrequest.branch=$(CURRENT_BRANCH)
         sonar.projectVersion=$(VERSION)
@@ -36,5 +36,5 @@ steps:
       scriptSource: 'inline'
       script: |
         import devops_platforms.sonarx
-        devops_platforms.sonarx.get_quality_gate_status("$(System.DefaultWorkingDirectory)/src/.devops/sonar-project.properties", "$(SONAR_TOKEN)", "$(CURRENT_BRANCH)", "$(Build.Reason)" == "PullRequest")
+        devops_platforms.sonarx.get_quality_gate_status("$(System.DefaultWorkingDirectory)/devopstoolset/.devops/sonar-project.properties", "$(SONAR_TOKEN)", "$(CURRENT_BRANCH)", "$(Build.Reason)" == "PullRequest")
       failOnStderr: true
