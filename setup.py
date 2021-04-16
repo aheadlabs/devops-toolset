@@ -2,11 +2,12 @@
 import pathlib
 import setuptools
 import filesystem.parsers
+import filesystem.paths
 
-with open(pathlib.Path(__file__, "..", "README.md"), "r", encoding="utf-8") as fh:
+with open(pathlib.Path(filesystem.paths.get_project_root(), "README.md"), "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open(pathlib.Path(__file__, "..", "requirements.txt"), "r", encoding="utf-8") as req_file:
+with open(pathlib.Path(filesystem.paths.get_project_root(), "requirements.txt"), "r", encoding="utf-8") as req_file:
     install_requires = req_file.read().splitlines()
 
 project_xml_parsed = filesystem.parsers.parse_project_xml_data(False)
