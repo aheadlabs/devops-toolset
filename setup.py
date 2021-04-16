@@ -1,7 +1,7 @@
 """Project setup"""
 import pathlib
 import setuptools
-import src.filesystem.parsers
+import filesystem.parsers
 
 with open(pathlib.Path(__file__, "..", "README.md"), "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -9,7 +9,7 @@ with open(pathlib.Path(__file__, "..", "README.md"), "r", encoding="utf-8") as f
 with open(pathlib.Path(__file__, "..", "requirements.txt"), "r", encoding="utf-8") as req_file:
     install_requires = req_file.read().splitlines()
 
-project_xml_parsed = src.filesystem.parsers.parse_project_xml_data(False)
+project_xml_parsed = filesystem.parsers.parse_project_xml_data(False)
 name = project_xml_parsed["PROJECT_NAME"]
 version = project_xml_parsed["PROJECT_VERSION"]
 
@@ -21,7 +21,8 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    packages=setuptools.find_packages(),
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src"),
     install_requires=install_requires,
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
