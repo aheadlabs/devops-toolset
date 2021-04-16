@@ -1,5 +1,10 @@
 steps:
   - task: CmdLine@2
+    displayName: Install latest version of PyPA's build
+    inputs:
+      script: |
+        python3 -m pip install --upgrade build
+  - task: CmdLine@2
     displayName: Build python package
     inputs:
       script: |
