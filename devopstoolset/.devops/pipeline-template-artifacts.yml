@@ -1,0 +1,32 @@
+steps:
+  - task: CmdLine@2
+    displayName: Install latest version of PyPA's build
+    inputs:
+      script: |
+        python3 -m pip install --upgrade build
+  - task: CmdLine@2
+    displayName: Build python package
+    inputs:
+      script: |
+        python3 -m build $(System.DefaultWorkingDirectory)
+  - task: CopyFiles@2
+    displayName: Copy files to artifact folder
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/dist'
+      Contents: |
+        **
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/_artifact'
+  - task: ArchiveFiles@2
+    displayName: Zip artifact files
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_artifact'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(PROJECT_NAME)-$(PROJECT_VERSION).zip'
+      replaceExistingArchive: true
+  - task: PublishBuildArtifacts@1
+    displayName: Publish artifact devops-toolset
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(PROJECT_NAME)-$(PROJECT_VERSION).zip'
+      ArtifactName: 'devops-toolset'
+      publishLocation: 'Container'

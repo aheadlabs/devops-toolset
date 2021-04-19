@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ae26d28b-e502-4539-be15-df2b168e5012" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/_devops-toolset.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/_devops-toolset.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1rCUVaygUIf4qubQVocDxIGOJIe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+  </component>
+  <component name="RunManager" selected="Python tests.pytest for xmlparser_test.test_parse_from_path_when_xml_path_exist_then_calls_et_parse">
+    <configuration name="pytest for download_devops_toolset_test.test_is_valid_path_given_path_when_path_is_none_then_return_false" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="_devops-toolset" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/toolset" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;download_devops_toolset_test.test_is_valid_path_given_path_when_path_is_none_then_return_false&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for environment_test.test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="_devops-toolset" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/devops_platforms/azuredevops" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;environment_test.test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for environment_test.test_create_project_metadata_environment_variables_calls_create_environment_variables" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="_devops-toolset" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/devops_platforms/azuredevops" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;environment_test.test_create_project_metadata_environment_variables_calls_create_environment_variables&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for xmlparser_test.test_parse_from_path_when_xml_path_exist_then_calls_et_parse" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="_devops-toolset" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/tools" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;xmlparser_test.test_parse_from_path_when_xml_path_exist_then_calls_et_parse&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.pytest for xmlparser_test.test_parse_from_path_when_xml_path_exist_then_calls_et_parse" />
+        <item itemvalue="Python tests.pytest for download_devops_toolset_test.test_is_valid_path_given_path_when_path_is_none_then_return_false" />
+        <item itemvalue="Python tests.pytest for environment_test.test_create_project_metadata_environment_variables_calls_create_environment_variables" />
+        <item itemvalue="Python tests.pytest for environment_test.test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ae26d28b-e502-4539-be15-df2b168e5012" name="Default Changelist" comment="" />
+      <created>1618479594265</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1618479594265</updated>
+      <workItem from="1618479598622" duration="20620000" />
+      <workItem from="1618590390978" duration="294000" />
+      <workItem from="1618590705779" duration="190000" />
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/devops_platforms/azuredevops/environment_test.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/devops_platforms/azuredevops/conftest.py</url>
+          <line>9</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/devops_platforms/azuredevops/environment_test.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/tools/xmlparser_test.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="tests">
+        <watch expression="metadata.distribution()" language="Python" />
+        <watch expression="__name__" language="Python" />
+        <watch expression="metadata" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_devops_toolset_test_py.coverage" NAME="pytest in devops_toolset_test.py Coverage Results" MODIFIED="1618417763110" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parsers_test_test_parse_project_xml_data_when_add_environment_variables_is_true_then_call_create_env_variables.coverage" NAME="pytest for parsers_test.test_parse_project_xml_data_when_add_environment_variables_is_true_then_call_create_env_variables Coverage Results" MODIFIED="1618413084603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_import_content_from_configuration_file_given_args_then_call_import_wxr_content.coverage" NAME="pytest for wptools_test.test_import_content_from_configuration_file_given_args_then_call_import_wxr_content Coverage Results" MODIFIED="1618329379653" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_download_devops_toolset_test_test_cleanup_given_args_then_should_call_os_rmdir.coverage" NAME="pytest for download_devops_toolset_test.test_cleanup_given_args_then_should_call_os_rmdir Coverage Results" MODIFIED="1618415350650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/toolset/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_generate_wordpress_test_py.coverage" NAME="pytest in generate_wordpress_test.py Coverage Results" MODIFIED="1618414366288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_utils_test_py.coverage" NAME="pytest in utils_test.py Coverage Results" MODIFIED="1618413567962" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_download_devops_toolset_test_py.coverage" NAME="pytest in download_devops_toolset_test.py Coverage Results" MODIFIED="1618415354927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/toolset/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_paths_test_test_get_filepath_in_tree_ascending_given_file_name_when_exists_then_returns_path.coverage" NAME="pytest for paths_test.test_get_filepath_in_tree_ascending_given_file_name_when_exists_then_returns_path Coverage Results" MODIFIED="1618474138637" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/filesystem" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_compile_po_files_given_path_then_calls_get_files.coverage" NAME="pytest for utils_test.test_compile_po_files_given_path_then_calls_get_files Coverage Results" MODIFIED="1618413519677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$generate_wordpress.coverage" NAME="generate_wordpress Coverage Results" MODIFIED="1618404381161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wordpress_site_then_calls_cli_export_database.coverage" NAME="pytest for wptools_test.test_install_wordpress_site_then_calls_cli_export_database Coverage Results" MODIFIED="1618308014306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content.coverage" NAME="pytest for wptools_test.test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content Coverage Results" MODIFIED="1618328119447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_get_files_given_starting_path_and_glob_should_return_list_pathlib_rglob.coverage" NAME="pytest for utils_test.test_get_files_given_starting_path_and_glob_should_return_list_pathlib_rglob Coverage Results" MODIFIED="1618413516651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wordpress_site_then_calls_install_wordpress_core.coverage" NAME="pytest for wptools_test.test_install_wordpress_site_then_calls_install_wordpress_core Coverage Results" MODIFIED="1618308427114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wp_cli_given_path_when_is_dir_then_writes_response_content.coverage" NAME="pytest for wptools_test.test_install_wp_cli_given_path_when_is_dir_then_writes_response_content Coverage Results" MODIFIED="1618416521255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_set_wordpress_config_from_configuration_file_return_when_no_additional_settings.coverage" NAME="pytest for wptools_test.test_set_wordpress_config_from_configuration_file_return_when_no_additional_settings Coverage Results" MODIFIED="1618393858897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_add_wp_options_given_options_then_calls_wp_cli_add_update_option.coverage" NAME="pytest for wptools_test.test_add_wp_options_given_options_then_calls_wp_cli_add_update_option Coverage Results" MODIFIED="1618333871363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parsers_test_test_parse_theme_metadata_when_tokens_matched_then_return_matches_dict.coverage" NAME="pytest for parsers_test.test_parse_theme_metadata_when_tokens_matched_then_return_matches_dict Coverage Results" MODIFIED="1618413088573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_compile_po_files_given_path_when_args_contain_py_then_calls_subprocess_with_dot_py.coverage" NAME="pytest for utils_test.test_compile_po_files_given_path_when_args_contain_py_then_calls_subprocess_with_dot_py Coverage Results" MODIFIED="1618413553222" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wordpress_site_then_calls_cli_update_option.coverage" NAME="pytest for wptools_test.test_install_wordpress_site_then_calls_cli_update_option Coverage Results" MODIFIED="1618308225736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_zip_test_test_download_an_unzip_file_given_parameters_when_delete_after_unzip_is_present_then_remove_file_path.coverage" NAME="pytest for zip_test.test_download_an_unzip_file_given_parameters_when_delete_after_unzip_is_present_then_remove_file_path Coverage Results" MODIFIED="1618413187259" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_zip_test_test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then_move_files.coverage" NAME="pytest for zip_test.test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then_move_files Coverage Results" MODIFIED="1618413184075" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_wptools_test_py.coverage" NAME="pytest in wptools_test.py Coverage Results" MODIFIED="1618418040469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_get_environment_given_env_name_when_multiple_match_then_warns.coverage" NAME="pytest for wptools_test.test_get_environment_given_env_name_when_multiple_match_then_warns Coverage Results" MODIFIED="1618332353782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wp_cli_given_path_when_not_dir_then_raise_value_error.coverage" NAME="pytest for wptools_test.test_install_wp_cli_given_path_when_not_dir_then_raise_value_error Coverage Results" MODIFIED="1618416528788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_download_devops_toolset_test_test_is_valid_path_given_path_when_path_is_none_then_return_false.coverage" NAME="pytest for download_devops_toolset_test.test_is_valid_path_given_path_when_path_is_none_then_return_false Coverage Results" MODIFIED="1618502223892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/toolset" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parsers_test_test_parse_project_xml_data_when_add_environment_variables_is_false_then_return_dict_with_env_variables.coverage" NAME="pytest for parsers_test.test_parse_project_xml_data_when_add_environment_variables_is_false_then_return_dict_with_env_variables Coverage Results" MODIFIED="1618413081960" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_generate_pot_file_given_path_then_calls_get_files.coverage" NAME="pytest for utils_test.test_generate_pot_file_given_path_then_calls_get_files Coverage Results" MODIFIED="1618413563918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_plugins_given_configuration_file_when_no_plugins_then_no_install.coverage" NAME="pytest for wptools_test.test_install_plugins_given_configuration_file_when_no_plugins_then_no_install Coverage Results" MODIFIED="1618310215333" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource.coverage" NAME="pytest for wptools_test.test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource Coverage Results" MODIFIED="1618416514459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_get_project_structure_given_resource_reads_and_parses_content.coverage" NAME="pytest for wptools_test.test_get_project_structure_given_resource_reads_and_parses_content Coverage Results" MODIFIED="1618470705691" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_restapi_test_test_generate_authentication_header_given_name_and_token_then_generate_header.coverage" NAME="pytest for restapi_test.test_generate_authentication_header_given_name_and_token_then_generate_header Coverage Results" MODIFIED="1618412779428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/devops_platforms/azuredevops/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parsers_test_test_parse_theme_metadata_when_token_and_not_matched_then_warns.coverage" NAME="pytest for parsers_test.test_parse_theme_metadata_when_token_and_not_matched_then_warns Coverage Results" MODIFIED="1618413090682" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_environment_test_test_create_project_metadata_environment_variables_calls_create_environment_variables.coverage" NAME="pytest for environment_test.test_create_project_metadata_environment_variables_calls_create_environment_variables Coverage Results" MODIFIED="1618489841907" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/devops_platforms/azuredevops" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$parse_theme_metadata_test.coverage" NAME="parse_theme_metadata_test Coverage Results" MODIFIED="1617209507839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$npm.coverage" NAME="npm Coverage Results" MODIFIED="1618413744970" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/node" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$wptools_test.coverage" NAME="wptools_test Coverage Results" MODIFIED="1618418022994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_wordpress_core_then_calls_cli_install_wordpress_core.coverage" NAME="pytest for wptools_test.test_install_wordpress_core_then_calls_cli_install_wordpress_core Coverage Results" MODIFIED="1618308590388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_basic_structure_starter_test_py.coverage" NAME="pytest in basic_structure_starter_test.py Coverage Results" MODIFIED="1618413841529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_get_project_structure_given_resource_reads_and_parses_content__1_.coverage" NAME="pytest for wptools_test.test_get_project_structure_given_resource_reads_and_parses_content (1) Coverage Results" MODIFIED="1618470401311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/build/lib/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_compile_po_files_given_path_when_args_not_contain_py_then_calls_subprocess_without_dot_py.coverage" NAME="pytest for utils_test.test_compile_po_files_given_path_when_args_not_contain_py_then_calls_subprocess_without_dot_py Coverage Results" MODIFIED="1618413556293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfront.coverage" NAME="pytest for wptools_test.test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfront Coverage Results" MODIFIED="1618394059023" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_export_database_calls_wp_cli_export_database.coverage" NAME="pytest for wptools_test.test_export_database_calls_wp_cli_export_database Coverage Results" MODIFIED="1618312692572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_true.coverage" NAME="pytest for src.project_types.wordpress.tests.wptools_test.test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_true Coverage Results" MODIFIED="1618404009219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_import_content_from_configuration_file_given_args_when_empty_content_then_no_import.coverage" NAME="pytest for wptools_test.test_import_content_from_configuration_file_given_args_when_empty_content_then_no_import Coverage Results" MODIFIED="1618315544136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_tools_test_test_is_file_empty_on_empty_file.coverage" NAME="pytest for tools_test.test_is_file_empty_on_empty_file Coverage Results" MODIFIED="1618324205872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_utils_test_test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove.coverage" NAME="pytest for utils_test.test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove Coverage Results" MODIFIED="1618413559757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/i18n/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_git_test_py.coverage" NAME="pytest in git_test.py Coverage Results" MODIFIED="1618415898541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_get_environment_given_env_name_when_not_match_then_raises_value_error.coverage" NAME="pytest for wptools_test.test_get_environment_given_env_name_when_not_match_then_raises_value_error Coverage Results" MODIFIED="1618331738090" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_devops_toolset_test_test_get_devops_toolset_calls_get_devops_toolset_resource.coverage" NAME="pytest for devops_toolset_test.test_get_devops_toolset_calls_get_devops_toolset_resource Coverage Results" MODIFIED="1618417755642" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parse_theme_metadata_test_test_parse_theme_metadata_from_path_when_path_exists_then_calls_parse_theme_metadata.coverage" NAME="pytest for parse_theme_metadata_test.test_parse_theme_metadata_from_path_when_path_exists_then_calls_parse_theme_metadata Coverage Results" MODIFIED="1618417545955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_plugins_given_configuration_file_when_plugins_then_downloads_wordpress_plugin.coverage" NAME="pytest for wptools_test.test_install_plugins_given_configuration_file_when_plugins_then_downloads_wordpress_plugin Coverage Results" MODIFIED="1618309932621" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_xmlparser_test_test_parse_from_path_when_xml_path_not_exist_then_assigns_xml_file_as_empty.coverage" NAME="pytest for xmlparser_test.test_parse_from_path_when_xml_path_not_exist_then_assigns_xml_file_as_empty Coverage Results" MODIFIED="1618415609946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_install_plugins_given_configuration_file_when_plugins_present_then_install_plugins.coverage" NAME="pytest for wptools_test.test_install_plugins_given_configuration_file_when_plugins_present_then_install_plugins Coverage Results" MODIFIED="1618309993650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_xmlparser_test_py.coverage" NAME="pytest in xmlparser_test.py Coverage Results" MODIFIED="1618415429698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_tests.coverage" NAME="pytest in tests Coverage Results" MODIFIED="1618419513853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_git_test_test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusion.coverage" NAME="pytest for git_test.test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusion Coverage Results" MODIFIED="1618415892811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_false.coverage" NAME="pytest for wptools_test.test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_false Coverage Results" MODIFIED="1618394096901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_tools_test_test_is_file_empty_given_path_when_empty_then_return_true.coverage" NAME="pytest for tools_test.test_is_file_empty_given_path_when_empty_then_return_true Coverage Results" MODIFIED="1618324911932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_xmlparser_test_test_parse_from_path_when_xml_path_exist_then_calls_et_parse.coverage" NAME="pytest for xmlparser_test.test_parse_from_path_when_xml_path_exist_then_calls_et_parse Coverage Results" MODIFIED="1618502607505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/tools" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_get_wordpress_core_files_test_test_main_given_parameters_must_call_get_site_configuration_path_from_environment.coverage" NAME="pytest for get_wordpress_core_files_test.test_main_given_parameters_must_call_get_site_configuration_path_from_environment Coverage Results" MODIFIED="1618336035827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_generate_wordpress_test_test_main_given_required_files_when_not_present_and_localhost_and_no_defaults_then_raise_error.coverage" NAME="pytest for generate_wordpress_test.test_main_given_required_files_when_not_present_and_localhost_and_no_defaults_then_raise_error Coverage Results" MODIFIED="1618414297822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_download_devops_toolset_test_test_download_toolset_given_args_then_write_response_content_to_full_destination_path.coverage" NAME="pytest for download_devops_toolset_test.test_download_toolset_given_args_then_write_response_content_to_full_destination_path Coverage Results" MODIFIED="1617209252158" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/toolset/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_npm_test_py.coverage" NAME="pytest in npm_test.py Coverage Results" MODIFIED="1618413764427" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/node/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import.coverage" NAME="pytest for wptools_test.test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import Coverage Results" MODIFIED="1618315185561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_xcoding_test_py.coverage" NAME="pytest in xcoding_test.py Coverage Results" MODIFIED="1618415820843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_cli_test_test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_commands.coverage" NAME="pytest for cli_test.test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_commands Coverage Results" MODIFIED="1618412652958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/devops_platforms/azuredevops/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_basic_structure_starter_test_test_get_default_content_given_item_when_source_then_return_corresponding_value.coverage" NAME="pytest for basic_structure_starter_test.test_get_default_content_given_item_when_source_then_return_corresponding_value Coverage Results" MODIFIED="1618421802972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_parsers_test_test_parse_theme_metadata_when_no_tokens_then_return_empty_dict.coverage" NAME="pytest for parsers_test.test_parse_theme_metadata_when_no_tokens_then_return_empty_dict Coverage Results" MODIFIED="1618413086692" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_wp_theme_tools_test_py.coverage" NAME="pytest in wp_theme_tools_test.py Coverage Results" MODIFIED="1618416656266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_wptools_test_test_get_environment_given_site_config_then_update_url_constants.coverage" NAME="pytest for wptools_test.test_get_environment_given_site_config_then_update_url_constants Coverage Results" MODIFIED="1618333980838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/project_types/wordpress/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_zip_test_test_download_an_unzip_file_given_parameters_then_calls_extract_all.coverage" NAME="pytest for zip_test.test_download_an_unzip_file_given_parameters_then_calls_extract_all Coverage Results" MODIFIED="1618413337456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/filesystem/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_cli_test_test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_logs.coverage" NAME="pytest for cli_test.test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_logs Coverage Results" MODIFIED="1618412312882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/devops_platforms/azuredevops/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_in_cli_test_py.coverage" NAME="pytest in cli_test.py Coverage Results" MODIFIED="1618416430477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tools/tests" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_environment_test_test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout.coverage" NAME="pytest for environment_test.test_create_environment_variables_given_dict_when_not_empty_writes_to_stdout Coverage Results" MODIFIED="1618487981822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/devops_platforms/azuredevops" />
+    <SUITE FILE_PATH="coverage/_devops_toolset$pytest_for_npm_test_test_install_given_folder_then_calls_subprocess_with_npm_install_command.coverage" NAME="pytest for npm_test.test_install_given_folder_then_calls_subprocess_with_npm_install_command Coverage Results" MODIFIED="1618413756627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/project_types/node/tests" />
+  </component>
+</project>

@@ -1,0 +1,10 @@
+[build-system]
+requires = [
+    "wheel",
+    "setuptools>=53.0.0",
+    "requests>=2.25.1",
+    "colorama>=0.4.4",
+    "clint>=0.5.1",
+    "pyfiglet>=0.8.post1"
+]
+build-backend = "setuptools.build_meta"

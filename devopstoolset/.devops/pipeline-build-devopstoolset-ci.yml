@@ -1,0 +1,31 @@
+# Pipeline devopstoolset/.devops/pipeline-build-devopstoolset-ci.yml
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - dev
+      - feature/*
+      - hotfix/*
+      - release/*
+pr:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+name: CI-$(date:yyyyMMdd)$(rev:.r)
+jobs:
+  - job: Main
+    displayName: Main job
+    steps:
+    - template: pipeline-template-python-setup.yml
+    - template: pipeline-template-i18n.yml
+    - template: pipeline-template-project-info.yml
+    - template: pipeline-template-unit-tests.yml
+    - template: pipeline-template-sonarcloud.yml
+    - template: pipeline-template-artifacts.yml
+    - template: pipeline-template-intellicode.yml
