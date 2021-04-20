@@ -49,11 +49,11 @@ def generate_pot_file():
     if pathlib.Path(pot_file).exists():
         os.remove(str(pot_file))
 
-    files = get_files(str(app.settings.root_path), "**/*.py")
+    files = get_files(str(app.settings.root_path), "**/*[!constants].py")
 
     script = "pygettext.py" if args.py else "xgettext"
 
-    command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))} --from-code=UTF-8"
+    command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
 
     tools_cli.call_subprocess(command)
 
