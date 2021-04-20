@@ -16,8 +16,8 @@ tests/htmlcov
 .vscode
 .vs
 
-# gettext compiled files
-devops_toolset/locales/**/*.mo
+# gettext files
+devops_toolset/locales/
 
 # logs
 devops_toolset/logs/*.log*
