@@ -16,13 +16,13 @@ exclude_lines =
 skip_covered = true
 
 [html]
-directory = .pytest/htmlcov/
-extra_css = ../devops_toolset/.devops/coverage-report.css
+directory = tests/.pytest/htmlcov/
+extra_css = devops_toolset/.devops/coverage-report.css
 title = devops-toolset unit test coverage report
 
 [xml]
-output = .pytest/coverage.xml
+output = tests/.pytest/coverage.xml
 
 [json]
-output = .pytest/coverage.json
+output = tests/.pytest/coverage.json
 pretty_print = true
