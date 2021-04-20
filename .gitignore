@@ -17,7 +17,8 @@ tests/htmlcov
 .vs
 
 # gettext files
-devops_toolset/locales/
+devops_toolset/locales/**/*.pot
+devops_toolset/locales/**/*.[mp]o
 
 # logs
 devops_toolset/logs/*.log*
