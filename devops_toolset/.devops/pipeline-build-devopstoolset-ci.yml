@@ -23,7 +23,7 @@ jobs:
     displayName: Main job
     steps:
     - template: pipeline-template-python-setup.yml
-    - template: pipeline-template-i18n-gettext.yml
+    - template: pipeline-template-i18n-xgettext.yml
     - template: pipeline-template-project-info.yml
     - template: pipeline-template-unit-tests.yml
     - template: pipeline-template-sonarcloud.yml
