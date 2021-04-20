@@ -4,7 +4,7 @@ steps:
     inputs:
       script: |
         sudo apt-get install gettext tree
-        xgettext --from-code=utf-8 -d base -o $(System.DefaultWorkingDirectory)/devops_toolset/locales/base.pot $(find $(System.DefaultWorkingDirectory)/devops_toolset -name "*.py" -printf "%p ")
+        xgettext --from-code=utf-8 -d base -o $(System.DefaultWorkingDirectory)/devops_toolset/locales/base.pot $(find $(System.DefaultWorkingDirectory)/devops_toolset -name "*[!constants].py" -printf "%p ")
         cp $(System.DefaultWorkingDirectory)/devops_toolset/locales/base.pot $(System.DefaultWorkingDirectory)/devops_toolset/locales/en/LC_MESSAGES/base.po
         cp $(System.DefaultWorkingDirectory)/devops_toolset/locales/base.pot $(System.DefaultWorkingDirectory)/devops_toolset/locales/es/LC_MESSAGES/base.po
         msgfmt -o $(System.DefaultWorkingDirectory)/devops_toolset/locales/en/LC_MESSAGES/base.mo $(System.DefaultWorkingDirectory)/devops_toolset/locales/en/LC_MESSAGES/base.po
