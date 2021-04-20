@@ -4,4 +4,4 @@ steps:
     inputs:
       script: |
         sudo apt-get install gettext
-        python3 $(System.DefaultWorkingDirectory)/devopstoolset/i18n/utils.py --generate-pot --compile --skip-i18n
+        python3 $(System.DefaultWorkingDirectory)/devops_toolset/i18n/utils.py --generate-pot --compile --skip-i18n
