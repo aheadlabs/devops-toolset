@@ -53,7 +53,7 @@ def generate_pot_file():
 
     script = "pygettext.py" if args.py else "xgettext"
 
-    command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
+    command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))} --from-code=UTF-8"
 
     tools_cli.call_subprocess(command)
 
