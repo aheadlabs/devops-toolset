@@ -1,0 +1,28 @@
+# Configuration file for coverage.py and pytest-cov
+
+[run]
+branch = true
+data_file = tests/.pytest/.coverage
+omit = 
+    **/__init__.py
+    **/conftest.py
+    setup.py
+    devops_toolset/project_types/wordpress/default_files/*
+    devops_toolset/tools/argument_validators.py
+
+[report]
+exclude_lines =
+    if __name__ == "__main__":
+skip_covered = true
+
+[html]
+directory = tests/.pytest/htmlcov/
+extra_css = devops_toolset/.devops/coverage-report.css
+title = devops-toolset unit test coverage report
+
+[xml]
+output = tests/.pytest/coverage.xml
+
+[json]
+output = tests/.pytest/coverage.json
+pretty_print = true

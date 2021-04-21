@@ -1,0 +1,40 @@
+steps:
+  - task: SonarCloudPrepare@1
+    displayName: Prepare SonarCloud analysis (NON PR)
+    condition: and(always(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'ahead-labs'
+      scannerMode: 'CLI'
+      configMode: 'file'
+      configFile: 'devops_toolset/.devops/sonar-project.properties'
+      extraProperties: |
+        sonar.branch.name=$(CURRENT_BRANCH)
+        sonar.projectVersion=$(PROJECT_VERSION)
+  - task: SonarCloudPrepare@1
+    displayName: Prepare SonarCloud analysis (PR)
+    condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'ahead-labs'
+      scannerMode: 'CLI'
+      configMode: 'file'
+      configFile: 'devops_toolset/.devops/sonar-project.properties'
+      extraProperties: |
+        sonar.pullrequest.branch=$(CURRENT_BRANCH)
+        sonar.projectVersion=$(VERSION)
+  - task: SonarCloudAnalyze@1
+    displayName: Run SonarCloud analysis
+  - task: SonarCloudPublish@1
+    displayName: Publish SonarCloud quality gate results
+    inputs:
+      pollingTimeoutSec: '300'
+  - task: PythonScript@0
+    displayName: Get quality gate status from SonarCloud
+    enabled: true
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        import devops_platforms.sonarx
+        devops_platforms.sonarx.get_quality_gate_status("$(System.DefaultWorkingDirectory)/devops_toolset/.devops/sonar-project.properties", "$(SONAR_TOKEN)", "$(CURRENT_BRANCH)", "$(Build.Reason)" == "PullRequest")
+      failOnStderr: true
