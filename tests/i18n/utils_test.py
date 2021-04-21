@@ -170,7 +170,8 @@ def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xge
     # Arrange
     expected_pot_file = filenames.test_pot_file
     expected_path_list = [pathlib.PurePath(filenames.test_file), pathlib.PurePath(filenames.test_file2)]
-    expected_command = f"xgettext -d base -o {expected_pot_file} {' '.join(map(str, expected_path_list))}"
+    expected_command = f"xgettext --from-code=utf-8 -d base -o {expected_pot_file} " \
+                       f"{' '.join(map(str, expected_path_list))}"
 
     with mock.patch.object(sut, "get_files") as file_paths:
         file_paths.return_value = expected_path_list
