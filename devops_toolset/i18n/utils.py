@@ -50,7 +50,7 @@ def generate_pot_file():
     if pathlib.Path(pot_file).exists():
         os.remove(str(pot_file))
 
-    files = get_files(str(app.settings.root_path), "**/*[!constants].py")
+    files = get_files(str(app.settings.root_path), "**/*.py")
 
     script = "pygettext.py" if args.py else "xgettext"
 
