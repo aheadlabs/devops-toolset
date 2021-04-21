@@ -15,6 +15,7 @@ import core.app
 import os
 import pathlib
 import tools.cli as tools_cli
+import shutil
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--py", action="store_true")
@@ -57,6 +58,8 @@ def generate_pot_file():
 
     tools_cli.call_subprocess(command)
 
+    distribute_pot()
+
 
 def compile_po_files():
     """Compiles .po files to .mo files"""
@@ -74,6 +77,27 @@ def compile_po_files():
         command = f"msgfmt{py} -o {mo_file} {file}"
 
         tools_cli.call_subprocess(command)
+
+
+def distribute_pot():
+    """ Copies the generated pot file inside LC_MESSAGES of every language, and renames the file as a .po """
+
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+
+    if not pathlib.Path(pot_file).exists():
+        # Not pot to distribute, nothing to do here
+        return
+
+    # This will get the first level subdirectories from the "locales" location
+    destination_paths = next(os.walk(app.settings.locales_path))[1]
+
+    for destination_path in destination_paths:
+        destination_path = pathlib.Path.joinpath(app.settings.locales_path, pathlib.Path(destination_path),
+                                                 "LC_MESSAGES", "base.po")
+        if pathlib.Path(destination_path).exists():
+            os.remove(destination_path)
+
+        shutil.copy(pot_file, destination_path)
 
 
 def merge_pot_file():

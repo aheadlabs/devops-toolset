@@ -2,7 +2,7 @@
 
 [run]
 branch = true
-data_file = .pytest/.coverage
+data_file = tests/.pytest/.coverage
 omit = 
     **/__init__.py
     **/conftest.py

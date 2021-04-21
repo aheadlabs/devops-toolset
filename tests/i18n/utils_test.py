@@ -1,14 +1,19 @@
 """Unit core for the i18n/utils.py file"""
 
 import unittest.mock as mock
+from unittest.mock import call
+
 import i18n.utils as sut
 import tools.cli as tools_cli
 import argparse
 import pathlib
 import os
-
+import core.app
+import shutil
 
 # region get_files()
+
+app: core.app.App = core.app.App(True)
 
 
 @mock.patch.object(pathlib.Path, "rglob")
@@ -108,11 +113,12 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
 
 # endregion
 
-# region generate_po_files()
+# region generate_pot_file()
 
 
+@mock.patch("i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
-def test_generate_pot_file_given_path_then_calls_get_files(filenames):
+def test_generate_pot_file_given_path_then_calls_get_files(call_subprocess_mock, distribute_pot_mock, filenames):
     """Given a locale path, it should call get_file_paths_in_tree() to get the
     paths"""
 
@@ -127,8 +133,11 @@ def test_generate_pot_file_given_path_then_calls_get_files(filenames):
     file_paths.assert_called()
 
 
+@mock.patch("i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
-def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with_pygettext(subprocess_mock, filenames):
+def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with_pygettext(subprocess_mock,
+                                                                                           distribute_pot_mock,
+                                                                                           filenames):
     """ Given a pot file path, when args contain the py arg, then compounds the command
         with pygettext.py and all py files and calls it """
     # Arrange
@@ -150,8 +159,11 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
     subprocess_mock.assert_called_once_with(expected_command)
 
 
+@mock.patch("i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
-def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xgettext(subprocess_mock, filenames):
+def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xgettext(subprocess_mock,
+                                                                                      distribute_pot_mock,
+                                                                                      filenames):
     """ Given a locale path, when args not contain the py arg, then iterates on files and compounds the command
         with xgettext and all py files and calls it """
 
@@ -173,7 +185,9 @@ def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xge
 
 
 @mock.patch.object(os, "remove")
-def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(os_remove_mock, filenames):
+@mock.patch("i18n.utils.distribute_pot")
+def test_generate_pot_file_given_path_when_mo_file_exist_then_calls_os_remove(distribute_pot_mock, os_remove_mock,
+                                                                              filenames):
     """ Given a locale path, when a pot file already exists, should remove it first """
 
     # Arrange
@@ -194,6 +208,58 @@ def test_generate_pot_files_given_path_when_mo_file_exist_then_calls_os_remove(o
     # Assert
     os_remove_mock.assert_called_once_with(expected_pot_deleted_file)
 
+
+# endregion
+
+# region distribute_pot()
+
+
+@mock.patch("os.walk")
+@mock.patch("pathlib.Path.exists")
+def test_distribute_pot_when_pot_file_not_exist_then_return(exists_mock, walk_mock):
+    """ Given pot_file path, when doesn't exist, then should return """
+    # Arrange
+    exists_mock.return_value = False
+    # Act
+    sut.distribute_pot()
+    # Assert
+    walk_mock.assert_not_called()
+
+
+@mock.patch("os.remove")
+@mock.patch.object(shutil, "copy")
+@mock.patch("pathlib.Path.exists")
+def test_distribute_pot_when_pot_file_exist_and_po_file_exist_then_remove_po_file(exists_mock, shutil_mock,
+                                                                                  remove_mock):
+    """ Given pot_file path, when exists and the correspondent po file exist, then should call os.remove """
+    # Arrange
+    exists_mock.return_value = True
+    destination_path = pathlib.Path.joinpath(app.settings.locales_path, pathlib.Path("en"),
+                                                 "LC_MESSAGES", "base.po")
+    # Act
+    sut.distribute_pot()
+    calls = [call(destination_path)]
+    # Assert
+    remove_mock.assert_has_calls(calls)
+
+
+@mock.patch("os.remove")
+@mock.patch.object(shutil, "copy")
+@mock.patch("pathlib.Path.exists")
+def test_distribute_pot_when_pot_file_exist_then_copy_to_inmediate_subdirectories(exists_mock, shutil_mock,
+                                                                                  remove_mock):
+    """ Given pot_file path, when exists, then should walk into subdirectories and call shutil.copy to them """
+    # Arrange
+    exists_mock.return_value = True
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+    destination_path = pathlib.Path.joinpath(app.settings.locales_path, pathlib.Path("en"),
+                                             "LC_MESSAGES", "base.po")
+    # Act
+    sut.distribute_pot()
+    calls = [call(pot_file, destination_path)]
+
+    # Assert
+    shutil_mock.assert_has_calls(calls)
 
 # endregion
 
