@@ -27,6 +27,8 @@ args, args_unknown = parser.parse_known_args()
 
 app: core.app.App = core.app.App(args.skip_i18n)
 
+base_pot_file_name = "base.pot"
+
 
 def get_files(starting_path: str, glob: str) -> List[pathlib.Path]:
     """Gets a list with the paths to the descendant files that match the glob pattern.
@@ -45,7 +47,7 @@ def get_files(starting_path: str, glob: str) -> List[pathlib.Path]:
 def generate_pot_file():
     """Generates the .pot file from the strings found in the code"""
 
-    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, base_pot_file_name)
 
     if pathlib.Path(pot_file).exists():
         os.remove(str(pot_file))
@@ -82,7 +84,7 @@ def compile_po_files():
 def distribute_pot():
     """ Copies the generated pot file inside LC_MESSAGES of every language, and renames the file as a .po """
 
-    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, base_pot_file_name)
 
     if not pathlib.Path(pot_file).exists():
         # Not pot to distribute, nothing to do here
@@ -105,7 +107,7 @@ def merge_pot_file():
     # https://www.gnu.org/software/gettext/manual/html_node/msgmerge-Invocation.html#msgmerge-Invocation """
 
     paths = get_files(str(app.settings.locales_path), "**/*.po")
-    pot_file = pathlib.Path.joinpath(app.settings.locales_path, "base.pot")
+    pot_file = pathlib.Path.joinpath(app.settings.locales_path, base_pot_file_name)
 
     if not pathlib.Path(pot_file).exists():
         generate_pot_file()
