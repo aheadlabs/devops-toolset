@@ -52,7 +52,7 @@ def generate_pot_file():
 
     files = get_files(str(app.settings.root_path), "**/*.py")
 
-    script = "pygettext.py" if args.py else "xgettext"
+    script = "pygettext.py" if args.py else "xgettext --from-code=utf-8"
 
     command = f"{script} -d base -o {str(pot_file)} {' '.join(map(str, files))}"
 
