@@ -24,6 +24,10 @@ setuptools.setup(
     ],
     package_dir={"": "devops_toolset"},
     packages=setuptools.find_packages(where="devops_toolset"),
+    data_files=[('logging-config', ['devops_toolset/core/logging-config.json']),
+                ('settings', ['devops_toolset/core/settings.json']),
+                ('wordpress-constants', ['devops_toolset/project_types/wordpress/wordpress-constants.json'])
+                ],
     install_requires=install_requires,
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
