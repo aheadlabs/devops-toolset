@@ -22,4 +22,6 @@ devops_toolset/locales/**/*.[mp]o
 
 # logs
 devops_toolset/logs/*.log*
-devops_toolset/core/tests/*.log*
+
+# config files
+devops_toolset/core/*.json*
