@@ -9,6 +9,7 @@ omit =
     setup.py
     devops_toolset/project_types/wordpress/default_files/*
     devops_toolset/tools/argument_validators.py
+    devops_toolset/configure.py
 
 [report]
 exclude_lines =
