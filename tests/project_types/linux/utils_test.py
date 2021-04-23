@@ -19,10 +19,10 @@ commands = CommandsCore([LinuxCommands])
 
 @patch("logging.error")
 def test_edit_in_place_given_arguments_when_file_path_not_exist_then_raises_error(
-    logging_mock):
+    logging_mock, pathsdata):
     """ Given arguments, when file_path does not exist, should raise FileNotFound error """
     # Arrange
-    file_path = "path/to/file"
+    file_path = pathsdata.file_path
     search_for = "replace this string"
     replace_with = "with this string"
     error_message = literals.get("file_not_exist_err").format(path=file_path)
@@ -38,10 +38,10 @@ def test_edit_in_place_given_arguments_when_file_path_not_exist_then_raises_erro
 @patch("tools.cli.call_subprocess")
 @patch("pathlib.Path.exists")
 def test_edit_in_place_given_arguments_then_calls_subprocess_with_arguments(
-    path_exists_mock, call_subprocess_mock):
+    path_exists_mock, call_subprocess_mock, pathsdata):
     """ Given arguments, should call subprocess with command edit_in_place and its arguments """
     # Arrange
-    file_path = "path/to/file"
+    file_path = pathsdata.file_path
     search_for = "replace this string"
     replace_with = "with this string"
     path_exists_mock.return_value = True
@@ -71,10 +71,10 @@ def test_edit_in_place_given_arguments_then_calls_subprocess_with_arguments(
 @patch("project_types.linux.utils.edit_in_place")
 @patch("pathlib.Path.exists")
 def test_edit_multiple_in_place_given_replacements_should_call_edit_in_place(
-        path_exists_mock, edit_in_place_mock):
+        path_exists_mock, edit_in_place_mock, pathsdata):
     """ Given replacements dict, should call edit_in_place with every replacement """
     # Arrange
-    file_path = "path/to/file"
+    file_path = pathsdata.file_path
     replacements = {"key": "value", "key2": "value2"}
 
     # Act
