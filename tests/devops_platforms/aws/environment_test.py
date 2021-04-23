@@ -20,8 +20,10 @@ def test_create_environment_variables_given_dict_when_not_empty_calls_to_create_
 
     # Arrange
     environment_variables = platformdata.environment_variables_dict
-    expected_command_1 = linux_commands.get("create_env_variable").format(variable_name="env_var_1", variable_value="value1")
-    expected_command_2 = linux_commands.get("create_env_variable").format(variable_name="env_var_2", variable_value="value2")
+    expected_command_1 = linux_commands.get("create_env_variable").\
+        format(variable_name="env_var_1", variable_value="value1")
+    expected_command_2 = linux_commands.get("create_env_variable").\
+        format(variable_name="env_var_2", variable_value="value2")
 
     # Act
     sut.create_environment_variables(environment_variables)
