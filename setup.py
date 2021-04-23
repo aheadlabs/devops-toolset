@@ -26,7 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages(where="devops_toolset"),
     install_requires=install_requires,
     include_package_data=True,
-    package_data={"devops_toolset": ["*.json"]},
+    package_data={"core": ["*.json"]},
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
     author='Ivan Sainz | Alberto Carbonell',
