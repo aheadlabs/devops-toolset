@@ -13,8 +13,8 @@ import project_types.wordpress.constants as constants
 import project_types.wordpress.wp_theme_tools as theme_tools
 import project_types.wordpress.wptools
 import shutil
-import tools
 import tools.cli
+import tools.argument_validators
 import tools.devops_toolset
 import tools.git as git_tools
 from clint.textui import prompt
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
     parser.add_argument("--additional-environments", default="")
-    parser.add_argument("--additional-environment-db-user-passwords", default="")
+    parser.add_argument("--additional-environment-db-user-passwords", default={})
     parser.add_argument("--create-db", action="store_true", default=False)
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
     parser.add_argument("--create-development-theme", action="store_true", default=False)

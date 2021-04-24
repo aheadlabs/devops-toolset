@@ -5,7 +5,7 @@ import os
 import pathlib
 import stat
 import sys
-import tools
+import tools.dicts
 from typing import List, Tuple
 
 import requests
@@ -140,7 +140,6 @@ def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_d
 
     if not paths.is_valid_path(destination_path):
         raise ValueError(literals.get("wp_non_valid_dir_path"))
-
 
     version = site_configuration["settings"]["version"]
     locale = site_configuration["settings"]["locale"]
