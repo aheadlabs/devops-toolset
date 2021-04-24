@@ -4,6 +4,7 @@ import filesystem
 import project_types.node.npm as npm
 import filesystem.paths as paths
 import filesystem.tools
+import filesystem.zip
 import json
 import logging
 import os
@@ -78,10 +79,10 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
         filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
 
         # Replace project.xml version with the one in the package.json file
-        package_json = parsers.parse_json_file(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
-        filesystem.tools.update_xml_file_entity_text(
-            "./version", package_json["version"],
-            pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
+        package_json_path = str(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
+        project_xml_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
+        package_json = parsers.parse_json_file(package_json_path)
+        filesystem.tools.update_xml_file_entity_text("./version", package_json["version"], project_xml_path)
 
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
@@ -155,7 +156,7 @@ def create_development_theme(theme_configuration: dict, root_path: str, constant
 
         # Check if a structure file is available (should be named as [theme-slug]-wordpress-theme-structure
         structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
-        structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), structure_file_name)
+        structure_file_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), structure_file_name))
 
         # Create the structure based on the theme_name
         start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
@@ -232,7 +233,7 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
     # Get data needed in the process
     themes: dict = site_configuration["settings"]["themes"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
+    wordpress_path = str(pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"]))
     themes_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["themes"])
     debug_info = environment_config["wp_cli_debug"]
 
@@ -246,13 +247,13 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
             continue
 
         # Get theme path
-        theme_path = pathlib.Path.joinpath(themes_path, f"{theme['name']}.zip")
+        theme_path = str(pathlib.Path.joinpath(themes_path, f"{theme['name']}.zip"))
         logging.info(literals.get("wp_theme_path").format(path=theme_path))
         theme["source"] = theme_path
 
         # Download theme if needed
         if theme["source_type"] in ["url", "feed"]:
-            download_wordpress_theme(theme, themes_path, **kwargs)
+            download_wordpress_theme(theme, str(themes_path), **kwargs)
 
         # Get template for the theme if it has one
         style_content: bytes = filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
@@ -268,7 +269,6 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
         wp_cli.install_theme(wordpress_path, parent_theme_config["source"], parent_theme_config["activate"],
                              debug_info, parent_theme_config["name"])
         purge_theme_zip_installation_file_if_generated(parent_theme_config)
-
 
     # Install child / single theme
     wp_cli.install_theme(wordpress_path, child_theme_config["source"], child_theme_config["activate"],
@@ -412,15 +412,15 @@ def set_theme_metadata(root_path: str, src_theme_configuration: dict):
     themes_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["themes"])
 
     # Replace meta-data obtained inside theme .scss
-    scss_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "assets", "css", "style.scss")
+    scss_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "src", "assets", "css", "style.scss"))
     replace_theme_meta_data_in_scss_file(scss_file_path, src_theme_configuration)
 
     # Replace meta-data on the package.json file
-    package_json_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "package.json")
+    package_json_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "package.json"))
     replace_theme_meta_data_in_package_file(package_json_file_path, src_theme_configuration)
 
     # Replace theme slug on the functions_core.php
-    functions_php_file_path = pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php")
+    functions_php_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php"))
     replace_theme_slug_in_functions_php(functions_php_file_path, src_theme_configuration)
 
     # Update project.xml name
