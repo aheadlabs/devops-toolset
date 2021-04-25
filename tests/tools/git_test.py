@@ -3,8 +3,8 @@
 import io
 import pathlib
 import pytest
-import tools.git as sut
-import filesystem.paths as path_tools
+import tools as sut
+import filesystem as path_tools
 from unittest.mock import patch, mock_open, call, ANY
 from filesystem.constants import Directions, FileNames
 from tests.tools.conftest import GitignoreData
@@ -12,7 +12,7 @@ from tests.tools.conftest import BranchesData
 from core.CommandsCore import CommandsCore
 from tools.commands import Commands as ToolsCommands
 from core.LiteralsCore import LiteralsCore
-from tools.Literals import Literals as ToolsLiterals
+from tools import Literals as ToolsLiterals
 
 
 commands = CommandsCore([ToolsCommands])

@@ -1,7 +1,7 @@
 # Automatic generation of WordPress repository websites
 
 WordPress automated demo site.<br><br>
-![Logo](../../../.media/WordPress-logotype-simplified-site-100px.png)
+![Logo](../../../../.media/WordPress-logotype-simplified-site-100px.png)
 
 # Description
 

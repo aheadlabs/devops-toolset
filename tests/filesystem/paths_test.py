@@ -1,6 +1,6 @@
 """Unit core for the paths file"""
 
-import filesystem.paths as sut
+import filesystem as sut
 import os
 import pathlib
 import pytest

@@ -1,6 +1,6 @@
 """Unit core for the xcoding64 file"""
 
-import tools.xcoding64 as sut
+import tools as sut
 
 
 # region encode()

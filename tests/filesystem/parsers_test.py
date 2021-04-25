@@ -1,12 +1,12 @@
 """Unit core for the parsers file"""
 
-import filesystem.parsers as sut
+import filesystem as sut
 import pathlib
 import json
 from unittest.mock import patch, mock_open
 from core.app import App
 from core.LiteralsCore import LiteralsCore
-from project_types.wordpress.Literals import Literals as WordpressLiterals
+from project_types import Literals as WordpressLiterals
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")

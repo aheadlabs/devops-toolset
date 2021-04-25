@@ -2,7 +2,7 @@
 import pathlib
 from unittest.mock import patch, call, mock_open
 from tests.toolset.conftest import mocked_requests_get
-import toolset.download_devops_toolset as sut
+import toolset as sut
 
 
 # region cleanup()

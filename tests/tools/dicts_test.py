@@ -1,6 +1,6 @@
 """Unit core for the dicts file"""
 
-import tools.dicts as sut
+import tools as sut
 
 
 # region filter_keys()

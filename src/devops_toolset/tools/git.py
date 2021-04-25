@@ -92,9 +92,9 @@ def git_commit(skip: bool):
     """
     if not skip:
         tools.cli.call_subprocess(commands.get("git_add"),
-                                      log_before_process=[literals.get(
+                                  log_before_process=[literals.get(
                                       "git_before_adding_project_structure_files_to_stage")],
-                                      log_after_err=[literals.get("git_err_adding_project_structure_files_to_stage")])
+                                  log_after_err=[literals.get("git_err_adding_project_structure_files_to_stage")])
         tools.cli.call_subprocess(commands.get("git_commit_m").format(
             message=literals.get("git_add_project_structure_message")),
             log_before_process=[literals.get("git_before_project_structure_commit")],
@@ -114,9 +114,9 @@ def git_init(path: str, skip: bool):
         init_git = prompt.yn(literals.get("git_init_repo"))
         if init_git:
             tools.cli.call_subprocess(commands.get("git_init").format(path=path),
-                                          log_before_process=[literals.get("git_repo_to_be_created")],
-                                          log_after_err=[literals.get("git_err_create_repo")],
-                                          log_after_out=[literals.get("git_repo_created")])
+                                      log_before_process=[literals.get("git_repo_to_be_created")],
+                                      log_after_err=[literals.get("git_err_create_repo")],
+                                      log_after_out=[literals.get("git_repo_created")])
 
 
 def purge_gitkeep(path: str = None):

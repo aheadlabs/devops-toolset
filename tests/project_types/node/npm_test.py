@@ -2,11 +2,11 @@
 from unittest.mock import patch
 
 import pytest
-import project_types.node.npm as sut
+import project_types as sut
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
 from project_types.node.commands import Commands as NodeCommands
-from project_types.node.Literals import Literals as NodeLiterals
+from project_types import Literals as NodeLiterals
 from core.app import App
 
 app: App = App()

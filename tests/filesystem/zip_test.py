@@ -1,7 +1,7 @@
 """Unit core for the zip file"""
 
 from unittest.mock import patch
-import filesystem.zip as sut
+import filesystem as sut
 
 
 # region download_an_unzip_file

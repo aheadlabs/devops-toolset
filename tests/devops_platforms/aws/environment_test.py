@@ -2,8 +2,8 @@
 
 from core.CommandsCore import CommandsCore
 from unittest.mock import patch, call
-from project_types.linux.commands import Commands as LinuxCommands
-import devops_platforms.aws.environment as sut
+from project_types import Commands as LinuxCommands
+import devops_platforms as sut
 
 linux_commands = CommandsCore([LinuxCommands])
 

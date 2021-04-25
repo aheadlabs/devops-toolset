@@ -1,9 +1,10 @@
 """Unit core for the tools file"""
 
 import unittest.mock as mock
-import tools.cli as sut
+import tools as sut
 import subprocess
-import core.log_tools
+import core
+
 
 # region call_subprocess(str)
 

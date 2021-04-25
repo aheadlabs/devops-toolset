@@ -6,8 +6,8 @@ from unittest.mock import patch, mock_open, call, ANY
 
 import pytest
 
-import project_types.wordpress.generate_wordpress as sut
-from project_types.wordpress import constants
+import project_types as sut
+from project_types import constants
 from tests.project_types.wordpress.conftest import mocked_requests_get
 
 # region main

@@ -1,13 +1,12 @@
 """ Unit-core for the dotnet/cli.py module"""
 
-from unittest.mock import patch, call
 import pytest
 
-import project_types.dotnet.cli as sut
+import project_types as sut
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
-from project_types.dotnet.commands import Commands as DotnetCommands
-from project_types.dotnet.Literals import Literals as DotnetLiterals
+from project_types.dotnet import Commands as DotnetCommands
+from project_types.dotnet import Literals as DotnetLiterals
 from core.app import App
 
 app: App = App()

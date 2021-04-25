@@ -7,9 +7,9 @@ omit =
     **/__init__.py
     **/conftest.py
     setup.py
-    devops_toolset/project_types/wordpress/default_files/*
-    devops_toolset/tools/argument_validators.py
-    devops_toolset/configure.py
+    src/devops_toolset/project_types/wordpress/default_files/*
+    src/devops_toolset/tools/argument_validators.py
+    src/devops_toolset/configure.py
 
 [report]
 exclude_lines =
@@ -18,7 +18,7 @@ skip_covered = true
 
 [html]
 directory = tests/.pytest/htmlcov/
-extra_css = devops_toolset/.devops/coverage-report.css
+extra_css = src/devops_toolset/.devops/coverage-report.css
 title = devops-toolset unit test coverage report
 
 [xml]

@@ -1,7 +1,7 @@
 """Unit core for the rollback_database file"""
 
 from unittest.mock import patch
-import project_types.wordpress.rollback_database as sut
+import project_types as sut
 
 
 @patch("project_types.wordpress.wp_cli.import_database")

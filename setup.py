@@ -1,7 +1,6 @@
 """Project setup"""
 import pathlib
 import setuptools
-import filesystem.parsers
 import filesystem.paths
 
 with open(pathlib.Path(filesystem.paths.get_project_root(), "README.md"), "r", encoding="utf-8") as fh:

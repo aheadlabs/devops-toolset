@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from core.app import App
-import devops_platforms.azuredevops.restapi as sut
+import devops_platforms as sut
 from tools.xcoding64 import encode
 from tests.devops_platforms.azuredevops.conftest import mocked_requests_get, mocked_requests_get_ko
 from core.CommandsCore import CommandsCore

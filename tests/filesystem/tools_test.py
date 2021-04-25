@@ -1,6 +1,6 @@
 """Unit core for the tools file"""
 
-import filesystem.tools as sut
+import filesystem as sut
 from unittest.mock import patch
 import pytest
 

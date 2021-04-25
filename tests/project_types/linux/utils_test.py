@@ -3,11 +3,11 @@
 from unittest.mock import patch, call
 import pytest
 
-import project_types.linux.utils as sut
+import project_types as sut
 from core.CommandsCore import CommandsCore
 from core.LiteralsCore import LiteralsCore
-from project_types.linux.commands import Commands as LinuxCommands
-from project_types.linux.Literals import Literals as LinuxLiterals
+from project_types import Commands as LinuxCommands
+from project_types import Literals as LinuxLiterals
 from core.app import App
 
 app: App = App()
