@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import tools
 import tools.cli as cli
 from core.app import App
 from core.LiteralsCore import LiteralsCore
@@ -411,11 +412,11 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
         admin_password=admin_password,
         path=wordpress_path
     ))
-    user_exists = True if output is not None and len(output.split("\r\n")) > 1 and output.split("\r\n")[1] == '1' \
+    user_exists_db = True if output is not None and len(output.split("\r\n")) > 1 and output.split("\r\n")[1] == '1' \
         else False
 
     # Create user
-    if not user_exists:
+    if not user_exists_db:
         cli.call_subprocess(commands.get("wpcli_db_query_create_user").format(
             user=user,
             host=host,
