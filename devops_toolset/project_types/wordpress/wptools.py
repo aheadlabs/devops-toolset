@@ -329,7 +329,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
 
     # Get paths and parameters
     wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
-    wordpress_path = str()
+    wordpress_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["wordpress"]))
     author_handling = site_configuration["content"]["author_handling"]
 
     if author_handling == "mapping.csv":

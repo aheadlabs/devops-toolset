@@ -309,11 +309,12 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
     # Act
     sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
-    expected_calls = [call(wordpress_path, expected_content_imported[0], False),
-                      call(wordpress_path, expected_content_imported[1], False)]
+    expected_calls = [call(str(wordpress_path), expected_content_imported[0], False),
+                      call(str(wordpress_path), expected_content_imported[1], False)]
 
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
+
 
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 @patch("project_types.wordpress.wp_cli.delete_post_type_content")
@@ -337,7 +338,7 @@ def test_import_content_from_configuration_file_given_args_then_call_import_wxr_
     expected_calls = []
     for content_type in expected_content_imported:
         content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
-        expected_calls.append(call(wordpress_path, content_path, "skip", environment_config["wp_cli_debug"]))
+        expected_calls.append(call(str(wordpress_path), str(content_path), "skip", environment_config["wp_cli_debug"]))
 
     # Assert
     import_wxr_content.assert_has_calls(expected_calls)
@@ -433,7 +434,7 @@ def test_install_plugins_given_configuration_file_when_plugins_present_then_inst
     for plugin in site_config["settings"]["plugins"]:
         plugin_path = paths.get_file_path_from_pattern(plugins_path, f"{plugin['name']}*.zip")
         plugin_call = call(plugin["name"],
-                           wordpress_path,
+                           str(wordpress_path),
                            plugin["activate"],
                            plugin["force"],
                            plugin_path,
@@ -524,7 +525,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wp_
                     # Act
                     sut.install_wp_cli(install_path)
                     # Assert
-                    chmod_mock.assert_called_once_with(wordpressdata.wp_cli_file_path,
+                    chmod_mock.assert_called_once_with(str(wordpressdata.wp_cli_file_path),
                                                        file_stat_mock.return_value.st_mode | stat.S_IEXEC)
 
 

@@ -273,7 +273,7 @@ def test_create_development_theme_given_theme_config_when_src_theme_then_should_
     # Act
     sut.create_development_theme(theme, wordpressdata.root_path, constants)
     # Assert
-    start_structure_mock.assert_called_once_with(destination_path, theme_slug, structure_file_path)
+    start_structure_mock.assert_called_once_with(destination_path, theme_slug, str(structure_file_path))
 
 
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
@@ -397,7 +397,7 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
     # Act
     sut.install_themes_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
-    install_theme_mock.assert_called_once_with(wordpress_path, themesdata.child_url_source, True,
+    install_theme_mock.assert_called_once_with(str(wordpress_path), themesdata.child_url_source, True,
                                                environment_config["wp_cli_debug"], themesdata.child_name)
 
 
@@ -504,7 +504,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     # Act
     sut.set_theme_metadata(root_path, src_theme)
     # Assert
-    replace_theme_metadata_in_scss_mock.assert_called_once_with(scss_file_path, src_theme)
+    replace_theme_metadata_in_scss_mock.assert_called_once_with(str(scss_file_path), src_theme)
 
 
 @patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
@@ -527,7 +527,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     # Act
     sut.set_theme_metadata(root_path, src_theme)
     # Assert
-    replace_theme_metadata_in_package_mock.assert_called_once_with(package_json_path, src_theme)
+    replace_theme_metadata_in_package_mock.assert_called_once_with(str(package_json_path), src_theme)
 
 
 @patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
@@ -551,7 +551,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug
     # Act
     sut.set_theme_metadata(root_path, src_theme)
     # Assert
-    replace_theme_slug_in_functions_mock.assert_called_once_with(functions_php_file_path, src_theme)
+    replace_theme_slug_in_functions_mock.assert_called_once_with(str(functions_php_file_path), src_theme)
 
 # endregion set_theme_metadata()
 
@@ -573,7 +573,7 @@ def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_
     # Act
     sut.start_basic_theme_structure(destination_path, theme_name, structure_file_path)
     # Assert
-    get_site_configuration_mock.assert_called_once_with(structure_file_path)
+    get_site_configuration_mock.assert_called_once_with(str(structure_file_path))
 
 
 @patch("logging.info")
