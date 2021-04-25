@@ -184,7 +184,7 @@ def get_constants() -> dict:
     """Gets all the constants from a WordPress constants resource.
 
     For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json
+        https://dev.aheadlabs.com/schemas/json/wordpress-constants-schema.json
 
 
     Returns:
@@ -201,7 +201,7 @@ def get_project_structure(url_resource: str) -> dict:
     """Gets the project structure from a WordPress project structure file located on an url resource.
 
     For more information see:
-        http://dev.aheadlabs.com/schemas/json/project-structure-schema.json
+        https://dev.aheadlabs.com/schemas/json/project-structure-schema.json
 
     Args:
         url_resource: Full url resource to the WordPress project structure file.
@@ -240,8 +240,7 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
         logging.info(literals.get("wp_required_file_paths_not_found"))
     else:
         core.log_tools.log_indented_list(literals.get("wp_required_file_paths_found"),
-                                             result,
-                                             core.log_tools.LogLevel.info)
+                                         result, core.log_tools.LogLevel.info)
 
     return tuple(result)
 
@@ -250,7 +249,7 @@ def get_site_configuration(path: str) -> dict:
     """Gets the WordPress site configuration from a site configuration file.
 
     For more information see:
-        http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
+        https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json
 
     Args:
         path: Full path to the WordPress project structure file.
@@ -330,11 +329,11 @@ def import_content_from_configuration_file(site_configuration: dict, environment
 
     # Get paths and parameters
     wxr_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["content"]["wxr"])
-    wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["wordpress"])
+    wordpress_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), global_constants["paths"]["wordpress"]))
     author_handling = site_configuration["content"]["author_handling"]
 
     if author_handling == "mapping.csv":
-        authors_path = pathlib.Path.joinpath(wxr_path, "mapping.csv")
+        authors_path = str(pathlib.Path.joinpath(wxr_path, "mapping.csv"))
         authors = authors_path if not filesystem.tools.is_file_empty(authors_path) else "skip"
     else:
         authors = author_handling
@@ -344,7 +343,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
     for content_type in site_configuration["content"]["sources"]:
 
         # File name will be the {wxr_path}/{content_type}.xml
-        content_path = pathlib.Path.joinpath(wxr_path, f"{content_type}.xml")
+        content_path = str(pathlib.Path.joinpath(wxr_path, f"{content_type}.xml"))
 
         # Delete content before importing (to avoid duplicating content)
         wp_cli.delete_post_type_content(wordpress_path, content_type, debug_info)
@@ -370,8 +369,8 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
     # Get data needed in the process
     plugins: dict = site_configuration["settings"]["plugins"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
-    plugins_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["plugins"])
+    wordpress_path = str(pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"]))
+    plugins_path = str(pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["plugins"]))
     debug_info = environment_config["wp_cli_debug"]
 
     for plugin in plugins:
@@ -409,7 +408,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
 def install_recommended_plugins():
     """ Uses TGMPA core to decide and install automatically the recommended plugins.
 
-    See Also: http://tgmpluginactivation.com/
+    See Also: https://tgmpluginactivation.com/
     See Also: https://github.com/itspriddle/wp-cli-tgmpa-plugin
     Args:
 
@@ -456,7 +455,7 @@ def install_wp_cli(install_path: str = "/usr/local/bin/wp"):
     wp_cli_phar = "wp-cli.phar"
     wp_cli_download_url = f"https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/{wp_cli_phar}"
     install_path = pathlib.Path(install_path)
-    file_path = pathlib.Path.joinpath(install_path, wp_cli_phar)
+    file_path = str(pathlib.Path.joinpath(install_path, wp_cli_phar))
 
     if not pathlib.Path.is_dir(install_path):
         raise ValueError(literals.get("wp_not_dir"))
@@ -496,7 +495,7 @@ def install_wordpress_site(site_configuration: dict, environment_config: dict, g
 
     database_path = global_constants["paths"]["database"]
     root_path_obj = pathlib.Path(root_path)
-    wordpress_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"])
+    wordpress_path = str(pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["wordpress"]))
     wordpress_path_as_posix = str(pathlib.Path(wordpress_path).as_posix())
 
     # Install wordpress
@@ -625,7 +624,7 @@ def start_basic_project_structure(root_path: str) -> None:
     structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), "wordpress-project-structure.json")
     # Parse project structure configuration
     if pathlib.Path.exists(structure_file_path):
-        project_structure = get_site_configuration(structure_file_path)
+        project_structure = get_site_configuration(str(structure_file_path))
         logging.info(literals.get("wp_project_structure_creating_from_file").format(file_name=structure_file_path))
     else:
         project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)

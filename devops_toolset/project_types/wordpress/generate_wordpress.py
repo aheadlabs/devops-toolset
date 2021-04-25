@@ -63,7 +63,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # If there are missing required files, ask for using the default ones from GitHub if quiet flag is activated
     if len(required_files_not_present) > 0:
         core.log_tools.log_indented_list(literals.get("wp_required_files_not_found_detail").format(path=root_path),
-                                             required_files_not_present, core.log_tools.LogLevel.warning)
+                                         required_files_not_present, core.log_tools.LogLevel.warning)
 
         core.log_tools.log_indented_list(
             literals.get("wp_default_files"),
