@@ -17,7 +17,7 @@ from tools.Literals import Literals as ToolsLiterals
 from filesystem.constants import FileNames, Directions
 from core.CommandsCore import CommandsCore
 from tools.commands import Commands as ToolsCommands
-import tools
+import tools.cli
 
 app: core.app.App = core.app.App()
 literals = LiteralsCore([ToolsLiterals])

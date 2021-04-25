@@ -38,7 +38,7 @@ def log_stdouterr(output: bytes, level: LogLevel):
     """
 
     for line in output.splitlines():
-        logging.log(level.value[0], line.decode("utf-8"))
+        logging.log(level.value[0], line.decode("cp1252"))
 
 
 def log_indented_list(header: str, list_values: List[str], level: LogLevel):
