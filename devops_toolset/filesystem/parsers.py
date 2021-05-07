@@ -20,6 +20,24 @@ literals = LiteralsCore([FileSystemLiterals])
 wp_literals = LiteralsCore([WordpressLiterals])
 
 
+def get_xml_file_entity_text(entity_xpath: str, xml_file_path: str) -> dict:
+    """Gets the XML entity tag and value that matches the XPath expression.
+
+    Supported XPath syntax is documented here:
+    https://docs.python.org/3/library/xml.etree.elementtree.html#supported-xpath-syntax
+
+    Args:
+        entity_xpath: Path to the node or attribute to be matched.
+        xml_file_path: Path to the XML file.
+
+    Returns:
+        Dict with tag and value.
+    """
+    xml_tree = ElementTree.parse(xml_file_path)
+    entity = xml_tree.find(entity_xpath)
+    return {entity.tag: entity.text}
+
+
 def parse_project_xml_data(add_environment_variables: bool = True, project_xml_path: str = None) -> dict:
     """Reads the /project.xml file and returns a dict with its data.
 
