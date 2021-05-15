@@ -178,15 +178,18 @@ def test_get_filepath_in_tree_ascending_given_file_name_when_exists_then_returns
     path"""
 
     # Arrange
+    base_path = pathlib.Path(filenames.deep_path)
+    seed = filenames.file
+
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = True
-        with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
+        with patch(filenames.file__path, f"{base_path}/{seed}"):
 
             # Act
-            result = sut.get_filepath_in_tree(filenames.file)
+            result = sut.get_filepath_in_tree(base_path, seed)
 
     # Assert
-    assert result.as_posix() == filenames.path
+    assert result.as_posix() == filenames.deep_path_segment
 
 
 def test_get_filepath_in_tree_ascending_given_file_name_when_not_exist_then_returns_none(filenames):
@@ -194,12 +197,15 @@ def test_get_filepath_in_tree_ascending_given_file_name_when_not_exist_then_retu
     None"""
 
     # Arrange
+    base_path = pathlib.Path(filenames.deep_path)
+    seed = filenames.file
+
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = False
         with patch(filenames.file__path, f"{filenames.path}/{filenames.test_file}"):
 
             # Act
-            result = sut.get_filepath_in_tree(filenames.file)
+            result = sut.get_filepath_in_tree(base_path, seed)
 
     # Assert
     assert result is None
@@ -214,6 +220,9 @@ def test_get_filepath_descending_in_tree_given_file_name_when_exists_then_return
     path"""
 
     # Arrange
+    base_path = pathlib.Path(filenames.deep_path)
+    seed = filenames.file
+
     with patch.object(pathlib.Path, "exists") as exists:
         exists.return_value = True
         with patch.object(pathlib.Path, "rglob") as rglob:
@@ -221,7 +230,7 @@ def test_get_filepath_descending_in_tree_given_file_name_when_exists_then_return
             with patch(filenames.file__path, f"{filenames.deep_path}/{filenames.test_file}"):
 
                 # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
+                result = sut.get_filepath_in_tree(base_path, seed, Directions.DESCENDING)
 
     # Assert
     assert result.as_posix() == filenames.path
@@ -235,6 +244,9 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
     returned, should return None"""
 
     # Arrange
+    base_path = pathlib.Path(filenames.deep_path)
+    seed = filenames.file
+
     with patch.object(pathlib.Path, "exists") as exists:
         exists.return_value = False
         with patch.object(pathlib.Path, "rglob") as rglob:
@@ -242,7 +254,7 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
             with patch(filenames.file__path, f"{path}/{filenames.test_file}"):
 
                 # Act
-                result = sut.get_filepath_in_tree(filenames.file, Directions.DESCENDING)
+                result = sut.get_filepath_in_tree(base_path, seed, Directions.DESCENDING)
 
     # Assert
     assert result is None
@@ -253,17 +265,20 @@ def test_get_filepath_descending_in_tree_given_file_name_when_not_exist_but_path
 # region get_project_root()
 
 
-def test_get_project_root_then_calls_get_file_path_in_tree_with_project_file():
+def test_get_project_root_then_calls_get_file_path_in_tree_with_project_file(filenames):
     """Then calls get_filepath_in_tree() with project file as a parameter"""
 
     # Arrange
+    base_path = pathlib.Path(filenames.deep_path)
+    seed = FileNames.PROJECT_FILE
+
     with patch.object(sut, "get_filepath_in_tree") as target:
 
         # Act
-        sut.get_project_root()
+        sut.get_project_root(base_path, seed)
 
         # Assert
-        target.assert_called_with(FileNames.PROJECT_FILE)
+        target.assert_called_with(base_path, seed)
 
 # endregion
 

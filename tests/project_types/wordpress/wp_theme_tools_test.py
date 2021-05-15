@@ -260,6 +260,7 @@ def test_create_development_theme_given_theme_config_when_no_src_theme_then_shou
 def test_create_development_theme_given_theme_config_when_src_theme_then_should_start_basic_theme_structure(
         set_theme_metadata_mock, start_structure_mock, get_themes_from_root_path_mock, wordpressdata, themesdata):
     """ Given theme config, when there is a source_typed src theme, then should call the start_basic_theme_structure """
+
     # Arrange
     constants = json.loads(wordpressdata.constants_file_content)
     theme = json.loads(themesdata.theme_single_src)
@@ -270,10 +271,12 @@ def test_create_development_theme_given_theme_config_when_src_theme_then_should_
     themes_path = wordpressdata.theme_path
     get_themes_from_root_path_mock.return_value = pathlib.Path.joinpath(pathlib.Path(root_path), themes_path)
     destination_path = pathlib.Path.joinpath(pathlib.Path(root_path), themes_path)
+
     # Act
     sut.create_development_theme(theme, wordpressdata.root_path, constants)
+
     # Assert
-    start_structure_mock.assert_called_once_with(destination_path, theme_slug, structure_file_path)
+    start_structure_mock.assert_called_once_with(destination_path, theme_slug, str(structure_file_path))
 
 
 @patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
@@ -382,6 +385,7 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
         parse_theme_metadata, read_text_file_mock, download_wordpress_mock, check_theme_mock, check_themes_mock,
         wordpressdata, themesdata):
     """ Given the configuration values, when wrong single theme configuration found, then the theme is skipped """
+
     # Arrange
     check_themes_mock.return_value = True
     check_theme_mock.return_value = True
@@ -394,10 +398,12 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
     constants = json.loads(wordpressdata.constants_file_content)
     root_path = wordpressdata.root_path
     triage_themes_mock.return_value = None, json.loads(themesdata.themes_content_with_child_activated)[0]
+
     # Act
     sut.install_themes_from_configuration_file(site_config, environment_config, constants, root_path, True)
+
     # Assert
-    install_theme_mock.assert_called_once_with(wordpress_path, themesdata.child_url_source, True,
+    install_theme_mock.assert_called_once_with(str(wordpress_path), themesdata.child_url_source, True,
                                                environment_config["wp_cli_debug"], themesdata.child_name)
 
 
@@ -504,7 +510,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     # Act
     sut.set_theme_metadata(root_path, src_theme)
     # Assert
-    replace_theme_metadata_in_scss_mock.assert_called_once_with(scss_file_path, src_theme)
+    replace_theme_metadata_in_scss_mock.assert_called_once_with(str(scss_file_path), src_theme)
 
 
 @patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
@@ -516,6 +522,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
         update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
         replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
     """ Given src theme config, then calls replace_theme_metadata_in_package_json file method, using the themes path"""
+
     # Arrange
     root_path = wordpressdata.root_path
     wpconstants = json.loads(wordpressdata.constants_file_content)
@@ -524,10 +531,12 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     themes_path = pathlib.Path.joinpath(pathlib.Path(root_path),
                                         wpconstants["paths"]["content"]["themes"])
     package_json_path = pathlib.Path.joinpath(themes_path, src_theme["source"], "package.json")
+
     # Act
     sut.set_theme_metadata(root_path, src_theme)
+
     # Assert
-    replace_theme_metadata_in_package_mock.assert_called_once_with(package_json_path, src_theme)
+    replace_theme_metadata_in_package_mock.assert_called_once_with(str(package_json_path), src_theme)
 
 
 @patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
@@ -539,6 +548,7 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug
         update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
         replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
     """ Given src theme config, then calls replace_theme_slug_in_functions_php file method, using the themes path"""
+
     # Arrange
     root_path = wordpressdata.root_path
     wpconstants = json.loads(wordpressdata.constants_file_content)
@@ -550,8 +560,9 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug
                                                     src_theme["source"], "src", "functions_php", "_core.php")
     # Act
     sut.set_theme_metadata(root_path, src_theme)
+
     # Assert
-    replace_theme_slug_in_functions_mock.assert_called_once_with(functions_php_file_path, src_theme)
+    replace_theme_slug_in_functions_mock.assert_called_once_with(str(functions_php_file_path), src_theme)
 
 # endregion set_theme_metadata()
 

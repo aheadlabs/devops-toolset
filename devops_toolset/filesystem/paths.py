@@ -160,7 +160,8 @@ def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
     return paths
 
 
-def get_filepath_in_tree(base_path: pathlib.Path, seed: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
+def get_filepath_in_tree(
+        base_path: pathlib.Path, seed: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
     """Gets path to the directory containing the file.
 
     Args:
