@@ -9,7 +9,7 @@ app: App = App()
 class Commands(ValueDictsBase):
     """Commands for the linux module."""
 
-    # Add your linux literal dictionaries here
+    # Add your linux commands dictionaries here
     _commands = {
         "create_env_variable": "export {variable_name}={variable_value}",
         "deb_which": "which {package}",

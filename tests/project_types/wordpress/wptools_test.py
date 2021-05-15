@@ -317,6 +317,7 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     # Assert
     delete_content_mock.assert_has_calls(expected_calls)
 
+
 @patch("project_types.wordpress.wp_cli.import_wxr_content")
 @patch("project_types.wordpress.wp_cli.delete_post_type_content")
 @pytest.mark.parametrize("authors_value", ["create", "skip", "mapping.csv"])

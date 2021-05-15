@@ -584,7 +584,7 @@ def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_
     # Act
     sut.start_basic_theme_structure(destination_path, theme_name, structure_file_path)
     # Assert
-    get_site_configuration_mock.assert_called_once_with(structure_file_path)
+    get_site_configuration_mock.assert_called_once_with(str(structure_file_path))
 
 
 @patch("logging.info")
