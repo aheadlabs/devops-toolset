@@ -299,6 +299,7 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock,
     import_wxr_content, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
+
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
     environment_config = site_config["environments"][0]
@@ -307,6 +308,7 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     wordpress_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["wordpress"])
     expected_content_imported = ["page", "nav_menu_item"]
     site_config["content"] = json.loads(wordpressdata.import_content_skip_author)
+
     # Act
     sut.import_content_from_configuration_file(site_config, environment_config, root_path, constants)
     expected_calls = [call(str(wordpress_path), expected_content_imported[0], False),
@@ -322,6 +324,7 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
 def test_import_content_from_configuration_file_given_args_then_call_import_wxr_content(delete_content_mock,
     import_wxr_content, authors_value, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
+
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
     environment_config = site_config["environments"][0]
@@ -419,6 +422,7 @@ def test_install_plugins_given_configuration_file_when_plugins_present_then_inst
         export_mock, convert_token_mock, download_wordpress_plugin_mock, install_plugin_mock,
         logging_mock, logging_warn_mock, plugins_content, wordpressdata, pluginsdata):
     """ Given the configuration values, when url plugin present, then calls download_wordpress_plugin"""
+
     # Arrange
     site_config = json.loads(wordpressdata.site_config_content)
     site_config["settings"]["plugins"] = plugins_content
@@ -427,8 +431,10 @@ def test_install_plugins_given_configuration_file_when_plugins_present_then_inst
     root_path = pathlib.Path(wordpressdata.root_path)
     wordpress_path = pathlib.Path.joinpath(root_path, constants["paths"]["wordpress"])
     plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
+
     # Act
     sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
+
     # Assert
     calls = []
     for plugin in site_config["settings"]["plugins"]:
@@ -684,93 +690,25 @@ def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_str
 
 # region set_wordpress_config_from_configuration_file
 
-
 @patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
 @patch("project_types.wordpress.wptools.create_configuration_file")
 @patch("project_types.wordpress.wp_cli.set_configuration_value")
-def test_set_wordpress_config_from_configuration_file_return_when_no_additional_settings(
-        set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
-    """Given site_configuration, when there is no additional settings, then
-    exits function."""
-
-    # Arrange
-    site_config = json.loads(wordpressdata.site_config_content)
-    environment_config = site_config["environments"][0]
-    wordpress_path = wordpressdata.wordpress_path
-    database_user_pass = "my-password"
-
-    # Act
-    sut.set_wordpress_config_from_configuration_file(site_config, environment_config, wordpress_path,
-                                                     database_user_pass)
-
-    # Assert
-    add_cloudfront_mock.assert_not_called()
-
-
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
-def test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfront(
-        set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
-    """Given site_configuration, when there is no aws_cloudfron, then exits
-    function."""
-
-    # Arrange
-    site_config_additional_settings = json.loads(wordpressdata.site_config_content_additional_settings)
-    site_config = json.loads(wordpressdata.site_config_content)
-    environment_config = site_config["environments"][0]
-    wordpress_path = wordpressdata.wordpress_path
-    database_user_pass = "my-password"
-
-    # Act
-    sut.set_wordpress_config_from_configuration_file(site_config_additional_settings, environment_config,
-                                                     wordpress_path, database_user_pass)
-
-    # Assert
-    add_cloudfront_mock.assert_not_called()
-
-
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
-def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_false(
-        set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
-    """Given site_configuration, when aws_cloudfront is false, then ends
-    function."""
-
-    # Arrange
-    site_config_false_aws_cloudfront = json.loads(wordpressdata.site_config_content_false_aws_cloudfront)
-    site_config = json.loads(wordpressdata.site_config_content)
-    environment_config = site_config["environments"][0]
-    wordpress_path = wordpressdata.wordpress_path
-    database_user_pass = "my-password"
-
-    # Act
-    sut.set_wordpress_config_from_configuration_file(site_config_false_aws_cloudfront, environment_config,
-                                                     wordpress_path, database_user_pass)
-
-    # Assert
-    add_cloudfront_mock.assert_not_called()
-
-
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
-def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_true(
-        set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
-    """Given site_configuration, when aws_cloudfront is true, then calls
+@pytest.mark.parametrize("aws_cloudfront", [True, False])
+def test_set_wordpress_config_from_configuration_file(set_configuration_value_mock, create_configuration_file_mock,
+                                                      add_cloudfront_mock, wordpressdata, aws_cloudfront):
+    """Given site_configuration, then calls
     add_cloudfront_forwarded_proto_to_config."""
 
     # Arrange
-    site_config_true_cloudfront = json.loads(wordpressdata.site_config_content_true_aws_cloudfront)
-    site_config = json.loads(wordpressdata.site_config_content)
-    environment_config = site_config["environments"][0]
+    environment_config = wordpressdata.environment_config_aws_cloudfront_true \
+        if aws_cloudfront else wordpressdata.environment_config_aws_cloudfront_false
     wordpress_path = wordpressdata.wordpress_path
+    devops_toolset_wordpress_path = wordpressdata.devops_toolset_wordpress_path
     database_user_pass = "my-password"
 
     # Act
-    sut.set_wordpress_config_from_configuration_file(site_config_true_cloudfront, environment_config, wordpress_path,
-                                                     database_user_pass)
+    sut.set_wordpress_config_from_configuration_file(
+        environment_config, wordpress_path, devops_toolset_wordpress_path, database_user_pass)
 
     # Assert
     add_cloudfront_mock.assert_called_once()
@@ -783,15 +721,18 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_tru
 @patch("pathlib.Path.exists")
 @patch("builtins.open", new_callable=mock_open, read_data="data")
 def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_not_exists(
-        builtins_open, path_exists_mock):
+        builtins_open, path_exists_mock, wordpressdata):
     """Given path to wordpress installation, when wp-config.php not exists, then
     ends function."""
 
     # Arrange
+    environment_config: dict = wordpressdata.environment_config_aws_cloudfront_true
+    wordpress_path: str = wordpressdata.wordpress_path
+    devops_toolset_wordpress_path: str = wordpressdata.devops_toolset_wordpress_path
     path_exists_mock.return_value = False
 
     # Act
-    sut.add_cloudfront_forwarded_proto_to_config("path")
+    sut.add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
 
     # Assert
     builtins_open.assert_not_called()
@@ -801,15 +742,18 @@ def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_not_exists(
 @patch("builtins.open", new_callable=mock_open, read_data="data")
 @patch("re.search")
 def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_exists_calls_re_search_with_pattern(
-      search_mock, builtins_open, path_exists_mock):
+      search_mock, builtins_open, path_exists_mock, wordpressdata):
     """Given path to wordpress installation, when wp-config.php exists, then
-    searchs for specific pattern."""
+    searches for specific pattern."""
 
     # Arrange
+    environment_config: dict = wordpressdata.environment_config_aws_cloudfront_true
+    wordpress_path: str = wordpressdata.wordpress_path
+    devops_toolset_wordpress_path: str = wordpressdata.devops_toolset_wordpress_path
     path_exists_mock.return_value = True
 
     # Act
-    sut.add_cloudfront_forwarded_proto_to_config("path")
+    sut.add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
 
     # Assert
     search_mock.assert_called_once_with(r'/\*\*.*\nrequire_once.*', "data")
@@ -821,14 +765,18 @@ def test_add_cloudfront_forwarded_proto_snippet_when_no_match_pattern(
       search_mock, path_exists_mock, wordpressdata):
     """Given path to wordpress installation, when no match specific pattern in
      wp-config content ends function."""
+
     # Arrange
+    environment_config: dict = wordpressdata.environment_config_aws_cloudfront_true
+    wordpress_path: str = wordpressdata.wordpress_path
+    devops_toolset_wordpress_path: str = wordpressdata.devops_toolset_wordpress_path
     path_exists_mock.return_value = True
     search_mock.return_value = None
     m = mock_open()
 
     # Act
     with patch(wordpressdata.builtins_open, m, create=True):
-        sut.add_cloudfront_forwarded_proto_to_config("path")
+        sut.add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
 
         # Assert
         handler = m()
@@ -844,6 +792,9 @@ def test_add_cloudfront_forwarded_proto_snippet_when_match_pattern(
      wp-config overwrites content with match substitution."""
 
     # Arrange
+    environment_config: dict = wordpressdata.environment_config_aws_cloudfront_true
+    wordpress_path: str = str(tmp_path)
+    devops_toolset_wordpress_path: str = wordpressdata.devops_toolset_wordpress_path
     path_exists_mock.return_value = True
     sub_mock.return_value = "new content"
     search_mock.return_value = re.search("data", "data")
@@ -852,7 +803,7 @@ def test_add_cloudfront_forwarded_proto_snippet_when_match_pattern(
 
     # Act
     with patch(wordpressdata.builtins_open, m, create=True):
-        sut.add_cloudfront_forwarded_proto_to_config(tmp_path)
+        sut.add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
 
         # Assert
         handler = m()
@@ -867,15 +818,16 @@ def test_add_cloudfront_forwarded_proto_snippet_when_match_pattern(
 
 @patch("logging.error")
 @patch("pathlib.Path.exists")
-def test_default_snippet_cloudfront_file_not_exists(path_exists_mock, logging_mock):
+def test_get_snippet_cloudfront_default_snippet_cloudfront_file_not_exists(path_exists_mock, logging_mock):
     """When default_snippet_cloudfront file not exits logs error."""
 
     # Arrange
-    file_path = pathlib.Path('default-files/default-cloudfront-forwarded-proto.php')
+    devops_toolset_wordpress_path = pathlib.Path(WordPressData.wordpress_path)
+    file_path = pathlib.Path(devops_toolset_wordpress_path, 'default-files/default-cloudfront-forwarded-proto.php')
     path_exists_mock.return_value = False
 
     # Act
-    sut.get_snippet_cloudfront()
+    sut.get_snippet_cloudfront(str(devops_toolset_wordpress_path))
 
     # Assert
     logging_mock.assert_called_once_with(literals.get("wp_file_not_found").format(file=file_path))
@@ -883,14 +835,15 @@ def test_default_snippet_cloudfront_file_not_exists(path_exists_mock, logging_mo
 
 @patch("builtins.open", new_callable=mock_open, read_data="data")
 @patch("pathlib.Path.exists")
-def test_default_snippet_cloudfront_file_exists(path_exists_mock, builtins_open):
+def test_get_snippet_cloudfront_default_snippet_cloudfront_file_exists(path_exists_mock, builtins_open):
     """When default_snippet_cloudfront file exits returns its content."""
 
     # Arrange
+    devops_toolset_wordpress_path = pathlib.Path(WordPressData.wordpress_path)
     path_exists_mock.return_value = True
 
     # Act
-    result = sut.get_snippet_cloudfront()
+    result = sut.get_snippet_cloudfront(str(devops_toolset_wordpress_path))
 
     # Assert
     assert result == "data"

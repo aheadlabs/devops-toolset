@@ -520,13 +520,14 @@ def install_wordpress_site(site_configuration: dict, environment_config: dict, g
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="core"))
 
 
-def set_wordpress_config_from_configuration_file(site_config: dict, environment_config: dict, wordpress_path: str,
-                                                 db_user_password: str) -> None:
+def set_wordpress_config_from_configuration_file(environment_config: dict, wordpress_path: str,
+                                                 devops_toolset_wordpress_path: str, db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
-        site_config: Parsed site configuration.
         environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
+        devops_toolset_wordpress_path: Path to the source root of the WordPress
+            project type in devops-toolset.
         db_user_password: Database user password.
 
     """
@@ -547,22 +548,26 @@ def set_wordpress_config_from_configuration_file(site_config: dict, environment_
             prop.get("name"), value, prop.get("type"),
             wordpress_path, raw, debug)
 
-    # Add cloudfront snippet to wp_config.php
-    if "additional_settings" not in site_config["settings"]:
-        return
-    if "aws_cloudfront" not in site_config["settings"]["additional_settings"]:
-        return
-    if site_config["settings"]["additional_settings"]["aws_cloudfront"]:
-        add_cloudfront_forwarded_proto_to_config(wordpress_path)
+    # Add cloudfront snippet to wp_config.php if needed
+    add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
 
 
-def add_cloudfront_forwarded_proto_to_config(wordpress_path: str):
-    """ Add HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
+def add_cloudfront_forwarded_proto_to_config(
+        environment_config: dict, wordpress_path: str, devops_toolset_wordpress_path: str):
+    """ Adds HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
 
     Args:
+        environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
-
+        devops_toolset_wordpress_path: Path to the source root of the WordPress
+            project type in devops-toolset.
     """
+
+    # Exit if there is no True setting for AWS Cloudfront
+    if "aws_cloudfront" not in environment_config["settings"] \
+            or environment_config["settings"]["aws_cloudfront"] is False:
+        return
+
     file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config.php")
     if file_path.exists():
         with open(file_path, "r+") as config:
@@ -570,18 +575,27 @@ def add_cloudfront_forwarded_proto_to_config(wordpress_path: str):
             pattern = r'/\*\*.*\nrequire_once.*'
             match = re.search(pattern, config_content)
             if match:
-                content_new = re.sub(pattern, get_snippet_cloudfront() + '\n' + match.group(), config_content)
+                content_new = re.sub(
+                    pattern,
+                    get_snippet_cloudfront(devops_toolset_wordpress_path) + '\n' + match.group(),
+                    config_content)
                 config.seek(0)
                 config.write(content_new)
 
 
-def get_snippet_cloudfront():
+def get_snippet_cloudfront(devops_toolset_wordpress_path: str):
     """ Gets HTTP_CLOUDFRONT_FORWARDED_PROTO snippet from a default file.
+
+    Args:
+        devops_toolset_wordpress_path: Path to the source root of the WordPress
+            project type in devops-toolset.
 
     Returns:
         HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
     """
-    file_path = pathlib.Path('default-files/default-cloudfront-forwarded-proto.php')
+
+    file_path = pathlib.Path.joinpath(
+        pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
     if file_path.exists():
         with open(file_path, "r") as snippet_content:
             snippet = snippet_content.read()

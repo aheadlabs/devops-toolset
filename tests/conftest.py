@@ -20,6 +20,7 @@ class FileNames(object):
     test_pot_file = "test.pot"
     path = "/pathto"
     deep_path = "/deep/pathto"
+    deep_path_segment = "/deep"
     paths = ["/pathto/file1", "/pathto/file2"]
     no_paths = []
     file = ".gitignore"

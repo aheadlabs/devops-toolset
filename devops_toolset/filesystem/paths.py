@@ -160,28 +160,30 @@ def get_file_paths_in_tree(starting_path: str, glob: str) -> List[pathlib.Path]:
     return paths
 
 
-def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
+def get_filepath_in_tree(
+        base_path: pathlib.Path, seed: str, direction: Directions = Directions.ASCENDING) -> pathlib.PurePath:
     """Gets path to the directory containing the file.
 
     Args:
-        file: File name (not path to file) that should be found.
+        base_path: Path where the search starts from.
+        seed: File or directory name (not path to file) that should be found.
         direction: The direction of the seek (ascending by default).
 
     Returns:
         Path to the directory or None if path not found.
     """
 
-    current_path = pathlib.Path(__file__)
+    current_path = base_path
     path_to_file = None
 
     if direction == Directions.ASCENDING:
         for i in range(len(current_path.parents)):
-            guess_path = pathlib.Path.joinpath(current_path.parents[i], file)
+            guess_path = pathlib.Path.joinpath(current_path.parents[i], seed)
             if pathlib.Path(guess_path).exists():
                 path_to_file = pathlib.Path(guess_path).parent
                 break
     else:
-        for guess_path in current_path.parent.rglob(file):
+        for guess_path in current_path.parent.rglob(seed):
             if pathlib.Path(guess_path).exists():
                 path_to_file = pathlib.Path(guess_path).parent
                 break
@@ -191,13 +193,17 @@ def get_filepath_in_tree(file: str, direction: Directions = Directions.ASCENDING
     return path_to_file
 
 
-def get_project_root() -> str:
+def get_project_root(base_path: pathlib.Path, seed: str = FileNames.PROJECT_FILE) -> str:
     """Gets the project root directory path.
+
+    Args:
+        base_path: Path where the search starts from.
+        seed: What file or directory to look for.
 
     Returns:
         Path to the project root directory or None if path not found."""
 
-    return str(get_filepath_in_tree(FileNames.PROJECT_FILE))
+    return str(get_filepath_in_tree(base_path, seed))
 
 
 def is_empty_dir(path: str = None) -> bool:
