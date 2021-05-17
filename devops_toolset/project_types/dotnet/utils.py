@@ -31,6 +31,8 @@ def get_csproj_project_version(csproj_path: str) -> str:
 
     logging.info(literals.get("dotnet_project_version").format(version=version["Version"]))
 
+    return version["Version"]
+
 
 if __name__ == "__main__":
     help(__name__)
