@@ -3,13 +3,13 @@
 import json
 from unittest.mock import patch, call
 
-from core.app import App
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from devops_platforms.azuredevops import Literals as PlatformSpecificLiterals
-from devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
+from devops_toolset.core.app import App
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformSpecificLiterals
+from devops_toolset.devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
 
-import devops_platforms as sut
+import devops_toolset.devops_platforms.azuredevops.cli as sut
 
 app: App = App()
 literals = LiteralsCore([PlatformSpecificLiterals])

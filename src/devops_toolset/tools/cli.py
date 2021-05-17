@@ -1,6 +1,6 @@
 """Contains tools for working with the command line"""
 
-import core.log_tools
+import devops_toolset.core.log_tools
 import subprocess
 from pyfiglet import Figlet
 from typing import List

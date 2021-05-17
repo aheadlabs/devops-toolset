@@ -11,7 +11,7 @@ Args:
 
 from typing import List
 import argparse
-import core.app
+import devops_toolset.core.app
 import os
 import pathlib
 import tools.cli as tools_cli

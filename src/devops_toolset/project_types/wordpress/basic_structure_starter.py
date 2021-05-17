@@ -1,13 +1,13 @@
 """ Creates an opinionated basic structure for a WordPress project. """
 
-import filesystem.paths as path_tools
+import devops_toolset.filesystem.paths as path_tools
 import logging
 import os
 import pathlib
 import requests
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from typing import Union
 
 app: App = App()

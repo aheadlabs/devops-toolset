@@ -3,8 +3,8 @@ authentication settings)"""
 
 import argparse
 import json
-import tools.argument_validators
-import tools.cli as cli
+import devops_toolset.tools.argument_validators
+import devops_toolset.tools.cli as cli
 
 
 def main(json_path: str, hosted_zone: str):

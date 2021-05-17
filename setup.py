@@ -1,15 +1,15 @@
 """Project setup"""
 import pathlib
 import setuptools
-import filesystem.paths
+import devops_toolset.filesystem.paths
 
-with open(pathlib.Path(filesystem.paths.get_project_root(), "README.md"), "r", encoding="utf-8") as fh:
+with open(pathlib.Path(devops_toolset.filesystem.paths.paths.get_project_root(), "README.md"), "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open(pathlib.Path(filesystem.paths.get_project_root(), "requirements.txt"), "r", encoding="utf-8") as req_file:
+with open(pathlib.Path(devops_toolset.filesystem.paths.paths.get_project_root(), "requirements.txt"), "r", encoding="utf-8") as req_file:
     install_requires = req_file.read().splitlines()
 
-project_xml_parsed = filesystem.parsers.parse_project_xml_data(False)
+project_xml_parsed = devops_toolset.filesystem.parsers.parse_project_xml_data(False)
 name = project_xml_parsed["PROJECT_NAME"]
 version = project_xml_parsed["PROJECT_VERSION"]
 
@@ -21,12 +21,12 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "devops_toolset"},
+    package_dir={"": ""},
     packages=setuptools.find_packages(where="devops_toolset"),
     install_requires=install_requires,
     include_package_data=True,
-    package_data={"core": ["*.json"],
-                  "locales": ["**/LC_MESSAGES/*.mo"]},
+    package_data={"devops_toolset.core": ["*.json"],
+                  "devops_toolset.locales": ["**/LC_MESSAGES/*.mo"]},
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
     author='Ivan Sainz | Alberto Carbonell',

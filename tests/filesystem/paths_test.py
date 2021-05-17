@@ -1,12 +1,12 @@
 """Unit core for the paths file"""
 
-import filesystem as sut
+import devops_toolset.filesystem.paths as sut
 import os
 import pathlib
 import pytest
 from tests.conftest import FileNames as FileNameFixtures
 from tests.filesystem.conftest import Paths
-from filesystem.constants import Directions, FileNames
+from devops_toolset.filesystem.constants import Directions, FileNames
 from unittest.mock import patch
 
 # region files_exist()

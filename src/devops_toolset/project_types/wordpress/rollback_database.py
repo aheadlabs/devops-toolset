@@ -1,13 +1,13 @@
 """Rollbacks a database using a dump, removing first all existing tables."""
 
 import argparse
-from core.app import App
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from tools.commands import Commands as ToolsCommands
-from tools.Literals import Literals as ToolsLiterals
-from project_types.wordpress.Literals import Literals as WordpressLiterals
-from project_types.wordpress import wp_cli
+from devops_toolset.core.app import App
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.tools.commands import Commands as ToolsCommands
+from devops_toolset.tools.Literals import Literals as ToolsLiterals
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.project_types.wordpress import wp_cli
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals, ToolsLiterals])

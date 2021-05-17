@@ -1,17 +1,17 @@
 """Utilities and tools for the devops toolset repository"""
 
-import tools.constants as constants
+import devops_toolset.tools.constants as constants
 import requests
 from zipfile import ZipFile
-from tools.xmlparser import XMLParser
+from devops_toolset.tools.xmlparser import XMLParser
 import logging
-from core.LiteralsCore import LiteralsCore
-from core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.core.app import App
 import os.path
-import tools.git as git_tools
+import devops_toolset.tools.git as git_tools
 import pathlib
 import shutil
-from project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])

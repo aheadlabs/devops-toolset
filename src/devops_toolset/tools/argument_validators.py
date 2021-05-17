@@ -1,10 +1,10 @@
 """Contains argument validators"""
 
 import argparse
-import filesystem.paths as paths
+import devops_toolset.filesystem.paths as paths
 
-from core.LiteralsCore import LiteralsCore
-from tools.Literals import Literals as ToolsLiterals
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.tools.Literals import Literals as ToolsLiterals
 
 literals = LiteralsCore([ToolsLiterals])
 

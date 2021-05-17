@@ -1,9 +1,9 @@
 """Unit core for the tools file"""
 
 import unittest.mock as mock
-import tools as sut
+import devops_toolset.tools.cli as sut
 import subprocess
-import core
+import devops_toolset.core as core
 
 
 # region call_subprocess(str)

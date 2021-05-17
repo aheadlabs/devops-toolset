@@ -1,13 +1,13 @@
 """sonarcloud.io / SonarQube tools"""
 
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from devops_platforms.Literals import Literals as DevopsLiterals
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms.Literals import Literals as DevopsLiterals
 from tools.xcoding64 import encode
-from devops_platforms.constants import Urls
+from devops_toolset.devops_platforms.constants import Urls
 from tools.git import simplify_branch_name
 import configparser
-import core.log_tools
+import devops_toolset.core.log_tools
 import logging
 import requests
 

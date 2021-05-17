@@ -2,7 +2,7 @@
 import pathlib
 from unittest.mock import patch, call, mock_open
 from tests.toolset.conftest import mocked_requests_get
-import toolset as sut
+import devops_toolset.toolset.download_devops_toolset as sut
 
 
 # region cleanup()
@@ -10,7 +10,7 @@ import toolset as sut
 
 @patch("os.remove")
 @patch("os.rmdir")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 def test_cleanup_given_args_then_should_call_os_rmdir(logging_mock, rm_dir_mock, remove_mock, pathsdata):
     """ Given argument paths, should always call os.rmdir() and os.remove() """
     # Arrange
@@ -27,7 +27,7 @@ def test_cleanup_given_args_then_should_call_os_rmdir(logging_mock, rm_dir_mock,
 
 @patch("os.remove")
 @patch("os.rmdir")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 def test_cleanup_given_args_then_should_call_os_remove(logging_mock, rm_dir_mock, remove_mock, pathsdata):
     """ Given argument paths, should always call os.rmdir() and os.remove() """
     # Arrange
@@ -44,10 +44,10 @@ def test_cleanup_given_args_then_should_call_os_remove(logging_mock, rm_dir_mock
 # region decompress_toolset()
 
 
-@patch("toolset.download_devops_toolset.zipfile.ZipFile")
+@patch("devops_toolset.toolset.download_devops_toolset.zipfile.ZipFile")
 @patch("os.listdir")
 @patch("shutil.move")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 def test_decompress_toolset_given_paths_should_call_zip_extract_all_to_temp_path(
         logging_mock, shutil_mock, listdir_mock, zipfile_mock, pathsdata):
     """ Given paths as args, should compose the temp path and call extract all to that path """
@@ -64,11 +64,11 @@ def test_decompress_toolset_given_paths_should_call_zip_extract_all_to_temp_path
         zipfile_mock.assert_called_once_with(full_destination_path, "r")
 
 
-@patch("toolset.download_devops_toolset.zipfile.ZipFile")
+@patch("devops_toolset.toolset.download_devops_toolset.zipfile.ZipFile")
 @patch("os.listdir")
 @patch("shutil.move")
 @patch("pathlib.Path.joinpath")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 def test_decompress_toolset_given_paths_should_move_items_to_destination_path(
     logging_mock, joinpath_mock, shutil_mock, listdir_mock, zipfile_mock, pathsdata):
     """ Given paths as args, should call shutil.move items on internal path to destination path """
@@ -93,11 +93,11 @@ def test_decompress_toolset_given_paths_should_move_items_to_destination_path(
     shutil_mock.assert_has_calls(calls, any_order=True)
 
 
-@patch("toolset.download_devops_toolset.zipfile.ZipFile")
+@patch("devops_toolset.toolset.download_devops_toolset.zipfile.ZipFile")
 @patch("os.listdir")
 @patch("shutil.move")
 @patch("pathlib.Path.joinpath")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 def test_decompress_toolset_given_paths_should_return_internal_full_path_and_temporary_extraction_path(
     logging_mock, joinpath_mock, shutil_mock, listdir_mock, zipfile_mock, pathsdata
 ):
@@ -123,7 +123,7 @@ def test_decompress_toolset_given_paths_should_return_internal_full_path_and_tem
 
 @patch("os.mkdir")
 @patch("pathlib.Path.joinpath")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 @patch("os.path.exists")
 def test_download_toolset_given_args_when_not_exist_destination_path_then_create_it(path_exists_mock, logging_mock,
     joinpath_mock, mkdir_mock, pathsdata):
@@ -143,7 +143,7 @@ def test_download_toolset_given_args_when_not_exist_destination_path_then_create
 
 @patch("requests.get", side_effect=mocked_requests_get)
 @patch("pathlib.Path.joinpath")
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 @patch("os.path.exists")
 def test_download_toolset_given_args_then_write_response_content_to_full_destination_path(path_exists_mock,
     logging_mock, joinpath_mock, requests_get, pathsdata):
@@ -163,7 +163,7 @@ def test_download_toolset_given_args_then_write_response_content_to_full_destina
 
 
 @patch("requests.get", side_effect=mocked_requests_get)
-@patch("toolset.download_devops_toolset.logger.info")
+@patch("devops_toolset.toolset.download_devops_toolset.logger.info")
 @patch("os.path.exists")
 def test_download_toolset_given_args_then_returns_destination_path_and_full_destination_path(path_exists_mock,
     logging_mock, requests_get, pathsdata):
@@ -224,9 +224,9 @@ def test_is_valid_path_given_path_when_path_is_valid_then_return_true():
 
 
 @patch("os.remove")
-@patch("toolset.download_devops_toolset.cleanup")
-@patch("toolset.download_devops_toolset.download_toolset")
-@patch("toolset.download_devops_toolset.decompress_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.cleanup")
+@patch("devops_toolset.toolset.download_devops_toolset.download_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.decompress_toolset")
 def test_main_given_args_then_call_download_toolset(
         decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
     """ Given destination path and branch then compose required paths and call download_toolset() """
@@ -243,9 +243,9 @@ def test_main_given_args_then_call_download_toolset(
 
 
 @patch("os.remove")
-@patch("toolset.download_devops_toolset.cleanup")
-@patch("toolset.download_devops_toolset.download_toolset")
-@patch("toolset.download_devops_toolset.decompress_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.cleanup")
+@patch("devops_toolset.toolset.download_devops_toolset.download_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.decompress_toolset")
 def test_main_given_args_then_call_decompress_toolset(
         decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
     """ Given destination path and branch then compose required paths and call decompress_toolset() """
@@ -264,9 +264,9 @@ def test_main_given_args_then_call_decompress_toolset(
 
 
 @patch("os.remove")
-@patch("toolset.download_devops_toolset.cleanup")
-@patch("toolset.download_devops_toolset.download_toolset")
-@patch("toolset.download_devops_toolset.decompress_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.cleanup")
+@patch("devops_toolset.toolset.download_devops_toolset.download_toolset")
+@patch("devops_toolset.toolset.download_devops_toolset.decompress_toolset")
 def test_main_given_args_then_call_cleanup(
         decompress_toolset_mock, download_toolset_mock, cleanup_mock, os_remove_mock, pathsdata):
     """  Given destination path and branch then compose required paths and call cleanup() """

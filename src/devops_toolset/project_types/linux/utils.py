@@ -1,13 +1,13 @@
 """ This script will hold general purpose utils for a remote linux host """
 
-from core.app import App
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from project_types.linux.commands import Commands as LinuxCommands
-from project_types.linux.Literals import Literals as LinuxLiterals
+from devops_toolset.core.app import App
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
+from devops_toolset.project_types.linux.Literals import Literals as LinuxLiterals
 import logging
 import pathlib
-import tools.cli
+import devops_toolset.tools.cli as tools_cli
 
 app: App = App()
 literals = LiteralsCore([LinuxLiterals])
@@ -29,7 +29,7 @@ def edit_in_place(search_for: str, replace_with: str, file_path: str):
         logging.error(message)
         raise FileNotFoundError()
 
-    tools.cli.call_subprocess(commands.get("edit_in_place").format(
+    tools_cli.call_subprocess(commands.get("edit_in_place").format(
         search_for=search_for,
         replace_with=replace_with,
         file_path=file_path

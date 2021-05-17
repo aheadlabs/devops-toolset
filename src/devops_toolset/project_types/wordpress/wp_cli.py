@@ -2,12 +2,12 @@
 
 import datetime
 import logging
-import tools.cli as cli
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from project_types.wordpress.Literals import Literals as WordpressLiterals
-from core.CommandsCore import CommandsCore
-from project_types.wordpress.commands import Commands as WordpressCommands
+import devops_toolset.tools.cli as cli
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
 from enum import Enum
 
 app: App = App()

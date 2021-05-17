@@ -1,11 +1,11 @@
 """Contains Apache utilities"""
 
 import pathlib
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from project_types.linux.Literals import Literals as LinuxLiterals
-from core.CommandsCore import CommandsCore
-from project_types.linux.commands import Commands as LinuxCommands
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.linux.Literals import Literals as LinuxLiterals
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
 
 app: App = App()
 literals = LiteralsCore([LinuxLiterals])

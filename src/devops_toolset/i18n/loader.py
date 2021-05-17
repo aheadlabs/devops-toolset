@@ -1,7 +1,7 @@
 """Initializes gettext"""
 
 import gettext
-from core.settings import Settings
+from devops_toolset.core.settings import Settings
 
 
 def setup(settings: Settings):

@@ -1,10 +1,10 @@
 """Supports al compression / decompression operations in the file system."""
 
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from filesystem.Literals import Literals as FileSystemLiterals
-import filesystem.constants as constants
-import filesystem.paths
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.filesystem.Literals import Literals as FileSystemLiterals
+import devops_toolset.filesystem.constants as constants
+import devops_toolset.filesystem.paths
 import logging
 import os
 import pathlib
@@ -26,7 +26,7 @@ def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool 
             directory.
     """
 
-    file_name, file_path = filesystem.paths.download_file(url, destination, constants.FileType.BINARY)
+    file_name, file_path = devops_toolset.filesystem.paths.download_file(url, destination, constants.FileType.BINARY)
     destination_path = pathlib.Path(destination)
     temp_extraction_path = pathlib.Path.joinpath(destination_path, constants.FileNames.TEMP_DIRECTORY)
 

@@ -9,17 +9,17 @@ import re
 
 from clint.textui import prompt
 
-import filesystem.paths
-import core.app
-import filesystem.paths as path_tools
-from core.LiteralsCore import LiteralsCore
-from tools.Literals import Literals as ToolsLiterals
-from filesystem.constants import FileNames, Directions
-from core.CommandsCore import CommandsCore
-from tools.commands import Commands as ToolsCommands
-import tools.cli
+import devops_toolset.filesystem.paths
+import devops_toolset.core.app
+import devops_toolset.filesystem.paths as path_tools
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.tools.Literals import Literals as ToolsLiterals
+from devops_toolset.filesystem.constants import FileNames, Directions
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.tools.commands import Commands as ToolsCommands
+import devops_toolset.tools.cli
 
-app: core.app.App = core.app.App()
+app: devops_toolset.core.app.App = devops_toolset.core.app.App()
 literals = LiteralsCore([ToolsLiterals])
 commands = CommandsCore([ToolsCommands])
 platform_specific = app.load_platform_specific("environment")
@@ -76,12 +76,12 @@ def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCE
     """
     if path is None:
         gitignore_path = pathlib.Path.joinpath(
-            pathlib.Path(filesystem.paths.get_project_root()), FileNames.GITIGNORE_FILE)
+            pathlib.Path(devops_toolset.filesystem.paths.get_project_root()), FileNames.GITIGNORE_FILE)
         if not pathlib.Path(gitignore_path).exists():
             raise FileNotFoundError
         return gitignore_path
 
-    return str(filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
+    return str(devops_toolset.filesystem.paths.get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction))
 
 
 def git_commit(skip: bool):
@@ -91,11 +91,11 @@ def git_commit(skip: bool):
         skip: Boolean that determines if the user want or don't want create the .git repository.
     """
     if not skip:
-        tools.cli.call_subprocess(commands.get("git_add"),
+        devops_toolset.tools.cli.call_subprocess(commands.get("git_add"),
                                   log_before_process=[literals.get(
                                       "git_before_adding_project_structure_files_to_stage")],
                                   log_after_err=[literals.get("git_err_adding_project_structure_files_to_stage")])
-        tools.cli.call_subprocess(commands.get("git_commit_m").format(
+        devops_toolset.cli.call_subprocess(commands.get("git_commit_m").format(
             message=literals.get("git_add_project_structure_message")),
             log_before_process=[literals.get("git_before_project_structure_commit")],
             log_after_err=[literals.get("git_err_commit_project_structure")],
@@ -122,7 +122,7 @@ def git_init(path: str, skip: bool):
 def purge_gitkeep(path: str = None):
     """Deletes .gitkeep file if exists and there are more files in the path."""
 
-    if not filesystem.paths.is_valid_path(path, True):
+    if not devops_toolset.filesystem.paths.is_valid_path(path, True):
         raise ValueError(literals.get("git_non_valid_dir_path"))
 
     path_object = pathlib.Path(path)

@@ -6,9 +6,9 @@ Args:
 
 import importlib.util
 import pathlib
-from core.settings import Settings
-import i18n.loader
-import core.log_setup
+from devops_toolset.core.settings import Settings
+import devops_toolset.i18n.loader
+import devops_toolset.core.log_setup
 
 
 class App(object):
@@ -25,10 +25,10 @@ class App(object):
 
         # Load gettext
         if not skip_i18n:
-            i18n.loader.setup(self.settings)
+            devops_toolset.i18n.loader.setup(self.settings)
 
         # Configure logging
-        core.log_setup.configure(self.settings.log_config_file_path)
+        devops_toolset.core.log_setup.configure(self.settings.log_config_file_path)
 
     def load_platform_specific(self, name: str):
         module_path = pathlib.Path.joinpath(self.settings.platform_specific_path, f"{name}.py")

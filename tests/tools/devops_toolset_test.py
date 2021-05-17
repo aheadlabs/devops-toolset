@@ -3,8 +3,8 @@
 
 import pathlib
 from unittest.mock import patch, mock_open, call
-import tools as sut
-import tools as constants
+import devops_toolset.tools.devops_toolset as sut
+import devops_toolset.tools.constants as constants
 from tests.tools.conftest import mocked_requests_get
 import os.path
 

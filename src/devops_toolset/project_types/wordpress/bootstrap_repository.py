@@ -16,11 +16,11 @@ Args:
 
 import argparse
 import os
-from core.LiteralsCore import LiteralsCore
-from core.app import App
-from project_types.wordpress import generate_wordpress
-from project_types.wordpress.Literals import Literals as WordpressLiterals
-from tools import git
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.core.app import App
+from devops_toolset.project_types.wordpress import generate_wordpress
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.tools import git
 
 app: App = App()
 literals = LiteralsCore([WordpressLiterals])

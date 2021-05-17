@@ -1,7 +1,7 @@
 """i18n module literals"""
 
-from core.ValueDictsBase import ValueDictsBase
-from core.app import App
+from devops_toolset.core.ValueDictsBase import ValueDictsBase
+from devops_toolset.core.app import App
 
 app: App = App()
 

@@ -1,13 +1,13 @@
-"""devops_platforms.aws module literals."""
+"""devops_toolset.devops_platforms.aws module literals."""
 
-from core.ValueDictsBase import ValueDictsBase
-from core.app import App
+from devops_toolset.core.ValueDictsBase import ValueDictsBase
+from devops_toolset.core.app import App
 
 app: App = App()
 
 
 class Literals(ValueDictsBase):
-    """ValueDicts for the devops_platforms.aws module."""
+    """ValueDicts for the devops_toolset.devops_platforms.aws module."""
 
     # Add your core literal dictionaries here
     _info = {

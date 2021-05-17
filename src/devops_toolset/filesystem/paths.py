@@ -5,10 +5,10 @@ import os
 import pathlib
 import requests
 import shutil
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from filesystem.Literals import Literals as FileSystemLiterals
-from filesystem.constants import Directions, FileNames, FileType
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.filesystem.Literals import Literals as FileSystemLiterals
+from devops_toolset.filesystem.constants import Directions, FileNames, FileType
 from typing import List, Tuple, Union
 from urllib.parse import urlparse
 

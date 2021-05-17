@@ -1,7 +1,7 @@
 """linux module literals"""
 
-from core.app import App
-from core.ValueDictsBase import ValueDictsBase
+from devops_toolset.core.app import App
+from devops_toolset.core.ValueDictsBase import ValueDictsBase
 
 app: App = App()
 

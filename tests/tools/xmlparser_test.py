@@ -1,7 +1,7 @@
 """ Unit core for the xmlparser file"""
 from unittest.mock import patch
 
-from tools import XMLParser
+from devops_toolset.tools.xmlparser import XMLParser
 
 # region parse_from_path
 

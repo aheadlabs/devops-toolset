@@ -3,12 +3,12 @@
 import unittest.mock as mock
 from unittest.mock import call
 
-import i18n as sut
-import tools as tools_cli
+import devops_toolset.i18n as sut
+import devops_toolset.tools.cli as tools_cli
 import argparse
 import pathlib
 import os
-import core
+import devops_toolset.core as core
 import shutil
 
 # region get_files()

@@ -1,6 +1,6 @@
 """Unit core for the apache file"""
 
-import project_types as sut
+import devops_toolset.project_types.aws.get_aws_resources as sut
 import pytest
 from unittest.mock import patch, mock_open
 

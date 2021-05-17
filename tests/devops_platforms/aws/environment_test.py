@@ -1,9 +1,9 @@
 """Unit core for the environment file"""
 
-from core.CommandsCore import CommandsCore
+from devops_toolset.core.CommandsCore import CommandsCore
 from unittest.mock import patch, call
-from project_types import Commands as LinuxCommands
-import devops_platforms as sut
+from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
+import devops_toolset.devops_platforms as sut
 
 linux_commands = CommandsCore([LinuxCommands])
 

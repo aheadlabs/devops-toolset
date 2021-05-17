@@ -1,7 +1,7 @@
 """ Unit core for the parse_theme_metadata script """
 
 from unittest.mock import mock_open, patch
-import project_types as sut
+import devops_toolset.project_types.wordpress.parse_theme_metadata as sut
 
 
 # region main()

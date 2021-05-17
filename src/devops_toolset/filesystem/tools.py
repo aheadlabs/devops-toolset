@@ -3,10 +3,10 @@
 import os
 import xml.etree.ElementTree as ElementTree
 
-from core.app import App
-from core.LiteralsCore import LiteralsCore
-from filesystem.Literals import Literals as FileSystemLiterals
-from project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.core.app import App
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.filesystem.Literals import Literals as FileSystemLiterals
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 
 
 app: App = App()

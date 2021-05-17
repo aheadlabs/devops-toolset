@@ -1,5 +1,5 @@
 """ Unit core for the log_tools script """
-import core as sut
+import devops_toolset.core as sut
 import logging
 from unittest.mock import call, patch
 

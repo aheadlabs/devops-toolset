@@ -5,12 +5,12 @@ import stat
 import pytest
 import json
 import pathlib
-import project_types as sut
-from filesystem import paths
-from project_types import BasicStructureStarter
-from devops_platforms import constants as devops_platform_constants
-from core.LiteralsCore import LiteralsCore
-from project_types import Literals as WordpressLiterals
+import devops_toolset.project_types as sut
+from devops_toolset.filesystem import paths
+from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
+from devops_toolset.devops_platforms import constants as devops_platform_constants
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open, call
 from tests.project_types.wordpress.conftest import WordPressData, mocked_requests_get, \
     mocked_requests_get_json_content, PluginsData
@@ -20,7 +20,7 @@ literals = LiteralsCore([WordpressLiterals])
 # region add_wp_options
 
 
-@patch("project_types.wordpress.wp_cli.add_update_option")
+@patch("devops_toolset.project_types.wordpress.wp_cli.add_update_option")
 def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_update_option_mock, wordpressdata):
     """ Given options dict, then calls wp_cli_add_update_option for every option """
     # Arrange
@@ -53,7 +53,7 @@ def test_convert_wp_config_token_given_token_when_no_match_then_return_bare_toke
     assert result == token
 
 
-@patch("project_types.wordpress.wp_cli.eval_code")
+@patch("devops_toolset.project_types.wordpress.wp_cli.eval_code")
 def test_convert_wp_config_token_given_token_when_date_match_then_calls_wp_cli_eval_code(
         eval_code_mock, wordpressdata):
     """Given token, when match "date|", then parses and calls wp_cli.eval_code with necessary data"""
@@ -96,7 +96,7 @@ def test_create_wp_cli_bat_file_given_phar_path_creates_bat_file_with_specific_c
 # region create_configuration_file()
 
 
-@patch("project_types.wordpress.wp_cli.create_configuration_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.create_configuration_file")
 def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_database_parameters(
         create_conf_file_mock, wordpressdata):
     """ Given database parameters, calls wp.cli.create_configuration_file """
@@ -125,7 +125,7 @@ def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_d
 # region download_wordpress()
 
 
-@patch("project_types.wordpress.wp_cli.download_wordpress")
+@patch("devops_toolset.project_types.wordpress.wp_cli.download_wordpress")
 def test_download_wordpress_given_invalid_path_raises_valueerror(download_wordpress_mock, wordpressdata):
     """Given an invalid path, raises ValueError"""
 
@@ -140,7 +140,7 @@ def test_download_wordpress_given_invalid_path_raises_valueerror(download_wordpr
 
 
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wp_cli.download_wordpress")
+@patch("devops_toolset.project_types.wordpress.wp_cli.download_wordpress")
 def test_download_wordpress_given_valid_arguments_calls_subprocess(
         download_wordpress_mock, purge_gitkeep, wordpressdata):
     """Given valid arguments, calls subprocess"""
@@ -161,7 +161,7 @@ def test_download_wordpress_given_valid_arguments_calls_subprocess(
 
 # region export_database()
 
-@patch("project_types.wordpress.wp_cli.export_database")
+@patch("devops_toolset.project_types.wordpress.wp_cli.export_database")
 def test_export_database_calls_wp_cli_export_database(export_database_mock, wordpressdata):
     """Given site configuration, should call wp_cli.export_database"""
     # Arrange
@@ -294,8 +294,8 @@ def test_get_site_configuration_reads_json(builtins_open, wordpressdata):
 
 # region import_content_from_configuration_file()
 
-@patch("project_types.wordpress.wp_cli.import_wxr_content")
-@patch("project_types.wordpress.wp_cli.delete_post_type_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.import_wxr_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.delete_post_type_content")
 def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock,
     import_wxr_content, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
@@ -316,8 +316,8 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
     delete_content_mock.assert_has_calls(expected_calls)
 
 
-@patch("project_types.wordpress.wp_cli.import_wxr_content")
-@patch("project_types.wordpress.wp_cli.delete_post_type_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.import_wxr_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.delete_post_type_content")
 @pytest.mark.parametrize("authors_value", ["create", "skip", "mapping.csv"])
 def test_import_content_from_configuration_file_given_args_then_call_import_wxr_content(delete_content_mock,
     import_wxr_content, authors_value, wordpressdata):
@@ -344,7 +344,7 @@ def test_import_content_from_configuration_file_given_args_then_call_import_wxr_
     import_wxr_content.assert_has_calls(expected_calls)
 
 
-@patch("project_types.wordpress.wp_cli.import_wxr_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.import_wxr_content")
 def test_import_content_from_configuration_file_given_args_when_no_content_then_return_without_import(
         import_wxr_content, wordpressdata):
     """ Given args, when no content present, then return without importing anything """
@@ -362,7 +362,7 @@ def test_import_content_from_configuration_file_given_args_when_no_content_then_
     import_wxr_content.assert_not_called()
 
 
-@patch("project_types.wordpress.wp_cli.import_wxr_content")
+@patch("devops_toolset.project_types.wordpress.wp_cli.import_wxr_content")
 def test_import_content_from_configuration_file_given_args_when_empty_content_then_no_import(
         import_wxr_content, wordpressdata):
     """ Given args, when no content present, then return without importing anything """
@@ -387,7 +387,7 @@ def test_import_content_from_configuration_file_given_args_when_empty_content_th
 # region install_plugins_from_configuration_file()
 
 
-@patch("project_types.wordpress.wp_cli.install_plugin")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_plugin")
 @patch("logging.warning")
 def test_install_plugins_given_configuration_file_when_no_plugins_then_no_install(
         logging_warning_mock, install_plugin_mock, wordpressdata):
@@ -407,10 +407,10 @@ def test_install_plugins_given_configuration_file_when_no_plugins_then_no_instal
 
 @patch("logging.info")
 @patch("logging.warning")
-@patch("project_types.wordpress.wp_cli.install_plugin")
-@patch("project_types.wordpress.wptools.download_wordpress_plugin")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
-@patch("project_types.wordpress.wptools.export_database")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_plugin")
+@patch("devops_toolset.project_types.wordpress.wptools.download_wordpress_plugin")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @pytest.mark.parametrize(
     "plugins_content", [json.loads(PluginsData.plugins_content_single_url_source),
                         json.loads(PluginsData.plugins_content_single_zip_source),
@@ -464,8 +464,8 @@ def test_install_wp_cli_given_path_when_not_dir_then_raise_value_error(pathlib_m
 
 
 @patch("pathlib.Path")
-@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
+@patch("devops_toolset.project_types.wordpress.wptools.create_wp_cli_bat_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.wp_cli_info")
 @patch("logging.info")
 def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resource(
         log_info_mock, wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata, mocks):
@@ -487,8 +487,8 @@ def test_install_wp_cli_given_path_when_is_dir_then_downloads_from_request_resou
 
 
 @patch("pathlib.Path")
-@patch("project_types.wordpress.wptools.create_wp_cli_bat_file")
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
+@patch("devops_toolset.project_types.wordpress.wptools.create_wp_cli_bat_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.wp_cli_info")
 @patch("logging.info")
 def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
         log_info_mock, wp_cli_info, create_wp_cli_bat_file, pathlib_mock, wordpressdata, mocks):
@@ -510,7 +510,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_writes_response_content(
                 handler.write.assert_called_once_with(expected_content)
 
 
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
+@patch("devops_toolset.project_types.wordpress.wp_cli.wp_cli_info")
 def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wp_cli_info, wordpressdata, mocks):
     """ Given a file path, when path is a dir, then does chmod with S_IEXEC """
     # Arrange
@@ -529,7 +529,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_chmods_written_file_path(wp_
                                                        file_stat_mock.return_value.st_mode | stat.S_IEXEC)
 
 
-@patch("project_types.wordpress.wp_cli.wp_cli_info")
+@patch("devops_toolset.project_types.wordpress.wp_cli.wp_cli_info")
 def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_command(
         wp_cli_info, wordpressdata, mocks):
     """ Given a file path, when path is a dir, then calls wp_cli_info() from wp_cli module """
@@ -553,7 +553,7 @@ def test_install_wp_cli_given_path_when_is_dir_then_calls_subprocess_wpcli_info_
 # region install_wordpress_core()
 
 
-@patch("project_types.wordpress.wp_cli.install_wordpress_core")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_wordpress_core")
 def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wordpress_mock, wordpressdata):
     """ Given configuration file, then calls install_wordpress_core from cli """
     # Arrange
@@ -572,12 +572,12 @@ def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wo
 # region install_wordpress_site()
 
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.reset_database")
-@patch("project_types.wordpress.wp_cli.update_database_option")
-@patch("project_types.wordpress.wptools.install_wordpress_core")
-@patch("project_types.wordpress.wptools.export_database")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
+@patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
+@patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_core")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
 @patch("pathlib.Path.as_posix")
 def test_install_wordpress_site_then_calls_install_wordpress_core(
         path_mock, convert_wp_config_token, export_database, install_wordpress_core,
@@ -597,12 +597,12 @@ def test_install_wordpress_site_then_calls_install_wordpress_core(
 
 
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.reset_database")
-@patch("project_types.wordpress.wp_cli.update_database_option")
-@patch("project_types.wordpress.wptools.install_wordpress_core")
-@patch("project_types.wordpress.wptools.export_database")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
+@patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
+@patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_core")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
 @patch("pathlib.Path.as_posix")
 def test_install_wordpress_site_then_calls_cli_update_option(
         path_mock, convert_wp_config_token, export_database, install_wordpress_core,
@@ -623,12 +623,12 @@ def test_install_wordpress_site_then_calls_cli_update_option(
 
 
 @patch("tools.git.purge_gitkeep")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("project_types.wordpress.wp_cli.reset_database")
-@patch("project_types.wordpress.wp_cli.update_database_option")
-@patch("project_types.wordpress.wptools.install_wordpress_core")
-@patch("project_types.wordpress.wptools.export_database")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
+@patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
+@patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_core")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
 @patch("pathlib.Path.as_posix")
 def test_install_wordpress_site_then_calls_cli_export_database(
         path_mock, convert_wp_config_token, export_database, install_wordpress_core,
@@ -685,9 +685,9 @@ def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_str
 # region set_wordpress_config_from_configuration_file
 
 
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
+@patch("devops_toolset.project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
+@patch("devops_toolset.project_types.wordpress.wptools.create_configuration_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.set_configuration_value")
 def test_set_wordpress_config_from_configuration_file_return_when_no_additional_settings(
         set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
     """Given site_configuration, when there is no additional settings, then
@@ -707,9 +707,9 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_additional_
     add_cloudfront_mock.assert_not_called()
 
 
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
+@patch("devops_toolset.project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
+@patch("devops_toolset.project_types.wordpress.wptools.create_configuration_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.set_configuration_value")
 def test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfront(
         set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
     """Given site_configuration, when there is no aws_cloudfron, then exits
@@ -730,9 +730,9 @@ def test_set_wordpress_config_from_configuration_file_return_when_no_aws_cloudfr
     add_cloudfront_mock.assert_not_called()
 
 
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
+@patch("devops_toolset.project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
+@patch("devops_toolset.project_types.wordpress.wptools.create_configuration_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.set_configuration_value")
 def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_false(
         set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
     """Given site_configuration, when aws_cloudfront is false, then ends
@@ -753,9 +753,9 @@ def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_fal
     add_cloudfront_mock.assert_not_called()
 
 
-@patch("project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
-@patch("project_types.wordpress.wptools.create_configuration_file")
-@patch("project_types.wordpress.wp_cli.set_configuration_value")
+@patch("devops_toolset.project_types.wordpress.wptools.add_cloudfront_forwarded_proto_to_config")
+@patch("devops_toolset.project_types.wordpress.wptools.create_configuration_file")
+@patch("devops_toolset.project_types.wordpress.wp_cli.set_configuration_value")
 def test_set_wordpress_config_from_configuration_file_when_aws_cloudfront_is_true(
         set_configuration_value_mock, create_configuration_file_mock, add_cloudfront_mock, wordpressdata):
     """Given site_configuration, when aws_cloudfront is true, then calls

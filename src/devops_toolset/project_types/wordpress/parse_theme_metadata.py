@@ -1,7 +1,7 @@
 """ Script used on devops flows to parse a theme's style.css metadata """
 
 import argparse
-import filesystem.parsers as parsers
+import devops_toolset.filesystem.parsers as parsers
 
 
 def main(path: str, tokens):

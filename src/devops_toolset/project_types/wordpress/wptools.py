@@ -5,25 +5,25 @@ import os
 import pathlib
 import stat
 import sys
-import tools.dicts
+import devops_toolset.tools.dicts
 from typing import List, Tuple
 
 import requests
 
-import core.log_tools
-import filesystem.paths as paths
-import filesystem.tools
-import project_types.wordpress.constants as wp_constants
-import project_types.wordpress.wp_cli as wp_cli
-import tools.git as git_tools
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from core.app import App
-from devops_platforms import constants as devops_platforms_constants
-from devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
-from project_types.wordpress.Literals import Literals as WordpressLiterals
-from project_types.wordpress.basic_structure_starter import BasicStructureStarter
-from project_types.wordpress.commands import Commands as WordpressCommands
+import devops_toolset.core.log_tools
+import devops_toolset.filesystem.paths as paths
+import devops_toolset.filesystem.tools
+import devops_toolset.project_types.wordpress.constants as wp_constants
+import devops_toolset.project_types.wordpress.wp_cli as wp_cli
+import devops_toolset.tools.git as git_tools
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.core.app import App
+from devops_toolset.devops_platforms import constants as devops_platforms_constants
+from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
+from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
 
 import re
 
@@ -334,7 +334,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
 
     if author_handling == "mapping.csv":
         authors_path = str(pathlib.Path.joinpath(wxr_path, "mapping.csv"))
-        authors = authors_path if not filesystem.tools.is_file_empty(authors_path) else "skip"
+        authors = authors_path if not devops_toolset.filesystem.tools.is_file_empty(authors_path) else "skip"
     else:
         authors = author_handling
 

@@ -1,30 +1,30 @@
 """Contains several tools and utils for WordPress Themes"""
-import filesystem.parsers as parsers
-import filesystem
-import project_types.node.npm as npm
-import filesystem.paths as paths
-import filesystem.tools
-import filesystem.zip
+import devops_toolset.filesystem.parsers as parsers
+import devops_toolset.filesystem
+import devops_toolset.project_types.node.npm as npm
+import devops_toolset.filesystem.paths as paths
+import devops_toolset.filesystem.tools
+import devops_toolset.filesystem.zip
 import json
 import logging
 import os
 import pathlib
-import project_types.wordpress.wp_cli as wp_cli
-import project_types.wordpress.constants as wp_constants
-import project_types.wordpress.wptools as wptools
+import devops_toolset.project_types.wordpress.wp_cli as wp_cli
+import devops_toolset.project_types.wordpress.constants as wp_constants
+import devops_toolset.project_types.wordpress.wptools as wptools
 import re
-import tools.git as git_tools
+import devops_toolset.tools.git as git_tools
 
 
-from core.app import App
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from devops_platforms import constants as devops_platforms_constants
-from devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
-from project_types.wordpress.basic_structure_starter import BasicStructureStarter
-from project_types.wordpress.commands import Commands as WordpressCommands
-from project_types.wordpress.Literals import Literals as WordpressLiterals
-from tools import cli
+from devops_toolset.core.app import App
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms import constants as devops_platforms_constants
+from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
+from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
+from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.tools import cli
 
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
@@ -76,13 +76,13 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
 
         # Zip dist
-        filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
+        devops_toolset.filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
 
         # Replace project.xml version with the one in the package.json file
         package_json_path = str(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
         project_xml_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
         package_json = parsers.parse_json_file(package_json_path)
-        filesystem.tools.update_xml_file_entity_text("./version", package_json["version"], project_xml_path)
+        devops_toolset.filesystem.tools.update_xml_file_entity_text("./version", package_json["version"], project_xml_path)
 
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
@@ -256,8 +256,8 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
             download_wordpress_theme(theme, str(themes_path), **kwargs)
 
         # Get template for the theme if it has one
-        style_content: bytes = filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
-        metadata: dict = filesystem.parsers.parse_theme_metadata(style_content, ["Template", "Version"])
+        style_content: bytes = devops_toolset.filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
+        metadata: dict = devops_toolset.filesystem.parsers.parse_theme_metadata(style_content, ["Template", "Version"])
         theme["template"] = metadata["Template"] if "Template" in metadata else None
         theme["version"] = metadata["Version"]
 
@@ -425,7 +425,7 @@ def set_theme_metadata(root_path: str, src_theme_configuration: dict):
 
     # Update project.xml name
     project_xml_path = pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml").as_posix()
-    filesystem.tools.update_xml_file_entity_text("./name", theme_slug, project_xml_path)
+    devops_toolset.filesystem.tools.update_xml_file_entity_text("./name", theme_slug, project_xml_path)
 
 
 def start_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
