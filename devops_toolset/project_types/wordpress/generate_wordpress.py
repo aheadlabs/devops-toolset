@@ -7,6 +7,7 @@ import logging
 import pathlib
 import requests
 import core.log_tools
+import filesystem.paths
 import filesystem.paths as paths
 import os
 import project_types.wordpress.constants as constants
@@ -20,6 +21,7 @@ import tools.git as git_tools
 from clint.textui import prompt
 from core.LiteralsCore import LiteralsCore
 from core.app import App
+from filesystem.constants import FileNames
 from devops_platforms.constants import Urls
 from project_types.wordpress.Literals import Literals as WordpressLiterals
 
@@ -52,6 +54,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Get basic settings
     global_constants: dict = project_types.wordpress.wptools.get_constants()
+    devops_toolset_wordpress_path = filesystem.paths.get_project_root(pathlib.Path(__file__), "default-files")
     database_files_path: str = global_constants["paths"]["database"]
     root_path_obj: pathlib.Path = pathlib.Path(root_path)
 
@@ -118,8 +121,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     theme_tools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
 
     # Configure WordPress site
-    project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config, environment_config,
-                                                                                 wordpress_path, db_user_password)
+    project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(
+        environment_config, wordpress_path, devops_toolset_wordpress_path, db_user_password)
 
     # Create database and users
     if create_db:

@@ -162,10 +162,22 @@
             "disable_fatal_error_handler","debug_display","debug","cache","save_queries","empty_trash_days",
             "disallow_file_edit","disallow_file_mods","force_ssl_admin","http_block_external","accessible_hosts",
             "auto_update_core","image_edit_overwrite","wpml_auto_updates"]
-        }
+        },
+        "settings": {
+          "description": "Specific settings for this environment",
+          "type": "object",
+          "properties": {
+            "aws_cloudfront": {
+              "description": "Indicates if the web server is behind an AWS Cloudfront distribution",
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "required": ["aws_cloudfront"]
+        },
       },
       "additionalProperties": false,
-      "required": ["name","type","is_default","wp_cli_debug","base_url","database","wp_config"]
+      "required": ["name","type","is_default","wp_cli_debug","base_url","database","wp_config","settings"]
     },
     "wp_config_property_string": {
       "type": "object",
