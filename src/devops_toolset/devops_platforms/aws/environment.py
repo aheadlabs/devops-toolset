@@ -5,7 +5,7 @@ from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.devops_platforms.aws.Literals import Literals as AwsLiterals
 from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
-import tools.cli as cli
+import devops_toolset.tools.cli as cli
 import logging
 
 app: App = App()

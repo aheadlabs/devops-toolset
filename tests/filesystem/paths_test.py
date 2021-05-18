@@ -51,7 +51,7 @@ def test_files_exist_given_list_returns_list_tuple(rglob_mock, rglob_response, e
 # region files_exist_filtered()
 
 
-@patch("filesystem.paths.files_exist")
+@patch("devops_toolset.filesystem.paths.files_exist")
 @pytest.mark.parametrize("filter_by, expected", [(True, ["file1.txt"]), (False, ["file2.txt"])])
 def test_files_exist_filtered(files_exist, filter_by, expected, paths):
     """Given, when, then"""

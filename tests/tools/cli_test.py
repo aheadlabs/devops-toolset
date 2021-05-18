@@ -3,14 +3,14 @@
 import unittest.mock as mock
 import devops_toolset.tools.cli as sut
 import subprocess
-import devops_toolset.core as core
+import devops_toolset.core.log_tools as log_tools
 
 
 # region call_subprocess(str)
 
 
 @mock.patch.object(subprocess, "Popen")
-@mock.patch("core.log_tools")
+@mock.patch("devops_toolset.core.log_tools")
 def test_call_subprocess_given_command_srt_then_calls_popens_with_command(logtools_mock, subprocess_mock, clidata):
     """ Given an str command, then calls subprocess. Popen with that command"""
 
@@ -37,12 +37,12 @@ def test_call_subprocess_given_command_srt_when_stdout_has_lines_then_log_info(s
     # Arrange
     foo_command = clidata.sample_command
     expected_log_message = clidata.sample_log_message_info
-    log_level = core.log_tools.LogLevel.info
+    log_level = log_tools.LogLevel.info
     subprocess_mock.return_value.return_code = 0
     subprocess_mock.return_value.communicate.return_value = (expected_log_message, b"")
 
     # Act
-    with mock.patch.object(core.log_tools, "log_stdouterr") as logging_mock:
+    with mock.patch.object(log_tools, "log_stdouterr") as logging_mock:
         sut.call_subprocess(foo_command)
         # Assert
         logging_mock.assert_called_once_with(expected_log_message, log_level)
@@ -55,12 +55,12 @@ def test_call_subprocess_given_command_srt_when_stderr_has_lines_then_log_error(
     # Arrange
     foo_command = clidata.sample_command
     expected_log_message = clidata.sample_log_message_error
-    log_level = core.log_tools.LogLevel.error
+    log_level = log_tools.LogLevel.error
     subprocess_mock.return_value.return_code = 0
     subprocess_mock.return_value.communicate.return_value = (b"", expected_log_message)
 
     # Act
-    with mock.patch.object(core.log_tools, "log_stdouterr") as logging_mock:
+    with mock.patch.object(log_tools, "log_stdouterr") as logging_mock:
         sut.call_subprocess(foo_command)
 
         # Assert

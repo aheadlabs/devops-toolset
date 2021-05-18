@@ -3,7 +3,7 @@
 from unittest.mock import patch, call
 import pytest
 
-import devops_toolset.project_types.linux as sut
+import devops_toolset.project_types.linux.utils as sut
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
@@ -35,7 +35,7 @@ def test_edit_in_place_given_arguments_when_file_path_not_exist_then_raises_erro
         logging_mock.assert_called_once_with(error_message)
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 @patch("pathlib.Path.exists")
 def test_edit_in_place_given_arguments_then_calls_subprocess_with_arguments(
     path_exists_mock, call_subprocess_mock, pathsdata):

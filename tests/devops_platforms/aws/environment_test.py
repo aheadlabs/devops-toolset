@@ -3,7 +3,7 @@
 from devops_toolset.core.CommandsCore import CommandsCore
 from unittest.mock import patch, call
 from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
-import devops_toolset.devops_platforms as sut
+import devops_toolset.devops_platforms.aws.environment as sut
 
 linux_commands = CommandsCore([LinuxCommands])
 
@@ -12,7 +12,7 @@ linux_commands = CommandsCore([LinuxCommands])
 
 
 @patch("logging.info")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_create_environment_variables_given_dict_when_not_empty_calls_to_create_env_variables_command(
         call_subprocess_mock, logger_mock, platformdata):
     """Given a dictionary, when it is not empty, writes environment variables

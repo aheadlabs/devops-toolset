@@ -36,7 +36,7 @@ def test_generate_authentication_header_given_name_and_token_then_generate_heade
 
 # region call_api
 
-@patch("devops_platforms.azuredevops.restapi.generate_authentication_header")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.generate_authentication_header")
 @patch("logging.info")
 @patch("requests.get", side_effect=mocked_requests_get)
 def test_call_api_given_command_and_credentials_when_status_code_is_200_then_return_response(request_get_mock,
@@ -54,7 +54,7 @@ def test_call_api_given_command_and_credentials_when_status_code_is_200_then_ret
     request_get_mock.assert_called_once_with(command, headers=headers)
 
 
-@patch("devops_platforms.azuredevops.restapi.generate_authentication_header")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.generate_authentication_header")
 @patch("logging.info")
 @patch("requests.get", side_effect=mocked_requests_get_ko)
 def test_call_api_given_command_and_credentials_when_status_code_is_not_200_then_raise_value_error(request_get_mock,
@@ -77,7 +77,7 @@ def test_call_api_given_command_and_credentials_when_status_code_is_not_200_then
 # region get_build_list
 
 
-@patch("devops_platforms.azuredevops.restapi.call_api")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.call_api")
 def test_get_build_list_given_args_call_api_with_command_and_credentials(call_api_mock, platformdata):
     """ Given organization and credentials, then retrieves command and calls api """
     # Arrange
@@ -96,7 +96,7 @@ def test_get_build_list_given_args_call_api_with_command_and_credentials(call_ap
 # region get_build
 
 
-@patch("devops_platforms.azuredevops.restapi.call_api")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.call_api")
 def test_get_build_given_args_call_api_with_args(call_api_mock, platformdata, artifactsdata):
     """ Given parameters, then retrieves command and calls api """
     # Arrange
@@ -118,8 +118,8 @@ def test_get_build_given_args_call_api_with_args(call_api_mock, platformdata, ar
 # region get_last_build
 
 
-@patch("devops_platforms.azuredevops.restapi.get_last_build_id")
-@patch("devops_platforms.azuredevops.restapi.get_build")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_last_build_id")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_build")
 def test_get_last_build_given_args_retrieves_build_id_and_calls_get_build(get_build_mock, get_last_build_mock,
                                                                           platformdata, artifactsdata):
     """ Given parameters, then retrieves build id and calls get_build """
@@ -141,7 +141,7 @@ def test_get_last_build_given_args_retrieves_build_id_and_calls_get_build(get_bu
 # region get_last_build_id
 
 
-@patch("devops_platforms.azuredevops.restapi.get_build_list")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_build_list")
 def test_get_last_build_id_given_args_when_build_list_is_empty_then_return_none(get_build_list_mock, platformdata):
     """ Given args, when get_build_list returns no builds, then return None"""
     # Arrange
@@ -157,7 +157,7 @@ def test_get_last_build_id_given_args_when_build_list_is_empty_then_return_none(
     assert result is None
 
 
-@patch("devops_platforms.azuredevops.restapi.get_build_list")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_build_list")
 def test_get_last_build_id_given_args_when_build_list_is_not_empty_then_return_first_build_id(get_build_list_mock,
                                                                                               platformdata,
                                                                                               artifactsdata):
@@ -179,9 +179,9 @@ def test_get_last_build_id_given_args_when_build_list_is_not_empty_then_return_f
 # region get_artifact
 
 
-@patch("devops_platforms.azuredevops.restapi.get_build")
-@patch("devops_platforms.azuredevops.restapi.generate_authentication_header")
-@patch("filesystem.paths.download_file")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_build")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.generate_authentication_header")
+@patch("devops_toolset.filesystem.paths.download_file")
 def test_get_artifact_given_args_when_get_build_returns_download_url_then_calls_download_file(download_file_mock,
     auth_header_mock, get_build_mock, platformdata, artifactsdata):
     """ Given arguments, when get_build retrieves a build with download url, then calls filesystem.download_file """
@@ -206,8 +206,8 @@ def test_get_artifact_given_args_when_get_build_returns_download_url_then_calls_
 
 # region get_last_artifact
 
-@patch("devops_platforms.azuredevops.restapi.get_last_build_id")
-@patch("devops_platforms.azuredevops.restapi.get_artifact")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_last_build_id")
+@patch("devops_toolset.devops_platforms.azuredevops.restapi.get_artifact")
 def test_get_last_artifact_given_args_when_last_build_id_retrieved_then_calls_get_artifact(get_artifact_mock,
     get_last_build_id_mock, platformdata, artifactsdata):
     """ Given args, when last build id is retrieved, then calls get_artifact """

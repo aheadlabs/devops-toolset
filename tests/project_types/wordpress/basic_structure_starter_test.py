@@ -6,7 +6,7 @@ from devops_toolset.project_types.wordpress.Literals import Literals as Wordpres
 from tests.project_types.wordpress.conftest import mocked_requests_get
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 
-import devops_toolset.filesystem.tools as path_tools
+import devops_toolset.filesystem.paths as path_tools
 import pathlib
 import pytest
 

@@ -7,7 +7,7 @@ import devops_toolset.project_types.wordpress.parse_theme_metadata as sut
 # region main()
 
 
-@patch("filesystem.parsers.parse_theme_metadata")
+@patch("devops_toolset.filesystem.parsers.parse_theme_metadata")
 def test_parse_theme_metadata_from_path_when_path_exists_then_calls_parse_theme_metadata(parse_theme_metadata_mock):
     """ Given path to theme metadata and tokens, then should read the file and call parse_theme_metadata """
     # Arrange

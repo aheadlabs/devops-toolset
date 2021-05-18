@@ -1,6 +1,6 @@
 """ Contains dotnet utilities """
 
-import tools.cli
+import devops_toolset.tools.cli
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.dotnet.Literals import Literals as DotnetLiterals
@@ -58,7 +58,7 @@ def restore(path: str, force: bool = False, debug: bool = False):
     More info: https://docs.microsoft.com/es-es/dotnet/core/tools/dotnet-restore
 
     """
-    tools.cli.call_subprocess(commands.get("dotnet_restore").format(
+    devops_toolset.tools.cli.call_subprocess(commands.get("dotnet_restore").format(
         force=convert_force_parameter(force),
         path=path,
         debug=convert_debug_parameter(debug)),
@@ -82,7 +82,7 @@ def build(path: str, configuration: str = "Release", output: str = ".", framewor
     More info: https://docs.microsoft.com/es-es/dotnet/core/tools/dotnet-build
 
     """
-    tools.cli.call_subprocess(commands.get("dotnet_build").format(
+    devops_toolset.tools.cli.call_subprocess(commands.get("dotnet_build").format(
         force=convert_force_parameter(force),
         path=path,
         debug=convert_debug_parameter(debug),

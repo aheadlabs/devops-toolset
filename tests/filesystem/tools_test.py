@@ -5,7 +5,6 @@ from unittest.mock import patch
 import pytest
 
 
-
 # region update_xml_file_entity_text()
 
 

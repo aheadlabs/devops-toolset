@@ -62,7 +62,7 @@ def test_convert_npm_parameter_silent_given_value_when_true_then_return_silent(v
 # region run_script
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_run_script_given_command_then_calls_subprocess_with_npm_run_command(subprocess_mock):
     """ Given command, then calls subprocess with the npm_run command """
     # Arrange
@@ -94,7 +94,7 @@ def test_run_script_given_command_then_calls_subprocess_with_npm_run_command(sub
 # region install
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_install_given_folder_then_calls_subprocess_with_npm_install_command(subprocess_mock):
     """ Given folder, then calls subprocess with the npm_install command """
     # Arrange

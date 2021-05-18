@@ -3,17 +3,17 @@
 import unittest.mock as mock
 from unittest.mock import call
 
-import devops_toolset.i18n as sut
+import devops_toolset.i18n.utils as sut
 import devops_toolset.tools.cli as tools_cli
 import argparse
 import pathlib
 import os
-import devops_toolset.core as core
+from devops_toolset.core.app import App
 import shutil
 
 # region get_files()
 
-app: core.app.App = core.app.App(True)
+app: App = App(True)
 
 
 @mock.patch.object(pathlib.Path, "rglob")
@@ -116,7 +116,7 @@ def test_compile_po_files_given_path_when_mo_file_exist_then_calls_os_remove(os_
 # region generate_pot_file()
 
 
-@mock.patch("i18n.utils.distribute_pot")
+@mock.patch("devops_toolset.i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_then_calls_get_files(call_subprocess_mock, distribute_pot_mock, filenames):
     """Given a locale path, it should call get_file_paths_in_tree() to get the
@@ -133,7 +133,7 @@ def test_generate_pot_file_given_path_then_calls_get_files(call_subprocess_mock,
     file_paths.assert_called()
 
 
-@mock.patch("i18n.utils.distribute_pot")
+@mock.patch("devops_toolset.i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with_pygettext(subprocess_mock,
                                                                                            distribute_pot_mock,
@@ -159,7 +159,7 @@ def test_generate_pot_file_given_path_when_args_contain_py_then_calls_popen_with
     subprocess_mock.assert_called_once_with(expected_command)
 
 
-@mock.patch("i18n.utils.distribute_pot")
+@mock.patch("devops_toolset.i18n.utils.distribute_pot")
 @mock.patch.object(tools_cli, "call_subprocess")
 def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xgettext(subprocess_mock,
                                                                                       distribute_pot_mock,
@@ -186,7 +186,7 @@ def test_generate_pot_file_given_path_when_args_not_py_then_calls_popen_with_xge
 
 
 @mock.patch.object(os, "remove")
-@mock.patch("i18n.utils.distribute_pot")
+@mock.patch("devops_toolset.i18n.utils.distribute_pot")
 def test_generate_pot_file_given_path_when_mo_file_exist_then_calls_os_remove(distribute_pot_mock, os_remove_mock,
                                                                               filenames):
     """ Given a locale path, when a pot file already exists, should remove it first """

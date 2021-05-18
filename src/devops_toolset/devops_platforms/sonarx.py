@@ -3,11 +3,11 @@
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.devops_platforms.Literals import Literals as DevopsLiterals
-from tools.xcoding64 import encode
+from devops_toolset.tools.xcoding64 import encode
 from devops_toolset.devops_platforms.constants import Urls
-from tools.git import simplify_branch_name
+from devops_toolset.tools.git import simplify_branch_name
 import configparser
-import devops_toolset.core.log_tools
+import devops_toolset.core.log_tools as log_tools
 import logging
 import requests
 
@@ -28,9 +28,9 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
         pull_request: True if the analysis was originated by a pull request.
     """
 
-    core.log_tools.log_indented_list(literals.get("function_params"),
-                                     core.log_tools.get_parameter_value_list(locals()),
-                                     core.log_tools.LogLevel.debug)
+    log_tools.log_indented_list(literals.get("function_params"),
+                                log_tools.get_parameter_value_list(locals()),
+                                log_tools.LogLevel.debug)
 
     token_base64 = encode(f"{token}:")
     basic_auth_token = f"Basic {token_base64}"

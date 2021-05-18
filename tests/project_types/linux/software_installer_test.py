@@ -45,7 +45,7 @@ def test_check_and_update_instance_software_given_software_config_then_call_to_i
 
 # region check_package_installed
 
-@patch("tools.cli.call_subprocess_with_result")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @pytest.mark.parametrize("value, expected_result", [("/usr/bin/package_that_exists", True), (None, False)])
 def test_check_package_installed_given_package_when_package_exist_then_returns_true(call_subprocess_with_result_mock,
                                                                                     value, expected_result):
@@ -79,7 +79,7 @@ def test_convert_version_parameter_given_value_then_return_parameter_value(value
 # region install_package
 
 @patch("devops_toolset.project_types.linux.software_installer.convert_version_parameter")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_install_package_given_package_and_version_then_calls_deb_package_install_command(
         subprocess_mock, convert_version_parameter_mock):
     """ Given package and version, should call deb_package_install command"""

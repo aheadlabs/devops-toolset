@@ -15,8 +15,8 @@ from tests.project_types.wordpress.conftest import mocked_requests_get
 
 @patch("clint.textui.prompt.yn")
 @patch("logging.critical")
-@patch("core.log_tools.log_indented_list")
-@patch("filesystem.paths.files_exist_filtered")
+@patch("devops_toolset.core.log_tools.log_indented_list")
+@patch("devops_toolset.filesystem.paths.files_exist_filtered")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 def test_main_given_required_files_when_not_present_and_localhost_and_no_defaults_then_raise_error(
         constants_mock, files_exist_mock, log_indented_mock, logging_mock, prompt_mock, wordpressdata):
@@ -36,13 +36,13 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 
 @patch("devops_toolset.project_types.wordpress.wptools.import_content_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
-@patch("filesystem.paths.move_files")
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.filesystem.paths.move_files")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("logging.info")
-@patch("core.log_tools.log_indented_list")
+@patch("devops_toolset.core.log_tools.log_indented_list")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.build_theme")
 @patch("devops_toolset.project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -55,7 +55,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("filesystem.paths.files_exist_filtered")
+@patch("devops_toolset.filesystem.paths.files_exist_filtered")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wptools.get_environment")
 @patch("devops_toolset.project_types.wordpress.wptools.add_wp_options")
@@ -81,12 +81,12 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 
 
 @patch("devops_toolset.project_types.wordpress.wptools.import_content_from_configuration_file")
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
 @patch("logging.info")
-@patch("core.log_tools.log_indented_list")
+@patch("devops_toolset.core.log_tools.log_indented_list")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.build_theme")
 @patch("devops_toolset.project_types.wordpress.wptools.install_plugins_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.install_themes_from_configuration_file")
@@ -100,13 +100,13 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("filesystem.paths.files_exist_filtered")
+@patch("devops_toolset.filesystem.paths.files_exist_filtered")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wptools.get_environment")
 @patch("devops_toolset.project_types.wordpress.wptools.add_wp_options")
 @patch("devops_toolset.project_types.wordpress.wptools.create_users")
 @patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
-@patch("filesystem.paths.move_files")
+@patch("devops_toolset.filesystem.paths.move_files")
 def test_main_given_required_files_when_present_and_create_db_then_calls_setup_database(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
         constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,  get_site_config_mock,
@@ -129,12 +129,13 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
     # Assert
     setup_database_mock.assert_called_with(environment_config, wordpressdata.wordpress_path, "root", "root")
 
+
 @patch("devops_toolset.project_types.wordpress.wptools.import_content_from_configuration_file")
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
-@patch("core.log_tools.log_indented_list")
+@patch("devops_toolset.core.log_tools.log_indented_list")
 @patch("clint.textui.prompt.yn")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.build_theme")
 @patch("devops_toolset.project_types.wordpress.wptools.install_plugins_from_configuration_file")
@@ -148,13 +149,13 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("filesystem.paths.files_exist_filtered")
+@patch("devops_toolset.filesystem.paths.files_exist_filtered")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wptools.get_environment")
 @patch("devops_toolset.project_types.wordpress.wptools.add_wp_options")
 @patch("devops_toolset.project_types.wordpress.wptools.create_users")
 @patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
-@patch("filesystem.paths.move_files")
+@patch("devops_toolset.filesystem.paths.move_files")
 def test_main_given_required_files_when_not_present_and_use_defaults_then_download_required_files(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock,
         get_environment_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
@@ -184,7 +185,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
         handler.write.assert_has_calls(calls)
 
 
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.delete_sample_wp_config_file")
 @patch("devops_toolset.project_types.wordpress.generate_wordpress.generate_additional_wpconfig_files")
@@ -200,14 +201,14 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("filesystem.paths.files_exist_filtered")
+@patch("devops_toolset.filesystem.paths.files_exist_filtered")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.create_development_theme")
 @patch("devops_toolset.project_types.wordpress.wptools.get_environment")
 @patch("devops_toolset.project_types.wordpress.wptools.add_wp_options")
 @patch("devops_toolset.project_types.wordpress.wptools.create_users")
 @patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
-@patch("filesystem.paths.move_files")
+@patch("devops_toolset.filesystem.paths.move_files")
 def test_main_given_required_files_when_create_development_theme_then_calls_create_development_theme(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
         create_dev_theme_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
@@ -265,7 +266,7 @@ def test_delete_sample_wp_config_file_when_file_exist_then_remove(remove_mock, p
 # region setup_devops_toolset
 
 
-@patch("tools.devops_toolset.update_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset.update_devops_toolset")
 @patch("logging.info")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(

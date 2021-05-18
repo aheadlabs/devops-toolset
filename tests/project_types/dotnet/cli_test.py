@@ -2,7 +2,7 @@
 
 import pytest
 
-import devops_toolset.project_types.dotnet as sut
+import devops_toolset.project_types.dotnet.cli as sut
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands

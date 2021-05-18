@@ -239,8 +239,8 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
     if len(result) == 0:
         logging.info(literals.get("wp_required_file_paths_not_found"))
     else:
-        core.log_tools.log_indented_list(literals.get("wp_required_file_paths_found"),
-                                         result, core.log_tools.LogLevel.info)
+        devops_toolset.core.log_tools.log_indented_list(literals.get("wp_required_file_paths_found"),
+                                         result, devops_toolset.core.log_tools.LogLevel.info)
 
     return tuple(result)
 
@@ -283,7 +283,7 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     environment = environment_list[0]
 
     # Update URL constants (with the _url suffix) prepending the base URL
-    url_keys = tools.dicts.filter_keys(environment["wp_config"], "_url$")
+    url_keys = devops_toolset.tools.dicts.filter_keys(environment["wp_config"], "_url$")
     for key in url_keys:
         environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
 

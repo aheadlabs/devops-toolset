@@ -5,7 +5,7 @@ import stat
 import pytest
 import json
 import pathlib
-import devops_toolset.project_types as sut
+import devops_toolset.project_types.wordpress.wptools as sut
 from devops_toolset.filesystem import paths
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.devops_platforms import constants as devops_platform_constants
@@ -139,7 +139,7 @@ def test_download_wordpress_given_invalid_path_raises_valueerror(download_wordpr
         sut.download_wordpress(site_configuration, path)
 
 
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wp_cli.download_wordpress")
 def test_download_wordpress_given_valid_arguments_calls_subprocess(
         download_wordpress_mock, purge_gitkeep, wordpressdata):
@@ -194,7 +194,7 @@ def test_get_environment_given_env_name_when_not_match_then_raises_value_error(w
         assert value_error == expected_error_message
 
 
-@patch("tools.dicts.filter_keys")
+@patch("devops_toolset.tools.dicts.filter_keys")
 @patch("logging.warning")
 def test_get_environment_given_env_name_when_multiple_match_then_warns(log_warning_mock, filter_keys_mock,
                                                                        wordpressdata):
@@ -214,7 +214,7 @@ def test_get_environment_given_env_name_when_multiple_match_then_warns(log_warni
     log_warning_mock.assert_called_once_with(expected_message)
 
 
-@patch("tools.dicts.filter_keys")
+@patch("devops_toolset.tools.dicts.filter_keys")
 def test_get_environment_given_site_config_then_update_url_constants(filter_keys_mock, wordpressdata):
     """ Given site_config, then updates url constants """
     # Arrange
@@ -255,7 +255,7 @@ def test_get_project_structure_given_resource_reads_and_parses_content(wordpress
 # region get_required_file_paths()
 
 
-@patch("filesystem.paths.get_file_path_from_pattern")
+@patch("devops_toolset.filesystem.paths.get_file_path_from_pattern")
 def test_get_required_file_paths(get_file_path_from_pattern, wordpressdata):
     """Given, when, then"""
 
@@ -571,7 +571,7 @@ def test_install_wordpress_core_then_calls_cli_install_wordpress_core(install_wo
 
 # region install_wordpress_site()
 
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
 @patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
@@ -596,7 +596,7 @@ def test_install_wordpress_site_then_calls_install_wordpress_core(
     install_wordpress_core.assert_called_with(site_config, environment_config, root_path, admin_pass)
 
 
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
 @patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
@@ -622,7 +622,7 @@ def test_install_wordpress_site_then_calls_cli_update_option(
                                        root_path, environment_config["wp_cli_debug"])
 
 
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 @patch("devops_toolset.project_types.wordpress.wp_cli.reset_database")
 @patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")

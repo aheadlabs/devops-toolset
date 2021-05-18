@@ -14,7 +14,7 @@ import argparse
 import devops_toolset.core.app
 import os
 import pathlib
-import tools.cli as tools_cli
+import devops_toolset.tools.cli as tools_cli
 import shutil
 
 parser = argparse.ArgumentParser()
@@ -25,7 +25,7 @@ parser.add_argument("--skip-i18n", action="store_true")
 parser.add_argument("--merge", action="store_true")
 args, args_unknown = parser.parse_known_args()
 
-app: core.app.App = core.app.App(args.skip_i18n)
+app: devops_toolset.core.app.App = devops_toolset.core.app.App(args.skip_i18n)
 
 base_pot_file_name = "base.pot"
 

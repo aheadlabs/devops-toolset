@@ -45,22 +45,22 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
             errors.
     """
 
-    core.log_tools.log_list([command], core.log_tools.LogLevel.debug)
-    core.log_tools.log_list(log_before_process, core.log_tools.LogLevel.info)
+    devops_toolset.core.log_tools.log_list([command], devops_toolset.core.log_tools.LogLevel.debug)
+    devops_toolset.core.log_tools.log_list(log_before_process, devops_toolset.core.log_tools.LogLevel.info)
 
     process = subprocess.Popen(command.strip(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
     process.wait()
 
     if out:
-        core.log_tools.log_list(log_before_out, core.log_tools.LogLevel.info)
-        core.log_tools.log_stdouterr(out, core.log_tools.LogLevel.info)
-        core.log_tools.log_list(log_after_out, core.log_tools.LogLevel.info)
+        devops_toolset.core.log_tools.log_list(log_before_out, devops_toolset.core.log_tools.LogLevel.info)
+        devops_toolset.core.log_tools.log_stdouterr(out, devops_toolset.core.log_tools.LogLevel.info)
+        devops_toolset.core.log_tools.log_list(log_after_out, devops_toolset.core.log_tools.LogLevel.info)
 
     if err and process.returncode != 0:
-        core.log_tools.log_list(log_before_err, core.log_tools.LogLevel.error)
-        core.log_tools.log_stdouterr(err, core.log_tools.LogLevel.error)
-        core.log_tools.log_list(log_after_err, core.log_tools.LogLevel.error)
+        devops_toolset.core.log_tools.log_list(log_before_err, devops_toolset.core.log_tools.LogLevel.error)
+        devops_toolset.core.log_tools.log_stdouterr(err, devops_toolset.core.log_tools.LogLevel.error)
+        devops_toolset.core.log_tools.log_list(log_after_err, devops_toolset.core.log_tools.LogLevel.error)
 
 
 if __name__ == "__main__":

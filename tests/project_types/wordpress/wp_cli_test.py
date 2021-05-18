@@ -93,7 +93,7 @@ def test_add_update_option_when_not_exists_calls_add_function(
 @patch("devops_toolset.project_types.wordpress.wp_cli.add_database_option")
 @patch("devops_toolset.project_types.wordpress.wp_cli.update_database_option")
 @patch("devops_toolset.project_types.wordpress.wp_cli.check_if_option_exists")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_add_update_option_should_update_permalinks_when_structure_is_updated(
         call_subprocess_mock,
         check_if_option_exists_mock,
@@ -123,7 +123,7 @@ def test_add_update_option_should_update_permalinks_when_structure_is_updated(
 
 
 @patch("devops_toolset.project_types.wordpress.wp_cli.check_if_option_exists")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_add_database_option_should_check_if_exists(
         call_subprocess_mock,
         check_if_option_exists_mock,
@@ -148,7 +148,7 @@ def test_add_database_option_should_check_if_exists(
 
 @patch("devops_toolset.project_types.wordpress.wp_cli.check_if_option_is_valid")
 @patch("devops_toolset.project_types.wordpress.wp_cli.check_if_option_exists")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_add_database_option_when_not_exists_calls_add_function(
         call_subprocess_mock,
         check_if_option_exists_mock,
@@ -177,7 +177,7 @@ def test_add_database_option_when_not_exists_calls_add_function(
 # region check_if_option_exists
 
 
-@patch("tools.cli.call_subprocess_with_result")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @pytest.mark.parametrize("exists, option_value, expected", [
     (True, "value\n", (True, "value")),
     (False, None, (False, None))
@@ -476,7 +476,7 @@ def test_convert_wp_parameter_yes(value, expected):
 # region import_database()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_import_database(call_subprocess, wordpressdata):
     """Given arguments, calls subprocess"""
 
@@ -498,7 +498,7 @@ def test_import_database(call_subprocess, wordpressdata):
 # region reset_database()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_reset_database(call_subprocess, wordpressdata):
     """Given arguments, calls subprocess"""
 
@@ -520,7 +520,7 @@ def test_reset_database(call_subprocess, wordpressdata):
 # region reset_transients()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_reset_transients(call_subprocess):
     """Given arguments, when the method is called, then delete transients"""
 
@@ -537,7 +537,7 @@ def test_reset_transients(call_subprocess):
 
 # region wp_cli_info()
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_wp_cli_info(call_subprocess):
     """Calls subprocess with the required command"""
     # Arrange
@@ -555,7 +555,7 @@ def test_wp_cli_info(call_subprocess):
 # region create_wordpress_database_user()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 @pytest.mark.skip(reason="Need to fix this test")
 def test_create_wordpress_database_user(call_subprocess):
     """Given arguments, when the method is called, then creates a db user"""
@@ -579,7 +579,7 @@ def test_create_wordpress_database_user(call_subprocess):
 # region create_wordpress_database_user()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_export_content_to_wxr(call_subprocess):
     """Given arguments, when the method is called, then exports WordPress
     content"""

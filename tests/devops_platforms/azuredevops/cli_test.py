@@ -35,7 +35,7 @@ def test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_l
     logging_err_mock.assert_called_once_with(expected_error)
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_commands(subprocess_mock, artifactsdata):
     """Given kwargs, when azdevops_token present, then calls azdevops_login and azdevops_universal_download"""
     # Arrange
