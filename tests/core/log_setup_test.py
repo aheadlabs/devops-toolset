@@ -2,7 +2,7 @@
 
 import logging
 from unittest.mock import patch, mock_open
-import core.log_setup as sut
+import devops_toolset.core.log_setup as sut
 from tests.core.conftest import CoreTestsFixture as Fixture
 
 # region configure(filepath)

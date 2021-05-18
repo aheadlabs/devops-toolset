@@ -1,15 +1,16 @@
 """ Unit core for the bootstrap repository script """
 
 from unittest.mock import patch
-import project_types.wordpress.bootstrap_repository as sut
+import devops_toolset.project_types.wordpress.bootstrap_repository as sut
+
 
 # region main
 
 
 @patch("os.chdir")
-@patch("tools.git.git_init")
-@patch("tools.git.git_commit")
-@patch("project_types.wordpress.generate_wordpress.main")
+@patch("devops_toolset.tools.git.git_init")
+@patch("devops_toolset.tools.git.git_commit")
+@patch("devops_toolset.project_types.wordpress.generate_wordpress.main")
 def test_main_given_given_arguments_then_call_dependencies(generate_wordpress_mock, git_commit_mock,
                                                            git_init_mock, chdir_mock, wordpressdata):
     """ Given project path argument, then calls os.chdir to project_path """
