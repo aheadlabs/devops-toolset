@@ -2,12 +2,12 @@
 
 from unittest.mock import patch, call, ANY
 import pytest
-import project_types.linux.software_installer as sut
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from project_types.linux.commands import Commands as LinuxCommands
-from project_types.linux.Literals import Literals as LinuxLiterals
-from core.app import App
+import devops_toolset.project_types.linux.software_installer as sut
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
+from devops_toolset.project_types.linux.Literals import Literals as LinuxLiterals
+from devops_toolset.core.app import App
 
 app: App = App()
 literals = LiteralsCore([LinuxLiterals])
@@ -16,7 +16,7 @@ commands = CommandsCore([LinuxCommands])
 # region check_and_update_instance_software
 
 
-@patch("project_types.linux.software_installer.install_package")
+@patch("devops_toolset.project_types.linux.software_installer.install_package")
 def test_check_and_update_instance_software_given_software_config_when_no_content_then_avoid_call_to_install_package(
         install_package_mock):
     """ Given software_config dict, when no content, should not call install_package"""
@@ -28,7 +28,7 @@ def test_check_and_update_instance_software_given_software_config_when_no_conten
     install_package_mock.assert_not_called()
 
 
-@patch("project_types.linux.software_installer.install_package")
+@patch("devops_toolset.project_types.linux.software_installer.install_package")
 def test_check_and_update_instance_software_given_software_config_then_call_to_install_package(
         install_package_mock):
     """ Given software_config dict should not call install_package"""
@@ -45,7 +45,7 @@ def test_check_and_update_instance_software_given_software_config_then_call_to_i
 
 # region check_package_installed
 
-@patch("tools.cli.call_subprocess_with_result")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @pytest.mark.parametrize("value, expected_result", [("/usr/bin/package_that_exists", True), (None, False)])
 def test_check_package_installed_given_package_when_package_exist_then_returns_true(call_subprocess_with_result_mock,
                                                                                     value, expected_result):
@@ -78,8 +78,8 @@ def test_convert_version_parameter_given_value_then_return_parameter_value(value
 
 # region install_package
 
-@patch("project_types.linux.software_installer.convert_version_parameter")
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.project_types.linux.software_installer.convert_version_parameter")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_install_package_given_package_and_version_then_calls_deb_package_install_command(
         subprocess_mock, convert_version_parameter_mock):
     """ Given package and version, should call deb_package_install command"""

@@ -3,12 +3,12 @@
 from unittest.mock import patch, call
 import pytest
 
-import project_types.linux.utils as sut
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from project_types.linux.commands import Commands as LinuxCommands
-from project_types.linux.Literals import Literals as LinuxLiterals
-from core.app import App
+import devops_toolset.project_types.linux.utils as sut
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
+from devops_toolset.project_types.linux.Literals import Literals as LinuxLiterals
+from devops_toolset.core.app import App
 
 app: App = App()
 literals = LiteralsCore([LinuxLiterals])
@@ -35,7 +35,7 @@ def test_edit_in_place_given_arguments_when_file_path_not_exist_then_raises_erro
         logging_mock.assert_called_once_with(error_message)
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 @patch("pathlib.Path.exists")
 def test_edit_in_place_given_arguments_then_calls_subprocess_with_arguments(
     path_exists_mock, call_subprocess_mock, pathsdata):
@@ -68,7 +68,7 @@ def test_edit_in_place_given_arguments_then_calls_subprocess_with_arguments(
 
 # region edit_multiple_in_place
 
-@patch("project_types.linux.utils.edit_in_place")
+@patch("devops_toolset.project_types.linux.utils.edit_in_place")
 @patch("pathlib.Path.exists")
 def test_edit_multiple_in_place_given_replacements_should_call_edit_in_place(
         path_exists_mock, edit_in_place_mock, pathsdata):

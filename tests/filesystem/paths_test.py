@@ -1,12 +1,12 @@
 """Unit core for the paths file"""
 
-import filesystem.paths as sut
+import devops_toolset.filesystem.paths as sut
 import os
 import pathlib
 import pytest
 from tests.conftest import FileNames as FileNameFixtures
 from tests.filesystem.conftest import Paths
-from filesystem.constants import Directions, FileNames
+from devops_toolset.filesystem.constants import Directions, FileNames
 from unittest.mock import patch
 
 # region files_exist()
@@ -51,7 +51,7 @@ def test_files_exist_given_list_returns_list_tuple(rglob_mock, rglob_response, e
 # region files_exist_filtered()
 
 
-@patch("filesystem.paths.files_exist")
+@patch("devops_toolset.filesystem.paths.files_exist")
 @pytest.mark.parametrize("filter_by, expected", [(True, ["file1.txt"]), (False, ["file2.txt"])])
 def test_files_exist_filtered(files_exist, filter_by, expected, paths):
     """Given, when, then"""

@@ -3,13 +3,13 @@
 import json
 from unittest.mock import patch, call
 
-from core.app import App
-from core.CommandsCore import CommandsCore
-from core.LiteralsCore import LiteralsCore
-from devops_platforms.azuredevops.Literals import Literals as PlatformSpecificLiterals
-from devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
+from devops_toolset.core.app import App
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformSpecificLiterals
+from devops_toolset.devops_platforms.azuredevops.commands import Commands as PlatformSpecificCommands
 
-import devops_platforms.azuredevops.cli as sut
+import devops_toolset.devops_platforms.azuredevops.cli as sut
 
 app: App = App()
 literals = LiteralsCore([PlatformSpecificLiterals])
@@ -35,7 +35,7 @@ def test_download_artifact_from_feed_given_kwargs_when_not_azdevops_token_then_l
     logging_err_mock.assert_called_once_with(expected_error)
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_download_artifact_from_feed_given_kwargs_when_azdevops_token_calls_commands(subprocess_mock, artifactsdata):
     """Given kwargs, when azdevops_token present, then calls azdevops_login and azdevops_universal_download"""
     # Arrange

@@ -1,13 +1,13 @@
 """Unit core for the core.app file"""
 
 from unittest.mock import patch
-from core.app import App
+from devops_toolset.core.app import App
 
 
 # region App()
 
-@patch("core.log_setup.configure")
-@patch("i18n.loader.setup")
+@patch("devops_toolset.core.log_setup.configure")
+@patch("devops_toolset.i18n.loader.setup")
 def test_app_given_no_parameters_loads_gettext_engine(i18n_loader_setup, log_setup_configure):
     """Given no parameters, gettext engine must be loaded"""
 
@@ -21,8 +21,8 @@ def test_app_given_no_parameters_loads_gettext_engine(i18n_loader_setup, log_set
     i18n_loader_setup.assert_called()
 
 
-@patch("core.log_setup.configure")
-@patch("i18n.loader.setup")
+@patch("devops_toolset.core.log_setup.configure")
+@patch("devops_toolset.i18n.loader.setup")
 def test_app_given_skip_i18n_parameter_does_not_load_gettext_engine(i18n_loader_setup, log_setup_configure):
     """Given the --skip-i18n parameter, gettext engine must not be loaded"""
 

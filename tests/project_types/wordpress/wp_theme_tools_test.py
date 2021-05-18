@@ -2,12 +2,12 @@
 import json
 import pathlib
 
-from devops_platforms import constants as devops_platforms_constants
-import project_types.wordpress.wp_theme_tools as sut
+from devops_toolset.devops_platforms import constants as devops_platforms_constants
+import devops_toolset.project_types.wordpress.wp_theme_tools as sut
 import pytest
-import project_types.wordpress.constants as wp_constants
-from core.LiteralsCore import LiteralsCore
-from project_types.wordpress.Literals import Literals as WordpressLiterals
+import devops_toolset.project_types.wordpress.constants as wp_constants
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from tests.project_types.wordpress.conftest import WordPressData, ThemesData
 from unittest.mock import patch, call, mock_open, ANY
 
@@ -37,11 +37,11 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs(logging_mock
 @patch("logging.info")
 @patch("os.path.exists")
 @patch("os.chdir")
-@patch("project_types.node.npm.install")
-@patch("tools.cli.call_subprocess")
-@patch("filesystem.zip.zip_directory")
-@patch("filesystem.parsers.parse_json_file")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.node.npm.install")
+@patch("devops_toolset.tools.cli.call_subprocess")
+@patch("devops_toolset.filesystem.zip.zip_directory")
+@patch("devops_toolset.filesystem.parsers.parse_json_file")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
         update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock, chdir_mock,
         path_exists_mock, logging_mock, wordpressdata, themesdata):
@@ -60,11 +60,11 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_npm_install(
 @patch("logging.info")
 @patch("os.path.exists")
 @patch("os.chdir")
-@patch("project_types.node.npm.install")
-@patch("tools.cli.call_subprocess")
-@patch("filesystem.zip.zip_directory")
-@patch("filesystem.parsers.parse_json_file")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.node.npm.install")
+@patch("devops_toolset.tools.cli.call_subprocess")
+@patch("devops_toolset.filesystem.zip.zip_directory")
+@patch("devops_toolset.filesystem.parsers.parse_json_file")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
         update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
         chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
@@ -84,11 +84,11 @@ def test_build_theme_given_site_config_when_src_themes_then_chdir_to_source(
 @patch("logging.info")
 @patch("os.path.exists")
 @patch("os.chdir")
-@patch("project_types.node.npm.install")
-@patch("tools.cli.call_subprocess")
-@patch("filesystem.zip.zip_directory")
-@patch("filesystem.parsers.parse_json_file")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.node.npm.install")
+@patch("devops_toolset.tools.cli.call_subprocess")
+@patch("devops_toolset.filesystem.zip.zip_directory")
+@patch("devops_toolset.filesystem.parsers.parse_json_file")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_with_build_command(
         update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
         chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
@@ -119,11 +119,11 @@ def test_build_theme_given_site_config_when_src_themes_then_calls_subprocess_wit
 @patch("logging.info")
 @patch("os.path.exists")
 @patch("os.chdir")
-@patch("project_types.node.npm.install")
-@patch("tools.cli.call_subprocess")
-@patch("filesystem.zip.zip_directory")
-@patch("filesystem.parsers.parse_json_file")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.node.npm.install")
+@patch("devops_toolset.tools.cli.call_subprocess")
+@patch("devops_toolset.filesystem.zip.zip_directory")
+@patch("devops_toolset.filesystem.parsers.parse_json_file")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_build_theme_given_site_config_when_src_themes_then_zips_dist(
         update_xml_mock, parse_json_mock, zip_directory_mock, subprocess_mock, npm_install_mock,
         chdir_mock, path_exists_mock, logging_mock, wordpressdata, themesdata):
@@ -237,7 +237,7 @@ def test_check_theme_configuration_given_theme_when_feed_expected_and_not_source
 
 # region create_development_theme()
 
-@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
 @patch("logging.warning")
 def test_create_development_theme_given_theme_config_when_no_src_theme_then_should_log_warning(
     log_warn_mock, get_themes_from_root_path_mock, themesdata, wordpressdata):
@@ -254,9 +254,9 @@ def test_create_development_theme_given_theme_config_when_no_src_theme_then_shou
     log_warn_mock.assert_called_once()
 
 
-@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
-@patch("project_types.wordpress.wp_theme_tools.set_theme_metadata")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.set_theme_metadata")
 def test_create_development_theme_given_theme_config_when_src_theme_then_should_start_basic_theme_structure(
         set_theme_metadata_mock, start_structure_mock, get_themes_from_root_path_mock, wordpressdata, themesdata):
     """ Given theme config, when there is a source_typed src theme, then should call the start_basic_theme_structure """
@@ -279,9 +279,9 @@ def test_create_development_theme_given_theme_config_when_src_theme_then_should_
     start_structure_mock.assert_called_once_with(destination_path, theme_slug, str(structure_file_path))
 
 
-@patch("project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
-@patch("project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
-@patch("project_types.wordpress.wp_theme_tools.set_theme_metadata")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_themes_path_from_root_path")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.start_basic_theme_structure")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.set_theme_metadata")
 def test_create_development_theme_given_theme_config_when_src_theme_then_should_set_theme_metadata(
     set_theme_metadata_mock, start_structure_mock, get_themes_from_root_path_mock, wordpressdata, themesdata):
     """ Given theme config, when there is a source_typed src theme, then should call the set_theme_metadata """
@@ -333,7 +333,7 @@ def test_download_wordpress_theme_given_theme_config_when_source_type_is_feed_an
     log_warning_mock.assert_called()
 
 
-@patch("filesystem.paths.download_file")
+@patch("devops_toolset.filesystem.paths.download_file")
 def test_download_wordpress_theme_given_theme_config_when_source_type_is_url_then_calls_paths_download_file(
         download_file_mock, themesdata):
     """ Given theme config, when source type is url, then downloads content to the destination path"""
@@ -351,8 +351,8 @@ def test_download_wordpress_theme_given_theme_config_when_source_type_is_url_the
 
 
 @patch("logging.info")
-@patch("project_types.wordpress.wp_cli.install_theme")
-@patch("project_types.wordpress.wp_theme_tools.check_themes_configuration")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_theme")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_themes_configuration")
 def test_install_theme_given_configuration_file_when_wrong_themes_configuration_then_return(
         check_themes_mock, install_theme_mock, logging_mock, wordpressdata, themesdata):
     """ Given the configuration values, when wrong configuration of themes given, then no installation calls
@@ -370,16 +370,16 @@ def test_install_theme_given_configuration_file_when_wrong_themes_configuration_
     install_theme_mock.assert_not_called()
 
 
-@patch("project_types.wordpress.wp_theme_tools.check_themes_configuration")
-@patch("project_types.wordpress.wp_theme_tools.check_theme_configuration")
-@patch("project_types.wordpress.wp_theme_tools.download_wordpress_theme")
-@patch("filesystem.zip.read_text_file_in_zip")
-@patch("filesystem.parsers.parse_theme_metadata")
-@patch("project_types.wordpress.wp_theme_tools.triage_themes")
-@patch("project_types.wordpress.wptools.convert_wp_config_token")
-@patch("project_types.wordpress.wptools.export_database")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_themes_configuration")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_theme_configuration")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.download_wordpress_theme")
+@patch("devops_toolset.filesystem.zip.read_text_file_in_zip")
+@patch("devops_toolset.filesystem.parsers.parse_theme_metadata")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.triage_themes")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
 @patch("logging.info")
-@patch("project_types.wordpress.wp_cli.install_theme")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_theme")
 def test_install_theme_given_configuration_file_when_no_parent_theme_then_install_once(
         install_theme_mock, logging_mock, export_database_mock, convert_token_mock, triage_themes_mock,
         parse_theme_metadata, read_text_file_mock, download_wordpress_mock, check_theme_mock, check_themes_mock,
@@ -430,7 +430,7 @@ def test_replace_theme_meta_data_in_package_file_given_src_theme_then_replace_da
 # region replace_theme_meta_data_in_scss_file()
 
 
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data")
 def test_replace_theme_meta_data_in_scss_file_given_src_theme_then_replace_data_in_file_path(
         replace_theme_metadata_mock, themesdata, wordpressdata):
     """ Given src theme config, then open the style.scss file and replace data based on src theme """
@@ -490,11 +490,11 @@ def test_replace_theme_meta_data_given_path_and_replacements_then_replaces_file_
 # region set_theme_metadata()
 
 
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_scss_file(
         update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
         replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
@@ -513,11 +513,11 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     replace_theme_metadata_in_scss_mock.assert_called_once_with(str(scss_file_path), src_theme)
 
 
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_metadata_in_package_json_file(
         update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
         replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
@@ -539,11 +539,11 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_meta
     replace_theme_metadata_in_package_mock.assert_called_once_with(str(package_json_path), src_theme)
 
 
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
-@patch("project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
-@patch("project_types.wordpress.wptools.get_constants")
-@patch("filesystem.tools.update_xml_file_entity_text")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_scss_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_meta_data_in_package_file")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.replace_theme_slug_in_functions_php")
+@patch("devops_toolset.project_types.wordpress.wptools.get_constants")
+@patch("devops_toolset.filesystem.tools.update_xml_file_entity_text")
 def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug_in_functions_php_file(
         update_xml_mock, get_constants_mock, replace_theme_slug_in_functions_mock,
         replace_theme_metadata_in_package_mock, replace_theme_metadata_in_scss_mock, wordpressdata, themesdata):
@@ -570,9 +570,9 @@ def test_set_theme_metadata_given_src_theme_config_then_calls_replace_theme_slug
 
 
 @patch("logging.info")
-@patch("project_types.wordpress.wptools.get_site_configuration")
+@patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("pathlib.Path.exists")
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_gets_site_configuration(
         purge_gitkeep_mock, path_exists_mock, get_site_configuration_mock, logging_mock, wordpressdata):
     """ Given structure file, when file exists, should call wptools.get_site_configuration """
@@ -588,9 +588,9 @@ def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_
 
 
 @patch("logging.info")
-@patch("project_types.wordpress.wptools.get_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.get_project_structure")
 @patch("pathlib.Path.exists")
-@patch("tools.git.purge_gitkeep")
+@patch("devops_toolset.tools.git.purge_gitkeep")
 def test_start_basic_theme_structure_given_structure_file_path_when_not_exists_then_gets_project_structure(
         purge_gitkeep_mock, path_exists_mock, get_project_structure_mock, logging_mock, wordpressdata):
     """ Given structure file, when file exists, should call wptools.get_project_structure """

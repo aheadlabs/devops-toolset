@@ -1,6 +1,6 @@
 """Unit core for the apache file"""
 
-import project_types.aws.get_aws_resources as sut
+import devops_toolset.project_types.aws.get_aws_resources as sut
 import pytest
 from unittest.mock import patch, mock_open
 
@@ -8,7 +8,7 @@ from unittest.mock import patch, mock_open
 # region main()
 
 
-@patch("tools.cli.call_subprocess_with_result")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @patch("json.loads")
 @patch("json.dump")
 @pytest.mark.parametrize("hosted_zone", ["/hostedzone/ABCDEFGHIJKL123456789", None])

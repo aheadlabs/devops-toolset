@@ -3,17 +3,16 @@
 import io
 import pathlib
 import pytest
-import tools.git as sut
-import filesystem.paths as path_tools
+import devops_toolset.tools.git as sut
+import devops_toolset.filesystem.paths as path_tools
 from unittest.mock import patch, mock_open, call, ANY
-from filesystem.constants import Directions, FileNames
+from devops_toolset.filesystem.constants import Directions, FileNames
 from tests.tools.conftest import GitignoreData
 from tests.tools.conftest import BranchesData
-from core.CommandsCore import CommandsCore
-from tools.commands import Commands as ToolsCommands
-from core.LiteralsCore import LiteralsCore
-from tools.Literals import Literals as ToolsLiterals
-
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.tools.commands import Commands as ToolsCommands
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.tools.Literals import Literals as ToolsLiterals
 
 commands = CommandsCore([ToolsCommands])
 literals = LiteralsCore([ToolsLiterals])
@@ -39,6 +38,7 @@ def test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusi
     with open(test_gitignore_path, "r") as test_gitignore:
         content = test_gitignore.read()
         assert content == expected_gitignore.read()
+
 
 # endregion
 
@@ -76,11 +76,13 @@ def test_find_gitignore_exclusion_given_path_when_exclusion_exists_then_returns_
     # Assert
     assert result == False
 
+
 # endregion
 
 # region get_gitignore_path()
 
-@patch("filesystem.paths.get_project_root")
+
+@patch("devops_toolset.filesystem.paths.get_project_root")
 def test_get_gitignore_path_given_none_when_exists_then_returns_root_gitignore_path(target, filenames):
     """Given no file, when it exists, should return path to root .gitignore"""
 
@@ -89,14 +91,14 @@ def test_get_gitignore_path_given_none_when_exists_then_returns_root_gitignore_p
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = True
 
-    # Act
+        # Act
         result = sut.get_gitignore_path()
 
     # Assert
     assert result == pathlib.Path(f"{filenames.path}/{FileNames.GITIGNORE_FILE}")
 
 
-@patch("filesystem.paths.get_project_root")
+@patch("devops_toolset.filesystem.paths.get_project_root")
 def test_get_gitignore_path_given_none_when_not_exist_then_raises_filenotfounderror(target, filenames):
     """Given no file, when it doesn't exist, should raise FileNotFoundError"""
 
@@ -105,14 +107,13 @@ def test_get_gitignore_path_given_none_when_not_exist_then_raises_filenotfounder
     with patch.object(pathlib.Path, "exists") as exits:
         exits.return_value = False
 
-    # Act
+        # Act
         with pytest.raises(FileNotFoundError):
-
             # Assert
             sut.get_gitignore_path()
 
 
-@patch("filesystem.paths.get_filepath_in_tree")
+@patch("devops_toolset.filesystem.paths.get_filepath_in_tree")
 def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(target, filenames):
     """Given a file, should call get_filepath_in_tree(FileNames.GITIGNORE_FILE, direction)"""
 
@@ -124,12 +125,13 @@ def test_get_gitignore_path_given_file_then_calls_get_filepath_in_tree(target, f
     # Assert
     target.assert_called_with(filenames.file, Directions.ASCENDING)
 
+
 # endregion
 
 # region git_commit()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_git_commit_when_skip_do_nothing(call_subprocess):
     """Given arguments, when skip is true, then do nothing"""
 
@@ -143,7 +145,7 @@ def test_git_commit_when_skip_do_nothing(call_subprocess):
     call_subprocess.assert_not_called()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 def test_git_commit_when_not_skip_then_call_subprocess(call_subprocess):
     """Given arguments, when skip is false, then call subprocess"""
 
@@ -181,7 +183,7 @@ def test_git_init_when_skip_do_nothing(prompt_yn):
     prompt_yn.assert_not_called()
 
 
-@patch("tools.cli.call_subprocess")
+@patch("devops_toolset.tools.cli.call_subprocess")
 @patch("clint.textui.prompt.yn")
 @pytest.mark.parametrize("prompt_yn, times_called", [
     (False, 0),
@@ -223,6 +225,7 @@ def test_set_current_branch_simplified_given_branch_and_environment_variable_cre
             sut.set_current_branch_simplified(branch, environment_variable_name)
             # Assert
             create_env_vars_mock.assert_called_once_with({environment_variable_name: branch})
+
 
 # endregion
 
@@ -274,6 +277,7 @@ def test_simplify_branch_name_given_branch_when_other_then_returns_original(bran
     # Assert
     assert result == expected
 
+
 # endregion
 
 # region update_gitignore_exclusion()
@@ -290,7 +294,6 @@ def test_update_gitignore_exclusion_given_regex_when_more_than_1_capture_group_r
 
     # Act
     with pytest.raises(ValueError):
-
         # Assert
         sut.update_gitignore_exclusion(path, regex, value)
 
@@ -326,6 +329,7 @@ def test_update_gitignore_exclusion_given_regex_when_1_capture_group_writes_giti
     # Assert
     mocked_open.assert_any_call(filenames.path, "w")
 
+
 # endregion
 
 # region purge_gitkeep()
@@ -339,7 +343,6 @@ def test_purge_gitkeep_when_invalid_path_raises_valueerror(paths):
 
     # Act
     with pytest.raises(ValueError):
-
         # Assert
         sut.purge_gitkeep(path)
 

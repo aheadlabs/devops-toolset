@@ -1,12 +1,12 @@
 """Unit core for the zip file"""
 
 from unittest.mock import patch
-import filesystem.zip as sut
+import devops_toolset.filesystem.zip as sut
 
 
 # region download_an_unzip_file
 
-@patch("filesystem.paths.download_file")
+@patch("devops_toolset.filesystem.paths.download_file")
 @patch("pathlib.Path.joinpath")
 @patch("zipfile.ZipFile")
 def test_download_an_unzip_file_given_parameters_then_calls_extract_all(zipfile_mock, joinpath_mock,
@@ -24,7 +24,7 @@ def test_download_an_unzip_file_given_parameters_then_calls_extract_all(zipfile_
     zipfile_mock.assert_called_once_with(paths.test_path, 'r')
 
 
-@patch("filesystem.paths.download_file")
+@patch("devops_toolset.filesystem.paths.download_file")
 @patch("pathlib.Path.joinpath")
 @patch("zipfile.ZipFile")
 @patch("os.walk")
@@ -47,7 +47,7 @@ def test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then
     rmdir_mock.assert_called()
 
 
-@patch("filesystem.paths.download_file")
+@patch("devops_toolset.filesystem.paths.download_file")
 @patch("pathlib.Path.joinpath")
 @patch("zipfile.ZipFile")
 @patch("os.remove")
