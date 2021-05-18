@@ -138,8 +138,8 @@ def get_artifact(organization: str, project: str, build_id: int, artifact_name: 
     download_url = build["resource"]["downloadUrl"]
     if download_url:
         headers = generate_authentication_header(user_name, access_token)
-        devops_toolset.filesystem.paths.download_file(build["resource"]["downloadUrl"], destination_path, f"{artifact_name}.zip",
-                                       headers)
+        devops_toolset.filesystem.paths.download_file(
+            build["resource"]["downloadUrl"], destination_path, f"{artifact_name}.zip", headers)
 
 
 def get_last_artifact(organization: str, project: str, artifact_name: str, destination_path: str,

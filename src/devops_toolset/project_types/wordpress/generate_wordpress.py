@@ -20,7 +20,6 @@ import devops_toolset.tools.git as git_tools
 from clint.textui import prompt
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App
-from devops_toolset.filesystem.constants import FileNames
 from devops_toolset.devops_platforms.constants import Urls
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 
@@ -53,7 +52,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Get basic settings
     global_constants: dict = devops_toolset.project_types.wordpress.wptools.get_constants()
-    devops_toolset_wordpress_path = devops_toolset.filesystem.paths.get_project_root(pathlib.Path(__file__), "default-files")
     database_files_path: str = global_constants["paths"]["database"]
     root_path_obj: pathlib.Path = pathlib.Path(root_path)
 
@@ -101,8 +99,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     environment_config = devops_toolset.project_types.wordpress.wptools.get_environment(site_config, environment)
 
     # Get future paths (from the constants.json file)
-    wordpress_path: str = devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path(root_path,
-                                                                                                           global_constants)
+    wordpress_path: str = devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path(
+        root_path,
+        global_constants)
     wordpress_path_as_posix: str = pathlib.Path(wordpress_path).as_posix()
     themes_path: str = theme_tools.get_themes_path_from_root_path(root_path, global_constants)
 
@@ -225,12 +224,11 @@ def generate_additional_wpconfig_files(site_config: dict, environments: dict, ad
 
     # Create additional configuration files for the filtered environments
     for environment in filtered_environments:
-        devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config,
-                                                                                                    environment,
-                                                                                                    wordpress_path,
-                                                                                                    environments_db_user_passwords[
-                                                                                                        environment[
-                                                                                                            "name"]])
+        devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(
+            site_config,
+            environment,
+            wordpress_path,
+            environments_db_user_passwords[environment["name"]])
         shutil.move(wp_config_path, pathlib.Path.joinpath(wordpress_path_obj, f"wp-config-{environment['name']}.php"))
 
     # Rename original file

@@ -76,13 +76,15 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
             log_after_err=[literals.get("wp_gulp_build_error").format(theme_slug=theme_slug)])
 
         # Zip dist
-        devops_toolset.filesystem.zip.zip_directory(theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
+        devops_toolset.filesystem.zip.zip_directory(
+            theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
 
         # Replace project.xml version with the one in the package.json file
         package_json_path = str(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
         project_xml_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml"))
         package_json = parsers.parse_json_file(package_json_path)
-        devops_toolset.filesystem.tools.update_xml_file_entity_text("./version", package_json["version"], project_xml_path)
+        devops_toolset.filesystem.tools.update_xml_file_entity_text(
+            "./version", package_json["version"], project_xml_path)
 
     else:
         logging.error(literals.get("wp_file_not_found").format(file=theme_path_src))
@@ -256,7 +258,8 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
             download_wordpress_theme(theme, str(themes_path), **kwargs)
 
         # Get template for the theme if it has one
-        style_content: bytes = devops_toolset.filesystem.zip.read_text_file_in_zip(theme_path, f"{theme['name']}/style.css")
+        style_content: bytes = devops_toolset.filesystem.zip.read_text_file_in_zip(
+            theme_path, f"{theme['name']}/style.css")
         metadata: dict = devops_toolset.filesystem.parsers.parse_theme_metadata(style_content, ["Template", "Version"])
         theme["template"] = metadata["Template"] if "Template" in metadata else None
         theme["version"] = metadata["Version"]
