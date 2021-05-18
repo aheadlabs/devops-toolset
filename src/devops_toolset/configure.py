@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def main(devops_platform: str, language: str):
     """ Sets the configuration inside settings.json """
-    settings_path = pkg_resources.resource_filename("core", "settings.json")
+    settings_path = pkg_resources.resource_filename("devops_toolset.core", "settings.json")
 
     with open(settings_path, 'r') as settings_file:
         settings = json.load(settings_file)
