@@ -1,7 +1,6 @@
 """Project setup"""
 import pathlib
 import setuptools
-import devops_toolset.filesystem.paths as paths
 import devops_toolset.filesystem.parsers as parsers
 
 root_path: pathlib.Path = pathlib.Path(__file__).parent
