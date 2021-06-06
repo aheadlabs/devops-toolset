@@ -40,7 +40,7 @@ def end_task(result_type: ResultType):
     """
 
     if result_type == ResultType.fail:
-        raise(EnvironmentError("Task failed"))
+        raise EnvironmentError()
 
 
 if __name__ == "__main__":
