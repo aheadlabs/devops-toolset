@@ -39,9 +39,6 @@ def get_quality_gate_status(properties_file_path: str, token: str, branch: str =
     logging.info(literals.get("sonar_config_file").format(file=properties_file_path))
     sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
 
-    logging.info(literals.get("sonar_config_file").format(file=properties_file_path))
-    sonar_url, sonar_project_key, sonar_organization = read_sonar_properties_file(properties_file_path)
-
     get_project_quality_gate_status(sonar_url, sonar_project_key, token, branch_segment)
 
 
