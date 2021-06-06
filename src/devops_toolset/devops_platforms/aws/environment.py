@@ -1,5 +1,5 @@
 """Environment-related functionality for Aws"""
-
+from enum import Enum
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.CommandsCore import CommandsCore
@@ -13,6 +13,13 @@ literals = LiteralsCore([AwsLiterals])
 linux_commands = CommandsCore([LinuxCommands])
 
 
+class ResultType(Enum):
+    """Result types for a task"""
+    success = "Succeeded"
+    partial_success = "SucceededWithIssues"
+    fail = "Failed"
+
+
 def create_environment_variables(key_value_pairs: dict):
     """Creates environment variables
 
@@ -23,6 +30,17 @@ def create_environment_variables(key_value_pairs: dict):
     for key, value in key_value_pairs.items():
         logging.info(literals.get("platform_created_ev").format(key=key, value=value))
         cli.call_subprocess(linux_commands.get("create_env_variable").format(variable_name=key, variable_value=value))
+
+
+def end_task(result_type: ResultType):
+    """Ends the current task
+
+    Args:
+        result_type: Result type of the task
+    """
+
+    if result_type == ResultType.fail:
+        raise EnvironmentError()
 
 
 if __name__ == "__main__":

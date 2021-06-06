@@ -1,4 +1,5 @@
 """Unit core for the environment file"""
+import pytest
 
 from devops_toolset.core.CommandsCore import CommandsCore
 from unittest.mock import patch, call
@@ -31,5 +32,26 @@ def test_create_environment_variables_given_dict_when_not_empty_calls_to_create_
 
     # Assert
     call_subprocess_mock.assert_has_calls(calls)
+
+# endregion
+
+# region end_task()
+
+
+def test_end_task_given_result_when_fail_then_raises_error():
+    """ Given result type, when fail, then should raise an EnvironmentError """
+    # Arrange
+    result_type = sut.ResultType.fail
+    # Act and Assert
+    with pytest.raises(EnvironmentError):
+        sut.end_task(result_type)
+
+
+def test_end_task_given_result_when_success_then_do_nothing():
+    """ Given result type, when success, then should not raise anything """
+    # Arrange
+    result_type = sut.ResultType.success
+    # Act and Assert
+    sut.end_task(result_type)
 
 # endregion
