@@ -63,7 +63,7 @@ def get_project_quality_gate_status(
     headers = {"Authorization": basic_auth_token}
     branch_segment = generate_branch_segment(branch, pull_request)
 
-    url = f"{url}{Urls.SONAR_QUALITY_GATE_PARTIAL_URL}{project_key}{branch}"
+    url = f"{url}{Urls.SONAR_QUALITY_GATE_PARTIAL_URL}{project_key}{branch_segment}"
     logging.info(literals.get("sonar_qg_url").format(url=url))
 
     response = requests.get(url, headers=headers)
