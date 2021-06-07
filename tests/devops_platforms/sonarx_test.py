@@ -18,26 +18,6 @@ literals = LiteralsCore([DevopsLiterals])
 @patch("devops_toolset.devops_platforms.sonarx.logging.error")
 @patch("devops_toolset.devops_platforms.sonarx.read_sonar_properties_file")
 @patch("devops_toolset.devops_platforms.sonarx.generate_branch_segment")
-def test_get_quality_gate_status_given_branch_then_generates_branch_segment(
-        branch_function, file_function, logger_info, logging_error, requests_get, sonarxdata):
-    """Given a branch, it generates the branch segment"""
-
-    # Arrange
-    branch_function.return_value = f"&branch={sonarxdata.branch_feature}"
-    file_function.return_value = (sonarxdata.sonar_url, sonarxdata.sonar_project_key, sonarxdata.sonar_organization)
-
-    # Act
-    sut.get_quality_gate_status(sonarxdata.properties_file_path, sonarxdata.token, sonarxdata.branch_feature)
-
-    # Assert
-    sut.generate_branch_segment.assert_called_once()
-
-
-@patch("requests.get", side_effect=mocked_requests_get)
-@patch("devops_toolset.devops_platforms.sonarx.logging.info")
-@patch("devops_toolset.devops_platforms.sonarx.logging.error")
-@patch("devops_toolset.devops_platforms.sonarx.read_sonar_properties_file")
-@patch("devops_toolset.devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_reads_sonar_config_file(
         branch_function, file_function, logger_info, logger_error, requests_get, sonarxdata):
     """Given the path to the Sonar* config file, it reads its properties"""
@@ -77,13 +57,11 @@ def test_get_quality_gate_status_given_branch_when_passing_qg_then_logs_info(
 @patch("devops_toolset.devops_platforms.sonarx.logging.error")
 @patch("devops_toolset.devops_platforms.sonarx.logging.info")
 @patch("devops_toolset.devops_platforms.sonarx.read_sonar_properties_file")
-@patch("devops_toolset.devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_when_not_passing_qg_then_logs_errors(
-        branch_function, file_function, logging_info, logging_error, requests_get, sonarxdata):
+        file_function, logging_info, logging_error, requests_get, sonarxdata):
     """Given a branch, when not passing the quality gate, logs errors"""
 
     # Arrange
-    branch_function.return_value = f"&branch={sonarxdata.branch_feature}"
     file_function.return_value = \
         (sonarxdata.sonar_url, sonarxdata.sonar_project_key_error, sonarxdata.sonar_organization)
 
@@ -147,5 +125,6 @@ def test_generate_branch_segment_given_branch_when_no_pr_returns_no_pr_segment(s
 
     # Assert
     assert result == f"&branch={sonarxdata.branch_feature}"
+
 
 # endregion
