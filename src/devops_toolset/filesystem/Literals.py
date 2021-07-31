@@ -18,4 +18,6 @@ class Literals(ValueDictsBase):
     }
     _errors = {
         "fs_not_dir": _("Path must be a dir, not a file."),
+        "list_length_zero": _("List length is 0."),
+        "list_length_higher_than": _("List length is higher than {length} and must be lower."),
     }
