@@ -82,7 +82,7 @@ def update_json_file_key_text(key_path: list, key_value: str, json_file_path: st
     with open(json_file_path_obj, "w") as json_file:
         json.dump(content, json_file)
 
-    # TODO Refactor this code using reduce()
+    # TODO(ivan.sainz) Refactor this code using reduce()
 
 
 if __name__ == "__main__":

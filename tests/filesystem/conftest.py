@@ -35,6 +35,8 @@ class FileContents(object):
     json_file_depth_2_result = "{\"key1\":{\"key2\":\"new value\"}}"
     json_file_depth_3 = "{\"key1\":{\"key2\":{\"key3\":\"value3\"}}}"
     json_file_depth_3_result = "{\"key1\":{\"key2\":{\"key3\":\"new value\"}}}"
+    json_file_name = "file.json"
+    key_value = "new value"
 
 
 @pytest.fixture

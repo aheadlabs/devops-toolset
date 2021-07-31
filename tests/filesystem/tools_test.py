@@ -83,11 +83,11 @@ def test_update_json_file_key_text_when_depth_1_returns_value(filecontents, tmp_
 
     # Arrange
     key1: str = "key1"
-    key_value: str = "new value"
+    key_value: str = filecontents.key_value
     json_file_content: str = filecontents.json_file_depth_1
     json_file_content_dict: dict = json.loads(filecontents.json_file_depth_1)
     json_file_content_dict[key1] = key_value
-    json_file_path = pathlib.Path.joinpath(tmp_path, "file.json")
+    json_file_path = pathlib.Path.joinpath(tmp_path, filecontents.json_file_name)
     with open(str(json_file_path), "w") as json_file:
         json_file.write(json_file_content)
     key_path: list = [key1]
@@ -107,11 +107,11 @@ def test_update_json_file_key_text_when_depth_2_returns_value(filecontents, tmp_
     # Arrange
     key1: str = "key1"
     key2: str = "key2"
-    key_value: str = "new value"
+    key_value: str = filecontents.key_value
     json_file_content: str = filecontents.json_file_depth_2
     json_file_content_dict: dict = json.loads(filecontents.json_file_depth_2)
     json_file_content_dict[key1][key2] = key_value
-    json_file_path = pathlib.Path.joinpath(tmp_path, "file.json")
+    json_file_path = pathlib.Path.joinpath(tmp_path, filecontents.json_file_name)
     with open(str(json_file_path), "w") as json_file:
         json_file.write(json_file_content)
     key_path: list = [key1, key2]
@@ -132,11 +132,11 @@ def test_update_json_file_key_text_when_depth_3_returns_value(filecontents, tmp_
     key1: str = "key1"
     key2: str = "key2"
     key3: str = "key3"
-    key_value: str = "new value"
+    key_value: str = filecontents.key_value
     json_file_content: str = filecontents.json_file_depth_3
     json_file_content_dict: dict = json.loads(filecontents.json_file_depth_3)
     json_file_content_dict[key1][key2][key3] = key_value
-    json_file_path = pathlib.Path.joinpath(tmp_path, "file.json")
+    json_file_path = pathlib.Path.joinpath(tmp_path, filecontents.json_file_name)
     with open(str(json_file_path), "w") as json_file:
         json_file.write(json_file_content)
     key_path: list = [key1, key2, key3]
