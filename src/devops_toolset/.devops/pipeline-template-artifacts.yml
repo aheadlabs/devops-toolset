@@ -6,20 +6,15 @@ steps:
       addToPath: true
       architecture: 'x64'
   - task: CmdLine@2
-    displayName: Install latest version of pip
+    displayName: Install latest version of tools needed
     inputs:
       script: |
-        python3 -m pip install --upgrade pip
-  - task: CmdLine@2
-    displayName: Install latest version of PyPA's build
-    inputs:
-      script: |
-        python3 -m pip install --upgrade build
+        python -m pip install --upgrade pip setuptools wheel
   - task: CmdLine@2
     displayName: Build python package
     inputs:
       script: |
-        python3 -m build $(System.DefaultWorkingDirectory)
+        python -m build $(System.DefaultWorkingDirectory)
   - task: CopyFiles@2
     displayName: Copy files to artifact folder
     inputs:
