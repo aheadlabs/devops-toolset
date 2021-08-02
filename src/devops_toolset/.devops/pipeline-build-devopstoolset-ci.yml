@@ -15,7 +15,7 @@ pr:
       - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-16.04'
 
 name: CI-$(date:yyyyMMdd)$(rev:.r)
 jobs:
