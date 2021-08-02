@@ -9,7 +9,7 @@ steps:
     displayName: Install latest version of tools needed
     inputs:
       script: |
-        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install --upgrade pip setuptools wheel build
   - task: CmdLine@2
     displayName: Build python package
     inputs:
