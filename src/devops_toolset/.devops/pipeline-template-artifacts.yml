@@ -7,7 +7,7 @@ steps:
     displayName: Build python package
     inputs:
       script: |
-        python -m pip install --upgrade pip setuptools wheel build
+        pip3 install --upgrade pip setuptools wheel build
         python -m build $(System.DefaultWorkingDirectory)
   - task: CopyFiles@2
     displayName: Copy files to artifact folder
