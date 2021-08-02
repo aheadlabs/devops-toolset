@@ -8,6 +8,7 @@ steps:
     displayName: Build python package
     inputs:
       script: |
+        python3 -m pip install --upgrade pip
         python3 -m build $(System.DefaultWorkingDirectory)
   - task: CopyFiles@2
     displayName: Copy files to artifact folder
