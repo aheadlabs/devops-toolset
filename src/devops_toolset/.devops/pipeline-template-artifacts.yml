@@ -4,14 +4,10 @@ steps:
     inputs:
       versionSpec: '>=3.9'
   - task: CmdLine@2
-    displayName: Install latest version of tools needed
-    inputs:
-      script: |
-        python -m pip install --upgrade pip setuptools wheel build
-  - task: CmdLine@2
     displayName: Build python package
     inputs:
       script: |
+        python -m pip install --upgrade pip setuptools wheel build
         python -m build $(System.DefaultWorkingDirectory)
   - task: CopyFiles@2
     displayName: Copy files to artifact folder
