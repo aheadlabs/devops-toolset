@@ -40,16 +40,19 @@ def get_packagejson_project_version(packagejson_path: str, create_environment_va
     return version
 
 
-def set_project_version_in_json_file(packagejson_path: str, destination_file_path: str):
+def set_project_version_in_json_file(packagejson_path: str, destination_file_path: str,
+                                     create_environment_variable: bool = True):
     """Gets the project version from the package.json file and sets its value
         in a custom json file.
 
     Args:
         packagejson_path: Path to the package.json file.
         destination_file_path: Path to the JSON file.
+        create_environment_variable: If True, creates an environment variable
+            with the project version.
     """
 
-    version: str = get_packagejson_project_version(packagejson_path, False)
+    version: str = get_packagejson_project_version(packagejson_path, create_environment_variable)
     filesystem.update_json_file_key_text(["version"], version, destination_file_path)
 
 
