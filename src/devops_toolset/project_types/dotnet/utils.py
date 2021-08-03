@@ -16,7 +16,7 @@ commands = CommandsCore([DotnetCommands])
 
 
 def get_csproj_project_version(csproj_path: str) -> str:
-    """ Gets the version number from a .csproj files
+    """ Gets the version number from a .csproj file
 
     Arguments:
         csproj_path: Path to the .csproj file

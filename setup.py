@@ -32,7 +32,7 @@ setuptools.setup(
     url='https://github.com/aheadlabs/devops-toolset/',
     license='https://github.com/aheadlabs/devops-toolset/blob/master/LICENSE',
     author='Ivan Sainz | Alberto Carbonell',
-    author_email='',
+    author_email='aheadlabs@gmail.com',
     description='General purpose DevOps-related scripts and tools.',
     long_description=long_description,
     long_description_content_type="text/markdown",

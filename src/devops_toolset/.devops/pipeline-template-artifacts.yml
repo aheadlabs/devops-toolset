@@ -1,13 +1,14 @@
 steps:
   - task: CmdLine@2
-    displayName: Install latest version of PyPA's build
+    displayName: Install working version of PyPA's build
     inputs:
       script: |
-        python3 -m pip install --upgrade build
+        python3 -m pip install -Iv build==0.3.1
   - task: CmdLine@2
     displayName: Build python package
     inputs:
       script: |
+        python3 -m pip install --upgrade pip
         python3 -m build $(System.DefaultWorkingDirectory)
   - task: CopyFiles@2
     displayName: Copy files to artifact folder
