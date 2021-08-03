@@ -1,6 +1,8 @@
 """Tools for editing files"""
 
+import json
 import os
+import pathlib
 import xml.etree.ElementTree as ElementTree
 
 from devops_toolset.core.app import App
@@ -44,6 +46,43 @@ def update_xml_file_entity_text(entity_xpath: str, entity_value: str, xml_file_p
     entity = xml_tree.find(entity_xpath)
     entity.text = entity_value
     xml_tree.write(xml_file_path)
+
+
+def update_json_file_key_text(key_path: list, key_value: str, json_file_path: str):
+    """Updates a JSON file with the given value.
+
+    Args:
+        key_path: Path to the key to be updated. Each element of the list is a
+            level in the nested key structure.
+        key_value: CValue to be set.
+        json_file_path: Path to the JSON file.
+    """
+
+    if len(key_path) == 0:
+        raise ValueError(literals.get("list_length_zero"))
+
+    if len(key_path) > 3:
+        raise ValueError(literals.get("list_length_higher_than").format(length=3))
+
+    content: dict = {}
+    json_file_path_obj: pathlib.Path = pathlib.Path(json_file_path)
+
+    with open(json_file_path_obj, "r") as json_file:
+        content = json.load(json_file)
+
+    if len(key_path) == 1:
+        content[key_path[0]] = key_value
+
+    if len(key_path) == 2:
+        content[key_path[0]][key_path[1]] = key_value
+
+    if len(key_path) == 3:
+        content[key_path[0]][key_path[1]][key_path[2]] = key_value
+
+    with open(json_file_path_obj, "w") as json_file:
+        json.dump(content, json_file)
+
+    # TODO(ivan.sainz) Refactor this code using reduce()
 
 
 if __name__ == "__main__":
