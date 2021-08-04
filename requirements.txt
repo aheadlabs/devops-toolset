@@ -5,3 +5,5 @@ requests>=2.25.1
 colorama>=0.4.4
 clint>=0.5.1
 pyfiglet>=0.8.post1
+boto3>=1.18.13
+botocore>=1.21.13
