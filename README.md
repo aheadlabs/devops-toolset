@@ -25,16 +25,14 @@ This project contains general purpose, DevOps-related, scripts and tools.
 
 ## Prerequisites
 
-You need Python 3.8.2+ installed on your machine. Please follow the instructions on the [Python web site](https://www.python.org/downloads/).
+- You need Python 3.8.2+ installed on your machine. Please follow the instructions on the [Python web site](https://www.python.org/downloads/).
+- You also need to have pip package manager installed.
 
 ## How to use
 
-Reference the package in your pipeline to have these tools available:<br>
-1. Download the package from the [feed](https://dev.azure.com/aheadlabs/DevOps-toolset/_packaging?_a=feed&feed=devops-toolset). Click on "Connect to feed" for more information<br>
-![Connect to feed](.media/connect-to-feed.png)
-2. Unzip the package to a directory<br>
-e.g.: /devops-toolset
-3. Add this directory to the PYTHONPATH environment variable.
+1. Install from the [PyPI package index](https://pypi.org/project/devops-toolset/) using the following command:
+   ```pip install devops-toolset```
+2. Reference the package in your pipeline to have these tools available.
 
 ## Running the tests
 
@@ -55,18 +53,15 @@ pytest
 | Directory / file | Description |
 | -- | -- |
 | /.devops | Contains pipeline definitions for the project |
-| /.devops-platform-specific | Contains platform-specific code |
-| /.media | Contains media files |
-| /.tools | Contains helpers and tools used in scripts |
-| /\<category\> | Contains scripts and tools in different formats, grouped by categories |
+| /core | Core settings for devops-toolset |
+| /.devops-platforms | Contains platform-specific code |
+| /filesystem | File system related tools |
+| /i18n | Internationalization related tools |
+| /json-schemas | Json schemas that support needed JSON document structures |
+| /project types | Contains scripts and tools related to specific project types like Angular, AWS, .NET, Linux, Maven, NodeJS, PHP os WordPress |
+| /tools | Contains helpers and tools used in scripts |
+| /toolset | Script that downloads "manually" this toolset to a directory (deprecated) |
 | /project.xml | Project description and project version |
 
 # WordPress tools
 This repository relies on WP CLI for WordPress automation. Please refer to [WP-CLI handbook](https://make.wordpress.org/cli/handbook/) for more information and installation instructions.
-
-# Troubleshooting
-| Problem | Solution |
-| -- | -- |
-| Can't execute PowerShell script because of the policy | Take a look at https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies
-| Can't execute PowerShell script in Linux | Make sure you installed or have access to PowerShell Core distribution |
-| PowerSHell execution policy related problems **in development** | Execute this command as admin (not for production use):<br>`Set-ExecutionPolicy -ExecutionPolicy Bypass` |
