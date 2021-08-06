@@ -119,5 +119,10 @@ def put_object_to_bucket(bucket_name: str, local_path: str, destination_key: str
         Key=destination_key
     )
 
+    logging.info(literals.get("s3_uploaded_object_to_s3_bucket").format(
+        object_key=destination_key,
+        bucket=bucket_name
+    ))
+
 if __name__ == "__main__":
     help(__name__)

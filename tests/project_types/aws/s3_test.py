@@ -40,13 +40,13 @@ def test_get_filtered_objects_from_bucket_given_invalid_path_raises_valuerror(aw
 
 
 @patch("devops_toolset.filesystem.paths.is_valid_path")
-def test_get_filtered_objects_from_bucket_given_invalid_prefix_raises_valuerror(is_valid_path_mock):
+def test_get_filtered_objects_from_bucket_given_invalid_prefix_raises_valuerror(is_valid_path_mock, awsdata):
     """Given an invalid prefix raises a ValueError."""
 
     # Arrange
     bucket_name = "my-bucket"
     object_prefix = ""
-    destination_path = "pathto/foo"
+    destination_path = awsdata.valid_path
     is_valid_path_mock.return_value = True
 
     # Act
@@ -62,7 +62,7 @@ def test_get_filtered_objects_from_bucket_given_bucket_name_gets_objects(is_vali
     # Arrange
     bucket_name = "my-bucket"
     object_prefix = "filename"
-    destination_path = "pathto/foo"
+    destination_path = awsdata.valid_path
     is_valid_path_mock.return_value = True
     paginator_pages = json.loads(awsdata.paginator_pages)
 
@@ -128,13 +128,13 @@ def test_get_objects_from_bucket_given_bucket_name_gets_objects(
     assert download_fileobj_mock.call_count == len(keys)
 
 
-def test_put_object_to_bucket_given_invalid_path_raises_valuerror():
+def test_put_object_to_bucket_given_invalid_path_raises_valuerror(awsdata):
     """Given an invalid local path raises a ValueError."""
 
     # Arrange
     bucket_name = "my-bucket"
     local_path = ""
-    destination_key = "pathto/foo"
+    destination_key = awsdata.valid_path
 
     # Act
     with pytest.raises(ValueError):
@@ -144,13 +144,14 @@ def test_put_object_to_bucket_given_invalid_path_raises_valuerror():
 
 @patch("builtins.open")
 @patch("devops_toolset.filesystem.paths.is_valid_path")
-def test_put_object_to_bucket_given_bucket_puts_object(is_valid_path_mock, mock_open, awsdata):
+@patch("logging.info")
+def test_put_object_to_bucket_given_bucket_puts_object(logging_info_mock, is_valid_path_mock, mock_open, awsdata):
     """Given a bucket name uploads the object."""
 
     # Arrange
     bucket_name = "my-bucket"
     local_path = ""
-    destination_key = "pathto/foo"
+    destination_key = awsdata.valid_path
     is_valid_path_mock.return_value = True
 
     # Act
