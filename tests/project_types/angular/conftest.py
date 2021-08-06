@@ -19,5 +19,5 @@ class AngularData(object):
 
 @pytest.fixture
 def angulardata():
-    """Sample data for testing .Angular related functionality"""
+    """Sample data for testing Angular related functionality"""
     return AngularData()

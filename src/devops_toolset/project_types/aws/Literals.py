@@ -10,6 +10,7 @@ class Literals(ValueDictsBase):
     """ValueDicts for the AWS module."""
 
     _info = {
-        "cloudfront_invalidation_created": _("Created CloudFront invalidation with id {id}")
+        "cloudfront_invalidation_created": _("Created CloudFront invalidation with id {id}"),
+        "s3_got_x_objects_from_s3_bucket": _("Got a list of {number} objects from the {bucket} bucket"),
     }
     _errors = {}
