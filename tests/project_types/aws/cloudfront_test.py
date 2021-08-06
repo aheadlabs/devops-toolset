@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 
 @patch("logging.info")
-def test_create_invalidation_(log_info_mock):
+def test_create_invalidation_creates_invalidation(log_info_mock):
     """Given a distribution id, creates a new invalidation"""
 
     # Arrange
