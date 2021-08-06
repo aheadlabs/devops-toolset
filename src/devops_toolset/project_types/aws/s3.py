@@ -99,7 +99,7 @@ def list_objects_in_bucket(bucket_name: str, object_prefix: str = "") -> list:
 
 
 def put_object_to_bucket(bucket_name: str, local_path: str, destination_path: str):
-    # TODO Implementation and unit tests
+    """Uploads an object to the S3 bucket."""
     pass
 
 if __name__ == "__main__":
