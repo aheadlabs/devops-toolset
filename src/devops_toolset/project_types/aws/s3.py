@@ -98,9 +98,26 @@ def list_objects_in_bucket(bucket_name: str, object_prefix: str = "") -> list:
     return object_list
 
 
-def put_object_to_bucket(bucket_name: str, local_path: str, destination_path: str):
-    """Uploads an object to the S3 bucket."""
-    pass
+def put_object_to_bucket(bucket_name: str, local_path: str, destination_key: str):
+    """Uploads an object to the S3 bucket.
+
+    Args:
+        bucket_name: S3 bucket name to get the object list from.
+        local_path: Path to the file to be uploaded.
+        destination_key: Path where the objects will be uploaded to.
+    """
+
+    if not paths.is_valid_path(local_path, True):
+        raise ValueError()
+
+    with open(local_path, "rb") as file:
+        content = file.read()
+
+    s3.put_object(
+        Bucket=bucket_name,
+        Body=content,
+        Key=destination_key
+    )
 
 if __name__ == "__main__":
     help(__name__)

@@ -126,3 +126,37 @@ def test_get_objects_from_bucket_given_bucket_name_gets_objects(
 
     # Assert
     assert download_fileobj_mock.call_count == len(keys)
+
+
+def test_put_object_to_bucket_given_invalid_path_raises_valuerror():
+    """Given an invalid local path raises a ValueError."""
+
+    # Arrange
+    bucket_name = "my-bucket"
+    local_path = ""
+    destination_key = "pathto/foo"
+
+    # Act
+    with pytest.raises(ValueError):
+        # Assert
+        sut.put_object_to_bucket(bucket_name, local_path, destination_key)
+
+
+@patch("builtins.open")
+@patch("devops_toolset.filesystem.paths.is_valid_path")
+def test_put_object_to_bucket_given_bucket_puts_object(is_valid_path_mock, mock_open, awsdata):
+    """Given a bucket name uploads the object."""
+
+    # Arrange
+    bucket_name = "my-bucket"
+    local_path = ""
+    destination_key = "pathto/foo"
+    is_valid_path_mock.return_value = True
+
+    # Act
+    with patch.object(sut, "s3") as s3_mock:
+        with patch.object(s3_mock, "put_object") as put_object_mock:
+            sut.put_object_to_bucket(bucket_name, local_path, destination_key)
+
+    # Assert
+    put_object_mock.assert_called()
