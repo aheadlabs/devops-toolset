@@ -313,7 +313,8 @@ def test_is_valid_path_given_test_path_returns_true(paths):
     assert result
 
 
-def test_is_valid_path_given_non_existent_path_returns_false(paths):
+@patch("logging.info")
+def test_is_valid_path_given_non_existent_path_returns_false(logging_info_mock, paths):
     """Given a non existent path, returns false"""
 
     # Arrange
@@ -326,7 +327,8 @@ def test_is_valid_path_given_non_existent_path_returns_false(paths):
     assert not result
 
 
-def test_is_valid_path_given_invalid_path_returns_false():
+@patch("logging.info")
+def test_is_valid_path_given_invalid_path_returns_false(logging_info_mock):
     """Given None as path, raises ValueError"""
 
     # Arrange

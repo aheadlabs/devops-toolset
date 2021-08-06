@@ -237,9 +237,11 @@ def is_valid_path(path: Union[str, None] = None, check_existence: bool = False) 
     """
 
     if path is None or path.strip() == "":
+        logging.info(literals.get("fs_file_path_not_valid".format(file_path=str(path))))
         return False
 
     if check_existence and not os.path.exists(path):
+        logging.info(literals.get("fs_file_path_does_not_exist".format(file_path=str(path))))
         return False
 
     return True
