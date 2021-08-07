@@ -16,6 +16,7 @@ class AwsData(object):
     """Class used to create the awsdata fixture"""
 
     invalid_path = "/notvalidpath"
+    file_list = ["file1", "file2", "file3"]
     key_list = ["key1", "key2", "key3"]
     paginator_pages = "[{\"Contents\": [{\"Key\": \"messages.en.xlf\", \"LastModified\": \"\", \"ETag\": \"123456789a\", \"Size\": 1024, \"StorageClass\": \"STANDARD\"}, {\"Key\": \"messages.es.xlf\", \"LastModified\": \"\", \"ETag\": \"123456789b\", \"Size\": 1025, \"StorageClass\": \"STANDARD\"}], \"Name\": \"my-bucket\", \"Prefix\": \"\", \"MaxKeys\": 1000, \"EncodingType\": \"url\", \"KeyCount\": 2}]"
     valid_path = "pathto/foo"

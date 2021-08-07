@@ -2,9 +2,10 @@
 
 import devops_toolset.project_types.aws.s3 as sut
 import json
-from unittest.mock import patch
-
 import pytest
+
+from datetime import date
+from unittest.mock import patch
 
 
 @patch("logging.info")
@@ -161,3 +162,41 @@ def test_put_object_to_bucket_given_bucket_puts_object(logging_info_mock, is_val
 
     # Assert
     put_object_mock.assert_called()
+
+
+@patch("devops_toolset.filesystem.paths.is_valid_path")
+def test_put_bulk_objects_to_bucket_given_invalid_path_raises_valuerror(is_valid_path_mock, awsdata):
+    """Given an invalid path raises a ValueError."""
+
+    # Arrange
+    bucket_name = "my-bucket"
+    local_path = awsdata.invalid_path
+    glob = "*"
+    destination_key_prefix = f"{date.today().strftime('%Y.%m.%d')}-"
+    is_valid_path_mock.return_value = False
+
+    # Act
+    with pytest.raises(ValueError):
+        # Assert
+        sut.put_bulk_objects_to_bucket(bucket_name, local_path, glob, destination_key_prefix)
+
+
+@patch("devops_toolset.filesystem.paths.get_file_paths_in_tree")
+@patch("devops_toolset.filesystem.paths.is_valid_path")
+def test_put_bulk_objects_to_bucket(is_valid_path_mock, get_file_paths_in_tree_mock, awsdata):
+    """Given valid parameters, puts every object to the bucket."""
+
+    # Arrange
+    bucket_name = "my-bucket"
+    local_path = awsdata.invalid_path
+    glob = "*"
+    destination_key_prefix = f"{date.today().strftime('%Y.%m.%d')}-"
+    is_valid_path_mock.return_value = True
+    get_file_paths_in_tree_mock.return_value = awsdata.file_list
+
+    # Act
+    with patch.object(sut, "put_object_to_bucket") as put_object_to_bucket_mock:
+        sut.put_bulk_objects_to_bucket(bucket_name, local_path, glob, destination_key_prefix)
+
+    # Assert
+    assert put_object_to_bucket_mock.call_count == len(awsdata.file_list)
