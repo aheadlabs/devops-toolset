@@ -3,8 +3,10 @@
 import boto3
 import devops_toolset.filesystem.paths as paths
 import logging
+import os
 import pathlib
 
+from datetime import date
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.aws.Literals import Literals as AwsLiterals
@@ -123,6 +125,26 @@ def put_object_to_bucket(bucket_name: str, local_path: str, destination_key: str
         object_key=destination_key,
         bucket=bucket_name
     ))
+
+
+def put_bulk_objects_to_bucket(bucket_name: str, local_path: str, glob: str, destination_key_prefix: str = ""):
+    """Uploads multiple objects to the S3 bucket based on a glob expression.
+
+    Args:
+        bucket_name: S3 bucket name to upload objects to.
+        local_path: Path to the base directories where files are located.
+        glob: Glob expression used to select the files to be uploaded.
+        destination_key_prefix: Prefix added to every object key.
+    """
+
+    if not paths.is_valid_path(local_path, True):
+        raise ValueError()
+
+    file_list: list = paths.get_file_paths_in_tree(local_path, glob)
+
+    for file in file_list:
+        object_key = f"{destination_key_prefix}{os.path.basename(file)}"
+        put_object_to_bucket(bucket_name, str(file), object_key)
 
 if __name__ == "__main__":
     help(__name__)
