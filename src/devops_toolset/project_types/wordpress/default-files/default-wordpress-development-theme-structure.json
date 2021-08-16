@@ -33,7 +33,7 @@
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_url",
-                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-style.scss"
+                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-style.scss"
                                           }
                                       },
                                       {
@@ -41,7 +41,7 @@
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_url",
-                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-variables.scss"
+                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-variables.scss"
                                           }
                                       },
                                       {
@@ -49,7 +49,7 @@
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_url",
-                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-fontawesome.scss"
+                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-fontawesome.scss"
                                           }
                                       }
                                   ]
@@ -74,7 +74,7 @@
                                           "type": "bfile",
                                           "default_content": {
                                               "source": "from_url",
-                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-favicon.png"
+                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-favicon.png"
                                           }
                                       }
                                   ]
@@ -88,7 +88,7 @@
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_url",
-                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-site.js"
+                                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-site.js"
                                           }
                                       }
                                   ]
@@ -104,7 +104,7 @@
                                   "type": "file",
                                   "default_content": {
                                       "source": "from_url",
-                                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-functions-core.php"
+                                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-functions-core.php"
                                   }
                               }
                           ]
@@ -158,7 +158,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-404.php"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-404.php"
                           }
                       },
                       {
@@ -166,7 +166,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-composer.json"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-composer.json"
                           }
                       },
                       {
@@ -174,7 +174,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-footer.php"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-footer.php"
                           }
                       },
                       {
@@ -182,7 +182,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-front-page.php"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-front-page.php"
                           }
                       },
                       {
@@ -190,7 +190,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-functions.php"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-functions.php"
                           }
                       },
                       {
@@ -198,7 +198,7 @@
                           "type": "file",
                           "default_content": {
                               "source": "from_url",
-                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-header.php"
+                              "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-header.php"
                           }
                       }
                   ]
@@ -208,7 +208,7 @@
                   "type": "file",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-theme-development.gitignore"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-theme-development.gitignore"
                   }
               },
               {
@@ -216,7 +216,7 @@
                   "type": "file",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-gulpfile.js"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-gulpfile.js"
                   }
               },
               {
@@ -224,7 +224,7 @@
                   "type": "file",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-gulpfile.json"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-gulpfile.json"
                   }
               },
               {
@@ -232,7 +232,7 @@
                   "type": "file",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-theme-development-package.json"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-theme-development-package.json"
                   }
               },
               {
@@ -240,7 +240,7 @@
                   "type": "bfile",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-theme-development-screenshot.png"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-theme-development-screenshot.png"
                   }
               },
               {
@@ -248,7 +248,7 @@
                   "type": "file",
                   "default_content": {
                       "source": "from_url",
-                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/devops_toolset/project_types/wordpress/default-files/default-theme-development-README.md"
+                      "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-theme-development-README.md"
                   }
               }
           ]
