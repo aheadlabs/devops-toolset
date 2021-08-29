@@ -29,7 +29,8 @@ literals = LiteralsCore([WordpressLiterals])
 
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
          environment: str, additional_environments: list, environments_db_user_passwords: dict,
-         create_db: bool, skip_partial_dumps: bool, create_development_theme: bool, **kwargs_):
+         create_db: bool, skip_partial_dumps: bool, skip_file_relocation: bool, create_development_theme: bool,
+         **kwargs_):
     """Generates a new Wordpress site based on the site configuration file
 
     Args:
@@ -45,6 +46,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         create_db: If True it creates the database and the user.
         skip_partial_dumps: If True skips partial database dumps
             (after installing WordPress, themes and plugins).
+        skip_file_relocation: If True skips file relocation like the config
+            file and plugin's files.
         create_development_theme: If True generates the file structure for a
             development theme
         kwargs_: Platform-specific arguments
@@ -176,12 +179,13 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     git_tools.purge_gitkeep(database_core_dump_directory_path.as_posix())
 
     # Move config files to devops directory
-    paths.move_files(
-        root_path,
-        pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["devops"]).as_posix(),
-        "*.json",
-        False
-    )
+    if not skip_file_relocation:
+        paths.move_files(
+            root_path,
+            pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["devops"]).as_posix(),
+            "*.json",
+            False
+        )
 
 
 def setup_devops_toolset(root_path: str):
@@ -255,19 +259,16 @@ if __name__ == "__main__":
     parser.add_argument("--wp-admin-password", required=True)
     parser.add_argument("--environment", default="localhost")
     parser.add_argument("--additional-environments", default="")
-    parser.add_argument("--additional-environment-db-user-passwords", default={})
+    parser.add_argument("--additional-environment-db-user-passwords", default="{}")
     parser.add_argument("--create-db", action="store_true", default=False)
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
+    parser.add_argument("--skip-file-relocation", action="store_true", default=False)
     parser.add_argument("--create-development-theme", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
         splited = str(kwarg).split("=")
         kwargs[splited[0]] = splited[1]
-
-    # Parse long attributes to avoid lines longer that 120 characters
-    additional_environment_db_user_passwords = args.additional_environment_db_user_passwords.split(",") \
-        if args.additional_environment_db_user_passwords != "" else []
 
     cli.print_title(literals.get("wp_title_generate_wordpress"))
     main(args.project_path, args.db_user_password, args.db_admin_password, args.wp_admin_password,
@@ -276,5 +277,6 @@ if __name__ == "__main__":
          json.loads(args.additional_environment_db_user_passwords),
          args.create_db,
          args.skip_partial_dumps,
+         args.skip_file_relocation,
          args.create_development_theme,
          **kwargs)
