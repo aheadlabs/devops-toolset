@@ -7,6 +7,7 @@ required_files_suffixes = {
 theme_metadata_parse_regex = ": (.+)"
 functions_php_mytheme_regex = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
 
-wordpress_constants_json_resource = \
-    "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
-    "devops_toolset/project_types/wordpress/wordpress-constants.json"
+github_raw_path = "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/"
+default_cloudfront_forwarded_proto_php = \
+    f"{github_raw_path}project_types/wordpress/default-files/default-cloudfront-forwarded-proto.php"
+wordpress_constants_json_resource = f"{github_raw_path}project_types/wordpress/wordpress-constants.json"
