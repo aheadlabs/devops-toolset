@@ -241,7 +241,7 @@ def is_valid_path(path: Union[str, None] = None, check_existence: bool = False) 
         return False
 
     if check_existence and not os.path.exists(path):
-        logging.info(literals.get("fs_file_path_does_not_exist"))
+        logging.info(literals.get("fs_file_path_does_not_exist").format(path=path))
         return False
 
     return True
