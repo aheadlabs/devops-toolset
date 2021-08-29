@@ -353,7 +353,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
 
 
 def install_plugins_from_configuration_file(site_configuration: dict, environment_config: dict, global_constants: dict,
-                                            root_path: str, skip_partial_dumps: bool):
+                                            root_path: str, skip_partial_dumps: bool, skip_file_relocation: bool):
     """Installs WordPress's plugin files using WP-CLI.
 
        For more information see:
@@ -365,6 +365,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
            global_constants: Parsed global constants.
            root_path: Path to project root.
            skip_partial_dumps: If True skips database dumps.
+           skip_file_relocation: If True skips file relocation.
        """
     # Get data needed in the process
     plugins: dict = site_configuration["settings"]["plugins"]
@@ -392,6 +393,14 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
         wp_cli.install_plugin(plugin["name"], wordpress_path, plugin["activate"], plugin["force"], plugin["source"],
                               debug_info)
 
+        if not skip_file_relocation and plugin["source_type"] == "zip":
+            paths.move_files(
+                str(pathlib.Path(plugin_path).parent),
+                plugins_path,
+                f"{plugin['name']}*.zip",
+                False
+            )
+
         # Backup database after plugin install
         if not skip_partial_dumps:
             database_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["database"])
@@ -404,6 +413,9 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
         else:
             logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="plugins"))
 
+    # Purge .gitkeep
+    git_tools.purge_gitkeep(plugins_path)
+
 
 def install_recommended_plugins():
     """ Uses TGMPA core to decide and install automatically the recommended plugins.
@@ -413,7 +425,7 @@ def install_recommended_plugins():
     Args:
 
     """
-    # TODO(alberto.carbonell) Develop an WP-cli extension.
+    # TODO(alberto.carbonell) Develop an wp-cli extension.
     pass
 
 

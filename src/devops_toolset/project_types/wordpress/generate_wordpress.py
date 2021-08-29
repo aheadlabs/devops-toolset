@@ -150,7 +150,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Install site plugins
     devops_toolset.project_types.wordpress.wptools.install_plugins_from_configuration_file(
-        site_config, environment_config, global_constants, root_path, skip_partial_dumps)
+        site_config, environment_config, global_constants, root_path, skip_partial_dumps, skip_file_relocation)
 
     # Create additional users
     devops_toolset.project_types.wordpress.wptools.create_users(site_config["settings"]["users"], wordpress_path,
