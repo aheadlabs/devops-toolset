@@ -111,7 +111,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Create project structure & prepare devops-toolset
     devops_toolset.project_types.wordpress.wptools.start_basic_project_structure(root_path)
 
-    # Check for updates / download devops-toolset
+    # Check for updates / download devops-toolset TODO Deprecate?
     setup_devops_toolset(root_path)
 
     # Download WordPress core files
@@ -126,8 +126,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     theme_tools.build_theme(site_config["settings"]["themes"], themes_path, root_path)
 
     # Configure WordPress site
-    devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(site_config,
-                                                                                                environment_config,
+    devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config,
                                                                                                 wordpress_path,
                                                                                                 db_user_password)
 

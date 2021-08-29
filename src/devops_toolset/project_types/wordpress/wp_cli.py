@@ -41,11 +41,24 @@ def add_update_option(option: dict, wordpress_path: str, debug: bool = False, up
         add_database_option(option["name"], option["value"], wordpress_path, debug, option["autoload"])
 
     if option["name"] == "permalink_structure" and update_permalinks:
-        cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
-            structure=option["value"],
-            path=wordpress_path,
-            debug_info=convert_wp_parameter_debug(debug)
-        ))
+        rewrite_structure(option["value"], wordpress_path, debug)
+
+
+def rewrite_structure(permalink_structure: str, wordpress_path: str, debug: bool = False):
+    """Updates permalink structure using the 'wp rewrite structure' command.
+
+    Args:
+        permalink_structure: Permalink structure to be written when the update
+            takes place.
+        wordpress_path: Path to the WordPress installation.
+        debug: It True logs debug information.
+    """
+
+    cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
+        structure=permalink_structure,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
 
 
 def add_database_option(option_name: str, option_value: str, wordpress_path: str,
@@ -275,7 +288,7 @@ def create_configuration_file(wordpress_path: str, db_host: str, db_name: str, d
         skip_check: Skip check parameter --skip-check
         debug: If present, --debug will be added to the command showing all debug trace information.
     """
-    tools.cli.call_subprocess(commands.get("wpcli_config_create").format(
+    cli.call_subprocess(commands.get("wpcli_config_create").format(
         path=wordpress_path,
         db_host=db_host,
         db_name=db_name,
@@ -312,7 +325,7 @@ def create_database(wordpress_path: str, debug: bool, db_user: str, db_password:
 
     # Create the database
     if not database_exists:
-        tools.cli.call_subprocess(commands.get("wpcli_db_create").format(
+        cli.call_subprocess(commands.get("wpcli_db_create").format(
             path=wordpress_path,
             db_user=convert_wp_parameter_db_user(db_user),
             db_pass=convert_wp_parameter_db_pass(db_password),

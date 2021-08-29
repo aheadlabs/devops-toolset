@@ -520,14 +520,12 @@ def install_wordpress_site(site_configuration: dict, environment_config: dict, g
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="core"))
 
 
-def set_wordpress_config_from_configuration_file(environment_config: dict, wordpress_path: str,
-                                                 devops_toolset_wordpress_path: str, db_user_password: str) -> None:
+def set_wordpress_config_from_configuration_file(
+        environment_config: dict, wordpress_path: str, db_user_password: str) -> None:
     """ Sets all configuration parameters in pristine WordPress core files
     Args:
         environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
-        devops_toolset_wordpress_path: Path to the source root of the WordPress
-            project type in devops-toolset.
         db_user_password: Database user password.
 
     """
@@ -549,18 +547,16 @@ def set_wordpress_config_from_configuration_file(environment_config: dict, wordp
             wordpress_path, raw, debug)
 
     # Add cloudfront snippet to wp_config.php if needed
-    add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path, devops_toolset_wordpress_path)
+    add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path)
 
 
 def add_cloudfront_forwarded_proto_to_config(
-        environment_config: dict, wordpress_path: str, devops_toolset_wordpress_path: str):
+        environment_config: dict, wordpress_path: str):
     """ Adds HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
 
     Args:
         environment_config: Environment configuration.
         wordpress_path: Path to wordpress installation.
-        devops_toolset_wordpress_path: Path to the source root of the WordPress
-            project type in devops-toolset.
     """
 
     # Exit if there is no True setting for AWS Cloudfront
@@ -577,31 +573,35 @@ def add_cloudfront_forwarded_proto_to_config(
             if match:
                 content_new = re.sub(
                     pattern,
-                    get_snippet_cloudfront(devops_toolset_wordpress_path) + '\n' + match.group(),
+                    get_snippet_cloudfront() + '\n' + match.group(),
                     config_content)
                 config.seek(0)
                 config.write(content_new)
 
 
-def get_snippet_cloudfront(devops_toolset_wordpress_path: str):
+def get_snippet_cloudfront():
     """ Gets HTTP_CLOUDFRONT_FORWARDED_PROTO snippet from a default file.
-
-    Args:
-        devops_toolset_wordpress_path: Path to the source root of the WordPress
-            project type in devops-toolset.
 
     Returns:
         HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
     """
 
-    file_path = pathlib.Path.joinpath(
-        pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
-    if file_path.exists():
-        with open(file_path, "r") as snippet_content:
-            snippet = snippet_content.read()
-            return snippet
+    # file_path = pathlib.Path.joinpath(
+    #     pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
+    # if file_path.exists():
+    #     with open(file_path, "r") as snippet_content:
+    #         snippet = snippet_content.read()
+    #         return snippet
+    # else:
+    #     logging.error(literals.get("wp_file_not_found").format(file=file_path))
+
+    response = requests.get(wp_constants.default_cloudfront_forwarded_proto_php)
+
+    if response.status_code == 200:
+        return response.text
     else:
-        logging.error(literals.get("wp_file_not_found").format(file=file_path))
+        return ""
+
 
 
 def setup_database(environment_config: dict, wordpress_path: str, db_user_password: str, db_admin_password: str = ""):
