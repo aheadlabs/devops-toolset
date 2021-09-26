@@ -31,7 +31,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
          environment: str, additional_environments: list, environments_db_user_passwords: dict,
          create_db: bool, skip_partial_dumps: bool, skip_file_relocation: bool, create_development_theme: bool,
          **kwargs_):
-    """Generates a new Wordpress site based on the site configuration file
+    """Generates a new WordPress site based on the site configuration file
 
     Args:
         root_path: Path to the repository root.

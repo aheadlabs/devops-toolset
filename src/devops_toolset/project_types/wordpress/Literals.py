@@ -10,8 +10,10 @@ class Literals(ValueDictsBase):
     """ValueDicts for the wordpress module."""
 
     _titles = {
-        "wp_title_generate_wordpress": _("Generate WordPress site"),
         "wp_title_bootstrap_repository": _("Bootstrap WordPress repository"),
+        "wp_title_build_wordpress": _("Build WordPress site"),
+        "wp_title_deploy_wordpress": _("Deploy WordPress site"),
+        "wp_title_generate_wordpress": _("Generate WordPress site"),
         "wp_title_wordpress_files": _("WordPress core"),
         "wp_title_wordpress_new_repo": _("WordPress\nexisting repo"),
         "wp_title_wordpress_rollback_db": _("WordPress\ndatabase rollback"),
