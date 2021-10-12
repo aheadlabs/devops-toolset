@@ -28,7 +28,8 @@ def test_create_environment_variables_given_dict_when_not_empty_calls_to_create_
     # Assert
     for key in environment_variables.keys():
         assert key in os.environ
-        del os.environ[key]  # Cleanup: We need to remove the example values from the env variables.
+        # Cleanup: We need to remove the example values from the env variables.
+        del os.environ[key]
 
 
 # endregion
