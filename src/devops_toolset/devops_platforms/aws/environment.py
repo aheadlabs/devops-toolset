@@ -1,11 +1,11 @@
 """Environment-related functionality for Aws"""
+import os
 from enum import Enum
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.devops_platforms.aws.Literals import Literals as AwsLiterals
 from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
-import devops_toolset.tools.cli as cli
 import logging
 
 app: App = App()
@@ -29,7 +29,7 @@ def create_environment_variables(key_value_pairs: dict):
 
     for key, value in key_value_pairs.items():
         logging.info(literals.get("platform_created_ev").format(key=key, value=value))
-        cli.call_subprocess(linux_commands.get("create_env_variable").format(variable_name=key, variable_value=value))
+        os.environ[key] = value
 
 
 def end_task(result_type: ResultType):
