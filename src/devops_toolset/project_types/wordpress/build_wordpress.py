@@ -1,4 +1,4 @@
-""" This script will build a Wordpress site based on therequired configuration
+""" This script will build a Wordpress site based on the required configuration
 files"""
 
 import argparse
