@@ -17,9 +17,9 @@ class Commands(ValueDictsBase):
         "dotnet_restore": "dotnet restore {force} {debug} {path}",
         "dotnet_build": "dotnet build {force} {with_restore} --configuration={configuration} --framework={framework} "
                         "--runtime={runtime} {debug} {output} {path}",
-        "dotnet_new": "dotnet new {template} --name {name} --output {path} --no-restore",
-        "dotnet_new_framework": "dotnet new {template} --name {name} --output \"{path}\" --framework {framework} "
-                                "--no-restore",
+        "dotnet_new": "dotnet new {template} {template_options} --name {name} --output {path} {no_restore}",
+        "dotnet_new_framework": "dotnet new {template} {template_options} --name {name} --output \"{path}\" "
+                                "--framework {framework} --no-restore",
         "dotnet_sln_add": "dotnet sln \"{solution_path}\" add --solution-folder \"{solution_folder}\" "
                           "\"{project_path}\"",
     }

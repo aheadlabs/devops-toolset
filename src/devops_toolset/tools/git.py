@@ -2,22 +2,20 @@
 
 # ! python
 
+import devops_toolset.filesystem.paths
+import devops_toolset.core.app
+import devops_toolset.filesystem.paths as path_tools
+import devops_toolset.tools.cli
 import logging
 import os
 import pathlib
 import re
-
 from clint.textui import prompt
-
-import devops_toolset.filesystem.paths
-import devops_toolset.core.app
-import devops_toolset.filesystem.paths as path_tools
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.tools.Literals import Literals as ToolsLiterals
 from devops_toolset.filesystem.constants import FileNames, Directions
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.tools.commands import Commands as ToolsCommands
-import devops_toolset.tools.cli
 
 app: devops_toolset.core.app.App = devops_toolset.core.app.App()
 literals = LiteralsCore([ToolsLiterals])
@@ -36,7 +34,7 @@ def add_gitignore_exclusion(path: str, exclusion: str):
     """
 
     with open(path, "a") as _gitignore:
-        _gitignore.write(f"\n{exclusion}\n")
+        _gitignore.write(f"{exclusion}\n")
 
 
 def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
@@ -103,16 +101,17 @@ def git_commit(skip: bool):
             log_after_out=[literals.get("git_after_project_structure_commit")])
 
 
-def git_init(path: str, skip: bool):
+def git_init(path: str, skip: bool, prompt_user: bool = False):
     """Initialize .git repository
 
     Args:
         path: Path where it creates the .git repository.
-        skip: Boolean that determines if the user want or don't want create the .git repository.
+        skip: Boolean that determines if the user wants or not to create the
+            .git repository.
     """
 
     if not skip:
-        init_git = prompt.yn(literals.get("git_init_repo"))
+        init_git = prompt.yn(literals.get("git_init_repo")) if prompt_user is True else True
         if init_git:
             devops_toolset.tools.cli.call_subprocess(commands.get("git_init").format(path=path),
                                                      log_before_process=[literals.get("git_repo_to_be_created")],

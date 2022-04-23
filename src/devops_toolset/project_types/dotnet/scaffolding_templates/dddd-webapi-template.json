@@ -1,12 +1,20 @@
 {
-  "create_folders": {
-    "physical": true,
-    "solution": true
-  },
-  "default_frameworks": {
-    "classlib": "netstandard2.1",
-    "webapi": "net6.0",
-    "xunit": "net6.0"
+  "settings": {
+    "create_folders": {
+      "physical": true,
+      "solution": true
+    },
+    "default_frameworks": {
+      "classlib": "net6.0",
+      "webapi": "net6.0",
+      "webapiminimal": "net6.0",
+      "xunit": "net6.0"
+    },
+    "git_exclusions": [
+      ".vs/", ".vscode/", ".idea/", "obj/", "bin/"
+    ],
+    "relational_database_engine": "mysql",
+    "skip_unit_tests": false
   },
   "layers": [
     {
@@ -70,9 +78,11 @@
         {
           "name": "Api",
           "template": "webapi",
+          "template_options": "-minimal",
           "references": ["Application", "Settings"],
-          "packages": ["AutoMapper.Extensions.Microsoft.DependencyInjection|*", "Microsoft.AspNetCore.Authentication.JwtBearer|*", "Microsoft.EntityFrameworkCore.Tools|*", "NSwag.AspNetCore|*"],
-          "unit-test-eligible": true
+          "packages": ["AutoMapper.Extensions.Microsoft.DependencyInjection|*", "Microsoft.AspNetCore.Authentication.JwtBearer|*", "Microsoft.EntityFrameworkCore.Tools|*"],
+          "unit-test-eligible": true,
+          "startup_project": true
         }
       ]
     }

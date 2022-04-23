@@ -1,11 +1,10 @@
 """ This script will scaffold a DDDD WebAPI solution in .NET """
 
 import argparse
-from typing import List
-
 import devops_toolset.core.log_setup
 import devops_toolset.tools.argument_validators
 import devops_toolset.tools.cli
+import devops_toolset.tools.git
 import json
 import logging
 import os
@@ -20,16 +19,16 @@ app: App = App()
 literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 template_config: dict = {}
-# TODO Use global template_config everywhere to remove parameters in functions
 
-def main(root_path: str, solution_name: str, template_name: str, relational_db_engine: str, minimal_api: bool,
-         skip_unit_tests: bool, flat_structure: bool):
+
+def main(root_path: str, solution_name: str, template_name: str, relational_db_engine: str):
     """ Scaffolds a .NET WebAPI solution based on DDDD
 
     Args:
         root_path: Path to the solution root.
         solution_name: Name of the solution to scaffold.
         template_name: Name of the scaffolding template.
+        relational_db_engine: Relational database engine.
     """
 
     root_path_obj = pathlib.Path(root_path)
@@ -37,10 +36,13 @@ def main(root_path: str, solution_name: str, template_name: str, relational_db_e
     # Create solution
     create_solution(solution_name, root_path)
 
-    # Read configuration template
+    # Read configuration template (global converts template_config into a global variable)
     with open(get_configuration(template_name), "r") as config_file:
         global template_config
         template_config = json.load(config_file)
+
+    # Init Git repository
+    create_git_repository(root_path_obj)
 
     # Get a list of projects-layers key-value pairs
     project_layers: dict = get_project_layers(template_config, solution_name)
@@ -58,7 +60,7 @@ def main(root_path: str, solution_name: str, template_name: str, relational_db_e
             project["project_path"] = layer_path
             project["project_name"] = f"{project['solution_name']}{project['name']}"
             if "framework" not in project:
-                project["framework"] = template_config["default_frameworks"][project["template"]]
+                project["framework"] = template_config["settings"]["default_frameworks"][project["template"]]
             create_project(project, str(layer_path), project_layers)
 
 
@@ -81,19 +83,9 @@ def add_nuget_package(project_path: str, package_name: str, source: str = "https
     )
     result: str = devops_toolset.tools.cli.call_subprocess_with_result(command)
 
-    # TODO Refactor logging to a function and apply everywhere
-    if result is not None:
-        logging.debug(command)
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_project_package_added').format(
-            project=project_path,
-            package=package_name
-        ))
-    else:
-        logging.info(literals.get('dotnet_cli_project_package_exists').format(
-            package=package_name,
-            project=project_path
-        ))
+    log(command, result,
+        literals.get('dotnet_cli_project_package_added').format(project=project_path, package=package_name),
+        literals.get('dotnet_cli_project_package_exists').format(project=project_path, package=package_name))
 
 
 def add_project_to_solution(solution_path: str, solution_name: str, project_path: str, project_name: str,
@@ -108,7 +100,6 @@ def add_project_to_solution(solution_path: str, solution_name: str, project_path
         solution_folder: Solution folder (virtual) name
     """
 
-    # TODO Move all dotnet commands to functions outside from this script
     command: str = commands.get('dotnet_sln_add').format(
         solution_path=solution_path,
         solution_folder=solution_folder,
@@ -117,18 +108,9 @@ def add_project_to_solution(solution_path: str, solution_name: str, project_path
 
     result: str = devops_toolset.tools.cli.call_subprocess_with_result(command)
 
-    if result is not None:
-        logging.debug(command)
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_solution_project_added').format(
-            project=project_name,
-            solution=solution_name
-        ))
-    else:
-        logging.info(literals.get('dotnet_cli_solution_project_not_added').format(
-            project=project_name,
-            solution=solution_name
-        ))
+    log(command, result,
+        literals.get('dotnet_cli_solution_project_added').format(project=project_name, solution=solution_name),
+        literals.get('dotnet_cli_solution_project_not_added').format(project=project_name, solution=solution_name))
 
 
 def add_project_reference(project_path: str, reference_path: str):
@@ -145,18 +127,9 @@ def add_project_reference(project_path: str, reference_path: str):
     )
     result: str = devops_toolset.tools.cli.call_subprocess_with_result(command)
 
-    if result is not None:
-        logging.debug(command)
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_project_reference_added').format(
-            project=project_path,
-            referenced=reference_path
-        ))
-    else:
-        logging.info(literals.get('dotnet_cli_project_exists').format(
-            project=project_path,
-            referenced=reference_path
-        ))
+    log(command, result,
+        literals.get('dotnet_cli_project_reference_added').format(project=project_path, referenced=reference_path),
+        literals.get('dotnet_cli_project_reference_exists').format(project=project_path, referenced=reference_path))
 
 
 def add_unit_tests(project_config: dict, path: str, project_layers: dict):
@@ -167,11 +140,33 @@ def add_unit_tests(project_config: dict, path: str, project_layers: dict):
         path: Path where to create the project
         project_layers: List of projects-layers key-value pairs"""
 
-    if project_config["unit-test-eligible"]:
+    if project_config["unit-test-eligible"] and not template_config["settings"]["skip_unit_tests"]:
         path_obj = pathlib.Path(path)
         project_name = f'{project_config["project_name"]}.Tests'
-        framework = template_config["default_frameworks"]["xunit"]
+        framework = template_config["settings"]["default_frameworks"]["xunit"]
         dotnet_new('xunit', project_name, str(pathlib.Path.joinpath(path_obj, project_name)), framework)
+        add_project_to_solution(project_config["solution_path"], project_config["solution_name"],
+                                project_config["project_path"], project_name, project_config["solution_folder"])
+
+
+def create_git_repository(path: pathlib.Path):
+    """Creates a Git repository and adds a .gitignore file.
+
+    Args:
+        path: Path to create the repository and .gitignore file at.
+    """
+
+    # Initialize Git repository
+    devops_toolset.tools.git.git_init(str(path), False)
+
+    # Create .gitignore file
+    gitignore_path: pathlib.Path = pathlib.Path.joinpath(path, ".gitignore")
+    pathlib.Path.touch(gitignore_path)
+
+    # Add exclusions to .gitignore file
+    exclusions: list = template_config["settings"]["git_exclusions"]
+    for exclusion in exclusions:
+        devops_toolset.tools.git.add_gitignore_exclusion(str(gitignore_path), exclusion)
 
 
 def create_project(project_config: dict, path: str, project_layers: dict):
@@ -186,29 +181,10 @@ def create_project(project_config: dict, path: str, project_layers: dict):
     path_obj = pathlib.Path(path)
 
     # Create project
-    # TODO use dotnet_new()
-    if "framework" in project_config:
-        command = commands.get('dotnet_new_framework').format(
-            template=project_config['template'],
-            name=project_config["project_name"],
-            path=pathlib.Path.joinpath(path_obj, project_config["project_name"]),
-            framework=project_config['framework']
-        )
-    else:
-        command = commands.get('dotnet_new').format(
-            template=project_config['template'],
-            name=project_config["project_name"],
-            path=pathlib.Path.joinpath(path_obj, project_config["project_name"])
-        )
-
-    result: str = devops_toolset.tools.cli.call_subprocess_with_result(command)
-
-    if result is not None:
-        logging.debug(command)
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_project_created').format(name=project_config["project_name"]))
-    else:
-        logging.info(literals.get('dotnet_cli_project_exists').format(name=project_config["project_name"]))
+    template_options: str = project_config["template_options"] if "template_options" in project_config else ""
+    dotnet_new(project_config["template"], project_config["project_name"],
+               str(pathlib.Path.joinpath(path_obj, project_config["project_name"])),
+               project_config["framework"], template_options=template_options)
 
     # Add project to solution
     add_project_to_solution(project_config["solution_path"], project_config["solution_name"],
@@ -242,50 +218,52 @@ def create_solution(name: str, path: str):
           path: Path where to create the solution
     """
 
-    result: str = devops_toolset.tools.cli.call_subprocess_with_result(commands.get('dotnet_new').format(
-        template='sln',
-        name=name,
-        path=path
-    ))
-
-    if result is not None:
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_solution_created').format(name=name))
-    else:
-        logging.info(literals.get('dotnet_cli_solution_exists').format(name=name))
+    dotnet_new("sln", name, path, None, True)
 
 
-def dotnet_new(template: str, name: str, path: str, framework: [str, None]):
+def dotnet_new(template: str, name: str, path: str, framework: [str, None],
+               restore: bool = False, template_options: str = "", ):
     """Creates a new .NET project using .NET CLI.
 
     Args:
         template: Project template name.
         name: Project name.
         path: Path to the project to be created.
-        framework: Framework
+        framework: Framework.
+        restore: If True it restores all packages.
+        template_options: Options for template, usually none.
     """
+
     if framework is not None:
-        command = commands.get('dotnet_new_framework').format(
+        command = commands.get("dotnet_new_framework").format(
             template=template,
+            template_options=template_options,
             name=name,
             path=path,
             framework=framework
         )
     else:
-        command = commands.get('dotnet_new').format(
+        command = commands.get("dotnet_new").format(
             template=template,
+            template_options=template_options,
             name=name,
             path=path,
+            no_restore="--no-restore" if not restore else ""
         )
 
     result: str = devops_toolset.tools.cli.call_subprocess_with_result(command)
 
-    if result is not None:
-        logging.debug(command)
-        logging.info(literals.get('dotnet_cli_log').format(log=result))
-        logging.info(literals.get('dotnet_cli_project_created').format(name=name))
+    if template == "classlib" or template.startswith("webapi"):
+        ok_message = literals.get('dotnet_cli_project_created').format(name=name)
+        ko_message = literals.get('dotnet_cli_project_exists').format(name=name)
+    elif template == "sln":
+        ok_message = literals.get('dotnet_cli_solution_created').format(name=name)
+        ko_message = literals.get('dotnet_cli_solution_exists').format(name=name)
     else:
-        logging.info(literals.get('dotnet_cli_project_exists').format(name=name))
+        ok_message = ""
+        ko_message = ""
+
+    log(command, result, ok_message, ko_message)
 
 
 def get_configuration(template_name: str):
@@ -313,15 +291,28 @@ def get_project_layers(template_config: dict, solution_name: str):
     return project_layers
 
 
+def log(command: str, result: [str, None], ok_message: str, ko_message: str):
+    """ Logs command and results.
+
+    Args:
+        command: Command executed.
+        result: Result of the command executed.
+        ok_message: Message if everything went OK.
+        ko_message: Message if things failed.
+    """
+    if result is not None:
+        logging.debug(command)
+        logging.info(literals.get('dotnet_cli_log').format(log=result))
+        logging.info(ok_message)
+    else:
+        logging.error(ko_message)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("project-path", action=devops_toolset.tools.argument_validators.PathValidator)
     parser.add_argument("name")
     parser.add_argument("template_name")
     parser.add_argument("--relational-db-engine", default="mysql")
-    parser.add_argument("--minimal-api", action="store_true", default=False)
-    parser.add_argument("--skip-unit-tests", action="store_true", default=False)
-    parser.add_argument("--flat-structure", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
-    main(args.project_path, args.name, args.template_name, args.relational_db_engine, args.minimal_api,
-         args.skip_unit_tests, args.flat_structure)
+    main(args.project_path, args.name, args.template_name, args.relational_db_engine)
