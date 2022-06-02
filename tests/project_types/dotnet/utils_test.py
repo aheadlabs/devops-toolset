@@ -1,4 +1,4 @@
-""" Unit-core for the dotnet/cli.py module"""
+""" Unit tests for the dotnet/utils.py module"""
 
 import pathlib
 import devops_toolset.project_types.dotnet.utils as sut
