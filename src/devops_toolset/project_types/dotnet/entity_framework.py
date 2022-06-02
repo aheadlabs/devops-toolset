@@ -1,4 +1,4 @@
-"""Entity Framework utilities"""
+"""Microsoft Entity Framework utilities"""
 import json
 
 from devops_toolset.core.app import App
@@ -7,7 +7,6 @@ from devops_toolset.project_types.dotnet.Literals import Literals as DotnetLiter
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands
 
-import devops_toolset.filesystem.parsers as parsers
 import devops_toolset.tools.cli as cli
 import logging
 
@@ -28,19 +27,20 @@ def generate_migration_sql_script(startup_project_path: str, environment: str, s
     Returns:
         Migrations JSON array
     """
-    migrations_list: list = get_migrations_list(startup_project_path, environment)
-    migrations, applied_migrations, last_migration_applied = parse_data_from_migrations_json_array(migrations_list)
-    generate_sql_script(startup_project_path, script_path, last_migration_applied)
+    migrations_list: list = __get_migrations_list(startup_project_path, environment)
+    migrations, applied_migrations, last_migration_applied = __parse_data_from_migrations_json_array(migrations_list)
+    __generate_sql_script(startup_project_path, script_path, last_migration_applied)
 
 
-def generate_sql_script(
-        startup_project_path: str, script_path: str, migration_from: str = "0", idempotent: bool = True):
+def __generate_sql_script(startup_project_path: str, script_path: str,
+                          migration_from: str = "0", no_build: bool = False, idempotent: bool = True):
     """ Generates a SQL script to apply ad hoc migrations to DBMS
 
     Args:
         startup_project_path: Path to the startup project
         script_path: Path where the script will be generated at
         migration_from: ID or name of the last migration applied, defaults to 0
+        no_build: Skips build if True
         idempotent: Creates an idempotent SQL script if True
     """
 
@@ -50,16 +50,18 @@ def generate_sql_script(
         migration_from=migration_from,
         path=startup_project_path,
         script_path=script_path,
+        no_build="--no-build" if no_build else "",
         idempotent="--idempotent" if idempotent else ""
     ))
 
 
-def get_migrations_list(startup_project_path: str, environment: str) -> list:
+def __get_migrations_list(startup_project_path: str, environment: str, no_build: bool = False) -> list:
     """ Gets a list of the migrations applied for a specific environment
 
     Args:
         startup_project_path: Path to the startup project
         environment: Name for the environment to get the migrations for
+        no_build: Skips build if True
 
     Returns:
         Migrations JSON array
@@ -69,6 +71,7 @@ def get_migrations_list(startup_project_path: str, environment: str) -> list:
 
     result: str = cli.call_subprocess_with_result(commands.get("dotnet_ef_migrations_list").format(
         path=startup_project_path,
+        no_build="--no-build" if no_build else "",
         env=environment
     ))
 
@@ -83,7 +86,7 @@ def get_migrations_list(startup_project_path: str, environment: str) -> list:
     return json.loads(migrations)
 
 
-def parse_data_from_migrations_json_array(migrations_json_array: list) -> (int, int, str):
+def __parse_data_from_migrations_json_array(migrations_json_array: list) -> (int, int, str):
     """ Parses data from the migrations JSON array
 
     Arguments:
@@ -106,7 +109,3 @@ def parse_data_from_migrations_json_array(migrations_json_array: list) -> (int, 
 
 if __name__ == "__main__":
     help(__name__)
-    generate_migration_sql_script(
-        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi\SignatusApi.csproj",
-        "Development",
-        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi\migration.sql")

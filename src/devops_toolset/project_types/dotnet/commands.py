@@ -13,9 +13,10 @@ class Commands(ValueDictsBase):
     _commands = {
         "dotnet_build": "dotnet build {force} {with_restore} --configuration={configuration} --framework={framework} "
                         "--runtime={runtime} {debug} {output} {path}",
-        "dotnet_ef_migrations_list": "dotnet ef migrations list --startup-project {path} --json -- --environment {env}",
+        "dotnet_ef_migrations_list": "dotnet ef migrations list --startup-project {path} --json {no_build} "
+                                     "-- --environment {env}",
         "dotnet_ef_migrations_script": "dotnet ef migrations script {migration_from} --startup-project {path} "
-                                       "--output {script_path} {idempotent}",
+                                       "--output {script_path} {no_build} {idempotent}",
         "dotnet_restore": "dotnet restore {force} {debug} {path}",
     }
 
