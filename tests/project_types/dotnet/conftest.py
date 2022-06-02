@@ -17,7 +17,25 @@ class DotNetData(object):
     csproj_file_content = "<Project><PropertyGroup><Version>6.6.6</Version></PropertyGroup></Project>"
 
 
+class MigrationsData(object):
+    """Class used to create the migrationsdata fixture"""
+    one_migration_and_applied = \
+        "[{\"id\":\"20220529212511_Init-V1\",\"name\":\"Init-V1\",\"safeName\":\"Init-V1\",\"applied\":true}," \
+        "{\"id\":\"20220529212512_Second-V2\",\"name\":\"Second-V2\",\"safeName\":\"Second-V2\",\"applied\":false}]"
+
+    migrations_list_command_result = \
+        "info: Microsoft.EntityFrameworkCore.Infrastructure[10403]\n" \
+        "      Executed DbCommand (22ms) [Parameters=[], CommandType='Text', CommandTimeout='30']\n" \
+        "[{\"id\":\"20220529212511_Init-V1\",\"name\":\"Init-V1\",\"safeName\":\"Init-V1\",\"applied\":true}]"
+
+
 @pytest.fixture
 def dotnetdata():
     """Sample data for testing .NET related functionality"""
     return DotNetData()
+
+
+@pytest.fixture
+def migrationsdata():
+    """Sample data for testing Entity Framework functionality"""
+    return MigrationsData()
