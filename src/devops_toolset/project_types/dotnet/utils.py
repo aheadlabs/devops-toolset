@@ -1,4 +1,4 @@
-""" Contains dotnet utilities """
+""" Dotnet utilities """
 
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore

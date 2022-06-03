@@ -10,9 +10,11 @@ class Literals(ValueDictsBase):
     """ValueDicts for the dotnet module."""
 
     _info = {
-        "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait..",
         "dotnet_build_before": "Launching dotnet build inside {path}. Please wait..",
+        "dotnet_ef_migrations_list": "Listing migrations (will take a while)...",
+        "dotnet_ef_migrations_script": "Generating SQL script (will take a while)...",
         "dotnet_project_version": "The project version is {version}",
+        "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait..",
     }
     _errors = {
         "dotnet_restore_err": "Something went wrong while restoring {path}. Please check the logs and try again.",

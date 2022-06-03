@@ -1,4 +1,4 @@
-""" Unit-core for the dotnet/cli.py module"""
+""" Unit tests for the dotnet/cli.py module"""
 
 import pytest
 
