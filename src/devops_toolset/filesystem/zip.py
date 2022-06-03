@@ -15,7 +15,7 @@ app: App = App()
 literals = LiteralsCore([FileSystemLiterals])
 
 
-def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool = True, unzip_root: str = None):
+def download_and_unzip_file(url: str, destination: str, delete_after_unzip: bool = True, unzip_root: str = None):
     """Downloads and unzips a file from a URL.
 
     Args:

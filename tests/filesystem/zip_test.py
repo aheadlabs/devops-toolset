@@ -4,7 +4,7 @@ from unittest.mock import patch
 import devops_toolset.filesystem.zip as sut
 
 
-# region download_an_unzip_file
+# region download_and_unzip_file
 
 @patch("devops_toolset.filesystem.paths.download_file")
 @patch("pathlib.Path.joinpath")
@@ -19,7 +19,7 @@ def test_download_an_unzip_file_given_parameters_then_calls_extract_all(zipfile_
     download_file_mock.return_value = paths.file_name, paths.test_path
     joinpath_mock.return_value = temp_extraction_path
     # Act
-    sut.download_an_unzip_file(url, destination, False)
+    sut.download_and_unzip_file(url, destination, False)
     # Assert
     zipfile_mock.assert_called_once_with(paths.test_path, 'r')
 
@@ -41,7 +41,7 @@ def test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then
     joinpath_mock.return_value = temp_extraction_path
     walk_mock.return_value = [(paths.test_path, paths.directory_path, paths.file_name)]
     # Act
-    sut.download_an_unzip_file(url, destination, False, paths.test_path)
+    sut.download_and_unzip_file(url, destination, False, paths.test_path)
     # Assert
     move_mock.assert_called()
     rmdir_mock.assert_called()
@@ -61,12 +61,12 @@ def test_download_an_unzip_file_given_parameters_when_delete_after_unzip_is_pres
     download_file_mock.return_value = paths.file_name, paths.test_path
     joinpath_mock.return_value = temp_extraction_path
     # Act
-    sut.download_an_unzip_file(url, destination, True)
+    sut.download_and_unzip_file(url, destination, True)
     # Assert
     remove_mock.assert_called_once_with(paths.test_path)
 
 
-# endregion download_an_unzip_file
+# endregion download_and_unzip_file
 
 # region zip_directory
 
