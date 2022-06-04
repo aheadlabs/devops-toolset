@@ -9,7 +9,7 @@ import devops_toolset.filesystem.zip as sut
 @patch("devops_toolset.filesystem.paths.download_file")
 @patch("pathlib.Path.joinpath")
 @patch("zipfile.ZipFile")
-def test_download_an_unzip_file_given_parameters_then_calls_extract_all(zipfile_mock, joinpath_mock,
+def test_download_and_unzip_file_given_parameters_then_calls_extract_all(zipfile_mock, joinpath_mock,
                                                                         download_file_mock, paths):
     """ Given parameters, then calls zip.extractall """
     # Arrange
@@ -30,8 +30,8 @@ def test_download_an_unzip_file_given_parameters_then_calls_extract_all(zipfile_
 @patch("os.walk")
 @patch("shutil.move")
 @patch("os.rmdir")
-def test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then_move_files(rmdir_mock, move_mock,
-    walk_mock, zipfile_mock, joinpath_mock, download_file_mock, paths):
+def test_download_and_unzip_file_given_parameters_when_unzip_root_is_present_then_move_files(
+        rmdir_mock, move_mock, walk_mock, zipfile_mock, joinpath_mock, download_file_mock, paths):
     """ Given parameters, when unzip_root is present then walk and move files """
     # Arrange
     url = paths.url
@@ -51,8 +51,8 @@ def test_download_an_unzip_file_given_parameters_when_unzip_root_is_present_then
 @patch("pathlib.Path.joinpath")
 @patch("zipfile.ZipFile")
 @patch("os.remove")
-def test_download_an_unzip_file_given_parameters_when_delete_after_unzip_is_present_then_remove_file_path(remove_mock,
-    zipfile_mock, joinpath_mock, download_file_mock, paths):
+def test_download_and_unzip_file_given_parameters_when_delete_after_unzip_is_present_then_remove_file_path(
+        remove_mock, zipfile_mock, joinpath_mock, download_file_mock, paths):
     """ Given parameters, when delete_after_unzip is present then call os.remove """
     # Arrange
     url = paths.url
@@ -70,8 +70,39 @@ def test_download_an_unzip_file_given_parameters_when_delete_after_unzip_is_pres
 
 # region zip_directory
 
+@patch("os.walk")
+@patch("zipfile.ZipFile")
+def test_zip_directory_given_paths_walks_filesystem(zipfile_mock, os_walk_mock):
+    """Given ZIP file path and text file path (inside ZIP), reads text file."""
+
+    # Arrange
+    directory_path = ""
+    file_path = ""
+    internal_path_prefix = ""
+
+    # Act
+    sut.zip_directory(directory_path, file_path, internal_path_prefix)
+
+    # Assert
+    os_walk_mock.assert_called_once()
+
 # endregion zip_directory
 
 # region read_text_file_in_zip
+
+
+@patch("zipfile.ZipFile")
+def test_read_text_file_in_zip_given_paths_reads_text_file(zipfile_mock):
+    """Given ZIP file path and text file path (inside ZIP), reads text file."""
+
+    # Arrange
+    zip_file_path = ""
+    text_file_path = ""
+
+    # Act
+    sut.read_text_file_in_zip(zip_file_path, text_file_path)
+
+    # Assert
+    zipfile_mock.assert_called_once()
 
 # endregion read_text_file_in_zip

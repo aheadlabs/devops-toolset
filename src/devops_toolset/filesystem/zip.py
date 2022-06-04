@@ -74,7 +74,7 @@ def zip_directory(directory_path: str, file_path, internal_path_prefix: str = ""
                 ))
 
 
-def read_text_file_in_zip(zip_file_path: str, text_file_path: str):
+def read_text_file_in_zip(zip_file_path: str, text_file_path: str) -> bytes:
     """Reads a text file that is enclosed inside a ZIP file.
 
     Args:
