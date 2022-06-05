@@ -1,15 +1,18 @@
 """Environment-related functionality for Aws"""
-import os
+
 from enum import Enum
 from devops_toolset.core.app import App
-from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms.Literals import Literals as CommonLiterals
 from devops_toolset.devops_platforms.aws.Literals import Literals as AwsLiterals
 from devops_toolset.project_types.linux.commands import Commands as LinuxCommands
+import devops_toolset.devops_platforms.common
 import logging
+import os
 
 app: App = App()
-literals = LiteralsCore([AwsLiterals])
+literals = LiteralsCore([CommonLiterals, AwsLiterals])
 linux_commands = CommandsCore([LinuxCommands])
 
 
@@ -41,6 +44,34 @@ def end_task(result_type: ResultType):
 
     if result_type == ResultType.fail:
         raise EnvironmentError()
+
+
+def get_platform_variable_keys() -> list:
+    """Gets all keys for the environment variables defined by default in the
+    platform. More info at:
+    https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html#reference-variables-list
+
+    Returns
+        List with all variables
+    """
+
+    return [
+        "codepipeline.PipelineExecutionId", "SourceVariables.ImageDigest", "SourceVariables.ImageTag",
+        "SourceVariables.ImageURI", "SourceVariables.RegistryId", "SourceVariables.RepositoryName",
+        "DeployVariables.OperationId", "DeployVariables.StackSetId", "DeployVariables.StackName",
+        "SourceVariables.AuthorDate", "SourceVariables.BranchName", "SourceVariables.CommitId",
+        "SourceVariables.CommitMessage", "SourceVariables.CommitterDate", "SourceVariables.AuthorDate",
+        "SourceVariables.BranchName", "SourceVariables.CommitId", "SourceVariables.CommitMessage",
+        "SourceVariables.ConnectionArn", "SourceVariables.FullRepositoryName", "SourceVariables.CommitterDate",
+        "SourceVariables.CommitUrl", "SourceVariables.ETag", "SourceVariables.VersionId", "BuildVariables.EnvVar",
+        "TestVariables.testRunId"
+    ]
+
+
+def log_environment_variables():
+    """Logs all environment variables for this platform and process."""
+
+    devops_toolset.devops_platforms.common.log_environment_variables(get_platform_variable_keys())
 
 
 if __name__ == "__main__":

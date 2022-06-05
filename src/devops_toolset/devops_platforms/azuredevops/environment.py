@@ -2,13 +2,15 @@
 
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.devops_platforms.Literals import Literals as CommonLiterals
 from devops_toolset.devops_platforms.azuredevops.Literals import Literals as AzureDevOpsLiterals
-import sys
-import logging
 from enum import Enum
+import devops_toolset.devops_platforms.common
+import logging
+import sys
 
 app: App = App()
-literals = LiteralsCore([AzureDevOpsLiterals])
+literals = LiteralsCore([CommonLiterals, AzureDevOpsLiterals])
 
 
 class ResultType(Enum):
@@ -39,6 +41,47 @@ def end_task(result_type: ResultType):
     """
 
     sys.stdout.write(f"##vso[task.complete result={result_type.value};]DONE\n")
+
+
+def get_platform_variable_keys() -> list:
+    """Gets all keys for the environment variables defined by default in the
+    platform. More info at:
+    https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
+
+    Returns
+        List with all variables
+    """
+
+    return [
+        "System.AccessToken", "System.Debug", "Agent.BuildDirectory", "Agent.ContainerMapping", "Agent.HomeDirectory",
+        "Agent.Id", "Agent.JobName", "Agent.JobStatus", "Agent.MachineName", "Agent.Name", "Agent.OS",
+        "Agent.OSArchitecture", "Agent.TempDirectory", "Agent.ToolsDirectory", "Agent.WorkFolder",
+        "Build.ArtifactStagingDirectory", "Build.BuildId", "Build.BuildNumber", "Build.BuildUri",
+        "Build.BinariesDirectory", "Build.ContainerId", "Build.DefinitionName", "Build.DefinitionVersion",
+        "Build.QueuedBy", "Build.QueuedById", "Build.Reason", "Build.Repository.Clean", "Build.Repository.LocalPath",
+        "Build.Repository.ID", "Build.Repository.Name", "Build.Repository.Provider", "Build.Repository.Tfvc.Workspace",
+        "Build.Repository.Uri", "Build.RequestedFor", "Build.RequestedForEmail", "Build.RequestedForId",
+        "Build.SourceBranch", "Build.SourceBranchName", "Build.SourcesDirectory", "Build.SourceVersion",
+        "Build.SourceVersionMessage", "Build.StagingDirectory", "Build.Repository.Git.SubmoduleCheckout",
+        "Build.SourceTfvcShelveset", "Build.TriggeredBy.BuildId", "Build.TriggeredBy.DefinitionId",
+        "Build.TriggeredBy.DefinitionName", "Build.TriggeredBy.BuildNumber", "Build.TriggeredBy.ProjectID",
+        "Common.TestResultsDirectory", "Pipeline.Workspace", "Environment.Name", "Environment.Id",
+        "Environment.ResourceName", "Environment.ResourceId", "Strategy.Name", "Strategy.CycleName",
+        "System.CollectionId", "System.CollectionUri", "System.DefaultWorkingDirectory", "System.DefinitionId",
+        "System.HostType", "System.JobAttempt", "System.JobDisplayName", "System.JobId", "System.JobName",
+        "System.PhaseAttempt", "System.PhaseDisplayName", "System.PhaseName", "System.StageAttempt",
+        "System.StageDisplayName", "System.StageName", "System.PullRequest.IsFork", "System.PullRequest.PullRequestId",
+        "System.PullRequest.PullRequestNumber", "System.PullRequest.SourceBranch",
+        "System.PullRequest.SourceRepositoryURI", "System.PullRequest.TargetBranch",
+        "System.TeamFoundationCollectionUri", "System.TeamProject", "System.TeamProjectId", "TF_BUILD",
+        "Checks.StageAttempt"
+    ]
+
+
+def log_environment_variables():
+    """Logs all environment variables for this platform and process."""
+
+    devops_toolset.devops_platforms.common.log_environment_variables(get_platform_variable_keys())
 
 
 if __name__ == "__main__":
