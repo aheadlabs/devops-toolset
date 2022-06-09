@@ -78,10 +78,20 @@ def get_platform_variable_keys() -> list:
     ]
 
 
-def log_environment_variables():
-    """Logs all environment variables for this platform and process."""
+def log_environment_variables(platform_keys: list):
+    """Logs all environment variables for this platform and process.
 
-    devops_toolset.devops_platforms.common.log_environment_variables(get_platform_variable_keys())
+    Args:
+        platform_keys: List of platform variables.
+    """
+
+    spaces: int = len(max(platform_keys, key=len)) + 5
+
+    for environment_variable in platform_keys:
+        logging.info(literals.get("environment_variable_log").format(
+            key=str(environment_variable).ljust(spaces, "."),
+            value=devops_toolset.devops_platforms.common.echo_environment_variable(f"$(\"{environment_variable}\")")
+        ))
 
 
 if __name__ == "__main__":
