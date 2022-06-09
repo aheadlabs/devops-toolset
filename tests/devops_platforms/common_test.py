@@ -1,22 +1,29 @@
 """Unit tests for the common file"""
 
+from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.devops_platforms.commands import Commands as CommonCommands
 from unittest.mock import patch
 import devops_toolset.devops_platforms.common as sut
+import devops_toolset.tools.cli as cli
+
+commands = CommandsCore([CommonCommands])
 
 
-# region log_environment_variables()
+# region echo_environment_variable()
 
-@patch("logging.info")
-def test_log_environment_variables_calls_common_code(logging_mock):
-    """Returns a list of strings"""
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+def test_echo_environment_variable_calls_subprocess(subprocess_mock):
+    """Calls"""
 
     # Arrange
-    platform_keys: list = ["key1", "key2"]
+    variable_name: str = "variable1"
 
     # Act
-    sut.log_environment_variables(platform_keys)
+    _ = sut.echo_environment_variable(variable_name)
 
     # Assert
-    logging_mock.assert_called()
+    subprocess_mock.assert_called_with(commands.get("echo").format(
+        variable=variable_name
+    ))
 
 # endregion

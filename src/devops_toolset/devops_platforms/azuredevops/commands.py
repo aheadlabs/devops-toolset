@@ -7,9 +7,9 @@ app: App = App()
 
 
 class Commands(ValueDictsBase):
-    """Commands for the wordpress module."""
+    """Commands for the Azure DevOps platform module."""
 
-    # Add your wordpress literal dictionaries here
+    # Add your Azure DevOps commands here
     _commands = {
         "azdevops_rest_get_build_list": "https://dev.azure.com/{organization}/{project}/_apis/build/builds",
         "azdevops_rest_get_build": "https://dev.azure.com/{organization}/{project}/_apis/build/builds/{build_id}/"

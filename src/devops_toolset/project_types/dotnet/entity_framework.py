@@ -1,5 +1,4 @@
 """Microsoft Entity Framework utilities"""
-import json
 
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -8,6 +7,7 @@ from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands
 
 import devops_toolset.tools.cli as cli
+import json
 import logging
 
 app: App = App()

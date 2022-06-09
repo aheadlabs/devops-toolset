@@ -72,16 +72,17 @@ def test_get_platform_variable_keys_returns_list():
 
 # region log_environment_variables()
 
-@patch("devops_toolset.devops_platforms.common.log_environment_variables")
-def test_log_environment_variables_calls_common_code(log_environment_variables_mock):
+@patch("logging.info")
+def test_log_environment_variables_logs(logging_info_mock):
     """Returns a list of strings"""
 
     # Arrange
+    variable_keys: list = sut.get_platform_variable_keys()
 
     # Act
-    sut.log_environment_variables()
+    sut.log_environment_variables(variable_keys)
 
     # Assert
-    log_environment_variables_mock.assert_called_with(sut.get_platform_variable_keys())
+    logging_info_mock.assert_called()
 
 # endregion
