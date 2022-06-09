@@ -6,6 +6,7 @@ trigger:
     include:
       - master
       - dev
+      - test
       - feature/*
       - hotfix/*
       - release/*
