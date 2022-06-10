@@ -11,7 +11,7 @@ class Literals(ValueDictsBase):
 
     # Add your core literal dictionaries here
     _info = {
-        "environment_variable_log": _("key: {key} value: {value}"),
+        "environment_variable_log": _("=> {key} {value}"),
         "sonar_getting_qg": _("Getting quality gate for branch {branch} (original name)."),
         "sonar_pr_mode": _("Pull request mode: {pull_request}"),
         "sonar_config_file": _("Using {file} as the Sonar* configuration file."),

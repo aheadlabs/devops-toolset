@@ -56,33 +56,33 @@ def test_end_task_given_result_when_success_then_do_nothing():
 
 # region get_platform_variable_keys()
 
-def test_get_platform_variable_keys_returns_list():
+def test_get_platform_variable_dict_returns_dict():
     """Returns a list of strings"""
 
     # Arrange
 
     # Act
-    result = sut.get_platform_variable_keys()
+    result = sut.get_platform_variable_dict()
 
     # Assert
-    assert type(result) is list
+    assert type(result) is dict
 
 # endregion
 
 
 # region log_environment_variables()
 
-@patch("logging.info")
-def test_log_environment_variables_logs(logging_info_mock):
+@patch("devops_toolset.devops_platforms.common.log_environment_variables")
+def test_log_environment_variables_logs(log_environment_variables_mock):
     """Returns a list of strings"""
 
     # Arrange
-    variable_keys: list = sut.get_platform_variable_keys()
+    variables: dict = sut.get_platform_variable_dict()
 
     # Act
-    sut.log_environment_variables(variable_keys)
+    sut.log_environment_variables(variables)
 
     # Assert
-    logging_info_mock.assert_called()
+    log_environment_variables_mock.assert_called()
 
 # endregion

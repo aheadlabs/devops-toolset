@@ -27,3 +27,23 @@ def test_echo_environment_variable_calls_subprocess(subprocess_mock):
     ))
 
 # endregion
+
+
+# region log_environment_variables()
+
+@patch("logging.info")
+def test_log_environment_variables_logs(logging_info_mock):
+    """Returns a list of strings"""
+
+    # Arrange
+    variables: dict = {
+        "key1": "value1"
+    }
+
+    # Act
+    sut.log_environment_variables(variables)
+
+    # Assert
+    logging_info_mock.assert_called()
+
+# endregion

@@ -46,42 +46,51 @@ def end_task(result_type: ResultType):
         raise EnvironmentError()
 
 
-def get_platform_variable_keys() -> list:
+def get_platform_variable_dict() -> dict:
     """Gets all keys for the environment variables defined by default in the
-    platform. More info at:
-    https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html#reference-variables-list
+    platform. Values are replaced automatically by AWS before the script is
+    executed.
+
+    More info at:
+        https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html#reference-variables-list
 
     Returns
         List with all variables
     """
 
-    return [
-        "codepipeline.PipelineExecutionId", "SourceVariables.ImageDigest", "SourceVariables.ImageTag",
-        "SourceVariables.ImageURI", "SourceVariables.RegistryId", "SourceVariables.RepositoryName",
-        "DeployVariables.OperationId", "DeployVariables.StackSetId", "DeployVariables.StackName",
-        "SourceVariables.AuthorDate", "SourceVariables.BranchName", "SourceVariables.CommitId",
-        "SourceVariables.CommitMessage", "SourceVariables.CommitterDate", "SourceVariables.AuthorDate",
-        "SourceVariables.BranchName", "SourceVariables.CommitId", "SourceVariables.CommitMessage",
-        "SourceVariables.ConnectionArn", "SourceVariables.FullRepositoryName", "SourceVariables.CommitterDate",
-        "SourceVariables.CommitUrl", "SourceVariables.ETag", "SourceVariables.VersionId", "BuildVariables.EnvVar",
-        "TestVariables.testRunId"
-    ]
+    return {
+        "BuildVariables.EnvVar": "#{BuildVariables.EnvVar}",
+        "codepipeline.PipelineExecutionId": "#{codepipeline.PipelineExecutionId}",
+        "DeployVariables.OperationId": "#{DeployVariables.OperationId}",
+        "DeployVariables.StackName": "#{DeployVariables.StackName}",
+        "DeployVariables.StackSetId": "#{DeployVariables.StackSetId}",
+        "SourceVariables.AuthorDate": "#{SourceVariables.AuthorDate}",
+        "SourceVariables.BranchName": "#{SourceVariables.BranchName}",
+        "SourceVariables.CommitId": "#{SourceVariables.CommitId}",
+        "SourceVariables.CommitMessage": "#{SourceVariables.CommitMessage}",
+        "SourceVariables.CommitterDate": "#{SourceVariables.CommitterDate}",
+        "SourceVariables.CommitUrl": "#{SourceVariables.CommitUrl}",
+        "SourceVariables.ConnectionArn": "#{SourceVariables.ConnectionArn}",
+        "SourceVariables.ETag": "#{SourceVariables.ETag}",
+        "SourceVariables.FullRepositoryName": "#{SourceVariables.FullRepositoryName}",
+        "SourceVariables.ImageDigest": "#{SourceVariables.ImageDigest}",
+        "SourceVariables.ImageTag": "#{SourceVariables.ImageTag}",
+        "SourceVariables.ImageURI": "#{SourceVariables.ImageURI}",
+        "SourceVariables.RegistryId": "#{SourceVariables.RegistryId}",
+        "SourceVariables.RepositoryName": "#{SourceVariables.RepositoryName}",
+        "SourceVariables.VersionId": "#{SourceVariables.VersionId}",
+        "TestVariables.testRunId": "#{TestVariables.testRunId}",
+    }
 
 
-def log_environment_variables(platform_keys: list):
+def log_environment_variables(platform_keys: dict):
     """Logs all environment variables for this platform and process.
 
     Args:
         platform_keys: List of platform variables.
     """
 
-    spaces: int = len(max(platform_keys, key=len)) + 5
-
-    for environment_variable in platform_keys:
-        logging.info(literals.get("environment_variable_log").format(
-            key=str(environment_variable).ljust(spaces, "."),
-            value=os.environ.get(environment_variable)
-        ))
+    devops_toolset.devops_platforms.common.log_environment_variables(platform_keys)
 
 
 if __name__ == "__main__":
