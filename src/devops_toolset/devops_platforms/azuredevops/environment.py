@@ -90,7 +90,7 @@ def log_environment_variables(platform_keys: list):
     for environment_variable in platform_keys:
         logging.info(literals.get("environment_variable_log").format(
             key=str(environment_variable).ljust(spaces, "."),
-            value=devops_toolset.devops_platforms.common.echo_environment_variable(f"$(\"{environment_variable}\")")
+            value=devops_toolset.devops_platforms.common.echo_environment_variable(f"$({environment_variable})")
         ))
 
 
