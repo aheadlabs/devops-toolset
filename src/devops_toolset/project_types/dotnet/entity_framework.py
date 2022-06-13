@@ -74,6 +74,7 @@ def __get_migrations_list(startup_project_path: str, environment: str, no_build:
         no_build="--no-build" if no_build else "",
         env=environment
     ))
+    logging.info(result)
 
     migrations: str = ""
     json_lure: bool = False

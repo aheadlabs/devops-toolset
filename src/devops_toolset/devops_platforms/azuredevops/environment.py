@@ -46,6 +46,10 @@ def get_platform_variable_dict() -> dict:
     platform. Values are replaced automatically by Azure DevOps before the
     script is executed.
 
+    Note: Since Azure DevOps Pipelines expands variables only on the YAML file,
+        you should copy and paste this dict there because calling this function
+        will not expand values.
+
     More info at:
         https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
 
