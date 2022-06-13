@@ -6,7 +6,7 @@ Add here whatever you want to pass as a fixture in your core.
     ie: (see FileNames example)
         - Add a class that contains what you want to pass as a fixture in your core.
         - Create a fixture with that same lowered name that returns an instance to that class."""
-
+import typing
 
 import pytest
 
@@ -15,6 +15,16 @@ class DotNetData(object):
     """Class used to create the dotnetdata fixture"""
 
     csproj_file_content = "<Project><PropertyGroup><Version>6.6.6</Version></PropertyGroup></Project>"
+
+    @staticmethod
+    def get_appsettings_files() -> typing.Generator:
+        for file in ["appsettings.Development.json", "appsettings.Staging.json", "appsettings.Production.json"]:
+            yield file
+
+    @staticmethod
+    def get_wrong_appsettings_files() -> typing.Generator:
+        for file in ["appsettings.1.json", "appsettings.2.json"]:
+            yield file
 
 
 class MigrationsData(object):
