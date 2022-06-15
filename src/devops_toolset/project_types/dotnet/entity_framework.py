@@ -10,7 +10,8 @@ from devops_toolset.project_types.dotnet.commands import Commands as DotnetComma
 import devops_toolset.tools.cli as cli
 import json
 import logging
-import utils
+import devops_toolset.project_types.dotnet.utils as utils
+
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")

@@ -29,6 +29,8 @@ class DotNetData(object):
 
 class MigrationsData(object):
     """Class used to create the migrationsdata fixture"""
+    environments = ["environment1", "environment2"]
+
     one_migration_and_applied = \
         "[{\"id\":\"20220529212511_Init-V1\",\"name\":\"Init-V1\",\"safeName\":\"Init-V1\",\"applied\":true}," \
         "{\"id\":\"20220529212512_Second-V2\",\"name\":\"Second-V2\",\"safeName\":\"Second-V2\",\"applied\":false}]"
