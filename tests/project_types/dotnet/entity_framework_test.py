@@ -16,6 +16,7 @@ app: App = App()
 literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 
+# TODO (ivan.sainz) Unit tests for generate_migration_sql_scripts_for_all_environments()
 
 # region __generate_sql_script()
 

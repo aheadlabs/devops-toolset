@@ -1,4 +1,5 @@
 """Microsoft Entity Framework utilities"""
+import pathlib
 
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -9,6 +10,7 @@ from devops_toolset.project_types.dotnet.commands import Commands as DotnetComma
 import devops_toolset.tools.cli as cli
 import json
 import logging
+import utils
 
 app: App = App()
 platform_specific = app.load_platform_specific("environment")
@@ -17,19 +19,38 @@ commands = CommandsCore([DotnetCommands])
 
 
 def generate_migration_sql_script(startup_project_path: str, environment: str, script_path: str):
-    """ Gets a list of the migrations applied for a specific environment
+    """ Generates SQL migration script for a specific environment
 
     Args:
-        startup_project_path: Path to the startup project
-        environment: Name for the environment to get the migrations for
-        script_path: Path to the SQL script to be generated
-
-    Returns:
-        Migrations JSON array
+        startup_project_path: Path to the startup project.
+        environment: Name for the environment to get the migrations for.
+        script_path: Path to the SQL script to be generated.
     """
     migrations_list: list = __get_migrations_list(startup_project_path, environment)
     migrations, applied_migrations, last_migration_applied = __parse_data_from_migrations_json_array(migrations_list)
     __generate_sql_script(startup_project_path, script_path, last_migration_applied)
+
+
+def generate_migration_sql_scripts_for_all_environments(
+        startup_project_path: str, scripts_base_path: str, include_development: bool = False):
+    """ Generates a SQL migration script for every environment configured in
+    the appsettings.*.json files.
+
+    Args:
+        startup_project_path: Path to the startup project.
+        scripts_base_path: Path to the directory where all scripts will be
+            created at.
+        include_development: If True, Development/Dev is included in the list.
+    """
+
+    environments = utils.get_appsettings_environments(startup_project_path, include_development)
+    base_path_obj = pathlib.Path(scripts_base_path)
+
+    for environment in environments:
+        # TODO (ivan.sainz) Set date to the one in the first migration not applied
+        date = ""
+        script_path = pathlib.Path.joinpath(base_path_obj, f"database-migration-{environment.lower()}-from-{date}.sql")
+        generate_migration_sql_script(startup_project_path, environment, str(script_path))
 
 
 def __generate_sql_script(startup_project_path: str, script_path: str,
@@ -110,3 +131,7 @@ def __parse_data_from_migrations_json_array(migrations_json_array: list) -> (int
 
 if __name__ == "__main__":
     help(__name__)
+    generate_migration_sql_scripts_for_all_environments(
+        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi",
+        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi"
+    )
