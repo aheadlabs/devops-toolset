@@ -7,10 +7,10 @@ from devops_toolset.project_types.dotnet.Literals import Literals as DotnetLiter
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands
 
+import devops_toolset.project_types.dotnet.utils as utils
 import devops_toolset.tools.cli as cli
 import json
 import logging
-import devops_toolset.project_types.dotnet.utils as utils
 
 
 app: App = App()
@@ -27,9 +27,13 @@ def generate_migration_sql_script(startup_project_path: str, environment: str, s
         environment: Name for the environment to get the migrations for.
         script_path: Path to the SQL script to be generated.
     """
-    migrations_list: list = __get_migrations_list(startup_project_path, environment)
+    # migrations_list: list = __get_migrations_list(startup_project_path, environment)
+    migrations_list: list = [{'id': '20220530130619_Banks-V1', 'name': 'Banks-V1', 'safeName': 'Banks-V1', 'applied': False}]
+    # TODO (ivan.sainz) Set date to the one in the first migration not applied
+    migration_name, migration_date = __get_first_migration_not_applied(migrations_list)
+
     migrations, applied_migrations, last_migration_applied = __parse_data_from_migrations_json_array(migrations_list)
-    __generate_sql_script(startup_project_path, script_path, last_migration_applied)
+    __generate_sql_script(startup_project_path, script_path.replace("#date#", migration_date), last_migration_applied)
 
 
 def generate_migration_sql_scripts_for_all_environments(
@@ -48,10 +52,25 @@ def generate_migration_sql_scripts_for_all_environments(
     base_path_obj = pathlib.Path(scripts_base_path)
 
     for environment in environments:
-        # TODO (ivan.sainz) Set date to the one in the first migration not applied
-        date = ""
-        script_path = pathlib.Path.joinpath(base_path_obj, f"database-migration-{environment.lower()}-from-{date}.sql")
+        script_path = pathlib.Path.joinpath(base_path_obj, f"database-migration-{environment.lower()}-from-#date#.sql")
         generate_migration_sql_script(startup_project_path, environment, str(script_path))
+
+
+def __get_first_migration_not_applied(migrations_list: list) -> ([str, None], [str, None]):
+    """ Returns the first migration in the list that has not been applied.
+
+    Args:
+        migrations_list: List of migrations
+
+    Returns:
+        Migration name, migration date (migration format)
+    """
+
+    for migration in migrations_list:
+        if migration["applied"] is False:
+            pass
+
+    return "", ""
 
 
 def __generate_sql_script(startup_project_path: str, script_path: str,
@@ -132,7 +151,4 @@ def __parse_data_from_migrations_json_array(migrations_json_array: list) -> (int
 
 if __name__ == "__main__":
     help(__name__)
-    generate_migration_sql_scripts_for_all_environments(
-        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi",
-        r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi"
-    )
+

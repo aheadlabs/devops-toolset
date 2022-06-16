@@ -19,7 +19,7 @@ commands = CommandsCore([DotnetCommands])
 
 
 # region generate_migration_sql_script()
-
+# TODO(ivan.sainz) Update unit tests for this function
 @mock.patch.object(sut, "__get_migrations_list")
 @mock.patch.object(sut, "__generate_sql_script")
 def test_generate_migration_sql_script_calls_generate_sql_script(
