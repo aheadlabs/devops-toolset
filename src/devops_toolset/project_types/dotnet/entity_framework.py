@@ -1,5 +1,4 @@
 """Microsoft Entity Framework utilities"""
-import pathlib
 
 from devops_toolset.core.app import App
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -11,6 +10,8 @@ import devops_toolset.project_types.dotnet.utils as utils
 import devops_toolset.tools.cli as cli
 import json
 import logging
+import pathlib
+import re
 
 
 app: App = App()
@@ -27,11 +28,9 @@ def generate_migration_sql_script(startup_project_path: str, environment: str, s
         environment: Name for the environment to get the migrations for.
         script_path: Path to the SQL script to be generated.
     """
-    # migrations_list: list = __get_migrations_list(startup_project_path, environment)
-    migrations_list: list = [{'id': '20220530130619_Banks-V1', 'name': 'Banks-V1', 'safeName': 'Banks-V1', 'applied': False}]
-    # TODO (ivan.sainz) Set date to the one in the first migration not applied
-    migration_name, migration_date = __get_first_migration_not_applied(migrations_list)
 
+    migrations_list: list = __get_migrations_list(startup_project_path, environment)
+    migration_name, migration_date = __get_first_migration_not_applied(migrations_list)
     migrations, applied_migrations, last_migration_applied = __parse_data_from_migrations_json_array(migrations_list)
     __generate_sql_script(startup_project_path, script_path.replace("#date#", migration_date), last_migration_applied)
 
@@ -63,14 +62,18 @@ def __get_first_migration_not_applied(migrations_list: list) -> ([str, None], [s
         migrations_list: List of migrations
 
     Returns:
-        Migration name, migration date (migration format)
+        Tuple with migration name and migration date (migration format) or None
+        and None if no migration is found.
     """
+
+    regex_pattern = r"^(\d+)_[\w-]+$"
 
     for migration in migrations_list:
         if migration["applied"] is False:
-            pass
+            match = re.search(regex_pattern, migration["id"])
+            return migration["name"], match.groups()[0]
 
-    return "", ""
+    return None, None
 
 
 def __generate_sql_script(startup_project_path: str, script_path: str,
@@ -151,4 +154,3 @@ def __parse_data_from_migrations_json_array(migrations_json_array: list) -> (int
 
 if __name__ == "__main__":
     help(__name__)
-
