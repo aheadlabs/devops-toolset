@@ -19,7 +19,27 @@ literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 
 
+# region drop_database()
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@patch("logging.info")
+def test_drop_database_calls_subprocess(logging_info_mock, subprocess_mock):
+    """ Calls subprocess for executing EF command. """
+
+    # Arrange
+    startup_project_path: str = "path/to/project"
+    environment: str = "Staging"
+
+    # Act
+    sut.drop_database(startup_project_path, environment)
+
+    # Assert
+    subprocess_mock.assert_called()
+
+# endregion drop_database()
+
 # region generate_migration_sql_script()
+
 
 @mock.patch.object(sut, "__get_migrations_list")
 @mock.patch.object(sut, "__get_first_migration_not_applied")
@@ -75,6 +95,26 @@ def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migr
 
 # endregion generate_migration_sql_scripts_for_all_environments()
 
+# region reset_database()
+
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@patch("logging.info")
+def test_drop_database_calls_subprocess(logging_info_mock, subprocess_mock):
+    """ Calls subprocess for executing EF command. """
+
+    # Arrange
+    startup_project_path: str = "path/to/project"
+    environment: str = "Staging"
+
+    # Act
+    sut.reset_database(startup_project_path, environment)
+
+    # Assert
+    subprocess_mock.assert_called()
+
+# endregion drop_database()
+
 # region __get_first_migration_not_applied()
 
 def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(migrationsdata):
@@ -115,9 +155,10 @@ def test_generate_sql_script_calls_subprocess(log_info_mock, call_subprocess_moc
     # Arrange
     startup_project_path: str = ""
     script_path: str = ""
+    environment: str = ""
 
     # Act
-    sut.__generate_sql_script(startup_project_path, script_path)
+    sut.__generate_sql_script(startup_project_path, script_path, environment)
 
     # Assert
     call_subprocess_mock.assert_called_once()
