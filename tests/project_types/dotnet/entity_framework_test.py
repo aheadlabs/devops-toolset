@@ -20,45 +20,50 @@ commands = CommandsCore([DotnetCommands])
 
 
 # region generate_migration_sql_script()
-# TODO(ivan.sainz) Update unit tests for this function
+
 @mock.patch.object(sut, "__get_migrations_list")
+@mock.patch.object(sut, "__get_first_migration_not_applied")
 @mock.patch.object(sut, "__generate_sql_script")
 def test_generate_migration_sql_script_calls_generate_sql_script(
-        generate_sql_script_mock, get_migrations_list_mock, migrationsdata):
+        generate_sql_script_mock, get_first_migration_not_applied_mock, get_migrations_list_mock, migrationsdata):
     """ Calls __generate_sql_script with required data"""
     # Arrange
     startup_project_path: str = ""
     environment: str = ""
-    script_path: str = ""
+    script_path: str = "#date#"
+    migration_date: str = "20220529212512"
+    migration_name: str = "Second-V2"
     get_migrations_list_mock.return_value = json.loads(migrationsdata.one_migration_and_applied)
+    get_first_migration_not_applied_mock.return_value = migration_name, migration_date
     migrations, applied_migrations, last_migration_applied = \
         sut.__parse_data_from_migrations_json_array(json.loads(migrationsdata.one_migration_and_applied))
     # Act
     sut.generate_migration_sql_script(startup_project_path, environment, script_path)
 
     # Assert
-    generate_sql_script_mock.assert_called_once_with(startup_project_path, script_path, last_migration_applied)
+    generate_sql_script_mock.assert_called_once_with(
+        startup_project_path, script_path.replace("#date#", migration_date), last_migration_applied)
 
 
-# endregion enerate_migration_sql_script()
+# endregion generate_migration_sql_script()
 
 # region generate_migration_sql_scripts_for_all_environments()
 
 @mock.patch.object(sut, "generate_migration_sql_script")
 @mock.patch.object(utils, "get_appsettings_environments")
 def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migration_sql_script(
-        get_appsettings_environments_mock, generate_migration_sql_script_mock, migrationsdata):
+        get_appsettings_environments_mock, generate_migration_sql_script_mock):
     """ Calls generate_migration_sql_script with required data """
     # Arrange
-    environments = migrationsdata.environments
+    environments = ["staging", "production"]
     get_appsettings_environments_mock.return_value = environments
     startup_project_path = ""
     date = ""
     scripts_base_path = "my_path/scripts"
     expected_script_path_0 = pathlib.Path.joinpath(
-        pathlib.Path(scripts_base_path), f"database-migration-{environments[0].lower()}-from-{date}.sql")
+        pathlib.Path(scripts_base_path), f"database-migration-staging-from-#date#.sql")
     expected_script_path_1 = pathlib.Path.joinpath(
-        pathlib.Path(scripts_base_path), f"database-migration-{environments[1].lower()}-from-{date}.sql")
+        pathlib.Path(scripts_base_path), f"database-migration-production-from-#date#.sql")
     expected_calls = [call(startup_project_path, environments[0], str(expected_script_path_0)),
                       call(startup_project_path, environments[1], str(expected_script_path_1))]
 
@@ -71,7 +76,37 @@ def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migr
 
 # endregion generate_migration_sql_scripts_for_all_environments()
 
+# region __get_first_migration_not_applied()
+
+def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(migrationsdata):
+    """ Returns date and name for non applied migration """
+    # Arrange
+    migration_test_data = json.loads(migrationsdata.one_migration_and_applied)
+    expected_name = "Second-V2"
+    expected_date = "20220529212512"
+
+    # Act
+    migration_name, migration_date = sut.__get_first_migration_not_applied(migration_test_data)
+
+    # Assert
+    assert migration_name == expected_name and migration_date == expected_date
+
+
+def test_get_first_migration_not_applied_returns_none_tuple_when_no_migrations_found(migrationsdata):
+    """ Returns None, None for missing migrations """
+    # Arrange
+    migration_test_data = json.loads("[]")
+
+    # Act
+    migration_name, migration_date = sut.__get_first_migration_not_applied(migration_test_data)
+
+    # Assert
+    assert migration_name is None and migration_date is None
+
+# endregion __get_first_migration_not_applied()
+
 # region __generate_sql_script()
+
 
 @mock.patch.object(cli, "call_subprocess")
 @patch("logging.info")
