@@ -58,7 +58,6 @@ def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migr
     environments = ["staging", "production"]
     get_appsettings_environments_mock.return_value = environments
     startup_project_path = ""
-    date = ""
     scripts_base_path = "my_path/scripts"
     expected_script_path_0 = pathlib.Path.joinpath(
         pathlib.Path(scripts_base_path), f"database-migration-staging-from-#date#.sql")
