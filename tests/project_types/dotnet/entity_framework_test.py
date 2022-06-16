@@ -62,7 +62,7 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
 
     # Assert
     generate_sql_script_mock.assert_called_once_with(
-        startup_project_path, script_path.replace("#date#", migration_date), last_migration_applied)
+        startup_project_path, script_path.replace("#date#", migration_date), environment, last_migration_applied)
 
 
 # endregion generate_migration_sql_script()
