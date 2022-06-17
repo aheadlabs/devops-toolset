@@ -1,5 +1,4 @@
 """ Dotnet utilities """
-
 import devops_toolset.filesystem.parsers as parsers
 import logging
 import os.path
@@ -34,16 +33,23 @@ def get_appsettings_environments(csproj_directory_path: str, include_development
     regex_pattern = "^appsettings\.([A-Za-z]+)\.json$"
     environments: list[str] = []
 
+    logging.info(literals.get("dotnet_ef_utils_getting_appsettings_files").format(path=path))
+
     files = path.glob(glob_pattern)
+    logging.info(literals.get("dotnet_ef_utils_appsettings_files_matched").format(files=files))
     for file in files:
         filename = os.path.basename(file)
 
         match = re.search(regex_pattern, filename)
         if match is None:
+            logging.info(literals.get("dotnet_ef_utils_appsettings_no_environment_matched").format(filename=filename))
             continue
 
+        logging.info(literals.get("dotnet_ef_utils_appsettings_environment_matched")
+                     .format(filename=filename, environment=match.groups()[0]))
         environment = match.groups()[0]
         if (environment == "Development" or environment == "Dev") and not include_development:
+            logging.info(literals.get("dotnet_ef_utils_appsettings_dev_environment_skipped"))
             continue
         environments.append(environment)
 

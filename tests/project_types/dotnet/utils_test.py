@@ -16,8 +16,9 @@ commands = CommandsCore([DotnetCommands])
 
 # region get_appsettings_environments()
 
+@patch("logging.info")
 @patch("pathlib.Path.glob")
-def test_get_appsettings_environments_returns_list(glob_mock, dotnetdata):
+def test_get_appsettings_environments_returns_list(glob_mock, logging_info_mock, dotnetdata):
     """ Given the .csproj file path, returns a list of strings."""
 
     # Arrange
@@ -31,8 +32,10 @@ def test_get_appsettings_environments_returns_list(glob_mock, dotnetdata):
     assert type(result) is list
 
 
+@patch("logging.info")
 @patch("pathlib.Path.glob")
-def test_get_appsettings_environments_given_unmatched_environments_returns_empty_list(glob_mock, dotnetdata):
+def test_get_appsettings_environments_given_unmatched_environments_returns_empty_list(
+        glob_mock, logging_info_mock,  dotnetdata):
     """ Given the .csproj file path and wrong appsettings files, returns an
     empty list."""
 
