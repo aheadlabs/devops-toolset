@@ -69,10 +69,11 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
 
 # region generate_migration_sql_scripts_for_all_environments()
 
+@patch("logging.info")
 @mock.patch.object(sut, "generate_migration_sql_script")
 @mock.patch.object(utils, "get_appsettings_environments")
 def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migration_sql_script(
-        get_appsettings_environments_mock, generate_migration_sql_script_mock):
+        get_appsettings_environments_mock, generate_migration_sql_script_mock, logging_info_mock):
     """ Calls generate_migration_sql_script with required data """
     # Arrange
     environments = ["staging", "production"]
@@ -117,7 +118,10 @@ def test_drop_database_calls_subprocess(logging_info_mock, subprocess_mock):
 
 # region __get_first_migration_not_applied()
 
-def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(migrationsdata):
+
+@patch("logging.info")
+def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(
+        logging_info_mock, migrationsdata):
     """ Returns date and name for non applied migration """
     # Arrange
     migration_test_data = json.loads(migrationsdata.one_migration_and_applied)
@@ -131,7 +135,8 @@ def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_
     assert migration_name == expected_name and migration_date == expected_date
 
 
-def test_get_first_migration_not_applied_returns_none_tuple_when_no_migrations_found(migrationsdata):
+@patch("logging.info")
+def test_get_first_migration_not_applied_returns_none_tuple_when_no_migrations_found(logging_info_mock):
     """ Returns None, None for missing migrations """
     # Arrange
     migration_test_data = json.loads("[]")
@@ -192,7 +197,9 @@ def test_get_migrations_list_calls_subprocess(log_info_mock, call_subprocess_wit
 # region __parse_data_from_migrations_json_array()
 
 
-def test_parse_data_from_migrations_json_array_given_migrations_list_returns_parsed_data(migrationsdata):
+@patch("logging.info")
+def test_parse_data_from_migrations_json_array_given_migrations_list_returns_parsed_data(
+        logging_info_mock, migrationsdata):
     """ Given migrations list, returns parsed data."""
 
     # Arrange
