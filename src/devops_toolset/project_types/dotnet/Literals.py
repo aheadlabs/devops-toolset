@@ -23,6 +23,12 @@ class Literals(ValueDictsBase):
         "dotnet_ef_no_pending_migrations": "There are no pending migrations to be applied.",
         "dotnet_ef_script_being_generated": "SQL migration script being generated: {script_path}",
         "dotnet_ef_script_for_environment": "Generating SQL migration script for {environment} environment...",
+        "dotnet_ef_utils_appsettings_dev_environment_skipped":
+            "Skipped development environment as include development is [false]",
+        "dotnet_ef_utils_appsettings_files_matched": "I got these appsettings files matched: {files}",
+        "dotnet_ef_utils_appsettings_environment_matched": "Environment {environment} matched on: {filename}",
+        "dotnet_ef_utils_appsettings_no_environment_matched": "No environment matched on: {filename}",
+        "dotnet_ef_utils_getting_appsettings_files": "Getting appsettings files from: {path}",
         "dotnet_project_version": "The project version is {version}",
         "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait..",
     }
