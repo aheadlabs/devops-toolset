@@ -19,7 +19,27 @@ literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 
 
+# region drop_database()
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@patch("logging.info")
+def test_drop_database_calls_subprocess(logging_info_mock, subprocess_mock):
+    """ Calls subprocess for executing EF command. """
+
+    # Arrange
+    startup_project_path: str = "path/to/project"
+    environment: str = "Staging"
+
+    # Act
+    sut.drop_database(startup_project_path, environment)
+
+    # Assert
+    subprocess_mock.assert_called()
+
+# endregion drop_database()
+
 # region generate_migration_sql_script()
+
 
 @mock.patch.object(sut, "__get_migrations_list")
 @mock.patch.object(sut, "__get_first_migration_not_applied")
@@ -42,17 +62,18 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
 
     # Assert
     generate_sql_script_mock.assert_called_once_with(
-        startup_project_path, script_path.replace("#date#", migration_date), last_migration_applied)
+        startup_project_path, script_path.replace("#date#", migration_date), environment, last_migration_applied)
 
 
 # endregion generate_migration_sql_script()
 
 # region generate_migration_sql_scripts_for_all_environments()
 
+@patch("logging.info")
 @mock.patch.object(sut, "generate_migration_sql_script")
 @mock.patch.object(utils, "get_appsettings_environments")
 def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migration_sql_script(
-        get_appsettings_environments_mock, generate_migration_sql_script_mock):
+        get_appsettings_environments_mock, generate_migration_sql_script_mock, logging_info_mock):
     """ Calls generate_migration_sql_script with required data """
     # Arrange
     environments = ["staging", "production"]
@@ -75,9 +96,32 @@ def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migr
 
 # endregion generate_migration_sql_scripts_for_all_environments()
 
+# region reset_database()
+
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@patch("logging.info")
+def test_drop_database_calls_subprocess(logging_info_mock, subprocess_mock):
+    """ Calls subprocess for executing EF command. """
+
+    # Arrange
+    startup_project_path: str = "path/to/project"
+    environment: str = "Staging"
+
+    # Act
+    sut.reset_database(startup_project_path, environment)
+
+    # Assert
+    subprocess_mock.assert_called()
+
+# endregion drop_database()
+
 # region __get_first_migration_not_applied()
 
-def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(migrationsdata):
+
+@patch("logging.info")
+def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_migration_list(
+        logging_info_mock, migrationsdata):
     """ Returns date and name for non applied migration """
     # Arrange
     migration_test_data = json.loads(migrationsdata.one_migration_and_applied)
@@ -91,7 +135,8 @@ def test_get_first_migration_not_applied_returns_name_and_date_from_not_applied_
     assert migration_name == expected_name and migration_date == expected_date
 
 
-def test_get_first_migration_not_applied_returns_none_tuple_when_no_migrations_found(migrationsdata):
+@patch("logging.info")
+def test_get_first_migration_not_applied_returns_none_tuple_when_no_migrations_found(logging_info_mock):
     """ Returns None, None for missing migrations """
     # Arrange
     migration_test_data = json.loads("[]")
@@ -115,9 +160,10 @@ def test_generate_sql_script_calls_subprocess(log_info_mock, call_subprocess_moc
     # Arrange
     startup_project_path: str = ""
     script_path: str = ""
+    environment: str = ""
 
     # Act
-    sut.__generate_sql_script(startup_project_path, script_path)
+    sut.__generate_sql_script(startup_project_path, script_path, environment)
 
     # Assert
     call_subprocess_mock.assert_called_once()
@@ -151,7 +197,9 @@ def test_get_migrations_list_calls_subprocess(log_info_mock, call_subprocess_wit
 # region __parse_data_from_migrations_json_array()
 
 
-def test_parse_data_from_migrations_json_array_given_migrations_list_returns_parsed_data(migrationsdata):
+@patch("logging.info")
+def test_parse_data_from_migrations_json_array_given_migrations_list_returns_parsed_data(
+        logging_info_mock, migrationsdata):
     """ Given migrations list, returns parsed data."""
 
     # Arrange

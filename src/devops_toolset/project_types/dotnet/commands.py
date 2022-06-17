@@ -11,12 +11,18 @@ class Commands(ValueDictsBase):
 
     # Add your dotnet commands dictionaries here
     _commands = {
-        "dotnet_build": "dotnet build {force} {with_restore} --configuration={configuration} --framework={framework} "
-                        "--runtime={runtime} {debug} {output} {path}",
-        "dotnet_ef_migrations_list": "dotnet ef migrations list --startup-project {path} --json {no_build} "
-                                     "-- --environment {env}",
-        "dotnet_ef_migrations_script": "dotnet ef migrations script {migration_from} --startup-project {path} "
-                                       "--output {script_path} {no_build} {idempotent}",
+        "dotnet_build":
+            "dotnet build {force} {with_restore} --configuration={configuration} --framework={framework} "
+            "--runtime={runtime} {debug} {output} {path}",
+        "dotnet_ef_database_drop":
+            "dotnet ef database drop --force --startup-project {path} {no_build} -- --environment {env}",
+        "dotnet_ef_database_reset":
+            "dotnet ef database update 0 --startup-project {path} {no_build} -- --environment {env}",
+        "dotnet_ef_migrations_list":
+            "dotnet ef migrations list --startup-project {path} --json {no_build} -- --environment {env}",
+        "dotnet_ef_migrations_script":
+            "dotnet ef migrations script {migration_from} --startup-project {path} --output {script_path} {no_build} "
+            "{idempotent} -- --environment {env}",
         "dotnet_restore": "dotnet restore {force} {debug} {path}",
     }
 
