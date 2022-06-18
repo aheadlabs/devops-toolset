@@ -77,4 +77,3 @@ def get_csproj_project_version(csproj_path: str) -> str:
 
 if __name__ == "__main__":
     help(__name__)
-    get_appsettings_environments(r"D:\Source\_aheadlabs\signatus\0.DistributedServicesLayer\SignatusApi")
