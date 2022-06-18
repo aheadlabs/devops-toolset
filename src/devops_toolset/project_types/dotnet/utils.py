@@ -35,8 +35,8 @@ def get_appsettings_environments(csproj_directory_path: str, include_development
 
     logging.info(literals.get("dotnet_ef_utils_getting_appsettings_files").format(path=path))
 
-    files = path.glob(glob_pattern)
-    logging.info(literals.get("dotnet_ef_utils_appsettings_files_matched").format(files=list(files)))
+    files = list(path.glob(glob_pattern))
+    logging.info(literals.get("dotnet_ef_utils_appsettings_files_matched").format(files=files))
     for file in files:
         filename = os.path.basename(file)
 
