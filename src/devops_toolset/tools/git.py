@@ -2,22 +2,21 @@
 
 # ! python
 
+import devops_toolset.core.app
+import devops_toolset.filesystem.paths
+import devops_toolset.filesystem.paths as path_tools
+import devops_toolset.tools.cli
 import logging
 import os
 import pathlib
 import re
 
 from clint.textui import prompt
-
-import devops_toolset.filesystem.paths
-import devops_toolset.core.app
-import devops_toolset.filesystem.paths as path_tools
-from devops_toolset.core.LiteralsCore import LiteralsCore
-from devops_toolset.tools.Literals import Literals as ToolsLiterals
-from devops_toolset.filesystem.constants import FileNames, Directions
 from devops_toolset.core.CommandsCore import CommandsCore
+from devops_toolset.core.LiteralsCore import LiteralsCore
+from devops_toolset.filesystem.constants import FileNames, Directions
 from devops_toolset.tools.commands import Commands as ToolsCommands
-import devops_toolset.tools.cli
+from devops_toolset.tools.Literals import Literals as ToolsLiterals
 
 app: devops_toolset.core.app.App = devops_toolset.core.app.App()
 literals = LiteralsCore([ToolsLiterals])
