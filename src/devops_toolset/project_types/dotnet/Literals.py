@@ -14,7 +14,7 @@ class Literals(ValueDictsBase):
         "dotnet_ef_database_drop": "Dropping the database...",
         "dotnet_ef_database_reset": "Reverting all migrations...",
         "dotnet_ef_first_migration_not_applied": "First migration not applied: {migration_name} ({migration_date})",
-        "dotnet_ef_got_environments": "I got these environments:\n{environments}.",
+        "dotnet_ef_got_environments": "I got these environments: {environments}.",
         "dotnet_ef_migrations_info":
             "Number of migrations: {number}, applied migrations: {applied}, last applied migration: {name}",
         "dotnet_ef_migrations_list": "Listing migrations (will take a while)...",
