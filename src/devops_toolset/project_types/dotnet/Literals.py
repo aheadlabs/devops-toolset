@@ -22,6 +22,7 @@ class Literals(ValueDictsBase):
         "dotnet_ef_migrations_script": "Generating SQL script (will take a while)...",
         "dotnet_ef_no_pending_migrations": "There are no pending migrations to be applied.",
         "dotnet_ef_script_being_generated": "SQL migration script being generated: {script_path}",
+        "dotnet_ef_script_executing_command": "Executing command => {command}",
         "dotnet_ef_script_for_environment": "Generating SQL migration script for {environment} environment...",
         "dotnet_ef_utils_appsettings_dev_environment_skipped":
             "Skipped development environment as include_development is False",

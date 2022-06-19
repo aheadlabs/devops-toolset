@@ -14,4 +14,5 @@ class Commands(ValueDictsBase):
         "git_init": "git init {path}",
         "git_add": "git add .",
         "git_commit_m": "git commit -m \"{message}\"",
+        "public_ip_address_service_url": "http://checkip.dyndns.org",
     }
