@@ -30,4 +30,3 @@ def get_public_ip_address(public_service_url: str = commands.get("public_ip_addr
 
 if __name__ == "__main__":
     help(__name__)
-    print(get_public_ip_address())
