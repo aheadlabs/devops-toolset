@@ -84,6 +84,17 @@ def mocked_requests_get(url: str, *args, **kwargs):
     return MockResponse(bytes_content, text_content)
 
 
+def mocked_requests_get_ip(*args, **kwargs):
+    """Mock to replace requests.get() returning HTML with an IP address."""
+
+    # Default values
+    bytes_content = b"<p>Your IP address is 1.1.1.1</p>"
+    text_content = "sample text response"
+
+    # Return instance
+    return MockResponse(bytes_content, text_content)
+
+
 class MockResponse(object):
     """This is the mocked Response object returned by requests.get()"""
     def __init__(self, b_content, text_content):

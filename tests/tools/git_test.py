@@ -1,4 +1,4 @@
-"""Unit core for the git file"""
+"""Unit tests for the tools/git module"""
 
 import io
 import pathlib

@@ -19,7 +19,7 @@ literals = LiteralsCore([DevopsLiterals])
 @patch("devops_toolset.devops_platforms.sonarx.read_sonar_properties_file")
 @patch("devops_toolset.devops_platforms.sonarx.generate_branch_segment")
 def test_get_quality_gate_status_given_branch_then_reads_sonar_config_file(
-        branch_function, file_function, logger_info, logger_error, requests_get, sonarxdata):
+        branch_function, file_function, logger_error, logger_info, requests_get, sonarxdata):
     """Given the path to the Sonar* config file, it reads its properties"""
 
     # Arrange
