@@ -266,7 +266,7 @@ def test_delete_sample_wp_config_file_when_file_exist_then_remove(remove_mock, p
 # region setup_devops_toolset
 
 
-@patch("devops_toolset.tools.devops_toolset.update_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset_utils.update_devops_toolset")
 @patch("logging.info")
 @patch("devops_toolset.project_types.wordpress.wptools.get_constants")
 def test_setup_devops_toolset_given_root_path_then_call_update_devops_toolset(
