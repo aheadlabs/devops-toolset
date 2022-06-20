@@ -51,7 +51,6 @@ def test_get_appsettings_environments_given_unmatched_environments_returns_empty
 
 # endregion
 
-
 # region get_csproj_project_version()
 
 def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata, tmp_path):

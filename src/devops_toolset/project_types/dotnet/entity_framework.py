@@ -165,11 +165,14 @@ def __get_migrations_list(startup_project_path: str, environment: str, no_build:
 
     logging.info(literals.get("dotnet_ef_migrations_list"))
 
-    result: str = cli.call_subprocess_with_result(commands.get("dotnet_ef_migrations_list").format(
+    ef_command: str = commands.get("dotnet_ef_migrations_list").format(
         path=startup_project_path,
         no_build="--no-build" if no_build else "",
         env=environment
-    ))
+    )
+    logging.info(literals.get("dotnet_ef_script_executing_command").format(command=ef_command))
+
+    result: str = cli.call_subprocess_with_result(ef_command)
     logging.info(literals.get("dotnet_ef_migrations_list_output").format(output=result))
 
     migrations: str = ""

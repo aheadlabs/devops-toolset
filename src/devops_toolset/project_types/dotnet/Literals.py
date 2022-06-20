@@ -14,7 +14,7 @@ class Literals(ValueDictsBase):
         "dotnet_ef_database_drop": "Dropping the database...",
         "dotnet_ef_database_reset": "Reverting all migrations...",
         "dotnet_ef_first_migration_not_applied": "First migration not applied: {migration_name} ({migration_date})",
-        "dotnet_ef_got_environments": "I got these environments:\n{environments}.",
+        "dotnet_ef_got_environments": "I got these environments: {environments}.",
         "dotnet_ef_migrations_info":
             "Number of migrations: {number}, applied migrations: {applied}, last applied migration: {name}",
         "dotnet_ef_migrations_list": "Listing migrations (will take a while)...",
@@ -22,9 +22,10 @@ class Literals(ValueDictsBase):
         "dotnet_ef_migrations_script": "Generating SQL script (will take a while)...",
         "dotnet_ef_no_pending_migrations": "There are no pending migrations to be applied.",
         "dotnet_ef_script_being_generated": "SQL migration script being generated: {script_path}",
+        "dotnet_ef_script_executing_command": "Executing command => {command}",
         "dotnet_ef_script_for_environment": "Generating SQL migration script for {environment} environment...",
         "dotnet_ef_utils_appsettings_dev_environment_skipped":
-            "Skipped development environment as include development is [false]",
+            "Skipped development environment as include_development is False",
         "dotnet_ef_utils_appsettings_files_matched": "I got these appsettings files matched: {files}",
         "dotnet_ef_utils_appsettings_environment_matched": "Environment {environment} matched on: {filename}",
         "dotnet_ef_utils_appsettings_no_environment_matched": "No environment matched on: {filename}",
