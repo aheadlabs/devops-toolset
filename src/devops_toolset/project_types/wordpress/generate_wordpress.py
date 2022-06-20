@@ -15,7 +15,7 @@ import devops_toolset.project_types.wordpress.wptools
 import shutil
 import devops_toolset.tools.cli as cli
 import devops_toolset.tools.argument_validators
-import devops_toolset.tools.devops_toolset
+import devops_toolset.tools.devops_toolset_utils
 import devops_toolset.tools.git as git_tools
 from clint.textui import prompt
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -192,7 +192,7 @@ def setup_devops_toolset(root_path: str):
     devops_path_constant = devops_toolset.project_types.wordpress.wptools.get_constants()["paths"]["devops"]
     devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset").as_posix()
     logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
-    devops_toolset.tools.devops_toolset.update_devops_toolset(devops_path)
+    devops_toolset.tools.devops_toolset_utils.update_devops_toolset(devops_path)
 
 
 def generate_additional_wpconfig_files(site_config: dict, environments: dict, additional_environments: list,
