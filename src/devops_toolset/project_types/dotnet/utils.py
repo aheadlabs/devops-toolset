@@ -56,18 +56,21 @@ def get_appsettings_environments(csproj_directory_path: str, include_development
     return environments
 
 
-def get_csproj_project_version(csproj_path: str) -> str:
+def get_csproj_project_version(csproj_path: str, environment_variable_name: str = "DT_PROJECT_VERSION") -> str:
     """ Gets the version number from a .csproj file
 
     Arguments:
-        csproj_path: Path to the .csproj file
+        csproj_path: Path to the .csproj file.
+        environment_variable_name: Name of the environment variable to be
+            created. Defaults to "DT_PROJECT_VERSION".
 
     Returns:
         The version number defined in the .csproj file.
     """
 
     version = parsers.get_xml_file_entity_text("./PropertyGroup/Version", csproj_path)
-    version_environment_variable = {"PROJECT_VERSION": version["Version"]}
+
+    version_environment_variable = {environment_variable_name: version["Version"]}
     platform_specific.create_environment_variables(version_environment_variable)
 
     logging.info(literals.get("dotnet_project_version").format(version=version["Version"]))

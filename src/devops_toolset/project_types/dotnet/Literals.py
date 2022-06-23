@@ -9,6 +9,9 @@ app: App = App()
 class Literals(ValueDictsBase):
     """ValueDicts for the dotnet module."""
 
+    _titles = {
+        "dotnet_ci_title_pipeline_kickoff": _(".NET CI pipeline kick off"),
+    }
     _info = {
         "dotnet_build_before": "Launching dotnet build inside {path}. Please wait..",
         "dotnet_ef_database_drop": "Dropping the database...",
