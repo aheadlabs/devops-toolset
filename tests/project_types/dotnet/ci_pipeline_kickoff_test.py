@@ -19,40 +19,54 @@ commands = CommandsCore([DotnetCommands])
 @patch("devops_toolset.configure.main")
 def test_main_calls_devops_toolset_configure_main(configure_main_mock):
     """ Given devops_platform argument, calls configure.main method """
+
     # Arrange
-    devops_platform = 'platform1'
-    language = 'en'
+    devops_platform = "platform1"
+    language = "en"
 
     # Act
-    sut.main(devops_platform, None, True)
+    sut.main(devops_platform, None, None, True)
 
     # Assert
     configure_main_mock.assert_called_with(devops_platform, language)
 
 
-@patch("devops_toolset.configure.main")
+@patch("devops_toolset.project_types.dotnet.utils.get_csproj_project_version")
+def test_main_calls_get_csproj_project_version(get_csproj_project_version_mock):
+    """ Given skip_get_public_ip_address argument, should call get_public_ip_method when false method """
+    # Arrange
+    csproj_path = "pathto/csproj"
+
+    # Act
+    sut.main(None, csproj_path, None, True)
+
+    # Assert
+    get_csproj_project_version_mock.assert_called_with(csproj_path)
+
+
+@patch("devops_toolset.tools.git.get_current_branch_simplified")
+def test_main_calls_get_current_branch_simplified(get_current_branch_mock):
+    """ Given skip_get_public_ip_address argument, should call get_public_ip_method when false method """
+    # Arrange
+    current_branch = "refs/heads/feature/myfeature"
+
+    # Act
+    sut.main(None, None, current_branch, True)
+
+    # Assert
+    get_current_branch_mock.assert_called_with(current_branch)
+
+
 @patch("devops_toolset.tools.http_protocol.get_public_ip_address")
-def test_main_calls_get_public_ip_address(get_public_ip_address, main_mock):
+def test_main_calls_get_public_ip_address(get_public_ip_address_mock):
     """ Given skip_get_public_ip_address argument, should call get_public_ip_method when false method """
+
     # Arrange
+
     # Act
-    sut.main(any, None, False)
+    sut.main(None, None, None, False)
 
     # Assert
-    get_public_ip_address.assert_called()
-
-
-@patch("devops_toolset.configure.main")
-@patch("devops_toolset.tools.git.set_current_branch_simplified")
-def test_main_calls_get_public_ip_address(set_current_branch_mock, main_mock):
-    """ Given skip_get_public_ip_address argument, should call get_public_ip_method when false method """
-    # Arrange
-    current_branch = 'branch1'
-    current_branch_variable_name = 'CURRENT_BRANCH'
-    # Act
-    sut.main(any, current_branch, True)
-
-    # Assert
-    set_current_branch_mock.assert_called_with(current_branch, current_branch_variable_name)
+    get_public_ip_address_mock.assert_called()
 
 # endregion main()

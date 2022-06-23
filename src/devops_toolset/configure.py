@@ -26,8 +26,8 @@ def main(devops_platform: str, language: str):
         json.dump(settings, settings_file)
         logger.info("Settings successfully saved")
 
-# TODO: alberto.carbonell -> Make a guided configuration using clint when no arguments
-# TODO: alberto.carbonell -> Create argument validators based on enums to avoid input errors
+# TODO(alberto.carbonell) Make a guided configuration using clint when no arguments
+# TODO(alberto.carbonell) Create argument validators based on enums to avoid input errors
 
 
 if __name__ == "__main__":
