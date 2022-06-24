@@ -133,18 +133,15 @@ def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True):
     # TODO(alberto.carbonell): Check if tag_name is correct (not duplicated, semver compliant, etc.)
     # TODO(alberto.carbonell): Check if commit exists in current branch
     devops_toolset.tools.cli.call_subprocess(
-        commands.get("git_add").format(tag_name=tag_name, commit_name=commit_name),
+        commands.get("git_tag_add").format(tag_name=tag_name, commit_name=commit_name),
         log_before_process=[literals.get("git_tag_add_init").format(tag_name=tag_name, commit_name=commit_name)],
-        log_after_err=[literals.get("git_tag_add_err")],
-        log_after_out=[literals.get("git_tag_add_out").format(tag_name=tag_name, commit_name=commit_name)])
+        log_after_err=[literals.get("git_tag_add_err")])
 
     if push_to_origin:
         devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag").format(tag_name=tag_name),
                                                  log_before_process=[
                                                      literals.get("git_push_tag_init").format(tag_name=tag_name)],
-                                                 log_after_err=[literals.get("git_push_tag_err")],
-                                                 log_after_out=[
-                                                     literals.get("git_push_tag_out").format(tag_name=tag_name)])
+                                                 log_after_err=[literals.get("git_push_tag_err")])
 
 
 def git_tag_delete(tag_name: str, push_to_origin: bool = True):
@@ -153,20 +150,16 @@ def git_tag_delete(tag_name: str, push_to_origin: bool = True):
         tag_name: Name of the tag to be deleted
         push_to_origin: If True, will push the tag deletion to origin
     """
-    devops_toolset.tools.cli.call_subprocess(commands.get("git_delete").format(tag_name=tag_name),
+    devops_toolset.tools.cli.call_subprocess(commands.get("git_tag_delete").format(tag_name=tag_name),
                                              log_before_process=
                                              [literals.get("git_tag_delete_init").format(tag_name=tag_name)],
                                              log_after_err=
-                                             [literals.get("git_tag_delete_err").format(tag_name=tag_name)],
-                                             log_after_out=[literals.get("git_tag_delete_out").format(tag_name=tag_name)
-                                             .format(tag_name=tag_name)])
+                                             [literals.get("git_tag_delete_err").format(tag_name=tag_name)])
     if push_to_origin:
         devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag_delete").format(tag_name=tag_name),
-                                                 log_before_process=[
-                                                     literals.get("git_push_tag_delete_init").format(tag_name=tag_name)],
-                                                 log_after_err=[literals.get("git_push_tag_delete_err")],
-                                                 log_after_out=[
-                                                     literals.get("git_push_tag_delete_out").format(tag_name=tag_name)])
+                                                 log_before_process=[literals.get("git_push_tag_delete_init")
+                                                 .format(tag_name=tag_name)],
+                                                 log_after_err=[literals.get("git_push_tag_delete_err")])
 
 
 def purge_gitkeep(path: str = None):

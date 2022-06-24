@@ -45,7 +45,7 @@ def call_subprocess(command: str, log_before_process: List[str] = None,
             errors.
     """
 
-    devops_toolset.core.log_tools.log_list([command], devops_toolset.core.log_tools.LogLevel.debug)
+    devops_toolset.core.log_tools.log_list([command], devops_toolset.core.log_tools.LogLevel.info)
     devops_toolset.core.log_tools.log_list(log_before_process, devops_toolset.core.log_tools.LogLevel.info)
 
     process = subprocess.Popen(command.strip(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

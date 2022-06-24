@@ -208,6 +208,79 @@ def test_git_init_when_not_skip_and_not_init_git_then_call_subprocess(
 
 # endregion
 
+# region git_tag_add()
+
+@patch("devops_toolset.tools.cli.call_subprocess")
+def test_git_tag_add_calls_git_tag_add_command(call_subprocess):
+    """ Calls git_tag_add command with necessary parameters """
+    # Arrange
+    tag_name = 'test'
+    commit_name = 'bnd6f45'
+    expected_command = commands.get("git_tag_add").format(tag_name=tag_name, commit_name=commit_name)
+
+    # Act
+    sut.git_tag_add(tag_name, commit_name, False)
+
+    # Assert
+    call_subprocess.assert_called_with(expected_command, log_before_process=ANY, log_after_err=ANY)
+
+
+@patch("devops_toolset.tools.cli.call_subprocess")
+def test_git_tag_add_calls_git_push_tag_command(call_subprocess):
+    """ Calls git_tag_add command and git_push_tag command with necessary parameters """
+    # Arrange
+    tag_name = 'test'
+    commit_name = 'bnd6f45'
+    expected_command_1 = commands.get("git_tag_add").format(tag_name=tag_name, commit_name=commit_name)
+    expected_command_2 = commands.get("git_push_tag").format(tag_name=tag_name)
+
+    # Act
+    sut.git_tag_add(tag_name, commit_name, True)
+
+    # Assert
+    calls = [call(expected_command_1, log_before_process=ANY, log_after_err=ANY),
+             call(expected_command_2, log_before_process=ANY, log_after_err=ANY)]
+    call_subprocess.assert_has_calls(calls, any_order=False)
+
+# endregion git_tag_add()
+
+# region git_tag_delete()
+
+
+@patch("devops_toolset.tools.cli.call_subprocess")
+def test_git_tag_delete_calls_git_tag_add_command(call_subprocess):
+    """ Calls git_tag_delete command with necessary parameters """
+    # Arrange
+    tag_name = 'test'
+    commit_name = 'bnd6f45'
+    expected_command = commands.get("git_tag_delete").format(tag_name=tag_name, commit_name=commit_name)
+
+    # Act
+    sut.git_tag_delete(tag_name, False)
+
+    # Assert
+    call_subprocess.assert_called_with(expected_command, log_before_process=ANY, log_after_err=ANY)
+
+
+@patch("devops_toolset.tools.cli.call_subprocess")
+def test_git_tag_delete_calls_git_push_tag_command(call_subprocess):
+    """ Calls git_tag_delete and git_push_tag_delete commands with necessary parameters """
+    # Arrange
+    tag_name = 'test'
+    commit_name = 'bnd6f45'
+    expected_command_1 = commands.get("git_tag_delete").format(tag_name=tag_name)
+    expected_command_2 = commands.get("git_push_tag_delete").format(tag_name=tag_name)
+
+    # Act
+    sut.git_tag_delete(tag_name, True)
+
+    # Assert
+    calls = [call(expected_command_1, log_before_process=ANY, log_after_err=ANY),
+             call(expected_command_2, log_before_process=ANY, log_after_err=ANY)]
+    call_subprocess.assert_has_calls(calls, any_order=False)
+
+# endregion git_tag_delete()
+
 # region set_current_branch_simplified()
 
 
