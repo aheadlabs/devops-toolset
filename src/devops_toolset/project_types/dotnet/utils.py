@@ -73,8 +73,6 @@ def get_csproj_project_version(csproj_path: str, environment_variable_name: str 
     version_environment_variable = {environment_variable_name: version["Version"]}
     platform_specific.create_environment_variables(version_environment_variable)
 
-    logging.info(literals.get("dotnet_project_version").format(version=version["Version"]))
-
     return version["Version"]
 
 

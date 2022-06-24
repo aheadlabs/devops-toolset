@@ -33,7 +33,6 @@ class Literals(ValueDictsBase):
         "dotnet_ef_utils_appsettings_environment_matched": "Environment {environment} matched on: {filename}",
         "dotnet_ef_utils_appsettings_no_environment_matched": "No environment matched on: {filename}",
         "dotnet_ef_utils_getting_appsettings_files": "Getting appsettings files from: {path}",
-        "dotnet_project_version": "The project version is {version}",
         "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait..",
     }
     _errors = {
