@@ -23,7 +23,7 @@ def call_subprocess_with_result(command: str) -> str:
     process.wait()
 
     if out:
-        return out.decode("utf-8")
+        return out.decode("utf-8", errors="backslashreplace")
 
 
 def call_subprocess(command: str, log_before_process: List[str] = None,
