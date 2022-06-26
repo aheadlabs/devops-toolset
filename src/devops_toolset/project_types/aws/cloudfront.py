@@ -12,6 +12,7 @@ app: App = App()
 cloudfront = boto3.client("cloudfront")
 literals = LiteralsCore([AwsLiterals])
 
+
 def create_invalidation(distribution_id: str, invalidation_paths: list[str] = ["/*"]):
     """Creates a CloudFront invalidation.
 
@@ -33,6 +34,7 @@ def create_invalidation(distribution_id: str, invalidation_paths: list[str] = ["
     )
 
     logging.info(literals.get("cloudfront_invalidation_created").format(id=response['Invalidation']['Id']))
+
 
 if __name__ == "__main__":
     help(__name__)
