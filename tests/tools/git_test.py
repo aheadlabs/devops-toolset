@@ -267,7 +267,6 @@ def test_git_tag_delete_calls_git_push_tag_command(call_subprocess):
     """ Calls git_tag_delete and git_push_tag_delete commands with necessary parameters """
     # Arrange
     tag_name = 'test'
-    commit_name = 'bnd6f45'
     expected_command_1 = commands.get("git_tag_delete").format(tag_name=tag_name)
     expected_command_2 = commands.get("git_push_tag_delete").format(tag_name=tag_name)
 
