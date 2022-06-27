@@ -10,11 +10,12 @@ from devops_toolset.tools import cli
 import devops_toolset.project_types.azure.common as common
 import json
 import logging
-
+import re
 
 app: App = App()
 literals = LiteralsCore([AzureLiterals])
 commands = CommandsCore([AzureCommands])
+rule_name_fix_regex = "[^A-Za-z0-9-_]"
 
 
 def add_mysql_flexible_server_firewall_rule(
@@ -40,9 +41,9 @@ def add_mysql_flexible_server_firewall_rule(
     """
 
     az_command: str = commands.get("azure_cli_db_mysql_flexible_server_firewall_rule_create").format(
-        server_name= server_name,
+        server_name=server_name,
         resource_group=resource_group,
-        rule_name=rule_name,
+        rule_name=re.sub(rule_name_fix_regex, "-", rule_name),
         start_ip_address=ip_address,
         end_ip_address=ip_address if end_ip_address is None else end_ip_address
     )
@@ -113,7 +114,7 @@ def remove_mysql_flexible_server_firewall_rule(
     az_command: str = commands.get("azure_cli_db_mysql_flexible_server_firewall_rule_delete").format(
         server_name= server_name,
         resource_group=resource_group,
-        rule_name=rule_name
+        rule_name=re.sub(rule_name_fix_regex, "-", rule_name)
     )
     logging.info(literals.get("azure_cli_executing_command").format(command=az_command))
 
