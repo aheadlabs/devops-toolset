@@ -25,4 +25,3 @@ class Commands(ValueDictsBase):
             "{idempotent} -- --environment {env}",
         "dotnet_restore": "dotnet restore {force} {debug} {path}",
     }
-

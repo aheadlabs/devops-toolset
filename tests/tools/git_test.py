@@ -208,6 +208,7 @@ def test_git_init_when_not_skip_and_not_init_git_then_call_subprocess(
 
 # endregion
 
+
 # region git_tag_add()
 
 @patch("devops_toolset.tools.cli.call_subprocess")
@@ -280,10 +281,11 @@ def test_git_tag_delete_calls_git_push_tag_command(call_subprocess):
 
 # endregion git_tag_delete()
 
-# region set_current_branch_simplified()
+
+# region get_current_branch_simplified()
 
 
-def test_set_current_branch_simplified_given_branch_and_environment_variable_creates_environment_variable(branchesdata):
+def test_get_current_branch_simplified_given_branch_and_environment_variable_creates_environment_variable(branchesdata):
     """Given a branch name and a environment variable, calls platform_specific's create_
     environment_variables method"""
 
@@ -294,7 +296,7 @@ def test_set_current_branch_simplified_given_branch_and_environment_variable_cre
     # Act
     with patch.object(sut, "platform_specific") as platform_specific_mock:
         with patch.object(platform_specific_mock, "create_environment_variables") as create_env_vars_mock:
-            sut.set_current_branch_simplified(branch, environment_variable_name)
+            sut.get_current_branch_simplified(branch, environment_variable_name)
             # Assert
             create_env_vars_mock.assert_called_once_with({environment_variable_name: branch})
 
