@@ -5,7 +5,7 @@ steps:
       scriptSource: 'inline'
       script: |
         import devops_toolset.tools.git as git_tools
-        git_tools.set_current_branch_simplified("$(Build.SourceBranch)", "CURRENT_BRANCH")
+        git_tools.get_current_branch_simplified("$(Build.SourceBranch)", "CURRENT_BRANCH")
       failOnStderr: true
   - task: PythonScript@0
     displayName: Parse project.xml

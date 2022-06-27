@@ -175,18 +175,23 @@ def purge_gitkeep(path: str = None):
         os.remove(guess_gitkeep_file)
 
 
-def set_current_branch_simplified(branch: str, environment_variable_name: str):
+def get_current_branch_simplified(branch: str, environment_variable_name: str = "DT_CURRENT_BRANCH_SIMPLIFIED") -> str:
     """Creates an environment variable from a branch name (simplified)
 
     Args:
         branch: Git branch name to be simplified and stored in an environment
             variable
-        environment_variable_name: name of the environment variable to be
-            created
+        environment_variable_name: Name of the environment variable to be
+            created. Defaults to "DT_CURRENT_BRANCH_SIMPLIFIED".
+
+    Returns:
+        Branch name simplified.
     """
 
     simplified_branch_name = simplify_branch_name(branch)
     platform_specific.create_environment_variables({environment_variable_name: simplified_branch_name})
+
+    return simplified_branch_name
 
 
 def simplify_branch_name(branch: str):
