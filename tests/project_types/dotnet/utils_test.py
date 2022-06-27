@@ -69,3 +69,45 @@ def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata
     assert result == "6.6.6"
 
 # endregion
+
+# region git_tag()
+
+
+@patch("logging.info")
+@patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
+@patch("devops_toolset.tools.git.git_tag_add")
+def test_git_tag_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_branch_mock, _):
+    """ Given a commit name, tag name and branch name, calls git.git_tag_add() """
+    # Arrange
+    branch = "heads/refs/dev"
+    commit = "fdr564"
+    tag = "v1.0.0"
+    git_flow_suitable_branch_mock.return_value = True
+
+    # Act
+    sut.git_tag(commit, tag, branch)
+
+    # Assert
+    git_tag_add_mock.assert_called_with(tag, commit)
+
+
+@patch("logging.info")
+@patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
+@patch("devops_toolset.tools.git.git_tag_add")
+def test_git_tag_not_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_branch_mock, _):
+    """ Given a commit name, tag name and branch name, calls git.git_tag_add() """
+    # Arrange
+    branch = "heads/refs/dev"
+    commit = "fdr564"
+    tag = "v1.0.0"
+    git_flow_suitable_branch_mock.return_value = False
+
+    # Act
+    sut.git_tag(commit, tag, branch)
+
+    # Assert
+    git_tag_add_mock.assert_not_called()
+
+# endregion git_tag()
+
+
