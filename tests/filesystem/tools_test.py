@@ -30,8 +30,9 @@ def test_is_file_empty_given_path_when_empty_then_return_true(getsize_mock, gets
 # region strip_utf8_bom_character_from_file()
 
 
+@patch("logging.info")
 @patch("builtins.open", new_callable=mock_open)
-def test_strip_utf8_bom_character_from_file_reads_file(open_file_mock):
+def test_strip_utf8_bom_character_from_file_reads_file(open_file_mock, logging_info_mock):
     """Given a path reads its content"""
 
     # Arrange

@@ -1,6 +1,7 @@
 """Tools for editing files"""
 
 import json
+import logging
 import os
 import pathlib
 import xml.etree.ElementTree as ElementTree
@@ -33,9 +34,14 @@ def is_file_empty(path: str) -> bool:
 def strip_utf8_bom_character_from_file(path: str):
     """Removes byte-order-mark character from the beginning of the UTF8 file"""
 
+    logging.info(literals.get("fs_strip_bom").format(path=path))
+
     with open(path, "r", encoding="utf-8-sig") as file:
         content = file.read()
+        logging.info(literals.get("fs_file_content").format(content=content))
+
         with open(path, "w", encoding="utf-8") as file_w:
+            logging.info(literals.get("fs_writing_file").format(path=path))
             file_w.write(content)
 
 
