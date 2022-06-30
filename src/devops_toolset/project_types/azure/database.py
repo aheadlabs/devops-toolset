@@ -92,7 +92,7 @@ def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: st
         admin_user=admin_user,
         admin_password=admin_password,
         database_name=database_name,
-        file_path=f"-f {file_path}" if file_path is not None else "",
+        file_path=f"-f \"{file_path}\"" if file_path is not None else "",
         query=f"-q \"{query}\"" if query is not None and file_path is None else "",
         log="" if log == Log.OFF else f"--{log.name.lower()}"
     )
