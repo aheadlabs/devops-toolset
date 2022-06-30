@@ -20,8 +20,8 @@ literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 
 
-def __generate_sql_script(startup_project_path: str, script_path: str, environment: str,
-                          migration_from: str = "0", no_build: bool = False, idempotent: bool = True):
+def __generate_sql_script(startup_project_path: str, script_path: str, environment: str, migration_from: str = "0",
+                          no_build: bool = False, idempotent: bool = True):
     """ Generates a SQL script to apply ad hoc migrations to DBMS
 
     Args:
@@ -30,7 +30,7 @@ def __generate_sql_script(startup_project_path: str, script_path: str, environme
         environment: Name for the environment to generate the script for.
         migration_from: ID / name of the last migration applied, defaults to 0.
         no_build: Skips build if True.
-        idempotent: Creates an idempotent SQL script if True.
+        idempotent: If True it creates an idempotent script.
     """
 
     logging.info(literals.get("dotnet_ef_migrations_script"))
@@ -170,13 +170,15 @@ def drop_database(startup_project_path: str, environment: str, no_build: bool = 
     logging.info(result)
 
 
-def generate_migration_sql_script(startup_project_path: str, environment: str, script_path: str):
+def generate_migration_sql_script(
+        startup_project_path: str, environment: str, script_path: str, idempotent: bool = True):
     """ Generates SQL migration script for a specific environment
 
     Args:
         startup_project_path: Path to the startup project.
         environment: Name for the environment to get the migrations for.
         script_path: Path to the SQL script to be generated.
+        idempotent: If True it creates an idempotent script.
     """
 
     migrations_list: list = __get_migrations_list(startup_project_path, environment)
@@ -184,12 +186,12 @@ def generate_migration_sql_script(startup_project_path: str, environment: str, s
     migrations, applied_migrations, last_migration_applied = __parse_data_from_migrations_json_array(migrations_list)
 
     if migration_name is not None and migrations != applied_migrations:
-        __generate_sql_script(
-            startup_project_path, script_path.replace("#date#", migration_date), environment, last_migration_applied)
+        __generate_sql_script(startup_project_path, script_path.replace("#date#", migration_date), environment,
+                              last_migration_applied, idempotent)
 
 
 def generate_migration_sql_scripts_for_all_environments(
-        startup_project_path: str, scripts_base_path: str, include_development: bool = False):
+        startup_project_path: str, scripts_base_path: str, include_development: bool = False, idempotent: bool = True):
     """ Generates a SQL migration script for every environment configured in
     the appsettings.*.json files.
 
@@ -198,6 +200,7 @@ def generate_migration_sql_scripts_for_all_environments(
         scripts_base_path: Path to the directory where all scripts will be
             created at.
         include_development: If True, Development/Dev is included in the list.
+        idempotent: If True it creates an idempotent script.
     """
 
     environments = utils.get_appsettings_environments(startup_project_path, include_development)
@@ -211,7 +214,7 @@ def generate_migration_sql_scripts_for_all_environments(
         script_path = pathlib.Path.joinpath(base_path_obj, f"database-migration-{environment.lower()}-from-#date#.sql")
         logging.info(literals.get("dotnet_ef_script_being_generated").format(script_path=script_path))
 
-        generate_migration_sql_script(startup_project_path, environment, str(script_path))
+        generate_migration_sql_script(startup_project_path, environment, str(script_path), idempotent)
 
 
 def reset_database(startup_project_path: str, environment: str, no_build: bool = False):
