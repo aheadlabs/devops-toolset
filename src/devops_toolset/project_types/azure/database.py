@@ -1,5 +1,5 @@
 """Provides tools for managing the Azure Database service"""
-import devops_toolset.project_types.azure.commands
+
 from devops_toolset.core.app import App
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -7,6 +7,7 @@ from devops_toolset.project_types.azure.commands import Commands as AzureCommand
 from devops_toolset.project_types.azure.Literals import Literals as AzureLiterals
 from devops_toolset.tools import cli
 
+import devops_toolset.filesystem.tools
 import devops_toolset.project_types.azure.common as common
 import json
 import logging
@@ -80,6 +81,10 @@ def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: st
         az_command: str = commands.get("azure_cli_extension_add").format(name=az_extension)
         logging.info(literals.get("azure_cli_executing_command").format(command=az_command))
         cli.call_subprocess(az_command)
+
+    # Strip UTF-8 BOM from script file
+    if file_path is not None:
+        devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file(file_path)
 
     # Compose and execute command
     az_command: str = commands.get("azure_cli_db_mysql_flexible_server_execute").format(
