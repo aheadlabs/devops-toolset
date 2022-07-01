@@ -57,7 +57,7 @@ def add_mysql_flexible_server_firewall_rule(server_name: str, resource_group: st
 
 def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: str, server_name: str, database_name: str,
                                              file_path: [str, None] = None, query: [str, None] = None,
-                                             log: Log = Log.OFF) -> [str, None]:
+                                             log: Log = Log.OFF, strip_bom: bool = True) -> [str, None]:
     """Executes a script (file) / query (text) against MySQL Flexible server.
 
     Args:
@@ -69,6 +69,7 @@ def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: st
         query: Query text to be executed. If file_path is not None, query will
             be ignored.
         log: Log level from OFF, VERBOSE or DEBUG.
+        strip_bom: If True it strips BOM character from the file.
     """
 
     # Check that parameters are correct
@@ -83,7 +84,7 @@ def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: st
         cli.call_subprocess(az_command)
 
     # Strip UTF-8 BOM from script file
-    if file_path is not None:
+    if file_path is not None and strip_bom:
         devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file(file_path)
 
     # Compose and execute command
