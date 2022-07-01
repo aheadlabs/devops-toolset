@@ -185,12 +185,12 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
     idempotent: bool = True
 
     # Act
-    sut.generate_migration_sql_script(startup_project_path, environment, script_path, idempotent)
+    sut.generate_migration_sql_script(startup_project_path, environment, script_path, idempotent=idempotent)
 
     # Assert
     generate_sql_script_mock.assert_called_once_with(startup_project_path,
                                                      script_path.replace("#date#", migration_date),
-                                                     environment, last_migration_applied, idempotent)
+                                                     environment, last_migration_applied, idempotent=idempotent)
 
 
 # endregion generate_migration_sql_script()
