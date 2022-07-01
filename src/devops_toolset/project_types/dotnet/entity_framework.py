@@ -188,7 +188,7 @@ def generate_migration_sql_script(
 
     if migration_name is not None and migrations != applied_migrations:
         return __generate_sql_script(startup_project_path, script_path.replace("#date#", migration_date), environment,
-                                     last_migration_applied, idempotent)
+                                     last_migration_applied, idempotent=idempotent)
 
 
 def generate_migration_sql_scripts_for_all_environments(
