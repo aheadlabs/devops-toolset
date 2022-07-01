@@ -32,7 +32,7 @@ def get_appsettings_environments(csproj_directory_path: str, include_development
 
     path = pathlib.Path(csproj_directory_path)
     glob_pattern = "appsettings.*.json"
-    regex_pattern = "^appsettings\.([A-Za-z]+)\.json$"
+    regex_pattern = r'^appsettings\.([A-Za-z]+)\.json$'
     environments: list[str] = []
 
     logging.info(literals.get("dotnet_ef_utils_getting_appsettings_files").format(path=path))
