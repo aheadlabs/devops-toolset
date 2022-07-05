@@ -28,6 +28,7 @@ class Literals(ValueDictsBase):
         "git_push_tag_delete_init": _("Start git tag deletion push to origin -> tag_name: {tag_name}"),
         "git_tag_add_init": _("Start git tagging: tag {tag_name} on commit {commit_name}"),
         "git_tag_delete_init": _("Start git tag delete: {tag_name}"),
+        "http_response": _("HTTP response from {url} => {response}"),
     }
 
     _errors = {

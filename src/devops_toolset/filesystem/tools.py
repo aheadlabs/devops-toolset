@@ -1,6 +1,7 @@
 """Tools for editing files"""
 
 import json
+import logging
 import os
 import pathlib
 import xml.etree.ElementTree as ElementTree
@@ -30,22 +31,18 @@ def is_file_empty(path: str) -> bool:
     return os.path.getsize(path) == 0
 
 
-def update_xml_file_entity_text(entity_xpath: str, entity_value: str, xml_file_path: str):
-    """Updates an XML file with the given value.
+def strip_utf8_bom_character_from_file(path: str):
+    """Removes byte-order-mark character from the beginning of the UTF8 file"""
 
-    Supported XPath syntax is documented here:
-    https://docs.python.org/3/library/xml.etree.elementtree.html#supported-xpath-syntax
+    logging.info(literals.get("fs_strip_bom").format(path=path))
 
-    Args:
-        entity_xpath: Path to the node or attribute to be updated.
-        entity_value: Value to be set.
-        xml_file_path: Path to the XML file.
-    """
+    with open(path, "r", encoding="utf-8-sig") as file:
+        content = file.read()
+        logging.info(literals.get("fs_file_content").format(content=content))
 
-    xml_tree = ElementTree.parse(xml_file_path)
-    entity = xml_tree.find(entity_xpath)
-    entity.text = entity_value
-    xml_tree.write(xml_file_path)
+        with open(path, "w", encoding="utf-8") as file_w:
+            logging.info(literals.get("fs_writing_file").format(path=path))
+            file_w.write(content)
 
 
 def update_json_file_key_text(key_path: list, key_value: str, json_file_path: str):
@@ -83,6 +80,24 @@ def update_json_file_key_text(key_path: list, key_value: str, json_file_path: st
         json.dump(content, json_file)
 
     # TODO(ivan.sainz) Refactor this code using reduce()
+
+
+def update_xml_file_entity_text(entity_xpath: str, entity_value: str, xml_file_path: str):
+    """Updates an XML file with the given value.
+
+    Supported XPath syntax is documented here:
+    https://docs.python.org/3/library/xml.etree.elementtree.html#supported-xpath-syntax
+
+    Args:
+        entity_xpath: Path to the node or attribute to be updated.
+        entity_value: Value to be set.
+        xml_file_path: Path to the XML file.
+    """
+
+    xml_tree = ElementTree.parse(xml_file_path)
+    entity = xml_tree.find(entity_xpath)
+    entity.text = entity_value
+    xml_tree.write(xml_file_path)
 
 
 if __name__ == "__main__":
