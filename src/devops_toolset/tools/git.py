@@ -164,7 +164,7 @@ def git_tag_delete(tag_name: str, push_to_origin: bool = True, auth_token: str =
             tag_name=tag_name,
             auth=commands.get("git_auth").format(token=auth_token)
         ),
-            log_before_process=[literals.get("git_push_tag_delete_init")                                .format(tag_name=tag_name)],
+            log_before_process=[literals.get("git_push_tag_delete_init").format(tag_name=tag_name)],
             log_after_err=[literals.get("git_push_tag_delete_err")])
 
 
