@@ -78,19 +78,20 @@ def get_csproj_project_version(csproj_path: str, environment_variable_name: str 
     return version["Version"]
 
 
-def git_tag(commit_name: str, tag_name: str, branch: str):
+def git_tag(commit_name: str, tag_name: str, branch: str, token: str):
     """ Does a git tag over a checkout branch's commit
         Args:
             commit_name: Name of the commit.
             Git will need the checksum name, or part of it.
-            F.I: If the commit name is 9fceb02d0ae598e95dc970b74767f19372d61af8, the checksum will be 9fceb02
-            tag_name: Name of the tag to be added
-            branch: The simplified name of the git branch
+            F.I: If the commit name is 9fceb02d0ae598e95dc970b74767f19372d61af8, the checksum will be 9fceb02.
+            tag_name: Name of the tag to be added.
+            branch: The simplified name of the git branch.
+            token: Authentication token used to push changes to origin.
     """
     if gitflow.is_branch_suitable_for_tagging(branch):
         logging.info(literals.get("dotnet_git_tag")
                      .format(tag_name=tag_name, commit_name=commit_name, branch_name=branch))
-        git.git_tag_add(tag_name, commit_name)
+        git.git_tag_add(tag_name, commit_name, auth_token=token)
 
 
 if __name__ == "__main__":
