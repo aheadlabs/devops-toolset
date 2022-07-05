@@ -119,7 +119,7 @@ def git_init(path: str, skip: bool):
                                                      log_after_out=[literals.get("git_repo_created")])
 
 
-def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True):
+def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True, auth_token: str = ''):
     """ Adds a tag to a git commit
 
      Args:
@@ -128,6 +128,7 @@ def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True):
             Git will need the checksum name, or part of it.
             F.I: If the commit name is 9fceb02d0ae598e95dc970b74767f19372d61af8, the checksum will be 9fceb02
         push_to_origin: If True, will push the tag to origin
+        auth_token: Includes an auth header into the git command (needed for elevated privilege operations)
 
     """
     # TODO(alberto.carbonell): Check if tag_name is correct (not duplicated, semver compliant, etc.)
@@ -138,28 +139,33 @@ def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True):
         log_after_err=[literals.get("git_tag_add_err")])
 
     if push_to_origin:
-        devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag").format(tag_name=tag_name),
-                                                 log_before_process=[
-                                                     literals.get("git_push_tag_init").format(tag_name=tag_name)],
-                                                 log_after_err=[literals.get("git_push_tag_err")])
+        devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag").format(
+            tag_name=tag_name,
+            auth=commands.get("git_auth").format(token=auth_token)
+        ),
+            log_before_process=[literals.get("git_push_tag_init").format(tag_name=tag_name)],
+            log_after_err=[literals.get("git_push_tag_err")])
 
 
-def git_tag_delete(tag_name: str, push_to_origin: bool = True):
+def git_tag_delete(tag_name: str, push_to_origin: bool = True, auth_token: str = ''):
     """ Deletes a tag from git
     Args:
         tag_name: Name of the tag to be deleted
         push_to_origin: If True, will push the tag deletion to origin
+        auth_token: Includes an auth header into the git command (needed for elevated privilege operations)
     """
-    devops_toolset.tools.cli.call_subprocess(commands.get("git_tag_delete").format(tag_name=tag_name),
-                                             log_before_process=
-                                             [literals.get("git_tag_delete_init").format(tag_name=tag_name)],
-                                             log_after_err=
-                                             [literals.get("git_tag_delete_err").format(tag_name=tag_name)])
+    devops_toolset.tools.cli.call_subprocess(commands.get("git_tag_delete").format(
+        tag_name=tag_name
+    ),
+        log_before_process=[literals.get("git_tag_delete_init").format(tag_name=tag_name)],
+        log_after_err=[literals.get("git_tag_delete_err").format(tag_name=tag_name)])
     if push_to_origin:
-        devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag_delete").format(tag_name=tag_name),
-                                                 log_before_process=[literals.get("git_push_tag_delete_init")
-                                                 .format(tag_name=tag_name)],
-                                                 log_after_err=[literals.get("git_push_tag_delete_err")])
+        devops_toolset.tools.cli.call_subprocess(commands.get("git_push_tag_delete").format(
+            tag_name=tag_name,
+            auth=commands.get("git_auth").format(token=auth_token)
+        ),
+            log_before_process=[literals.get("git_push_tag_delete_init").format(tag_name=tag_name)],
+            log_after_err=[literals.get("git_push_tag_delete_err")])
 
 
 def purge_gitkeep(path: str = None):
