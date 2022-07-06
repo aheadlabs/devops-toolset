@@ -232,13 +232,13 @@ def test_git_tag_add_calls_git_push_tag_command(call_subprocess):
     # Arrange
     tag_name = 'test'
     commit_name = 'bnd6f45'
-    token = '1234'
-    auth_part = commands.get("git_auth").format(token=token)
+    auth_header = 'basic 1234'
+    auth_part = commands.get("git_auth").format(auth_header=auth_header)
     expected_command_1 = commands.get("git_tag_add").format(tag_name=tag_name, commit_name=commit_name)
     expected_command_2 = commands.get("git_push_tag").format(tag_name=tag_name, auth=auth_part)
 
     # Act
-    sut.git_tag_add(tag_name, commit_name, True, token)
+    sut.git_tag_add(tag_name, commit_name, True, auth_header)
 
     # Assert
     calls = [call(expected_command_1, log_before_process=ANY, log_after_err=ANY),
@@ -270,13 +270,13 @@ def test_git_tag_delete_calls_git_push_tag_command(call_subprocess):
     """ Calls git_tag_delete and git_push_tag_delete commands with necessary parameters """
     # Arrange
     tag_name = 'test'
-    token = '1234'
-    auth_part = commands.get("git_auth").format(token=token)
+    auth_header = 'basic 1234'
+    auth_part = commands.get("git_auth").format(auth_header=auth_header)
     expected_command_1 = commands.get("git_tag_delete").format(tag_name=tag_name)
     expected_command_2 = commands.get("git_push_tag_delete").format(tag_name=tag_name, auth=auth_part)
 
     # Act
-    sut.git_tag_delete(tag_name, True, token)
+    sut.git_tag_delete(tag_name, True, auth_header)
 
     # Assert
     calls = [call(expected_command_1, log_before_process=ANY, log_after_err=ANY),
