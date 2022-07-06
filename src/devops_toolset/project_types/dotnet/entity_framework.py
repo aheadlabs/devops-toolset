@@ -171,14 +171,15 @@ def drop_database(startup_project_path: str, environment: str, no_build: bool = 
     logging.info(result)
 
 
-def generate_migration_sql_script(
-        startup_project_path: str, environment: str, script_path: str, idempotent: bool = True) -> str:
+def generate_migration_sql_script(startup_project_path: str, environment: str, script_path: str,
+                                  no_build: bool = False, idempotent: bool = True) -> str:
     """ Generates SQL migration script for a specific environment and returns its path
 
     Args:
         startup_project_path: Path to the startup project.
         environment: Name for the environment to get the migrations for.
         script_path: Path to the SQL script to be generated.
+        no_build: Skips build if True.
         idempotent: If True it creates an idempotent script.
     """
 
@@ -188,12 +189,12 @@ def generate_migration_sql_script(
 
     if migration_name is not None and migrations != applied_migrations:
         return __generate_sql_script(startup_project_path, script_path.replace("#date#", migration_date), environment,
-                                     last_migration_applied, idempotent=idempotent)
+                                     last_migration_applied, no_build, idempotent)
 
 
-def generate_migration_sql_scripts_for_all_environments(
-        startup_project_path: str, scripts_base_path: str, include_development: bool = False, idempotent: bool = True)\
-        -> list[str]:
+def generate_migration_sql_scripts_for_all_environments(startup_project_path: str, scripts_base_path: str,
+                                                        include_development: bool = False, no_build: bool = False,
+                                                        idempotent: bool = True) -> list[str]:
     """ Generates a SQL migration script for every environment configured in
     the appsettings.*.json files and returns a list with the script paths generated
 
@@ -202,6 +203,7 @@ def generate_migration_sql_scripts_for_all_environments(
         scripts_base_path: Path to the directory where all scripts will be
             created at.
         include_development: If True, Development/Dev is included in the list.
+        no_build: Skips build if True.
         idempotent: If True it creates an idempotent script.
     """
     script_paths = []
@@ -217,7 +219,7 @@ def generate_migration_sql_scripts_for_all_environments(
         logging.info(literals.get("dotnet_ef_script_being_generated").format(script_path=script_path))
 
         generated_script_path: str = \
-            generate_migration_sql_script(startup_project_path, environment, str(script_path), idempotent)
+            generate_migration_sql_script(startup_project_path, environment, str(script_path), no_build, idempotent)
 
         script_paths.append(generated_script_path)
 
