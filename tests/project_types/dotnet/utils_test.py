@@ -83,14 +83,14 @@ def test_git_tag_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_bra
     branch = "heads/refs/dev"
     commit = "fdr564"
     tag = "v1.0.0"
-    token = "my_token"
+    auth_header = "bearer 1234"
     git_flow_suitable_branch_mock.return_value = True
 
     # Act
-    sut.git_tag(commit, tag, branch, token)
+    sut.git_tag(commit, tag, branch, auth_header)
 
     # Assert
-    git_tag_add_mock.assert_called_with(tag, commit, auth_token=token)
+    git_tag_add_mock.assert_called_with(tag, commit, auth_header=auth_header)
 
 
 @patch("logging.info")
@@ -102,11 +102,11 @@ def test_git_tag_not_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable
     branch = "heads/refs/dev"
     commit = "fdr564"
     tag = "v1.0.0"
-    token = "my_token"
+    auth_header = "bearer 1234"
     git_flow_suitable_branch_mock.return_value = False
 
     # Act
-    sut.git_tag(commit, tag, branch, token)
+    sut.git_tag(commit, tag, branch, auth_header)
 
     # Assert
     git_tag_add_mock.assert_not_called()
