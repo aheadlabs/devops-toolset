@@ -19,5 +19,5 @@ class Commands(ValueDictsBase):
         "git_tag_add": "git tag -a {tag_name} {commit_name} -m {tag_name}",
         "git_tag_delete": "git tag -d {tag_name}",
         "public_ip_address_service_url": "http://checkip.dyndns.org",
-        "git_auth": "-c http.extraheader=\"AUTHORIZATION: bearer {token}\""
+        "git_auth": "-c http.extraheader=\"AUTHORIZATION: {auth_header}\""
     }
