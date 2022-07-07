@@ -30,4 +30,6 @@ class Commands(ValueDictsBase):
             "-r {rule_name} -y {log}",
         "azure_cli_extension_list": "az extension list",
         "azure_cli_extension_add": "az extension add --name {name}",
+        "azure_cli_login_service_principal": "az login --service-principal -u {user}  -p {secret} --tenant {tenant}",
+        "azure_cli_logout": "az logout",
     }

@@ -45,5 +45,47 @@ def is_cli_extension_installed(name: str):
     return name in extension_names
 
 
+def login_service_principal(user: str, secret: str, tenant: str) -> [list, None]:
+    """Log into Azure using az login command.
+
+    Args:
+        user: Username for the service principal.
+        secret: Secret for the service principal.
+        tenant: Azure tenant ID.
+
+    Returns:
+        JSON list from Azure login.
+    """
+
+    az_command: str = commands.get("azure_cli_login_service_principal").format(
+        user=user,
+        secret=secret,
+        tenant=tenant
+    )
+
+    result: str = cli.call_subprocess_with_result(az_command)
+    logging.info(literals.get("azure_cli_logging_in_service_principal").format(
+        service_principal=user,
+        tenant=tenant
+    ))
+
+    if result:
+        json_result = json.loads(result)
+        logging.info(json_result)
+        return json_result
+    else:
+        return None
+
+
+def logout():
+    """Log out from Azure using az logout command."""
+
+    az_command: str = commands.get("azure_cli_logout")
+    logging.info(literals.get("azure_cli_executing_command").format(command=az_command))
+
+    cli.call_subprocess(az_command)
+    logging.info(literals.get("azure_cli_logging_out"))
+
+
 if __name__ == "__main__":
     help(__name__)
