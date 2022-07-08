@@ -178,6 +178,7 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
     script_path: str = "#date#"
     migration_date: str = "20220529212512"
     migration_name: str = "Second-V2"
+    no_build: bool = False
     get_migrations_list_mock.return_value = json.loads(migrationsdata.one_migration_and_applied)
     get_first_migration_not_applied_mock.return_value = migration_name, migration_date
     migrations, applied_migrations, last_migration_applied = \
@@ -190,7 +191,7 @@ def test_generate_migration_sql_script_calls_generate_sql_script(
     # Assert
     generate_sql_script_mock.assert_called_once_with(startup_project_path,
                                                      script_path.replace("#date#", migration_date),
-                                                     environment, last_migration_applied, idempotent=idempotent)
+                                                     environment, last_migration_applied, no_build, idempotent)
 
 
 # endregion generate_migration_sql_script()
@@ -212,17 +213,19 @@ def test_generate_migration_sql_scripts_for_all_environments_calls_generate_migr
         pathlib.Path(scripts_base_path), f"database-migration-staging-from-#date#.sql")
     expected_script_path_1 = pathlib.Path.joinpath(
         pathlib.Path(scripts_base_path), f"database-migration-production-from-#date#.sql")
+    no_build: bool = True
     idempotent: bool = True
     expected_calls = [
-        call(startup_project_path, environments[0], str(expected_script_path_0), idempotent),
-        call(startup_project_path, environments[1], str(expected_script_path_1), idempotent)
+        call(startup_project_path, environments[0], str(expected_script_path_0), no_build, idempotent),
+        call(startup_project_path, environments[1], str(expected_script_path_1), no_build, idempotent)
     ]
 
     # Act
-    sut.generate_migration_sql_scripts_for_all_environments(startup_project_path, scripts_base_path, False)
+    sut.generate_migration_sql_scripts_for_all_environments(
+        startup_project_path, scripts_base_path, False, no_build, idempotent)
 
     # Assert
-    generate_migration_sql_script_mock.assert_has_calls(expected_calls)
+    generate_migration_sql_script_mock.assert_has_calls(expected_calls, any_order=True)
 
 
 # endregion generate_migration_sql_scripts_for_all_environments()
