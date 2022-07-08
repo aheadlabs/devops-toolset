@@ -1,6 +1,4 @@
 """Provides tools for managing the Azure Database service"""
-import pathlib
-
 from devops_toolset.core.app import App
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
@@ -13,6 +11,7 @@ import devops_toolset.project_types.azure.common as common
 import json
 import logging
 import re
+import pathlib
 
 app: App = App()
 literals = LiteralsCore([AzureLiterals])
