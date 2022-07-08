@@ -1,4 +1,5 @@
 """Provides tools for managing the Azure Database service"""
+import pathlib
 
 from devops_toolset.core.app import App
 from devops_toolset.core.CommandsCore import CommandsCore
@@ -75,6 +76,11 @@ def execute_mysql_flexible_server_sql_script(admin_user: str, admin_password: st
     # Check that parameters are correct
     if file_path is None and query is None:
         raise ValueError(literals.get("azure_cli_db_mysql_flexible_server_execute_file_query_parameters_error"))
+
+    # If file path doesn't exist, then return without doing anything
+    if not pathlib.Path.exists(file_path):
+        logging.warning(literals.get("azure_mysql_script_not_found").format(file_path=file_path))
+        return
 
     # Install rdbms-connect Azure CLI extension if not already installed
     az_extension: str = "rdbms-connect"

@@ -39,19 +39,21 @@ def test_execute_mysql_flexible_server_sql_script_raises_valueerror():
         sut.execute_mysql_flexible_server_sql_script("", "", "", "", file_path, query)
 
 
+@patch("pathlib.Path.exists")
 @patch("devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file")
 @patch("devops_toolset.project_types.azure.common.is_cli_extension_installed")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @patch("devops_toolset.tools.cli.call_subprocess")
 @patch("logging.info")
 def test_execute_mysql_flexible_server_sql_script_installs_extension(
-        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock):
+        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock, path_exists_mock):
     """Calls subprocess with result"""
 
     # Arrange
     file_path = "pathto/file"
     query = None
     common_mock.return_value = False
+    path_exists_mock.return_value = True
 
     # Act
     _ = sut.execute_mysql_flexible_server_sql_script("", "", "", "", file_path, query)
@@ -61,19 +63,21 @@ def test_execute_mysql_flexible_server_sql_script_installs_extension(
     subprocess_result_mock.assert_called()
 
 
+@patch("pathlib.Path.exists")
 @patch("devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file")
 @patch("devops_toolset.project_types.azure.common.is_cli_extension_installed")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @patch("devops_toolset.tools.cli.call_subprocess")
 @patch("logging.info")
 def test_execute_mysql_flexible_server_sql_script_doesnt_install_extension(
-        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock):
+        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock, path_exists_mock):
     """Calls subprocess with result"""
 
     # Arrange
     file_path = "pathto/file"
     query = None
     common_mock.return_value = True
+    path_exists_mock.return_value = True
 
     # Act
     _ = sut.execute_mysql_flexible_server_sql_script("", "", "", "", file_path, query)
@@ -82,25 +86,52 @@ def test_execute_mysql_flexible_server_sql_script_doesnt_install_extension(
     subprocess_result_mock.assert_called()
 
 
+@patch("pathlib.Path.exists")
 @patch("devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file")
 @patch("devops_toolset.project_types.azure.common.is_cli_extension_installed")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
 @patch("devops_toolset.tools.cli.call_subprocess")
 @patch("logging.info")
 def test_execute_mysql_flexible_server_sql_script_doesnt_strip_file(
-        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock):
+        logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock, path_exists_mock):
     """Calls subprocess with result"""
 
     # Arrange
     file_path = None
     query = ""
     common_mock.return_value = True
+    path_exists_mock.return_value = True
 
     # Act
     _ = sut.execute_mysql_flexible_server_sql_script("", "", "", "", file_path, query)
 
     # Assert
     tools_mock.assert_not_called()
+
+
+@patch("pathlib.Path.exists")
+@patch("devops_toolset.filesystem.tools.strip_utf8_bom_character_from_file")
+@patch("devops_toolset.project_types.azure.common.is_cli_extension_installed")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@patch("devops_toolset.tools.cli.call_subprocess")
+@patch("logging.info")
+@patch("logging.warning")
+def test_execute_mysql_flexible_server_sql_script_skips_when_file_doesnt_exist(
+        logging_warn_mock, logging_info_mock, subprocess_mock, subprocess_result_mock, common_mock, tools_mock,
+        path_exists_mock):
+    """Calls subprocess with result"""
+
+    # Arrange
+    file_path = None
+    query = ""
+    common_mock.return_value = True
+    path_exists_mock.return_value = False
+
+    # Act
+    _ = sut.execute_mysql_flexible_server_sql_script("", "", "", "", file_path, query)
+
+    # Assert
+    subprocess_mock.assert_not_called()
 
 # endregion execute_mysql_flexible_server_sql_script
 
