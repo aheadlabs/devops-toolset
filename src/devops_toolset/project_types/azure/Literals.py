@@ -19,5 +19,7 @@ class Literals(ValueDictsBase):
     }
     _errors = {
         "azure_cli_db_mysql_flexible_server_execute_file_query_parameters_error":
-            _("You must either pass a SQL file path or SQL query text to be executed.")
+            _("You must either pass a SQL file path or SQL query text to be executed."),
+        "azure_mysql_script_not_found":
+            _("Script {file_path} was not found. Skipping mysql execute action...")
     }

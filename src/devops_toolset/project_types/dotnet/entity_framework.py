@@ -221,7 +221,8 @@ def generate_migration_sql_scripts_for_all_environments(startup_project_path: st
         generated_script_path: str = \
             generate_migration_sql_script(startup_project_path, environment, str(script_path), no_build, idempotent)
 
-        script_paths.append(generated_script_path)
+        if generated_script_path is not None:
+            script_paths.append(generated_script_path)
 
     return script_paths
 
