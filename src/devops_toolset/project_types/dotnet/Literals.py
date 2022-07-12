@@ -13,7 +13,7 @@ class Literals(ValueDictsBase):
         "dotnet_ci_title_pipeline_kickoff": _(".NET CI pipeline kick off"),
     }
     _info = {
-        "dotnet_build_before": "Launching dotnet build inside {path}. Please wait..",
+        "dotnet_build_before": "Launching dotnet build inside {path}. Please wait...",
         "dotnet_ef_database_drop": "Dropping the database...",
         "dotnet_ef_database_reset": "Reverting all migrations...",
         "dotnet_ef_first_migration_not_applied": "First migration not applied: {migration_name} ({migration_date})",
@@ -36,10 +36,10 @@ class Literals(ValueDictsBase):
         "dotnet_git_tag": "Adding tag {tag_name} to the commit {commit_name} in branch {branch_name}",
         "dotnet_git_existing_tag_keep": "Tag {tag_name} will not be changed. Skipping tag process.",
         "dotnet_git_existing_tag_move": "Tag {tag_name} will be moved to commit {commit_name}",
-        "dotnet_git_tag_exists": "Tag {tag_name} already exist on remote..",
+        "dotnet_git_tag_exists": "Tag {tag_name} already exist on remote...",
 
         "dotnet_project_version": "The project version is {version}",
-        "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait..",
+        "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait...",
     }
     _errors = {
         "dotnet_restore_err": "Something went wrong while restoring {path}. Please check the logs and try again.",
