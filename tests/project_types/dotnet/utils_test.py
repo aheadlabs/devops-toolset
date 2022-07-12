@@ -35,7 +35,7 @@ def test_get_appsettings_environments_returns_list(glob_mock, logging_info_mock,
 @patch("logging.info")
 @patch("pathlib.Path.glob")
 def test_get_appsettings_environments_given_unmatched_environments_returns_empty_list(
-        glob_mock, logging_info_mock,  dotnetdata):
+        glob_mock, logging_info_mock, dotnetdata):
     """ Given the .csproj file path and wrong appsettings files, returns an
     empty list."""
 
@@ -48,6 +48,7 @@ def test_get_appsettings_environments_given_unmatched_environments_returns_empty
 
     # Assert
     assert result == []
+
 
 # endregion
 
@@ -69,6 +70,7 @@ def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata
     # Assert
     assert result == "6.6.6"
 
+
 # endregion
 
 # region git_tag()
@@ -77,7 +79,8 @@ def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata
 @patch("logging.info")
 @patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
 @patch("devops_toolset.tools.git.git_tag_add")
-def test_git_tag_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_branch_mock, _):
+@patch("devops_toolset.tools.git.git_tag_exist")
+def test_git_tag_calls_git_tools_tag_add(git_tag_exist_mock, git_tag_add_mock, git_flow_suitable_branch_mock, _):
     """ Given a commit name, tag name and branch name, calls git.git_tag_add() """
     # Arrange
     branch = "heads/refs/dev"
@@ -85,6 +88,7 @@ def test_git_tag_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_bra
     tag = "v1.0.0"
     auth_header = "bearer 1234"
     git_flow_suitable_branch_mock.return_value = True
+    git_tag_exist_mock.return_value = False
 
     # Act
     sut.git_tag(commit, tag, branch, auth_header)
@@ -96,7 +100,8 @@ def test_git_tag_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_bra
 @patch("logging.info")
 @patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
 @patch("devops_toolset.tools.git.git_tag_add")
-def test_git_tag_not_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable_branch_mock, _):
+@patch("devops_toolset.tools.git.git_tag_exist")
+def test_git_tag_not_calls_git_tools_tag_add(git_tag_exist_mock, git_tag_add_mock, git_flow_suitable_branch_mock, _):
     """ Given a commit name, tag name and branch name, calls git.git_tag_add() """
     # Arrange
     branch = "heads/refs/dev"
@@ -104,6 +109,7 @@ def test_git_tag_not_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable
     tag = "v1.0.0"
     auth_header = "bearer 1234"
     git_flow_suitable_branch_mock.return_value = False
+    git_tag_exist_mock.return_value = False
 
     # Act
     sut.git_tag(commit, tag, branch, auth_header)
@@ -111,6 +117,54 @@ def test_git_tag_not_calls_git_tools_tag_add(git_tag_add_mock, git_flow_suitable
     # Assert
     git_tag_add_mock.assert_not_called()
 
+
+@patch("logging.info")
+@patch("logging.warning")
+@patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
+@patch("devops_toolset.tools.git.git_tag_add")
+@patch("devops_toolset.tools.git.git_tag_exist")
+@patch("devops_toolset.tools.git.git_tag_delete")
+def test_git_tag_calls_git_tools_tag_delete_when_tag_exists_and_overwrite_tag \
+                (git_tag_delete_mock, git_tag_exist_mock, git_tag_add_mock, git_flow_suitable_branch_mock,
+                 logging_warning_mock, _):
+    """ Given a commit name, tag name, branch name and overwrite_tag, calls git.git_tag_delete() """
+    # Arrange
+    branch = "heads/refs/dev"
+    commit = "fdr564"
+    tag = "v1.0.0"
+    auth_header = "bearer 1234"
+    git_flow_suitable_branch_mock.return_value = True
+    git_tag_exist_mock.return_value = True
+
+    # Act
+    sut.git_tag(commit, tag, branch, auth_header)
+
+    # Assert
+    git_tag_delete_mock.assert_called_with(tag, True, auth_header)
+
+
+@patch("logging.info")
+@patch("logging.warning")
+@patch("devops_toolset.tools.git_flow.is_branch_suitable_for_tagging")
+@patch("devops_toolset.tools.git.git_tag_add")
+@patch("devops_toolset.tools.git.git_tag_exist")
+@patch("devops_toolset.tools.git.git_tag_delete")
+def test_git_tag_warns_when_tag_exists_and_not_overwrite_tag\
+                (git_tag_delete_mock, git_tag_exist_mock, git_tag_add_mock, git_flow_suitable_branch_mock,
+                 logging_warning_mock, _):
+    """ Given a commit name, tag name, branch name and not overwrite_tag, then not tag anything """
+    # Arrange
+    branch = "heads/refs/dev"
+    commit = "fdr564"
+    tag = "v1.0.0"
+    auth_header = "bearer 1234"
+    git_flow_suitable_branch_mock.return_value = True
+    git_tag_exist_mock.return_value = True
+
+    # Act
+    sut.git_tag(commit, tag, branch, auth_header, False)
+
+    # Assert
+    git_tag_add_mock.assert_not_called()
+
 # endregion git_tag()
-
-
