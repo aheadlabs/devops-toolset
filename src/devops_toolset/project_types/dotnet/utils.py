@@ -78,7 +78,7 @@ def get_csproj_project_version(csproj_path: str, environment_variable_name: str 
     return version["Version"]
 
 
-def git_tag(commit_name: str, tag_name: str, branch: str, auth_header: str):
+def git_tag(commit_name: str, tag_name: str, branch: str, auth_header: str, overwrite_tag: bool = True):
     """ Does a git tag over a checkout branch's commit
         Args:
             commit_name: Name of the commit.
@@ -88,8 +88,22 @@ def git_tag(commit_name: str, tag_name: str, branch: str, auth_header: str):
             branch: The simplified name of the git branch.
             auth_header: Includes an auth header into the git command (needed for elevated privilege operations).
             Normally, it will be ["basic <BASIC_AUTH_TOKEN>"] or "bearer <BEARER_TOKEN>"]
+            overwrite_tag: Tag will be moved to the <commit_name> if exists. False will maintain the current tag.
+            Default behaviour is True -> move tag if exist on remote
     """
     if gitflow.is_branch_suitable_for_tagging(branch):
+        if git.git_tag_exist(tag_name, auth_header):
+            logging.warning(literals.get("dotnet_git_tag_exists").format(tag_name=tag_name))
+            # Tag exists. Depending on the overwrite_tag behaviour we'll move the tag or not
+            if overwrite_tag:
+                logging.warning(literals.get("dotnet_git_existing_tag_move").format(tag_name=tag_name,
+                                                                                    commit_name=commit_name))
+                # Delete current tag on origin
+                git.git_tag_delete(tag_name, True, auth_header)
+            else:
+                # No action taken. Skip tag and return
+                logging.warning(literals.get("dotnet_git_existing_tag_keep").format(tag_name=tag_name))
+                return
         logging.info(literals.get("dotnet_git_tag")
                      .format(tag_name=tag_name, commit_name=commit_name, branch_name=branch))
         git.git_tag_add(tag_name, commit_name, auth_header=auth_header)
