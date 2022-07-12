@@ -39,7 +39,7 @@ def add_gitignore_exclusion(path: str, exclusion: str):
 
 
 def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
-    """Finds if an excusion exisits in a .gitignore file.
+    """Finds if an exclusion exists in a .gitignore file.
 
     It tries to find the exclusion.
 
@@ -56,6 +56,25 @@ def find_gitignore_exclusion(path: str, exclusion: str) -> bool:
         index = _gitignore.read().find(f"{exclusion}\n")
 
     return index > -1
+
+
+def get_current_branch_simplified(branch: str, environment_variable_name: str = "DT_CURRENT_BRANCH_SIMPLIFIED") -> str:
+    """Creates an environment variable from a branch name (simplified)
+
+    Args:
+        branch: Git branch name to be simplified and stored in an environment
+            variable
+        environment_variable_name: Name of the environment variable to be
+            created. Defaults to "DT_CURRENT_BRANCH_SIMPLIFIED".
+
+    Returns:
+        Branch name simplified.
+    """
+
+    simplified_branch_name = simplify_branch_name(branch)
+    platform_specific.create_environment_variables({environment_variable_name: simplified_branch_name})
+
+    return simplified_branch_name
 
 
 def get_gitignore_path(path: str = None, direction: Directions = Directions.ASCENDING) -> str:
@@ -87,7 +106,7 @@ def git_commit(skip: bool):
     """Add modified files to .git repository and commit
 
     Args:
-        skip: Boolean that determines if the user want or don't want create the .git repository.
+        skip: Boolean that determines if the user want or don't want to create the .git repository.
     """
     if not skip:
         devops_toolset.tools.cli.call_subprocess(commands.get("git_add"),
@@ -107,7 +126,7 @@ def git_init(path: str, skip: bool):
 
     Args:
         path: Path where it creates the .git repository.
-        skip: Boolean that determines if the user want or don't want create the .git repository.
+        skip: Boolean that determines if the user want or don't want to create the .git repository.
     """
 
     if not skip:
@@ -133,8 +152,6 @@ def git_tag_add(tag_name: str, commit_name: str, push_to_origin: bool = True, au
 
 
     """
-    # TODO(alberto.carbonell): Check if tag_name is correct (not duplicated, semver compliant, etc.)
-    # TODO(alberto.carbonell): Check if commit exists in current branch
     devops_toolset.tools.cli.call_subprocess(
         commands.get("git_tag_add").format(tag_name=tag_name, commit_name=commit_name),
         log_before_process=[literals.get("git_tag_add_init").format(tag_name=tag_name, commit_name=commit_name)],
@@ -171,6 +188,23 @@ def git_tag_delete(tag_name: str, push_to_origin: bool = True, auth_header: str 
             log_after_err=[literals.get("git_push_tag_delete_err")])
 
 
+def git_tag_exist(tag_name: str, auth_header: str = '', remote_name: str = 'origin') -> bool:
+    """ Returns True if the tag name already exists on checkout branch's origin. False otherwise
+        Args:
+            :param tag_name: Name of the tag to be checked
+            :param auth_header: Includes an auth header into the git command (needed for elevated privilege operations).
+        Normally, it will be ["basic <BASIC_AUTH_TOKEN>"] or "bearer <BEARER_TOKEN>"]
+            :param remote_name: Name of the remote. <origin> by default.
+        """
+    result: str = devops_toolset.tools.cli.call_subprocess_with_result(commands.get("git_tag_check").format(
+        remote_name=remote_name,
+        auth=auth_header,
+        tag_name=tag_name
+    ))
+
+    return result is not None
+
+
 def purge_gitkeep(path: str = None):
     """Deletes .gitkeep file if exists and there are more files in the path."""
 
@@ -182,25 +216,6 @@ def purge_gitkeep(path: str = None):
     if not path_tools.is_empty_dir(path) and guess_gitkeep_file.exists():
         logging.info(literals.get("git_purging_gitkeep").format(path=path))
         os.remove(guess_gitkeep_file)
-
-
-def get_current_branch_simplified(branch: str, environment_variable_name: str = "DT_CURRENT_BRANCH_SIMPLIFIED") -> str:
-    """Creates an environment variable from a branch name (simplified)
-
-    Args:
-        branch: Git branch name to be simplified and stored in an environment
-            variable
-        environment_variable_name: Name of the environment variable to be
-            created. Defaults to "DT_CURRENT_BRANCH_SIMPLIFIED".
-
-    Returns:
-        Branch name simplified.
-    """
-
-    simplified_branch_name = simplify_branch_name(branch)
-    platform_specific.create_environment_variables({environment_variable_name: simplified_branch_name})
-
-    return simplified_branch_name
 
 
 def simplify_branch_name(branch: str):
@@ -227,7 +242,7 @@ def simplify_branch_name(branch: str):
 
 
 def update_gitignore_exclusion(path: str, regex: str, value: str):
-    """Updates an existing excusion in a .gitignore file.
+    """Updates an existing exclusion in a .gitignore file.
 
     It updates the exclusion in the .gitignore file replacing the passed value using the RegEx.
 

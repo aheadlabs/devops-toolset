@@ -45,6 +45,7 @@ class CliData(object):
     sample_command = "sample command"
     sample_log_message_info = b"Operation completed successfully."
     sample_log_message_error = b"Something went wrong."
+    auth_header = "bearer 1234"
 
 
 @pytest.fixture()
