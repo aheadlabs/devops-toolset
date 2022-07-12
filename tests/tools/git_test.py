@@ -245,6 +245,7 @@ def test_git_tag_add_calls_git_push_tag_command(call_subprocess):
              call(expected_command_2, log_before_process=ANY, log_after_err=ANY)]
     call_subprocess.assert_has_calls(calls, any_order=False)
 
+
 # endregion git_tag_add()
 
 # region git_tag_delete()
@@ -283,7 +284,60 @@ def test_git_tag_delete_calls_git_push_tag_command(call_subprocess):
              call(expected_command_2, log_before_process=ANY, log_after_err=ANY)]
     call_subprocess.assert_has_calls(calls, any_order=False)
 
+
 # endregion git_tag_delete()
+
+# region git_tag_exist()
+
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+def test_git_tag_exist_calls_git_tag_check_command(call_subprocess):
+    """ Calls git_tag_check command with necessary parameters """
+    # Arrange
+    tag_name = 'test'
+    auth_header = 'bearer 1234'
+    remote_name = 'origin'
+    expected_command = commands.get("git_tag_check").format(
+        remote_name=remote_name, auth=auth_header, tag_name=tag_name)
+
+    # Act
+    sut.git_tag_exist(tag_name, auth_header)
+
+    # Assert
+    call_subprocess.assert_called_with(expected_command)
+
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+def test_git_tag_exist_returns_true_when_result_is_not_none(call_subprocess):
+    """ Calls git_tag_check command with necessary parameters """
+    # Arrange
+    tag_name = '0.0.1'
+    auth_header = 'bearer 1234'
+    call_subprocess.return_value = 'fdsasadfdfdsd1237843 refs/tags/0.0.1'
+
+    # Act
+    result = sut.git_tag_exist(tag_name, auth_header)
+
+    # Assert
+    assert result
+
+
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+def test_git_tag_exist_returns_false_when_result_is_none(call_subprocess):
+    """ Calls git_tag_check command with necessary parameters """
+    # Arrange
+    tag_name = '0.0.1'
+    auth_header = 'bearer 1234'
+    call_subprocess.return_value = None
+
+    # Act
+    result = sut.git_tag_exist(tag_name, auth_header)
+
+    # Assert
+    assert not result
+
+
+# endregion git_tag_exist()
 
 
 # region get_current_branch_simplified()
