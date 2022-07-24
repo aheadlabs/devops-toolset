@@ -14,6 +14,21 @@ class Literals(ValueDictsBase):
     }
     _info = {
         "dotnet_build_before": "Launching dotnet build inside {path}. Please wait...",
+        "dotnet_cli_log": ".NET CLI => {log}",
+        "dotnet_cli_project_created": "Project '{name}.csproj' created.",
+        "dotnet_cli_project_exists": "Solution '{name}.csproj' already exists. Skipping.",
+        "dotnet_cli_project_package_added": "Project \"{project}\" added \"{package}\" as a dependency.",
+        "dotnet_cli_project_package_exists": "Project package \"{package}\" exists for project \"{project}\" as a "
+                                             "dependency. Skipping.",
+        "dotnet_cli_project_reference_added": "Project \"{project}\" added \"{referenced}\" as a reference.",
+        "dotnet_cli_project_reference_exists": "Project reference \"{referenced}\" exists for project \"{project}\"."
+                                               "Skipping.",
+        "dotnet_cli_solution_created": "Solution '{name}.sln' created.",
+        "dotnet_cli_solution_exists": "Solution '{name}.sln' already exists. Skipping.",
+        "dotnet_cli_solution_project_added": "Project '{project}.csproj' added to solution '{solution}.sln'.",
+        "dotnet_cli_solution_project_not_added": "Project '{project}.csproj' already added to solution '{solution}.sln'"
+                                                 ". Skipping.",
+        "dotnet_cli_starting_layer": "Starting layer '{layer}'.",
         "dotnet_ef_database_drop": "Dropping the database...",
         "dotnet_ef_database_reset": "Reverting all migrations...",
         "dotnet_ef_first_migration_not_applied": "First migration not applied: {migration_name} ({migration_date})",
@@ -37,9 +52,8 @@ class Literals(ValueDictsBase):
         "dotnet_git_existing_tag_keep": "Tag {tag_name} will not be changed. Skipping tag process.",
         "dotnet_git_existing_tag_move": "Tag {tag_name} will be moved to commit {commit_name}",
         "dotnet_git_tag_exists": "Tag {tag_name} already exist on remote...",
-
-        "dotnet_project_version": "The project version is {version}",
         "dotnet_restore_before": "Launching dotnet restore inside {path}. Please wait...",
+        "dotnet_project_version": "The project version is {version}",
     }
     _errors = {
         "dotnet_restore_err": "Something went wrong while restoring {path}. Please check the logs and try again.",
