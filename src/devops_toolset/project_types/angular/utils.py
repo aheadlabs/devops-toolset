@@ -16,13 +16,13 @@ literals = LiteralsCore([AngularLiterals])
 commands = CommandsCore([AngularCommands])
 
 
-def get_packagejson_project_version(packagejson_path: str, create_environment_variable: bool = True) -> str:
+def get_packagejson_project_version(packagejson_path: str, environment_variable_name: str = "DT_PROJECT_VERSION") -> str:
     """Gets the version number from a package.json file
 
     Arguments:
         packagejson_path: Path to the package.json file.
-        create_environment_variable: If True, it creates an environment
-            variable with the version value.
+        environment_variable_name: Name of the environment variable to be
+            created. Defaults to "DT_PROJECT_VERSION".
 
     Returns:
         The version number defined in the package.json file.
@@ -31,11 +31,8 @@ def get_packagejson_project_version(packagejson_path: str, create_environment_va
     package_json: dict = parsers.parse_json_file(packagejson_path)
     version = package_json["version"]
 
-    if create_environment_variable:
-        version_environment_variable = {"PROJECT_VERSION": version}
-        platform_specific.create_environment_variables(version_environment_variable)
-
-    logging.info(literals.get("angular_project_version").format(version=version))
+    version_environment_variable = {environment_variable_name: version}
+    platform_specific.create_environment_variables(version_environment_variable)
 
     return version
 
