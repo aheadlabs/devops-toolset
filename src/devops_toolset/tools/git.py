@@ -126,12 +126,9 @@ def git_init(path: str, skip: bool, prompt_user: bool = False):
 
     Args:
         path: Path where it creates the .git repository.
-<<<<<<< HEAD
         skip: Boolean that determines if the user want or don't want to create the .git repository.
-=======
-        skip: Boolean that determines if the user wants or not to create the
+        prompt_user: Boolean that determines if the user wants or not to create the
             .git repository.
->>>>>>> feature/dotnet-dddd-solution-scaffolding
     """
 
     if not skip:

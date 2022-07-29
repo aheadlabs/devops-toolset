@@ -29,7 +29,7 @@ def test_add_gitignore_exclusion_given_path_when_file_opens_then_appends_exclusi
     with open(test_gitignore_path, "w") as test_gitignore:
         test_gitignore.write(".pytest/")
     exclusion = "exclusion/"
-    expected_gitignore = io.StringIO(f".pytest/\n{exclusion}\n")
+    expected_gitignore = io.StringIO(f".pytest/{exclusion}\n")
 
     # Act
     sut.add_gitignore_exclusion(test_gitignore_path, exclusion)
@@ -185,22 +185,23 @@ def test_git_init_when_skip_do_nothing(prompt_yn):
 
 @patch("devops_toolset.tools.cli.call_subprocess")
 @patch("clint.textui.prompt.yn")
-@pytest.mark.parametrize("prompt_yn, times_called", [
-    (False, 0),
-    (True, 1)
+@pytest.mark.parametrize("prompt_user, prompt_return_value, times_called", [
+    (True, True, 1),
+    (True, False, 0),
+    (False, True, 1)
 ])
 def test_git_init_when_not_skip_and_not_init_git_then_call_subprocess(
-        prompt_mock, call_subprocess, prompt_yn, times_called):
+        prompt_mock, call_subprocess, prompt_user, prompt_return_value, times_called):
     """Given arguments, when skip is false and init_git is false, then don't
     call_subprocess"""
 
     # Arrange
     skip = False
     path = ""
-    prompt_mock.return_value = prompt_yn
+    prompt_mock.return_value = prompt_return_value
 
     # Act
-    sut.git_init(path, skip)
+    sut.git_init(path, skip, prompt_user)
 
     # Assert
     assert call_subprocess.call_count == times_called
