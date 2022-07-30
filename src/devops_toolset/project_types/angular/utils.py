@@ -16,7 +16,8 @@ literals = LiteralsCore([AngularLiterals])
 commands = CommandsCore([AngularCommands])
 
 
-def get_packagejson_project_version(packagejson_path: str, environment_variable_name: str = "DT_PROJECT_VERSION") -> str:
+def get_packagejson_project_version(
+        packagejson_path: str, environment_variable_name: str = "DT_PROJECT_VERSION") -> str:
     """Gets the version number from a package.json file
 
     Arguments:
