@@ -275,16 +275,16 @@ def get_configuration(template_name: str):
     return f"./scaffolding_templates/{template_name}-template.json"
 
 
-def get_project_layers(template_config: dict, solution_name: str):
+def get_project_layers(template_configuration: dict, solution_name: str):
     """Returns a dict with all project folders.
 
     Args:
-        template_config: Template configuration.
+        template_configuration: Template configuration.
         solution_name: Name of the solution.
     """
 
     project_layers: dict = {}
-    for layer in template_config["layers"]:
+    for layer in template_configuration["layers"]:
         for project in layer["projects"]:
             project_layers[f"{solution_name}{project['name']}"] = layer["name"]
 
@@ -316,3 +316,5 @@ if __name__ == "__main__":
     parser.add_argument("--relational-db-engine", default="mysql")
     args, args_unknown = parser.parse_known_args()
     main(args.project_path, args.name, args.template_name, args.relational_db_engine)
+
+# TODO(team) Move functions related to .NET CLI to cli.py
