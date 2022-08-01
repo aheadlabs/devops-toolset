@@ -1,16 +1,17 @@
 """ Unit tests for the dotnet/scaffold_webapi_solution.py module"""
-import pathlib
-from unittest.mock import mock_open, patch
+import json
 
 import devops_toolset.project_types.dotnet.scaffold_webapi_solution
+import devops_toolset.project_types.dotnet.scaffold_webapi_solution as sut
+import pathlib
+import pytest
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands
 from devops_toolset.project_types.dotnet.Literals import Literals as DotnetLiterals
 from devops_toolset.core.app import App
-
-import devops_toolset.project_types.dotnet.scaffold_webapi_solution as sut
 from tests.project_types.dotnet.conftest import DotNetData
+from unittest.mock import ANY, mock_open, patch
 
 app: App = App()
 literals = LiteralsCore([DotnetLiterals])
@@ -50,11 +51,11 @@ def test_main_creates_solution(
 
 @patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.log")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
-def test_add_nuget_package_calls_subprocess(subprocess_mock, log_mock):
+def test_add_nuget_package_calls_subprocess(subprocess_mock, log_mock, dotnetdata):
     """ Given parameters, calls subprocess """
 
     # Arrange
-    project_path = "pathto/project"
+    project_path = dotnetdata.project_path
     package_name = "DotnetRepository|*"
 
     # Act
@@ -70,13 +71,13 @@ def test_add_nuget_package_calls_subprocess(subprocess_mock, log_mock):
 
 @patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.log")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
-def test_add_project_to_solution_calls_subprocess(subprocess_mock, log_mock):
+def test_add_project_to_solution_calls_subprocess(subprocess_mock, log_mock, dotnetdata):
     """ Given parameters, calls subprocess """
 
     # Arrange
-    solution_path = "pathto/solution"
+    solution_path = dotnetdata.solution_path
     solution_name = "MySolution"
-    project_path = "pathto/project"
+    project_path = dotnetdata.project_path
     project_name = "MyProject"
 
     # Act
@@ -92,11 +93,11 @@ def test_add_project_to_solution_calls_subprocess(subprocess_mock, log_mock):
 
 @patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.log")
 @patch("devops_toolset.tools.cli.call_subprocess_with_result")
-def test_add_project_reference_calls_subprocess(subprocess_mock, log_mock):
+def test_add_project_reference_calls_subprocess(subprocess_mock, log_mock, dotnetdata):
     """ Given parameters, calls subprocess """
 
     # Arrange
-    project_path = "pathto/project"
+    project_path = dotnetdata.project_path
     reference_path = "pathto/reference"
 
     # Act
@@ -119,7 +120,7 @@ def test_add_unit_tests_creates_test_project(dotnet_new_mock, add_project_mock, 
     devops_toolset.project_types.dotnet.scaffold_webapi_solution.template_config = \
         dotnetdata.template_config_pass_unit_tests
     project_config = dotnetdata.project_config
-    path = "pathto/project"
+    path = dotnetdata.project_path
     project_layers = {}
 
     # Act
@@ -138,7 +139,7 @@ def test_add_unit_tests_adds_created_project_to_solution(dotnet_new_mock, add_pr
     devops_toolset.project_types.dotnet.scaffold_webapi_solution.template_config = \
         dotnetdata.template_config_pass_unit_tests
     project_config = dotnetdata.project_config
-    path = "pathto/project"
+    path = dotnetdata.project_path
     project_layers = {}
 
     # Act
@@ -157,7 +158,7 @@ def test_add_unit_tests_does_not_add_test_project(dotnet_new_mock, add_project_m
     devops_toolset.project_types.dotnet.scaffold_webapi_solution.template_config = \
         dotnetdata.template_config_skip_unit_tests
     project_config = dotnetdata.project_config
-    path = "pathto/project"
+    path = dotnetdata.project_path
     project_layers = {}
 
     # Act
@@ -216,5 +217,135 @@ def test_create_git_repository_initializes_repository_and_adds_exclusions(
     git_init_mock.assert_called()
     touch_mock.assert_called()
     git_exclusion_mock.assert_called()
+
+# endregion
+
+# region create_project()
+
+
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.add_nuget_package")
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.add_unit_tests")
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.add_project_reference")
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.add_project_to_solution")
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.dotnet_new")
+def test_create_project_creates_projects_adds_references_packages_and_unit_tests(
+        dotnet_new_mock, add_project_mock, add_reference_mock, add_package_mock, add_unit_tests_mock, dotnetdata):
+    """ Given name and path, creates a solution """
+
+    # Arrange
+    project_config = dotnetdata.project_config
+    path = "pathto/solution"
+    project_layers = dotnetdata.project_layers
+
+    # Act
+    sut.create_project(project_config, path, project_layers)
+
+    # Assert
+    dotnet_new_mock.assert_called_once()
+    add_project_mock.assert_called_once()
+    assert add_reference_mock.call_count == len(project_config["references"])
+    assert add_package_mock.call_count == len(project_config["packages"])
+    add_unit_tests_mock.assert_called_once()
+
+# endregion
+
+# region create_solution()
+
+
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.dotnet_new")
+def test_create_solution_creates_solution(dotnet_new_mock, dotnetdata):
+    """ Given name and path, creates a solution """
+
+    # Arrange
+    name = "MySolution"
+    path = "pathto/solution"
+
+    # Act
+    sut.create_solution(name, path)
+
+    # Assert
+    dotnet_new_mock.assert_called_with("sln", name, path, ANY, ANY)
+
+# endregion
+
+# region dotnet_new()
+
+
+@patch("devops_toolset.project_types.dotnet.scaffold_webapi_solution.log")
+@patch("devops_toolset.tools.cli.call_subprocess_with_result")
+@pytest.mark.parametrize("template, framework", [
+    ("classlib", "net6.0"), ("sln", None), ("other", "net6.0")
+])
+def test_dotnet_new_creates_project_and_logs(subprocess_mock, log_mock, template, framework, dotnetdata):
+    """ Given parameters, creates project and logs """
+
+    # Arrange
+    name = "MyProject"
+    path = dotnetdata.project_path
+    restore = False
+    template_options = ""
+
+    # Act
+    sut.dotnet_new(template, name, path, framework, restore, template_options)
+
+    # Assert
+    subprocess_mock.assert_called()
+
+# endregion
+
+# region get_project_layers()
+
+
+def test_get_project_layers_returns_dict(dotnetdata):
+    """ Given parameters, returns dict """
+
+    # Arrange
+    template_configuration = json.loads(dotnetdata.dddd_webapi_template)
+    solution_name = "MySolution"
+
+    # Act
+    result = sut.get_project_layers(template_configuration, solution_name)
+
+    # Assert
+    assert type(result) is dict
+
+# endregion
+
+# region log()
+
+
+@patch("logging.debug")
+@patch("logging.info")
+def test_log_logs_info_ok_message(logging_info_mock, logging_debug_mock):
+    """ Given result not None, logs info with ok message """
+
+    # Arrange
+    command = ""
+    result = ""
+    ok_message = ""
+    ko_message = ""
+
+    # Act
+    sut.log(command, result, ok_message, ko_message)
+
+    # Assert
+    logging_info_mock.assert_called_with(ok_message)
+
+
+@patch("logging.error")
+def test_log_logs_error_ko_message(logging_error_mock):
+    """ Given result not None, logs info with ok message """
+
+    # Arrange
+    command = ""
+    result = None
+    ok_message = ""
+    ko_message = ""
+
+    # Act
+    sut.log(command, result, ok_message, ko_message)
+
+    # Assert
+    logging_error_mock.assert_called_with(ko_message)
 
 # endregion

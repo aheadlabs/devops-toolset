@@ -21,9 +21,9 @@ class DotNetData(object):
                            "\".vscode/\",\".idea/\",\"obj/\",\"bin/\"],\"relational_database_engine\":\"mysql\"," \
                            "\"skip_unit_tests\":false},\"layers\":[{\"name\":\"4. Traverse infrastructure layer\"," \
                            "\"projects\":[{\"name\":\"Settings\",\"template\":\"classlib\",\"references\":[]," \
-                           "\"packages\":[\"DotnetToolset|*\"],\"unit-test-eligible\":false}]}," \
-                           "{\"name\":\"3. Persistence infrastructure layer\",\"projects\":[{\"name\":\"DataModel\"," \
-                           "\"template\":\"classlib\",\"references\":[]," \
+                           "\"packages\":[\"DotnetToolset|*\"],\"unit-test-eligible\":false, " \
+                           "\"framework\": \"net6.0\"}]},{\"name\":\"3. Persistence infrastructure layer\"," \
+                           "\"projects\":[{\"name\":\"DataModel\",\"template\":\"classlib\",\"references\":[]," \
                            "\"packages\":[\"Microsoft.EntityFrameworkCore.Design|*\"],\"unit-test-eligible\":false}," \
                            "{\"name\":\"Data\",\"template\":\"classlib\",\"references\":[\"DataModel\",\"Settings\"]," \
                            "\"packages\":[\"CsvHelper|*\",\"DotnetToolset|*\"," \
@@ -45,13 +45,27 @@ class DotNetData(object):
                            "\"Microsoft.EntityFrameworkCore.Tools|*\"],\"unit-test-eligible\":true," \
                            "\"startup_project\":true}]}]}"
     project_config = {
-      "project_name": "MySolutionApi",
-      "solution_path": "pathto/solution",
-      "solution_name": "MySolution",
-      "solution_folder": "MySolutionFolder",
-      "project_path": "pathto/project",
-      "unit-test-eligible": True
+        "project_name": "MySolutionApi",
+        "template": "webapi",
+        "framework": "net6.0",
+        "solution_path": "pathto/solution",
+        "solution_name": "MySolution",
+        "solution_folder": "MySolutionFolder",
+        "project_path": "pathto/project",
+        "references": ["DataModel", "Settings"],
+        "packages": ["DotnetToolset|*"],
+        "unit-test-eligible": True
     }
+    project_layers = {
+        "MySolutionSettings": "4. Traverse infrastructure layer",
+        "MySolutionDataModel": "3. Persistence infrastructure layer",
+        "MySolutionData": "3. Persistence infrastructure layer",
+        "MySolutionDomain": "2. Domain layer",
+        "MySolutionApplication": "1. Application layer",
+        "MySolutionApi": "0. Distributed services layer",
+    }
+    project_path = "pathto/project"
+    solution_path = "pathto/solution"
     template_config_git_exclusions = {
         "settings": {
             "git_exclusions": [
