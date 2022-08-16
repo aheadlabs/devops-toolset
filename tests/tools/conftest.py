@@ -54,6 +54,21 @@ def clidata():
     return CliData()
 
 
+class GitData(object):
+    """ Class used to create the gitdata fixture """
+
+    branch = "heads/refs/dev"
+    tag = "v1.0.0"
+    commit = "fdr564"
+    auth_header = "bearer 1234"
+
+
+@pytest.fixture
+def gitdata():
+    """Sample data for testing Git functionality"""
+    return GitData()
+
+
 class Paths(object):
     """Class used to create paths fixture"""
     invalid_path = "/invalid/path"
