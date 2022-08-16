@@ -26,8 +26,12 @@ class Literals(ValueDictsBase):
         "git_after_change_branch": _("Changed branch to master successfully"),
         "git_push_tag_init": _("Start git tagging push to origin -> tag_name: {tag_name}"),
         "git_push_tag_delete_init": _("Start git tag deletion push to origin -> tag_name: {tag_name}"),
+        "git_tag": "Adding tag {tag_name} to the commit {commit_name} in branch {branch_name}",
         "git_tag_add_init": _("Start git tagging: tag {tag_name} on commit {commit_name}"),
         "git_tag_delete_init": _("Start git tag delete: {tag_name}"),
+        "git_tag_exists": "Tag {tag_name} already exist on remote...",
+        "git_existing_tag_keep": "Tag {tag_name} will not be changed. Skipping tag process.",
+        "git_existing_tag_move": "Tag {tag_name} will be moved to commit {commit_name}",
         "http_response": _("HTTP response from {url} => {response}"),
     }
 
