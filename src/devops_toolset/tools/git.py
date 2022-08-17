@@ -232,7 +232,7 @@ def git_tag_exist(tag_name: str, auth_header: str = '', remote_name: str = 'orig
         """
     result: str = devops_toolset.tools.cli.call_subprocess_with_result(commands.get("git_tag_check").format(
         remote_name=remote_name,
-        auth=auth_header,
+        auth=commands.get("git_auth").format(auth_header=auth_header),
         tag_name=tag_name
     ))
 
