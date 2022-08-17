@@ -393,13 +393,13 @@ def test_git_tag_exist_calls_git_tag_check_command(call_subprocess, clidata):
     """ Calls git_tag_check command with necessary parameters """
     # Arrange
     tag_name = 'test'
-    auth_header = clidata.auth_header
+    auth_header = commands.get("git_auth").format(auth_header=clidata.auth_header)
     remote_name = 'origin'
     expected_command = commands.get("git_tag_check").format(
         remote_name=remote_name, auth=auth_header, tag_name=tag_name)
 
     # Act
-    sut.git_tag_exist(tag_name, auth_header)
+    sut.git_tag_exist(tag_name, clidata.auth_header)
 
     # Assert
     call_subprocess.assert_called_with(expected_command)
