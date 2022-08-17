@@ -1,4 +1,4 @@
-"""Unit core for the environment file"""
+"""Unit tests for the environment file"""
 
 from unittest.mock import patch
 from io import StringIO
@@ -45,8 +45,8 @@ def test_create_environment_variables_given_dict_writes_correct_format_to_stdout
 
 # endregion
 
-# region end_task()
 
+# region end_task()
 
 @patch("sys.stdout.write")
 @patch("logging.error")
@@ -62,5 +62,39 @@ def test_end_task_given_type_and_description_writes_to_stdout(logging_mock, mock
 
     # Assert
     mock_stdout_write.assert_called_with(f"##vso[task.complete result={result_type.value};]DONE\n")
+
+# endregion
+
+
+# region get_platform_variable_keys()
+
+def test_get_platform_variable_keys_returns_dict():
+    """Returns a list of strings"""
+
+    # Arrange
+
+    # Act
+    result = sut.get_platform_variable_dict()
+
+    # Assert
+    assert type(result) is dict
+
+# endregion
+
+
+# region log_environment_variables()
+
+@patch("devops_toolset.devops_platforms.common.log_environment_variables")
+def test_log_environment_variables_logs(log_environment_variables_mock):
+    """Returns a list of strings"""
+
+    # Arrange
+    variable_keys: dict = sut.get_platform_variable_dict()
+
+    # Act
+    sut.log_environment_variables(variable_keys)
+
+    # Assert
+    log_environment_variables_mock.assert_called()
 
 # endregion

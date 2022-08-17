@@ -24,6 +24,15 @@ class Literals(ValueDictsBase):
         "git_after_project_structure_commit": _("Committed project structure files"),
         "git_before_change_branch": _("Changing branch to master"),
         "git_after_change_branch": _("Changed branch to master successfully"),
+        "git_push_tag_init": _("Start git tagging push to origin -> tag_name: {tag_name}"),
+        "git_push_tag_delete_init": _("Start git tag deletion push to origin -> tag_name: {tag_name}"),
+        "git_tag": "Adding tag {tag_name} to the commit {commit_name} in branch {branch_name}",
+        "git_tag_add_init": _("Start git tagging: tag {tag_name} on commit {commit_name}"),
+        "git_tag_delete_init": _("Start git tag delete: {tag_name}"),
+        "git_tag_exists": "Tag {tag_name} already exist on remote...",
+        "git_existing_tag_keep": "Tag {tag_name} will not be changed. Skipping tag process.",
+        "git_existing_tag_move": "Tag {tag_name} will be moved to commit {commit_name}",
+        "http_response": _("HTTP response from {url} => {response}"),
     }
 
     _errors = {
@@ -33,4 +42,8 @@ class Literals(ValueDictsBase):
         "git_err_commit_project_structure": _("Git error: project structure files couldn't be committed"),
         "git_err_adding_project_structure_files_to_stage": _("Files couldn't be staged"),
         "git_err_changing_branch": _("Changing to master branch couldn't be done"),
+        "git_tag_add_err": _("There was an error while tagging commit {commit_name}"),
+        "git_tag_delete_err": _("There was an error while deleting tag {tag_name}"),
+        "git_push_tag_err": _("There was an error while pushing tag {tag_name} to origin"),
+        "git_push_tag_delete_err": _("There was an error while pushing tag {tag_name} deletion to origin"),
     }

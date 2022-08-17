@@ -3,7 +3,7 @@
 
 import pathlib
 from unittest.mock import patch, mock_open, call
-import devops_toolset.tools.devops_toolset as sut
+import devops_toolset.tools.devops_toolset_utils as sut
 import devops_toolset.tools.constants as constants
 from tests.tools.conftest import mocked_requests_get
 import os.path
@@ -12,7 +12,7 @@ import os.path
 # region get_devops_toolset
 
 
-@patch("devops_toolset.tools.devops_toolset.ZipFile")
+@patch("devops_toolset.tools.devops_toolset_utils.ZipFile")
 @patch("logging.info")
 @patch("os.path.join")
 @patch("os.rename")
@@ -32,7 +32,7 @@ def test_get_devops_toolset_calls_get_devops_toolset_resource(
         mocks.requests_get_mock.assert_has_calls(calls, any_order=True)
 
 
-@patch("devops_toolset.tools.devops_toolset.ZipFile")
+@patch("devops_toolset.tools.devops_toolset_utils.ZipFile")
 @patch("logging.info")
 @patch("os.path.join")
 @patch("os.rename")
@@ -53,7 +53,7 @@ def test_get_devops_toolset_extracts_all_devops_toolset_path_content_into_destin
         zipfile_mock.assert_called_once_with(zip_file_path, "r")
 
 
-@patch("devops_toolset.tools.devops_toolset.ZipFile")
+@patch("devops_toolset.tools.devops_toolset_utils.ZipFile")
 @patch("logging.info")
 @patch("os.path.join")
 @patch("os.rename")
@@ -76,7 +76,7 @@ def test_get_devops_toolset_renames_final_destination_folder(
         rename_mock.assert_called_once_with(old_folder, final_folder)
 
 
-@patch("devops_toolset.tools.devops_toolset.ZipFile")
+@patch("devops_toolset.tools.devops_toolset_utils.ZipFile")
 @patch("logging.info")
 @patch("os.path.join")
 @patch("os.rename")
@@ -96,7 +96,7 @@ def test_get_devops_toolset_removes_devops_toolset_path_file(
         remove_mock.assert_called_once_with(devops_toolset_path_file)
 
 
-@patch("devops_toolset.tools.devops_toolset.ZipFile")
+@patch("devops_toolset.tools.devops_toolset_utils.ZipFile")
 @patch("logging.info")
 @patch("os.path.join")
 @patch("os.rename")
@@ -119,11 +119,11 @@ def test_get_devops_toolset_calls_purge_gitkeep(
 # region update_devops_toolset
 
 
-@patch("devops_toolset.tools.devops_toolset.get_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset_utils.get_devops_toolset")
 @patch("shutil.rmtree")
 @patch("logging.warning")
 @patch("os.path.exists")
-@patch("devops_toolset.tools.devops_toolset.compare_devops_toolset_version")
+@patch("devops_toolset.tools.devops_toolset_utils.compare_devops_toolset_version")
 def test_update_devops_toolset_given_toolset_path_calls_compare_devops_toolset_version(
         compare_mock, path_exist_mock, logging_warn_mock, rmtree_mock, get_devops_mock, paths):
     """ Given toolset_path, then calls compare_devops_toolset_version """
@@ -136,11 +136,11 @@ def test_update_devops_toolset_given_toolset_path_calls_compare_devops_toolset_v
     compare_mock.assert_called_once_with(toolset_path)
 
 
-@patch("devops_toolset.tools.devops_toolset.get_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset_utils.get_devops_toolset")
 @patch("shutil.rmtree")
 @patch("logging.warning")
 @patch("os.path.exists")
-@patch("devops_toolset.tools.devops_toolset.compare_devops_toolset_version")
+@patch("devops_toolset.tools.devops_toolset_utils.compare_devops_toolset_version")
 def test_update_devops_toolset_given_toolset_path_when_not_latest_version_then_calls_get_devops_toolset(
         compare_mock, path_exist_mock, logging_warn_mock, rmtree_mock, get_devops_mock, paths):
     """ Given toolset_path, when is not latest version, then calls get_devops_toolset"""
@@ -153,11 +153,11 @@ def test_update_devops_toolset_given_toolset_path_when_not_latest_version_then_c
     get_devops_mock.assert_called_once_with(pathlib.Path(toolset_path).parent)
 
 
-@patch("devops_toolset.tools.devops_toolset.get_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset_utils.get_devops_toolset")
 @patch("shutil.rmtree")
 @patch("logging.warning")
 @patch("os.path.exists")
-@patch("devops_toolset.tools.devops_toolset.compare_devops_toolset_version")
+@patch("devops_toolset.tools.devops_toolset_utils.compare_devops_toolset_version")
 def test_update_devops_toolset_given_toolset_path_when_not_exist_toolset_path_then_calls_shutil_rmtree(
         compare_mock, path_exist_mock, logging_warn_mock, rmtree_mock, get_devops_mock, paths):
     """ Given toolset_path, when is not latest version and toolset_path not exist, then calls shutil_rmtree"""
@@ -171,11 +171,11 @@ def test_update_devops_toolset_given_toolset_path_when_not_exist_toolset_path_th
     rmtree_mock.assert_called_once_with(toolset_path)
 
 
-@patch("devops_toolset.tools.devops_toolset.get_devops_toolset")
+@patch("devops_toolset.tools.devops_toolset_utils.get_devops_toolset")
 @patch("shutil.rmtree")
 @patch("logging.warning")
 @patch("os.path.exists")
-@patch("devops_toolset.tools.devops_toolset.compare_devops_toolset_version")
+@patch("devops_toolset.tools.devops_toolset_utils.compare_devops_toolset_version")
 def test_update_devops_toolset_given_toolset_path_when_exist_toolset_path_then_warns(
         compare_mock, path_exist_mock, logging_warn_mock, rmtree_mock, get_devops_mock, paths):
     """ Given toolset_path, when is not latest version and toolset_path exist, then warns message"""

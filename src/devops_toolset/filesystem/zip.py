@@ -15,7 +15,7 @@ app: App = App()
 literals = LiteralsCore([FileSystemLiterals])
 
 
-def download_an_unzip_file(url: str, destination: str, delete_after_unzip: bool = True, unzip_root: str = None):
+def download_and_unzip_file(url: str, destination: str, delete_after_unzip: bool = True, unzip_root: str = None):
     """Downloads and unzips a file from a URL.
 
     Args:
@@ -74,7 +74,7 @@ def zip_directory(directory_path: str, file_path, internal_path_prefix: str = ""
                 ))
 
 
-def read_text_file_in_zip(zip_file_path: str, text_file_path: str):
+def read_text_file_in_zip(zip_file_path: str, text_file_path: str) -> bytes:
     """Reads a text file that is enclosed inside a ZIP file.
 
     Args:

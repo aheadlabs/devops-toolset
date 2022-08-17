@@ -433,7 +433,7 @@ def test_install_plugins_given_configuration_file_when_plugins_present_then_inst
     plugins_path = pathlib.Path.joinpath(root_path, constants["paths"]["content"]["plugins"])
 
     # Act
-    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, root_path, True)
+    sut.install_plugins_from_configuration_file(site_config, environment_config, constants, str(root_path), True)
 
     # Assert
     calls = []

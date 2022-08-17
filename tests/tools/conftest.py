@@ -45,12 +45,28 @@ class CliData(object):
     sample_command = "sample command"
     sample_log_message_info = b"Operation completed successfully."
     sample_log_message_error = b"Something went wrong."
+    auth_header = "bearer 1234"
 
 
 @pytest.fixture()
 def clidata():
     """ Sample command line interface data """
     return CliData()
+
+
+class GitData(object):
+    """ Class used to create the gitdata fixture """
+
+    branch = "heads/refs/dev"
+    tag = "v1.0.0"
+    commit = "fdr564"
+    auth_header = "bearer 1234"
+
+
+@pytest.fixture
+def gitdata():
+    """Sample data for testing Git functionality"""
+    return GitData()
 
 
 class Paths(object):
@@ -78,6 +94,17 @@ def mocked_requests_get(url: str, *args, **kwargs):
 
     # Default values
     bytes_content = b"sample response in bytes"
+    text_content = "sample text response"
+
+    # Return instance
+    return MockResponse(bytes_content, text_content)
+
+
+def mocked_requests_get_ip(*args, **kwargs):
+    """Mock to replace requests.get() returning HTML with an IP address."""
+
+    # Default values
+    bytes_content = b"<p>Your IP address is 1.1.1.1</p>"
     text_content = "sample text response"
 
     # Return instance

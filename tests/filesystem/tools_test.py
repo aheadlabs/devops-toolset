@@ -1,27 +1,12 @@
 """Unit core for the tools file"""
+
+from unittest.mock import patch, mock_open, call
+
 import json
 import pathlib
-
 import devops_toolset.filesystem.tools as sut
-from unittest.mock import patch
 import pytest
 
-
-# region update_xml_file_entity_text()
-
-
-@patch("xml.etree.ElementTree.parse")
-def test_update_xml_file_entity_text_parse_file(parse_mock):
-    """Given an XML file path parse its content."""
-
-    # Act
-    sut.update_xml_file_entity_text("", "", "file.xml")
-
-    # Assert
-    parse_mock.assert_called_once_with("file.xml")
-
-
-# endregion update_xml_file_entity_text()
 
 # region is_file_empty()
 
@@ -41,6 +26,29 @@ def test_is_file_empty_given_path_when_empty_then_return_true(getsize_mock, gets
     assert result == expected_result
 
 # endregion is_file_empty()
+
+# region strip_utf8_bom_character_from_file()
+
+
+@patch("logging.info")
+@patch("builtins.open", new_callable=mock_open)
+def test_strip_utf8_bom_character_from_file_reads_file(open_file_mock, logging_info_mock):
+    """Given a path reads its content"""
+
+    # Arrange
+    path: str = "pathto/file"
+    calls: list = [
+        call(path, "r", encoding="utf-8-sig"),
+        call(path, "w", encoding="utf-8")
+    ]
+
+    # Act
+    sut.strip_utf8_bom_character_from_file(path)
+
+    # Assert
+    open_file_mock.assert_has_calls(calls, any_order=True)
+
+# endregion strip_utf8_bom_character_from_file()
 
 # region update_json_file_key_text()
 
@@ -150,3 +158,19 @@ def test_update_json_file_key_text_when_depth_3_returns_value(filecontents, tmp_
         assert result == json_file_content_dict
 
 # endregion update_json_file_key_text()
+
+# region update_xml_file_entity_text()
+
+
+@patch("xml.etree.ElementTree.parse")
+def test_update_xml_file_entity_text_parse_file(parse_mock):
+    """Given an XML file path parse its content."""
+
+    # Act
+    sut.update_xml_file_entity_text("", "", "file.xml")
+
+    # Assert
+    parse_mock.assert_called_once_with("file.xml")
+
+
+# endregion update_xml_file_entity_text()

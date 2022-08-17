@@ -1,19 +1,59 @@
-""" Unit-core for the dotnet/cli.py module"""
+""" Unit tests for the dotnet/utils.py module"""
 
-import pathlib
 import devops_toolset.project_types.dotnet.utils as sut
+import pathlib
+from devops_toolset.core.app import App
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.dotnet.commands import Commands as DotnetCommands
 from devops_toolset.project_types.dotnet.Literals import Literals as DotnetLiterals
-from devops_toolset.core.app import App
+from unittest.mock import patch
 
 app: App = App()
 literals = LiteralsCore([DotnetLiterals])
 commands = CommandsCore([DotnetCommands])
 
 
+# region get_appsettings_environments()
+
+@patch("logging.info")
+@patch("pathlib.Path.glob")
+def test_get_appsettings_environments_returns_list(glob_mock, logging_info_mock, dotnetdata):
+    """ Given the .csproj file path, returns a list of strings."""
+
+    # Arrange
+    csproj_path = "path/to/csproj"
+    glob_mock.return_value = dotnetdata.get_appsettings_files()
+
+    # Act
+    result = sut.get_appsettings_environments(csproj_path)
+
+    # Assert
+    assert type(result) is list
+
+
+@patch("logging.info")
+@patch("pathlib.Path.glob")
+def test_get_appsettings_environments_given_unmatched_environments_returns_empty_list(
+        glob_mock, logging_info_mock, dotnetdata):
+    """ Given the .csproj file path and wrong appsettings files, returns an
+    empty list."""
+
+    # Arrange
+    csproj_path = "path/to/csproj"
+    glob_mock.return_value = dotnetdata.get_wrong_appsettings_files()
+
+    # Act
+    result = sut.get_appsettings_environments(csproj_path)
+
+    # Assert
+    assert result == []
+
+
+# endregion
+
 # region get_csproj_project_version()
+
 
 def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata, tmp_path):
     """ Given the .csproj file path , returns the version number."""
@@ -30,4 +70,6 @@ def test_get_csproj_project_version_given_path_returns_version_number(dotnetdata
     # Assert
     assert result == "6.6.6"
 
-# endregion get_csproj_project_version()
+
+# endregion
+
