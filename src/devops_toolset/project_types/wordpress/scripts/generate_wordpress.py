@@ -78,6 +78,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
         # Ask to use defaults
         use_defaults: bool = prompt.yn(literals.get("wp_use_default_files"))
+
         # If not using defaults, exit
         if not use_defaults:
             logging.critical(literals.get("wp_required_files_mandatory"))
@@ -110,9 +111,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Create project structure & prepare devops-toolset
     devops_toolset.project_types.wordpress.wptools.start_basic_project_structure(root_path)
-
-    # Check for updates / download devops-toolset TODO Deprecate?
-    setup_devops_toolset(root_path)
 
     # Download WordPress core files
     devops_toolset.project_types.wordpress.wptools.download_wordpress(site_config, wordpress_path,
@@ -185,17 +183,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             "*.json",
             False
         )
-
-
-def setup_devops_toolset(root_path: str):
-    """ Checks if devops toolset is present and up to date. In case not, it will be downloaded
-    Args:
-        root_path: Project's root path
-    """
-    devops_path_constant = devops_toolset.project_types.wordpress.wptools.get_constants()["paths"]["devops"]
-    devops_path = pathlib.Path.joinpath(pathlib.Path(root_path), devops_path_constant, "devops-toolset").as_posix()
-    logging.info(literals.get("wp_checking_devops_toolset").format(path=devops_path))
-    devops_toolset.tools.devops_toolset_utils.update_devops_toolset(devops_path)
 
 
 def generate_additional_wpconfig_files(site_config: dict, environments: dict, additional_environments: list,
