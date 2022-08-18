@@ -18,11 +18,11 @@ After the automatic generation you customize your child theme, add your plugins 
 
 ## Step by step
 
-1. [Install PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell) if you don't have it on your machine (available for Windows, Linux, MacOS and ARM platforms).
-2. Get the latest version of the file [Bootstrap-WordPressRepository.ps1](https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/wordpress/Bootstrap-WordPressRepository.ps1) and place it on your repository root (empty directory).
-3. If you have `*site-environments.json`, `*site.json` and `*project-structure.json` files you can copy them to the root of the repository as well. **This is optional**. You have sample files here: [environments](https://github.com/aheadlabs/devops-toolset/blob/master/wordpress/default-site-environments.json), [site](https://github.com/aheadlabs/devops-toolset/blob/master/wordpress/default-localhost-site.json) and [structure](https://github.com/aheadlabs/devops-toolset/blob/master/wordpress/default-wordpress-project-structure.json).
-4. Place your theme and child-theme in the your repository root if it is in zip format (you will need a custom `site.json` file for that).
-5. Call the `Bootstrap-WordPressRepository.ps1` script and follow the on-screen instructions.
+1. [Install Python](https://www.python.org/downloads/) if you don't have it already in your computer.
+2. Install devops-toolset package using the command ``pip install devops-toolset``
+3. Place the site configuration file ``site.json`` to the root path. If you don't have this file the script will prompt you for using the default one.
+4. Place your zipped theme and child-theme in the root path (you will need a custom `site.json` file for that).
+5. Call the `devops_toolset.project_types.wordpress.scripts.generate_wordpress.py`. At the end of the file you can see the parameters you need to pass to the script.
 6. Update `.gitignore` according to your needs.
 7. Update `project.xml` to match your project values.
-8. Update `README.md` files according to your needs.
+8. Update `README.md` file according to your needs.
