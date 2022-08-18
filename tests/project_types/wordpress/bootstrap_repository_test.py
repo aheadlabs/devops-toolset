@@ -1,7 +1,7 @@
 """ Unit core for the bootstrap repository script """
 
 from unittest.mock import patch
-import devops_toolset.project_types.wordpress.bootstrap_repository as sut
+import devops_toolset.project_types.wordpress.scripts.bootstrap_repository as sut
 
 
 # region main
