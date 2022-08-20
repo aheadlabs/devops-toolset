@@ -35,6 +35,35 @@ platform_literals = LiteralsCore([PlatformLiterals])
 commands = CommandsCore([WordpressCommands])
 
 
+def add_cloudfront_forwarded_proto_to_config(
+        environment_config: dict, wordpress_path: str):
+    """ Adds HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
+
+    Args:
+        environment_config: Environment configuration.
+        wordpress_path: Path to wordpress installation.
+    """
+
+    # Exit if there is no True setting for AWS Cloudfront
+    if "aws_cloudfront" not in environment_config["settings"] \
+            or environment_config["settings"]["aws_cloudfront"] is False:
+        return
+
+    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config.php")
+    if file_path.exists():
+        with open(file_path, "r+") as config:
+            config_content = config.read()
+            pattern = r'/\*\*.*\nrequire_once.*'
+            match = re.search(pattern, config_content)
+            if match:
+                content_new = re.sub(
+                    pattern,
+                    get_snippet_cloudfront() + '\n' + match.group(),
+                    config_content)
+                config.seek(0)
+                config.write(content_new)
+
+
 def add_wp_options(wp_options: dict, wordpress_path: str, debug: bool = False):
     """Adds or updates WordPress options in the wp_options table
 
@@ -63,21 +92,6 @@ def convert_wp_config_token(token: str, wordpress_path: str) -> str:
             "[" + date_format + "]", wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
     # NOTE: Add more tokens if needed
     return result
-
-
-def create_wp_cli_bat_file(phar_path: str):
-    """Creates a .bat file for WP-CLI.
-
-    Args:
-        phar_path: Path to the .phar file.
-    """
-
-    path = pathlib.Path(phar_path)
-    bat_path = pathlib.Path.joinpath(path.parent, "wp.bat")
-
-    with open(bat_path, "w") as bat:
-        bat.write("@ECHO OFF\n")
-        bat.write(f"php \"{phar_path}\" %*")
 
 
 def create_configuration_file(environment_configuration: dict, wordpress_path: str, database_user_password: str):
@@ -125,6 +139,21 @@ def create_users(users: dict, wordpress_path: str, debug: bool):
         # Warn the user I am skipping the creation
         else:
             logging.warning(literals.get("wp_wpcli_user_exists").format(user=user["user_login"]))
+
+
+def create_wp_cli_bat_file(phar_path: str):
+    """Creates a .bat file for WP-CLI.
+
+    Args:
+        phar_path: Path to the .phar file.
+    """
+
+    path = pathlib.Path(phar_path)
+    bat_path = pathlib.Path.joinpath(path.parent, "wp.bat")
+
+    with open(bat_path, "w") as bat:
+        bat.write("@ECHO OFF\n")
+        bat.write(f"php \"{phar_path}\" %*")
 
 
 def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_debug: bool = False):
@@ -192,10 +221,41 @@ def get_constants() -> dict:
         All the constants in a dict object.
     """
 
-    response = requests.get(wp_constants.wordpress_constants_json_resource)
-    data = json.loads(response.content)
+    script_directory_path = pathlib.Path(os.path.realpath(__file__)).parent
+    wordpress_constants_path = \
+        pathlib.Path.joinpath(script_directory_path, wp_constants.wordpress_constants_json_filename)
+
+    with open(wordpress_constants_path, 'r') as wordpress_constants_file:
+        data = json.load(wordpress_constants_file)
 
     return data
+
+
+def get_environment(site_config: dict, environment_name: str) -> dict:
+    """Gets the environment that matches the name passed as a parameter.
+
+    Args:
+        site_config: Site configuration.
+        environment_name: Name of the environment to be retrieved.
+    """
+
+    filtered = filter(lambda environment_x: environment_x['name'] == environment_name, site_config['environments'])
+    environment_list = list(filtered)
+
+    if len(environment_list) == 0:
+        raise ValueError(literals.get('wp_env_x_not_found').format(environment=environment_name))
+
+    if len(environment_list) > 1:
+        logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
+
+    environment = environment_list[0]
+
+    # Update URL constants (with the _url suffix) prepending the base URL
+    url_keys = devops_toolset.tools.dicts.filter_keys(environment["wp_config"], "_url$")
+    for key in url_keys:
+        environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
+
+    return environment
 
 
 def get_project_structure(url_resource: str) -> dict:
@@ -264,31 +324,28 @@ def get_site_configuration(path: str) -> dict:
         return json.loads(data)
 
 
-def get_environment(site_config: dict, environment_name: str) -> dict:
-    """Gets the environment that matches the name passed as a parameter.
+def get_snippet_cloudfront():
+    """ Gets HTTP_CLOUDFRONT_FORWARDED_PROTO snippet from a default file.
 
-    Args:
-        site_config: Site configuration.
-        environment_name: Name of the environment to be retrieved.
+    Returns:
+        HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
     """
 
-    filtered = filter(lambda environment_x: environment_x['name'] == environment_name, site_config['environments'])
-    environment_list = list(filtered)
+    # file_path = pathlib.Path.joinpath(
+    #     pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
+    # if file_path.exists():
+    #     with open(file_path, "r") as snippet_content:
+    #         snippet = snippet_content.read()
+    #         return snippet
+    # else:
+    #     logging.error(literals.get("wp_file_not_found").format(file=file_path))
 
-    if len(environment_list) == 0:
-        raise ValueError(literals.get('wp_env_x_not_found').format(environment=environment_name))
+    response = requests.get(wp_constants.default_cloudfront_forwarded_proto_php)
 
-    if len(environment_list) > 1:
-        logging.warning(literals.get('wp_environment_x_found_multiple').format(environment=environment_name))
-
-    environment = environment_list[0]
-
-    # Update URL constants (with the _url suffix) prepending the base URL
-    url_keys = devops_toolset.tools.dicts.filter_keys(environment["wp_config"], "_url$")
-    for key in url_keys:
-        environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
-
-    return environment
+    if response.status_code == 200:
+        return response.text
+    else:
+        return ""
 
 
 def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:
@@ -561,60 +618,6 @@ def set_wordpress_config_from_configuration_file(
 
     # Add cloudfront snippet to wp_config.php if needed
     add_cloudfront_forwarded_proto_to_config(environment_config, wordpress_path)
-
-
-def add_cloudfront_forwarded_proto_to_config(
-        environment_config: dict, wordpress_path: str):
-    """ Adds HTTP_CLOUDFRONT_FORWARDED_PROTO snippet to wp-config.php
-
-    Args:
-        environment_config: Environment configuration.
-        wordpress_path: Path to wordpress installation.
-    """
-
-    # Exit if there is no True setting for AWS Cloudfront
-    if "aws_cloudfront" not in environment_config["settings"] \
-            or environment_config["settings"]["aws_cloudfront"] is False:
-        return
-
-    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config.php")
-    if file_path.exists():
-        with open(file_path, "r+") as config:
-            config_content = config.read()
-            pattern = r'/\*\*.*\nrequire_once.*'
-            match = re.search(pattern, config_content)
-            if match:
-                content_new = re.sub(
-                    pattern,
-                    get_snippet_cloudfront() + '\n' + match.group(),
-                    config_content)
-                config.seek(0)
-                config.write(content_new)
-
-
-def get_snippet_cloudfront():
-    """ Gets HTTP_CLOUDFRONT_FORWARDED_PROTO snippet from a default file.
-
-    Returns:
-        HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
-    """
-
-    # file_path = pathlib.Path.joinpath(
-    #     pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
-    # if file_path.exists():
-    #     with open(file_path, "r") as snippet_content:
-    #         snippet = snippet_content.read()
-    #         return snippet
-    # else:
-    #     logging.error(literals.get("wp_file_not_found").format(file=file_path))
-
-    response = requests.get(wp_constants.default_cloudfront_forwarded_proto_php)
-
-    if response.status_code == 200:
-        return response.text
-    else:
-        return ""
-
 
 
 def setup_database(environment_config: dict, wordpress_path: str, db_user_password: str, db_admin_password: str = ""):
