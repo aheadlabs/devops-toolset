@@ -82,6 +82,7 @@ class WordPressData:
     wordpress_path = "/pathto/wordpress"
     wordpress_path_part = "/wordpress"
     wordpress_path_err = "/nonexistentpath"
+    empty_dict = "{}"
     environment_config_aws_cloudfront_true = {
         "wp_cli_debug": True,
         "wp_config": {

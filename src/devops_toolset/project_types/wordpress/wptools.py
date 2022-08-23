@@ -331,21 +331,15 @@ def get_snippet_cloudfront():
         HTTP_CLOUDFRONT_FORWARDED_PROTO snippet as a string.
     """
 
-    # file_path = pathlib.Path.joinpath(
-    #     pathlib.Path(devops_toolset_wordpress_path), 'default-files/default-cloudfront-forwarded-proto.php')
-    # if file_path.exists():
-    #     with open(file_path, "r") as snippet_content:
-    #         snippet = snippet_content.read()
-    #         return snippet
-    # else:
-    #     logging.error(literals.get("wp_file_not_found").format(file=file_path))
+    current_path: pathlib.Path = pathlib.Path(os.path.realpath(__file__))
+    default_cloudfront_forwarded_proto_php_file_path: pathlib.Path = pathlib.Path.joinpath(
+        current_path.parent, "default-files", wp_constants.default_cloudfront_forwarded_proto_php_filename)
 
-    response = requests.get(wp_constants.default_cloudfront_forwarded_proto_php)
-
-    if response.status_code == 200:
-        return response.text
+    if default_cloudfront_forwarded_proto_php_file_path.exists():
+        with open(default_cloudfront_forwarded_proto_php_file_path, "r") as file:
+            return file.read()
     else:
-        return ""
+        logging.error(literals.get("wp_file_not_found").format(file=default_cloudfront_forwarded_proto_php_file_path))
 
 
 def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) -> str:

@@ -30,7 +30,7 @@ literals = LiteralsCore([WordpressLiterals])
 def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin_password: str,
          environment: str, additional_environments: list, environments_db_user_passwords: dict,
          create_db: bool, skip_partial_dumps: bool, skip_file_relocation: bool, create_development_theme: bool,
-         **kwargs_):
+         use_local_wordpress_binaries: bool, **kwargs_):
     """Generates a new WordPress site based on the site configuration file
 
     Args:
@@ -38,7 +38,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
         db_user_password: Password for the database user.
         db_admin_password: Password for the database admin user.
         wp_admin_password: Password for the WordPress admin user.
-        environment: Name of the environment to be processed.
+        environment: Name of the environment to be processed. Takes the
+            configuration of the specified environment from the site.json file.
         additional_environments: Additional environments to create additional
             wp-config.php files.
         environments_db_user_passwords: Additional environment db
@@ -48,12 +49,15 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             (after installing WordPress, themes and plugins).
         skip_file_relocation: If True skips file relocation like the config
             file and plugin's files.
-        create_development_theme: If True generates the file structure for a
-            development theme
+        create_development_theme: If True then generates the file structure for
+            a development theme.
+        use_local_wordpress_binaries: If True, local binaries from root path
+            are used instead of downloading them from the WordPress CDN.
         kwargs_: Platform-specific arguments
     """
 
     # Get basic settings
+    current_path, scripts_directory_path, wordpress_directory_path, default_files_path = get_basic_paths()
     global_constants: dict = devops_toolset.project_types.wordpress.wptools.get_constants()
     database_files_path: str = global_constants["paths"]["database"]
     root_path_obj: pathlib.Path = pathlib.Path(root_path)
@@ -157,7 +161,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     # Import wxr content
     if not create_development_theme:
         devops_toolset.project_types.wordpress.wptools.import_content_from_configuration_file(
-            site_config, environment_config, root_path, wordpress_path, global_constants)
+            site_config, environment_config, root_path, global_constants)
 
     # Generate additional wp-config.php files
     generate_additional_wpconfig_files(site_config, site_config["environments"], additional_environments,
@@ -183,6 +187,17 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
             "*.json",
             False
         )
+
+
+def delete_sample_wp_config_file(wordpress_path: str):
+    """Deletes the wp-config-sample.php file.
+
+    Args:
+        wordpress_path: Path to WordPress.
+    """
+    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config-sample.php")
+    if file_path.exists():
+        os.remove(str(file_path))
 
 
 def generate_additional_wpconfig_files(site_config: dict, environments: dict, additional_environments: list,
@@ -226,15 +241,21 @@ def generate_additional_wpconfig_files(site_config: dict, environments: dict, ad
         shutil.move(wp_config_path_temp, wp_config_path)
 
 
-def delete_sample_wp_config_file(wordpress_path: str):
-    """Deletes the wp-config-sample.php file.
+def get_basic_paths():
+    """Gets basic paths like this script's, scripts directory and WordPress
+        directory.
 
-    Args:
-        wordpress_path: Path to WordPress.
+    Returns:
+        Tuple with current path, scripts directory path, WordPress directory
+        path and default files path.
     """
-    file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), "wp-config-sample.php")
-    if file_path.exists():
-        os.remove(str(file_path))
+
+    current_path: pathlib.Path = pathlib.Path(os.path.realpath(__file__))
+    scripts_directory_path: pathlib.Path = current_path.parent
+    wordpress_directory_path: pathlib.Path = scripts_directory_path.parent
+    default_files_path: pathlib.Path = pathlib.Path.joinpath(wordpress_directory_path, "default-files")
+
+    return current_path, scripts_directory_path, wordpress_directory_path, default_files_path
 
 
 if __name__ == "__main__":
@@ -250,6 +271,7 @@ if __name__ == "__main__":
     parser.add_argument("--skip-partial-dumps", action="store_true", default=False)
     parser.add_argument("--skip-file-relocation", action="store_true", default=False)
     parser.add_argument("--create-development-theme", action="store_true", default=False)
+    parser.add_argument("--use-local-wordpress-binaries", action="store_true", default=False)
     args, args_unknown = parser.parse_known_args()
     kwargs = {}
     for kwarg in args_unknown:
@@ -265,4 +287,5 @@ if __name__ == "__main__":
          args.skip_partial_dumps,
          args.skip_file_relocation,
          args.create_development_theme,
+         args.use_local_wordpress_binaries,
          **kwargs)
