@@ -99,6 +99,7 @@ class Literals(ValueDictsBase):
         "mysql_db_exists_skipping_creation": _("Database {schema} exists. I will not create any database..."),
         "wp_wpcli_export_db_skipping_as_set": _("I am skipping the {dump} database dump as configured in settings..."),
         "wp_wpcli_user_exists": _("User {user} already exists. Skipping user creation..."),
+        "wp_plugin_tag_already_exists": _("The tag {tag_name} already exist. Are you sure it is correct?")
     }
     _errors = {
         "wp_checking_devops_toolset": _("Checking for devops-toolset in: {path}"),
@@ -122,6 +123,7 @@ class Literals(ValueDictsBase):
                                              "I take the first one."),
         "wp_file_not_found": _("The following file was not found: {file}"),
         "wp_latest_version": _("Latest version: {version}"),
+        "wp_mandatory_parameter": _("{parameter_name} is a mandatory parameter. I cannot continue"),
         "wp_not_dir": _("Path must be a dir, not a file."),
         "wp_non_valid_dir_path": _("Path must be an existent dir."),
         "wp_required_files_mandatory": _("Required files are mandatory. I cannot continue."),
