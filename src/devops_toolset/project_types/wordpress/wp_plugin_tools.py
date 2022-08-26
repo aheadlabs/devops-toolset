@@ -71,7 +71,7 @@ def deploy_current_trunk(plugin_root_path: str, commit_message: str, username: s
         # Call svn_add
         plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
         __check_plugin_path_exists(plugin_trunk_path)
-        svn.svn_add('trunk/*')
+        svn.svn_add(f'{plugin_trunk_path}/*')
 
         # Call svn_checkin
         svn.svn_checkin(commit_message, username, password)
@@ -103,7 +103,8 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
         create_release_tag(plugin_root_path, tag_name)
 
         # Add and checkin the new tag created (it will be created on the current trunk)
-        svn.svn_add(f'{tag_name}/*')
+        plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+        svn.svn_add(f'{plugin_tag_path}/*')
         svn.svn_checkin(commit_message, username, password)
 
     except (FileNotFoundError, ValueError) as exception:
@@ -112,13 +113,12 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
 
 
 def __check_parameters(commit_message: str, username: str, password: str):
-    if commit_message is None or username is None or password is None:
-        if commit_message is None:
-            raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=commit_message))
-        if username is None:
-            raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=username))
-        if password is None:
-            raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=password))
+    if commit_message is None or commit_message == '':
+        raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=commit_message))
+    if username is None or username == '':
+        raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=username))
+    if password is None or password == '':
+        raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=password))
     return
 
 

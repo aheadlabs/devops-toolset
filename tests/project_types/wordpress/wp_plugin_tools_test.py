@@ -43,7 +43,7 @@ def test_create_release_tag_creates_structure_when_path_not_already_exist(
 @patch("pathlib.Path.exists")
 @patch("logging.warning")
 def test_create_release_tag_warns_when_path_already_exist(
-        logging_mock, exists_mock, mkdir_mock, _, pluginsdata):
+        logging_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
     # Arrange
     plugin_root_path = pluginsdata.plugin_root_path
     tag_name = pluginsdata.tag_name
@@ -56,8 +56,23 @@ def test_create_release_tag_warns_when_path_already_exist(
     logging_mock.assert_called_once()
 
 
-def test_create_release_tag_copies_trunk_when_copy_trunk_is_true():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("pathlib.Path.mkdir")
+@patch("pathlib.Path.exists")
+@patch("devops_toolset.tools.svn.svn_copy")
+def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
+        svn_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    tag_name = pluginsdata.tag_name
+    exists_mock.return_value = False
+    plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
+
+    # Act
+    sut.create_release_tag(plugin_root_path, tag_name, True)
+
+    # Assert
+    svn_copy_mock.assert_called_once_with(plugin_trunk_path + "/*", plugin_root_path)
 
 # endregion create_release_tag
 
@@ -79,19 +94,47 @@ def test_deploy_current_trunk_logs_exception_when_exception_raised(logging_mock,
     logging_mock.assert_called_once()
 
 
-def test_deploy_current_trunk_calls_svn_add():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
+@patch("devops_toolset.tools.svn.svn_add")
+@patch("devops_toolset.tools.svn.svn_checkin")
+def test_deploy_current_trunk_calls_svn_add(
+        svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
+    commit_message = pluginsdata.commit_message
+    username = pluginsdata.username
+    password = pluginsdata.password
+
+    # Act
+    sut.deploy_current_trunk(plugin_root_path, commit_message, username, password)
+
+    # Assert
+    svn_add_mock.assert_called_once_with(f'{plugin_trunk_path}/*')
 
 
-def test_deploy_current_trunk_calls_svn_checkin():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
+@patch("devops_toolset.tools.svn.svn_add")
+@patch("devops_toolset.tools.svn.svn_checkin")
+def test_deploy_current_trunk_calls_svn_checkin(
+    svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
+    commit_message = pluginsdata.commit_message
+    username = pluginsdata.username
+    password = pluginsdata.password
 
+    # Act
+    sut.deploy_current_trunk(plugin_root_path, commit_message, username, password)
 
-def test_deploy_current_trunk_raises_error_when_trunk_path_is_not_present():
-    pass
+    # Assert
+    svn_checkin_mock.assert_called_once_with(commit_message, username, password)
+
 
 # endregion deploy_current_trunk
-
 
 # region deploy_release_tag
 
@@ -112,43 +155,114 @@ def test_deploy_release_tag_logs_exception_when_exception_raised(logging_mock, p
     logging_mock.assert_called_once()
 
 
-def test_deploy_release_tag_calls_create_release_tag():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
+@patch("devops_toolset.tools.svn.svn_add")
+@patch("devops_toolset.tools.svn.svn_checkin")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+def test_deploy_release_tag_calls_create_release_tag(
+    create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    commit_message = pluginsdata.commit_message
+    username = pluginsdata.username
+    password = pluginsdata.password
+    tag_name = pluginsdata.tag_name
+
+    # Act
+    sut.deploy_release_tag(plugin_root_path, tag_name, commit_message, username, password)
+
+    # Assert
+    create_release_tag_mock.assert_called_once_with(plugin_root_path, tag_name)
 
 
-def test_deploy_release_tag_calls_svn_add():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
+@patch("devops_toolset.tools.svn.svn_add")
+@patch("devops_toolset.tools.svn.svn_checkin")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+def test_deploy_release_tag_calls_svn_add(
+    create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    commit_message = pluginsdata.commit_message
+    username = pluginsdata.username
+    password = pluginsdata.password
+    tag_name = pluginsdata.tag_name
+    plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+
+    # Act
+    sut.deploy_release_tag(plugin_root_path, tag_name, commit_message, username, password)
+
+    # Assert
+    svn_add_mock.assert_called_once_with(f'{plugin_tag_path}/*')
 
 
-def test_deploy_release_tag_calls_svn_checkin():
-    pass
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
+@patch("devops_toolset.tools.svn.svn_add")
+@patch("devops_toolset.tools.svn.svn_checkin")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+def test_deploy_release_tag_calls_svn_checkin(
+    create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        pluginsdata):
+    # Arrange
+    plugin_root_path = pluginsdata.plugin_root_path
+    commit_message = pluginsdata.commit_message
+    username = pluginsdata.username
+    password = pluginsdata.password
+    tag_name = pluginsdata.tag_name
+
+    # Act
+    sut.deploy_release_tag(plugin_root_path, tag_name, commit_message, username, password)
+
+    # Assert
+    svn_checkin_mock.assert_called_once_with(commit_message, username, password)
 
 # endregion deploy_release_tag
 
 
 # region __check_parameters
 
-def test__check_parameters_raises_error_when_commit_message_is_none():
-    pass
-
-
-def test__check_parameters_raises_error_when_username_is_none():
-    pass
-
-
-def test__check_parameters_returns_doing_noting_when_parameters_are_present():
-    pass
+@pytest.mark.parametrize("commit_message, username, password", [('', 'username', 'password'),
+                                                                ('commit_message', None, 'password'),
+                                                                ('commit_message', 'username', '')])
+def test__check_parameters_raises_error_when_commit_message_is_none(commit_message, username, password):
+    # Arrange
+    # Act
+    with pytest.raises(ValueError) as error:
+        sut.__check_parameters(commit_message, username, password)
+        # Assert
+        assert error is not None
 
 # endregion __check_parameters
 
 
 # region __check_plugin_path_exists
 
-def test__check_plugin_path_exists_raises_error_when_path_exists():
-    pass
+@patch("pathlib.Path.exists")
+def test__check_plugin_path_exists_raises_error_when_path_not_exists(exists_path_mock, pluginsdata):
+    # Arrange
+    exists_path_mock.return_value = False
+
+    # Act
+    with pytest.raises(FileNotFoundError) as error:
+        sut.__check_plugin_path_exists(pluginsdata.plugin_root_path)
+        # Assert
+        assert error is not None
 
 
-def test__check_plugin_path_exists_returns_when_path_not_exists():
-    pass
+@patch("pathlib.Path.exists")
+def test__check_plugin_path_returns_when_path_exists(exists_path_mock, pluginsdata):
+    # Arrange
+    exists_path_mock.return_value = True
+
+    # Act
+    sut.__check_plugin_path_exists(pluginsdata.plugin_root_path)
+
+    # Assert (reaching this line implies no exception raised, to test passed successfully)
+    assert True
 
 # endregion __check_plugin_path_exists
