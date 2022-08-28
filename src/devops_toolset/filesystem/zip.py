@@ -26,7 +26,8 @@ def download_and_unzip_file(url: str, destination: str, delete_after_unzip: bool
             directory.
     """
 
-    file_name, file_path = devops_toolset.filesystem.paths.download_file(url, destination, constants.FileType.BINARY)
+    file_name, file_path = \
+        devops_toolset.filesystem.paths.download_file(url, destination, str(constants.FileType.BINARY))
     destination_path = pathlib.Path(destination)
     temp_extraction_path = pathlib.Path.joinpath(destination_path, constants.FileNames.TEMP_DIRECTORY)
 
@@ -86,6 +87,18 @@ def read_text_file_in_zip(zip_file_path: str, text_file_path: str) -> bytes:
     """
     with zipfile.ZipFile(zip_file_path, "r") as zip_file:
         return zip_file.read(text_file_path)
+
+
+def unzip_file(file_path: str, destination_path: str):
+    """Unzips a file to a directory.
+
+    Args:
+        file_path: File to be unzipped.
+        destination_path: Destination path to unzip the files to.
+    """
+
+    with zipfile.ZipFile(file_path, 'r') as zip_file:
+        zip_file.extractall(destination_path)
 
 
 if __name__ == "__main__":
