@@ -54,5 +54,17 @@ def set_project_version_in_json_file(packagejson_path: str, destination_file_pat
     filesystem.update_json_file_key_text(["version"], version, destination_file_path)
 
 
+def update_ng_cli(global_scope: bool = True):
+    """Updates Angular CLI.
+
+    Args:
+        global_scope: If true updates CLI globally.
+    """
+
+    command: str = commands.get("ng_update_cli").format(
+        global_scope="--global" if global_scope else ""
+    )
+
+
 if __name__ == "__main__":
     help(__name__)
