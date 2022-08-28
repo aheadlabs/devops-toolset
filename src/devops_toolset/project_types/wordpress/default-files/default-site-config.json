@@ -1,35 +1,19 @@
 {
-  "$schema": "http://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json",
+  "$schema": "https://dev.aheadlabs.com/schemas/json/wordpress-site-schema.json",
   "settings": {
+    "description": "My site description",
     "dumps": {
       "core": "[date|Y.m.d-Hisve]-db.core.sql",
-      "theme": "[date|Y.m.d-Hisve]-db.theme.sql",
       "plugins": "[date|Y.m.d-Hisve]-db.plugins.sql",
-      "regular": "[date|Y.m.d-Hisve]-db-[commit].sql"
+      "regular": "[date|Y.m.d-Hisve]-db-[commit].sql",
+      "theme": "[date|Y.m.d-Hisve]-db.theme.sql"
     },
+    "locale": "en_US",
     "options": [
       {
         "name": "permalink_structure",
         "value": "/%category%/%postname%/",
         "autoload": true
-      }
-    ],
-    "title": "My site",
-    "description": "My site description",
-    "version": "latest",
-    "locale": "en_US",
-    "skip_content_download": true,
-    "wp_admin": {
-      "user": "wp_admin",
-      "email": "admin@example.com",
-      "skip_email": true
-    },
-    "themes": [
-      {
-        "name": "twentytwentyone",
-        "source_type": "wordpress",
-        "source": "twentytwentyone",
-        "activate": true
       }
     ],
     "plugins": [
@@ -48,15 +32,27 @@
         "activate": true
       }
     ],
+    "skip_content_download": true,
+    "themes": [
+      {
+        "name": "twentytwentyone",
+        "source_type": "wordpress",
+        "source": "twentytwentyone",
+        "activate": true
+      }
+    ],
+    "title": "My site",
     "users": [
-    ]
+    ],
+    "version": "latest",
+    "wp_admin": {
+      "user": "wp_admin",
+      "email": "admin@example.com",
+      "skip_email": true
+    }
   },
   "environments": [
     {
-      "name": "localhost",
-      "type": "development",
-      "is_default": true,
-      "wp_cli_debug": false,
       "base_url": "https://localhost/mysite",
       "database": {
         "host": "localhost",
@@ -68,6 +64,13 @@
         "skip_check": true,
         "db_admin_user": "root"
       },
+      "is_default": true,
+      "settings": {
+        "aws_cloudfront": false
+      },
+      "name": "localhost",
+      "type": "development",
+      "wp_cli_debug": false,
       "wp_config": {
         "site_url": {"name": "WP_SITEURL", "type": "constant", "value": ""},
         "home_url": {"name": "WP_HOME", "type": "constant", "value": ""},
@@ -84,7 +87,7 @@
         "disallow_file_mods": {"name": "DISALLOW_FILE_MODS", "type": "constant", "value": false},
         "force_ssl_admin": {"name": "FORCE_SSL_ADMIN", "type": "constant", "value": false},
         "http_block_external": {"name": "WP_HTTP_BLOCK_EXTERNAL", "type": "constant", "value": false},
-        "accessible_hosts": {"name": "WP_ACCESIBLE_HOSTS", "type": "constant", "value": "localhost,api.wordpress.org,*.auth0.com"},
+        "accessible_hosts": {"name": "WP_ACCESSIBLE_HOSTS", "type": "constant", "value": "localhost,api.wordpress.org,*.auth0.com"},
         "auto_update_core": {"name": "WP_AUTO_UPDATE_CORE", "type": "constant", "value": "minor" },
         "image_edit_overwrite": {"name": "IMAGE_EDIT_OVERWRITE", "type": "constant", "value": true},
         "wpml_auto_updates": {"name": "OTGS_DISABLE_AUTO_UPDATES", "type": "constant", "value": false}

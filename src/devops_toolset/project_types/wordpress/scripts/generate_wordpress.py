@@ -20,7 +20,6 @@ import devops_toolset.tools.git as git_tools
 from clint.textui import prompt
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App
-from devops_toolset.devops_platforms.constants import Urls
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 
 app: App = App()
@@ -76,8 +75,8 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
         devops_toolset.core.log_tools.log_indented_list(
             literals.get("wp_default_files"),
-            [Urls.DEFAULT_SITE_ENVIRONMENTS,
-             Urls.DEFAULT_SITE_CONFIG],
+            [constants.Urls.DEFAULT_SITE_ENVIRONMENTS,
+             constants.Urls.DEFAULT_SITE_CONFIG],
             devops_toolset.core.log_tools.LogLevel.info)
 
         # Ask to use defaults
@@ -90,7 +89,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
         # Download defaults from GitHub
         for file in required_files_not_present:
-            url = Urls.bootstrap_required_files[file]
+            url = constants.Urls.BOOTSTRAP_REQUIRED_FILES[file]
             file_name = paths.get_file_name_from_url(url)
             file_path = pathlib.Path.joinpath(root_path_obj, file_name)
 
