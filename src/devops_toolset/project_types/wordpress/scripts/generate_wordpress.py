@@ -112,12 +112,17 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     wordpress_path_as_posix: str = pathlib.Path(wordpress_path).as_posix()
     themes_path: str = theme_tools.get_themes_path_from_root_path(root_path, global_constants)
 
-    # Create project structure & prepare devops-toolset
+    # Create project structure
     devops_toolset.project_types.wordpress.wptools.start_basic_project_structure(root_path)
 
-    # Download WordPress core files
-    devops_toolset.project_types.wordpress.wptools.download_wordpress(site_config, wordpress_path,
-                                                                      environment_config["wp_cli_debug"])
+    # WordPress core files
+    if use_local_wordpress_binaries:
+        wordpress_zip_path = devops_toolset.project_types.wordpress.wptools.find_wordpress_zip_file_in_path(root_path)
+        devops_toolset.project_types.wordpress.wptools.unzip_wordpress(site_config, wordpress_zip_path, root_path)
+        # TODO Purge .gitkeep
+    else:
+        devops_toolset.project_types.wordpress.wptools.download_wordpress(
+            site_config, wordpress_path, environment_config["wp_cli_debug"])
 
     # Create development theme (if needed)
     if create_development_theme:

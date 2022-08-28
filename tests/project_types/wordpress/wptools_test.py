@@ -155,6 +155,7 @@ def test_convert_wp_config_token_given_token_when_date_match_then_calls_wp_cli_e
     eval_code_mock.return_value = date_formatted
     expected_result = f"some-data-{date_formatted}"
     wordpress_path = wordpressdata.wordpress_path
+
     # Act
     result = sut.convert_wp_config_token(token, wordpress_path)
     # Assert
@@ -268,7 +269,7 @@ def test_export_database_calls_wp_cli_export_database(export_database_mock, word
 
 # endregion
 
-# region get_constants_from_github()
+# region get_constants()
 
 
 @patch("builtins.open", new_callable=mock_open, read_data=WordPressData.empty_dict)
@@ -344,7 +345,7 @@ def test_get_environment_given_site_config_then_update_url_constants(filter_keys
 
 # endregion get_environment()
 
-# region get_project_structure()
+# region get_default_project_structure()
 
 
 def test_get_project_structure_given_resource_reads_and_parses_content(wordpressdata, mocks):
@@ -355,7 +356,7 @@ def test_get_project_structure_given_resource_reads_and_parses_content(wordpress
     mocks.requests_get_mock.side_effect = mocked_requests_get_json_content
 
     # Act
-    result = sut.get_project_structure(url_resource)
+    result = sut.get_default_project_structure(url_resource)
 
     # Assert
     assert result == WordPressData.structure_file_content
@@ -809,9 +810,9 @@ def test_install_wordpress_site_then_calls_cli_export_database(
 # region start_basic_structure
 
 
-@patch.object(sut, "get_project_structure")
+@patch.object(sut, "get_default_project_structure")
 def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_project_structure with passed project_path"""
+    """Given arguments, must call get_default_project_structure with passed project_path"""
     # Arrange
     project_structure_resource = devops_platform_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
     root_path = wordpressdata.wordpress_path
@@ -822,10 +823,10 @@ def test_main_given_parameters_must_call_wptools_get_project_structure(get_proje
     get_project_structure_mock.assert_called_once_with(project_structure_resource)
 
 
-@patch.object(sut, "get_project_structure")
+@patch.object(sut, "get_default_project_structure")
 @patch.object(BasicStructureStarter, "add_item")
 def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_project_structure with passed project_path"""
+    """Given arguments, must call get_default_project_structure with passed project_path"""
     # Arrange
     root_path = wordpressdata.wordpress_path
     items_data = {"items": {'foo_item': 'foo_value'}}

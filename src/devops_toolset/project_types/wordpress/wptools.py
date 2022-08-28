@@ -1,32 +1,30 @@
 """Contains several tools for WordPress"""
 
+import devops_toolset.tools.dicts
+import devops_toolset.core.log_tools
+import devops_toolset.filesystem.paths as paths
+import devops_toolset.filesystem.tools
+import devops_toolset.filesystem.zip
+import devops_toolset.project_types.wordpress.constants as wp_constants
+import devops_toolset.project_types.wordpress.wp_cli as wp_cli
+import devops_toolset.tools.git as git_tools
 import json
 import logging
 import os
 import pathlib
+import re
+import requests
 import stat
 import sys
-import devops_toolset.tools.dicts
-from typing import List, Tuple
-
-import requests
-
-import devops_toolset.core.log_tools
-import devops_toolset.filesystem.paths as paths
-import devops_toolset.filesystem.tools
-import devops_toolset.project_types.wordpress.constants as wp_constants
-import devops_toolset.project_types.wordpress.wp_cli as wp_cli
-import devops_toolset.tools.git as git_tools
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App
-from devops_toolset.devops_platforms import constants as devops_platforms_constants
 from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
+from typing import List, Tuple, Union
 
-import re
 
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
@@ -76,21 +74,63 @@ def add_wp_options(wp_options: dict, wordpress_path: str, debug: bool = False):
         wp_cli.add_update_option(option, wordpress_path, debug)
 
 
+def check_wordpress_files_locale(wordpress_path: str, locale: str):
+    """Checks if the files in a WordPress directory have a specific locale
+    installed and setup.
+
+    Args:
+        wordpress_path: Path to the WordPress directory.
+        locale: WordPress locale to be checked.
+    """
+
+    # TODO wp-includes/version.php => $wp_local_package = 'es_ES';
+    # TODO wp-content/languages => es_ES-* | *-es_ES.po | *-es_ES.mo
+
+    return True
+
+
+def check_wordpress_zip_file_format(zip_file_path: str) -> tuple[bool, Union[str, None]]:
+    """Checks if the file name format of the WordPress zip file is correct.
+
+    Args:
+        zip_file_path: Path to the zip file.
+
+    Returns:
+        True and file version number if format is correct, False and None
+        otherwise.
+    """
+
+    file_name: str = os.path.basename(zip_file_path)
+
+    matches = re.search(wp_constants.FileNames.WORDPRESS_ZIP_FILE_NAME_REGEX, file_name)
+
+    if matches is not None and matches.group(1):
+        version = matches.group(1)
+        logging.info(literals.get("wp_wordpress_zip_file_format_ok").format(version=version))
+        return True, version
+    else:
+        logging.error(literals.get("wp_wordpress_zip_file_format_error"))
+        return False, None
+
+
 def convert_wp_config_token(token: str, wordpress_path: str) -> str:
-    """ Replaces [] tokens inside configuration parameters using php syntax
+    """ Replaces [] tokens inside configuration parameters using php syntax.
+    More info at https://www.php.net/manual/en/datetime.format.php
 
     Args:
         token: The token to replace (for example: [date|Y.m.d-Hisve])
-        wordpress_path: Wordpress installation path
+        wordpress_path: WordPress installation path
     """
+
     result = token
+
     # parse token [date|Y.m.d-Hisve]
     if token.find("[date|") != -1:
         date_format = token[token.find("[date|") + 1:token.find("]")]
         date_token = date_format.split("|")[1]
         result = result.replace(
             "[" + date_format + "]", wp_cli.eval_code("echo date('" + date_token + "');", wordpress_path))
-    # NOTE: Add more tokens if needed
+
     return result
 
 
@@ -164,7 +204,7 @@ def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_d
 
     Args:
         site_configuration: parsed site configuration.
-        destination_path: Path where WP-CLI will be downloaded.
+        destination_path: Path where WP-CLI will download WordPress.
         wp_cli_debug: True if logging must be verbose.
     """
 
@@ -210,6 +250,18 @@ def export_database(environment_config: dict, wordpress_path: str, dump_file_pat
     wp_cli.export_database(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
 
+def find_wordpress_zip_file_in_path(path: str) -> Union[str, None]:
+    """Finds the path to the WordPress zip file inside a specific directory
+    path.
+
+    Args:
+        path: Path to the directory where the zip file should be found.
+    """
+
+    return devops_toolset.filesystem.paths.get_file_path_from_pattern(
+        path, wp_constants.FileNames.WORDPRESS_ZIP_FILE_NAME_FORMAT)
+
+
 def get_constants() -> dict:
     """Gets all the constants from a WordPress constants resource.
 
@@ -223,7 +275,7 @@ def get_constants() -> dict:
 
     script_directory_path = pathlib.Path(os.path.realpath(__file__)).parent
     wordpress_constants_path = \
-        pathlib.Path.joinpath(script_directory_path, wp_constants.wordpress_constants_json_filename)
+        pathlib.Path.joinpath(script_directory_path, wp_constants.FileNames.WORDPRESS_CONSTANTS_JSON)
 
     with open(wordpress_constants_path, 'r') as wordpress_constants_file:
         data = json.load(wordpress_constants_file)
@@ -258,20 +310,24 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     return environment
 
 
-def get_project_structure(url_resource: str) -> dict:
-    """Gets the project structure from a WordPress project structure file located on an url resource.
+def get_default_project_structure() -> dict:
+    """Gets the default project structure for a WordPress project.
 
     For more information see:
         https://dev.aheadlabs.com/schemas/json/project-structure-schema.json
 
-    Args:
-        url_resource: Full url resource to the WordPress project structure file.
-
     Returns:
-        Project structure in a dict object.
+        Project structure as a dict.
     """
-    request = requests.get(url_resource)
-    return request.json()
+
+    wordpress_directory_path = pathlib.Path(os.path.realpath(__file__)).parent
+    project_structure_path = pathlib.Path.joinpath(
+        wordpress_directory_path, "default-files", wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+
+    with open(project_structure_path, 'r') as project_structure_file:
+        data = json.load(project_structure_file)
+
+    return data
 
 
 def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tuple:
@@ -333,7 +389,7 @@ def get_snippet_cloudfront():
 
     current_path: pathlib.Path = pathlib.Path(os.path.realpath(__file__))
     default_cloudfront_forwarded_proto_php_file_path: pathlib.Path = pathlib.Path.joinpath(
-        current_path.parent, "default-files", wp_constants.default_cloudfront_forwarded_proto_php_filename)
+        current_path.parent, "default-files", wp_constants.FileNames.DEFAULT_CLOUDFRONT_FORWARDED_PROTO_PHP)
 
     if default_cloudfront_forwarded_proto_php_file_path.exists():
         with open(default_cloudfront_forwarded_proto_php_file_path, "r") as file:
@@ -637,7 +693,8 @@ def setup_database(environment_config: dict, wordpress_path: str, db_user_passwo
 
 
 def start_basic_project_structure(root_path: str) -> None:
-    """ Creates a basic structure of a wordpress project based on the project-structure.json
+    """ Creates a basic structure of a WordPress project based on a project
+    structure file.
 
     Args:
         root_path: Full path where the structure will be created
@@ -645,15 +702,18 @@ def start_basic_project_structure(root_path: str) -> None:
 
     logging.info(literals.get("wp_creating_project_structure"))
 
+    # Get guess file path
     structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), "wordpress-project-structure.json")
+
     # Parse project structure configuration
     if pathlib.Path.exists(structure_file_path):
         project_structure = get_site_configuration(str(structure_file_path))
         logging.info(literals.get("wp_project_structure_creating_from_file").format(file_name=structure_file_path))
     else:
-        project_structure = get_project_structure(devops_platforms_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+        project_structure = get_default_project_structure()
         logging.info(literals.get("wp_project_structure_creating_from_default_file").format(
-            resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
+            resource=wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
+        ))
 
     project_starter = BasicStructureStarter()
 
@@ -662,6 +722,39 @@ def start_basic_project_structure(root_path: str) -> None:
         project_starter.add_item(item, root_path)
 
     logging.info(literals.get("wp_created_project_structure"))
+
+
+def unzip_wordpress(site_configuration: dict, zip_file_path: str, destination_path: str):
+    """Unzips a WordPress wordpress-x.y.z.zip file from the file system.
+
+    Args:
+        site_configuration: parsed site configuration.
+        zip_file_path: Path to the WordPress zip file.
+        destination_path: Path where WordPress will be unpacked (creates
+            wordpress directory if the official file is unzipped).
+    """
+
+    # Check if file name format is correct
+    filename_ok, version = check_wordpress_zip_file_format(zip_file_path)
+
+    # Check if version is correct
+    if version == site_configuration["settings"]["version"]:
+        logging.info("WordPress zip file version has been checked successfully.")
+        version_ok = True
+    elif site_configuration["settings"]["version"] == "latest":
+        logging.info("WordPress zip file version was not checked since settings value is 'latest'.")
+        version_ok = True
+    else:
+        logging.info("WordPress zip file version is not valid.")
+        version_ok = False
+
+    # Unzip files
+    devops_toolset.filesystem.zip.unzip_file(zip_file_path, destination_path)
+
+    # Check if locale is correct
+    locale_ok: bool = check_wordpress_files_locale(destination_path, site_configuration["locale"])
+
+    # TODO Warn if local file differs from site_configuration values (version, locale and skip_content)
 
 
 if __name__ == "__main__":

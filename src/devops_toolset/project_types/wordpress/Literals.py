@@ -20,15 +20,14 @@ class Literals(ValueDictsBase):
     }
     _info = {
         "wp_created_project_structure": _("Finished creation of the project structure."),
-        "wp_creating_project_structure": _("Starting to create the project structure."),
+        "wp_creating_project_structure": _("Starting to create the project structure..."),
         "wp_created_theme_structure": _("Finished creation of the development theme {theme_name} structure."),
-        "wp_project_structure_creating_from_file": ("Creating project structure from {file_name}"),
-        "wp_project_structure_creating_from_default_file": _("Creating default project structure from "
-                                                           "{resource}"),
+        "wp_project_structure_creating_from_file": _("Creating project structure from {file_name}"),
+        "wp_project_structure_creating_from_default_file": _("Creating default project structure from {resource}..."),
         "wp_theme_structure_creating_from_file": _("Creating development theme [{theme_name}] structure from "
                                                    "{file_name}"),
         "wp_theme_structure_creating_from_default_file": _("Creating default development theme structure from "
-                                                   "{resource}"),
+                                                           "{resource}"),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
@@ -52,6 +51,7 @@ class Literals(ValueDictsBase):
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wordpress_path": _("The WordPress path is: {path}"),
+        "wp_wordpress_zip_file_format_ok": _("WordPress zip file name format is ok. Version number is {version}."),
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system."),
         "wp_wpcli_backup_create_before": _("Creating database backup..."),
         "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
@@ -133,6 +133,7 @@ class Literals(ValueDictsBase):
         "wp_theme_feed_no_info": _("The {theme} theme has a source type of feed, but it has no feed configuration. "
                                    "Please, check the configuration file."),
         "wp_wordpress_path_mandatory": _("wordpress-path is a mandatory parameter. I cannot continue."),
+        "wp_wordpress_zip_file_format_error": _("WordPress zip file name format is not valid."),
         "wp_wpcli_config_create_err": _("File wp-config.php cannot be created."),
         "wp_wpcli_config_set_value_err": _("Cannot set {name} property as {value}"),
         "wp_wpcli_core_install_error": _("Wordpress installation could not be done."),
