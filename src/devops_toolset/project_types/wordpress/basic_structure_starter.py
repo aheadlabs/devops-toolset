@@ -29,24 +29,31 @@ class BasicStructureStarter(object):
         # Set paths
         base_path = pathlib.Path(base_path_str)
         final_path = pathlib.Path.joinpath(base_path, item["name"])
+
+        # Analyze condition
         has_condition = "condition" in item
         if has_condition:
             child_condition = self.condition_met(item, base_path_str)
         else:
             child_condition = True
 
-        # Only if the item DOES NOT exist and condition is met
+        # Create only if the item DOES NOT exist and condition is met
         if not path_tools.is_valid_path(str(final_path), True) and child_condition and "type" in item:
-            # Create item
+
+            # Create directory
             if item["type"] == "directory":
                 os.mkdir(final_path)
                 logging.debug(literals.get("wp_directory_created").format(directory=final_path))
+
+            # Create file
             elif item["type"] == "file":
                 with open(final_path, "w", newline="\n") as new_file:
                     if "default_content" in item:
                         default_content = self.get_default_content(item["default_content"], False)
                         new_file.write(default_content)
                     logging.debug(literals.get("wp_file_created").format(file=final_path))
+
+            # Create binary file
             elif item["type"] == "bfile" and "default_content" in item:
                 default_content = self.get_default_content(item["default_content"], True)
                 with open(final_path, "wb") as new_file:
@@ -56,7 +63,7 @@ class BasicStructureStarter(object):
         # Iterate through children if any
         if "children" in item:
             for child in item["children"]:
-                self.add_item(child, final_path)
+                self.add_item(child, str(final_path))
 
     @staticmethod
     def condition_met(item, base_path: str) -> bool:
@@ -83,12 +90,16 @@ class BasicStructureStarter(object):
             Returns:
                 Content in text or binary format
         """
+
+        # Gets content directly from source property in the .json file
         if item["source"] == "raw":
             logging.debug(literals.get("wp_write_default_content").format(
                 file="",
                 source=f"raw data => {item['source']}"
             ))
             return item["value"]
+
+        # Gets content from a file in the file system
         elif item["source"] == "from_file":
             with open(item["value"], "r") as default_content_file:
                 logging.debug(literals.get("wp_write_default_content").format(
@@ -96,6 +107,19 @@ class BasicStructureStarter(object):
                     source=f"file => {item['source']}"
                 ))
                 return default_content_file.read()
+
+        # Gets content from a file in the library (devops-toolset)
+        elif item["source"] == "from_library":
+            path = pathlib.Path.joinpath(
+                pathlib.Path(os.path.realpath(__file__)).parent, "default-files", item["value"])
+            with open(path, "r") as default_content_file:
+                logging.debug(literals.get("wp_write_default_content").format(
+                    file="",
+                    source=f"file => {item['source']}"
+                ))
+                return default_content_file.read()
+
+        # Gets content from a URL resource
         elif item["source"] == "from_url":
             logging.debug(literals.get("wp_write_default_content").format(
                 file="",
