@@ -113,7 +113,7 @@ def get_file_name_from_url(url: str) -> str:
     return os.path.basename(parsed.path)
 
 
-def get_file_path_from_pattern(path: str, pattern: str, recursive: bool = False) -> Union[List[str], str, None]:
+def get_file_path_from_pattern(path: str, pattern: str, recursive: bool = False) -> Union[str, None]:
     """Gets the file path from a file name pattern.
 
     Args:
@@ -130,18 +130,14 @@ def get_file_path_from_pattern(path: str, pattern: str, recursive: bool = False)
     else:
         files = sorted(pathlib.Path(path).glob(pattern))
 
-    if len(files) == 0:
+    if len(files) == 0 or len(files) > 1:
         return None
-    elif len(files) > 1:
-        file_list = []
-        for file in files:
-            file_list.append(str(file))
-        return file_list
     else:
         return str(files[0])
 
 
-def get_file_path_from_pattern_multiple_paths(paths: list, pattern: str, recursive: bool = False) -> Union[List[str], str, None]:
+def get_file_path_from_pattern_multiple_paths(paths: list, pattern: str, recursive: bool = False) \
+        -> Union[List[str], str, None]:
     """Gets the file path from a file name pattern using a list of base paths.
 
     Args:
