@@ -534,18 +534,20 @@ def wordpress_is_downloaded(path: str) -> bool:
 
 
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
-    """ Downloads the latest version of the WordPress core files using WP-CLI.
+    """ Downloads the specific or latest version of the WordPress core files
+    using WP-CLI.
 
     For more information see:
         https://developer.wordpress.org/cli/commands/core/download/
 
     Args:
         destination_path: Path where WP-CLI will be downloaded.
-        version: Target version to be downloaded (latest by default)
-        locale: Wordpress locale
+        version: Target version to be downloaded (the latest by default)
+        locale: WordPress locale
         skip_content: --skip-content parameter
         debug: If present, --debug will be added to the command showing all debug trace information.
     """
+
     if not wordpress_is_downloaded(destination_path):
         cli.call_subprocess(commands.get("wpcli_core_download").format(
             version=version,

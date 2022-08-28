@@ -588,12 +588,12 @@ def test_start_basic_theme_structure_given_structure_file_path_when_exists_then_
 
 
 @patch("logging.info")
-@patch("devops_toolset.project_types.wordpress.wptools.get_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.get_default_project_structure")
 @patch("pathlib.Path.exists")
 @patch("devops_toolset.tools.git.purge_gitkeep")
 def test_start_basic_theme_structure_given_structure_file_path_when_not_exists_then_gets_project_structure(
         purge_gitkeep_mock, path_exists_mock, get_project_structure_mock, logging_mock, wordpressdata):
-    """ Given structure file, when file exists, should call wptools.get_project_structure """
+    """ Given structure file, when file exists, should call wptools.get_default_project_structure """
     # Arrange
     destination_path = wordpressdata.path
     resource = devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE

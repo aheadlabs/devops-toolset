@@ -448,7 +448,7 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
         logging.info(literals.get("wp_theme_structure_creating_from_file").format(theme_name=theme_name,
                                                                                   file_name=structure_file_path))
     else:
-        theme_structure = wptools.get_project_structure(
+        theme_structure = wptools.get_default_project_structure(
             devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
         logging.info(literals.get("wp_theme_structure_creating_from_default_file").format(
             resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
