@@ -24,7 +24,7 @@ def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = 
             :param plugin_root_path: Source path which contains the plugin code.
             :param tag_name: Tag name to be created. Must not exist
             :param copy_trunk: If True, then the current content on /trunk will be copied
-        """
+    """
 
     try:
         # Check plugin root exist
@@ -84,12 +84,12 @@ def deploy_current_trunk(plugin_root_path: str, commit_message: str, username: s
 def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str, username: str, password: str):
     """ Creates and deploys the current trunk to the SVN central repository as a new tag
 
-           Args:
-               :param plugin_root_path: Source path which contains the plugin code.
-               :param tag_name: Tag name to be created. Must not exist.
-               :param commit_message: Comment for the commit that will be created.
-               :param username: Username of the owner of the repository who will perform the operation
-               :param password: Password of the owner of the repository who will perform the operation
+        Args:
+            :param plugin_root_path: Source path which contains the plugin code.
+            :param tag_name: Tag name to be created. Must not exist.
+            :param commit_message: Comment for the commit that will be created.
+            :param username: Username of the owner of the repository who will perform the operation
+            :param password: Password of the owner of the repository who will perform the operation
     """
 
     try:
@@ -113,19 +113,29 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
 
 
 def __check_parameters(commit_message: str, username: str, password: str):
+    """ Checks parameters passed and raises an exception if they don't fit the spec
+
+        Args:
+            :param commit_message: Comment for the commit that will be created.
+            :param username: Username of the owner of the repository who will perform the operation.
+            :param password: Password of the owner of the repository who will perform the operation.
+    """
     if commit_message is None or commit_message == '':
         raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=commit_message))
     if username is None or username == '':
         raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=username))
     if password is None or password == '':
         raise ValueError(literals.get("wp_mandatory_parameter").format(parameter_name=password))
-    return
 
 
 def __check_plugin_path_exists(plugin_path: str):
+    """ Checks if a plugin relative path exists or not. If not, an exception will be raised.
+
+        Args:
+            :param plugin_path: Plugin's relative path to check.
+    """
     if not pathlib.Path.exists(pathlib.Path(plugin_path)):
         raise FileNotFoundError(literals.get("wp_non_valid_dir_path"))
-    return
 
 
 if __name__ == "__main__":
