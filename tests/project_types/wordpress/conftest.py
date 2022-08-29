@@ -17,6 +17,11 @@ class PluginsData:
         "[{\"name\":\"plugin-name1\",\"source_type\":\"url\",\"source\":\"https://plugin1.zip\",\"force\":true," \
         "\"activate\":true},{\"name\":\"plugin-name2\",\"source_type\":\"zip\",\"source\":\"plugin1.zip\"," \
         "\"force\":true,\"activate\":true}]"
+    commit_message = "Test commit message"
+    tag_name = "v1.0"
+    username = "username"
+    password = "password"
+    plugin_root_path = "/non/existent/path"
 
 
 class ThemesData:
