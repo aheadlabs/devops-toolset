@@ -26,14 +26,15 @@ def test_create_release_tag_logs_exception_when_exception_raised(logging_mock, p
 
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
 @patch("pathlib.Path.mkdir")
+@patch("logging.info")
 def test_create_release_tag_creates_structure_when_path_not_already_exist(
-        mkdir_mock, _, pluginsdata):
+        logging_mock, mkdir_mock, _, pluginsdata):
     """ Given root path, when exists, then creates tag directory structure"""
 
     # Arrange
     plugin_root_path = pluginsdata.plugin_root_path
     tag_name = pluginsdata.tag_name
-    plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+    plugin_tag_path = pathlib.Path(plugin_root_path).joinpath('tags', tag_name)
 
     # Act
     sut.create_release_tag(plugin_root_path, tag_name, False)
@@ -66,8 +67,9 @@ def test_create_release_tag_warns_when_path_already_exist(
 @patch("pathlib.Path.mkdir")
 @patch("pathlib.Path.exists")
 @patch("devops_toolset.tools.svn.svn_copy")
+@patch("logging.info")
 def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
-        svn_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
+        logging_mock, svn_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
     """ Given root path, when exists and copy_trunk is true, then creates tag directory and copies trunk data"""
 
     # Arrange
@@ -75,12 +77,13 @@ def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
     tag_name = pluginsdata.tag_name
     exists_mock.return_value = False
     plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
+    plugin_tag_path: str = str(pathlib.Path(plugin_root_path).joinpath('tags', tag_name))
 
     # Act
     sut.create_release_tag(plugin_root_path, tag_name, True)
 
     # Assert
-    svn_copy_mock.assert_called_once_with(plugin_trunk_path + "/*", plugin_root_path)
+    svn_copy_mock.assert_called_once_with(plugin_trunk_path + "/*", plugin_tag_path)
 
 
 # endregion create_release_tag
@@ -109,8 +112,9 @@ def test_deploy_current_trunk_logs_exception_when_exception_raised(logging_mock,
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
 @patch("devops_toolset.tools.svn.svn_add")
 @patch("devops_toolset.tools.svn.svn_checkin")
+@patch("logging.info")
 def test_deploy_current_trunk_calls_svn_add(
-        svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
+        logging_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
     """ Given arguments, when valid, then calls svn add"""
 
     # Arrange
@@ -131,8 +135,10 @@ def test_deploy_current_trunk_calls_svn_add(
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_parameters")
 @patch("devops_toolset.tools.svn.svn_add")
 @patch("devops_toolset.tools.svn.svn_checkin")
+@patch("logging.info")
 def test_deploy_current_trunk_calls_svn_checkin(
-        svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
+        logging_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        pluginsdata):
     """ Given arguments, when valid, then calls svn checkin"""
 
     # Arrange
@@ -176,8 +182,9 @@ def test_deploy_release_tag_logs_exception_when_exception_raised(logging_mock, p
 @patch("devops_toolset.tools.svn.svn_add")
 @patch("devops_toolset.tools.svn.svn_checkin")
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+@patch("logging.info")
 def test_deploy_release_tag_calls_create_release_tag(
-        create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        logging_mock, create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
         pluginsdata):
     """ Given arguments, when valid, then calls create_release_tag """
 
@@ -200,9 +207,10 @@ def test_deploy_release_tag_calls_create_release_tag(
 @patch("devops_toolset.tools.svn.svn_add")
 @patch("devops_toolset.tools.svn.svn_checkin")
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+@patch("logging.info")
 def test_deploy_release_tag_calls_svn_add(
-        create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
-        pluginsdata):
+        logging_mock, create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock,
+        check_plugin_path_exists_mock, pluginsdata):
     """ Given arguments, when valid, then calls svn add"""
 
     # Arrange
@@ -211,7 +219,7 @@ def test_deploy_release_tag_calls_svn_add(
     username = pluginsdata.username
     password = pluginsdata.password
     tag_name = pluginsdata.tag_name
-    plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+    plugin_tag_path = pathlib.Path(plugin_root_path).joinpath('tags', tag_name)
 
     # Act
     sut.deploy_release_tag(plugin_root_path, tag_name, commit_message, username, password)
@@ -225,9 +233,10 @@ def test_deploy_release_tag_calls_svn_add(
 @patch("devops_toolset.tools.svn.svn_add")
 @patch("devops_toolset.tools.svn.svn_checkin")
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
+@patch("logging.info")
 def test_deploy_release_tag_calls_svn_checkin(
-        create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
-        pluginsdata):
+        logging_mock, create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock,
+        check_plugin_path_exists_mock, pluginsdata):
     """ Given arguments, when valid, then calls svn checkin"""
 
     # Arrange
