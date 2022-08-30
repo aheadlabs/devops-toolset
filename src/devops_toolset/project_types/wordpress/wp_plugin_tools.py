@@ -31,7 +31,7 @@ def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = 
         __check_plugin_path_exists(plugin_root_path)
 
         # Check tag structure does not exist yet
-        plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+        plugin_tag_path = pathlib.Path(plugin_root_path).joinpath('tags', tag_name)
         if pathlib.Path.exists(plugin_tag_path):
             logging.warning(literals.get("wp_plugin_tag_already_exists").format(tag_name=tag_name))
             return
@@ -39,11 +39,15 @@ def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = 
         # Create the structure under the plugin root path
         pathlib.Path.mkdir(plugin_tag_path)
 
+        logging.info(literals.get("wp_plugin_tag_path_created").format(plugin_tag_path=plugin_tag_path))
+
         # If copy_trunk, then copy the content on tag folder using svn_copy
         if copy_trunk:
             plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
             __check_plugin_path_exists(plugin_trunk_path)
-            svn.svn_copy(plugin_trunk_path + "/*", plugin_root_path)
+            svn.svn_copy(plugin_trunk_path + "/*", str(plugin_tag_path))
+            logging.info(literals.get("wp_plugin_trunk_copied").format(plugin_trunk_path=plugin_tag_path))
+
         return
 
     except FileNotFoundError as exception:
@@ -71,9 +75,11 @@ def deploy_current_trunk(plugin_root_path: str, commit_message: str, username: s
         # Call svn_add
         plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
         __check_plugin_path_exists(plugin_trunk_path)
+        logging.info(literals.get("wp_plugin_add").format(plugin_path=plugin_trunk_path))
         svn.svn_add(f'{plugin_trunk_path}/*')
 
         # Call svn_checkin
+        logging.info(literals.get("wp_plugin_checkin").format(plugin_path=plugin_trunk_path))
         svn.svn_checkin(commit_message, username, password)
 
     except (FileNotFoundError, ValueError) as exception:
@@ -103,8 +109,10 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
         create_release_tag(plugin_root_path, tag_name)
 
         # Add and checkin the new tag created (it will be created on the current trunk)
-        plugin_tag_path = pathlib.Path(plugin_root_path).joinpath(tag_name)
+        plugin_tag_path = pathlib.Path(plugin_root_path).joinpath('tags', tag_name)
+        logging.info(literals.get("wp_plugin_add").format(plugin_path=plugin_tag_path))
         svn.svn_add(f'{plugin_tag_path}/*')
+        logging.info(literals.get("wp_plugin_checkin").format(plugin_path=plugin_tag_path))
         svn.svn_checkin(commit_message, username, password)
 
     except (FileNotFoundError, ValueError) as exception:
