@@ -114,7 +114,8 @@ def test_deploy_current_trunk_logs_exception_when_exception_raised(logging_mock,
 @patch("devops_toolset.tools.svn.svn_checkin")
 @patch("logging.info")
 def test_deploy_current_trunk_calls_svn_add(
-        logging_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock, pluginsdata):
+        logging_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
+        pluginsdata):
     """ Given arguments, when valid, then calls svn add"""
 
     # Arrange
@@ -184,8 +185,8 @@ def test_deploy_release_tag_logs_exception_when_exception_raised(logging_mock, p
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.create_release_tag")
 @patch("logging.info")
 def test_deploy_release_tag_calls_create_release_tag(
-        logging_mock, create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock, check_plugin_path_exists_mock,
-        pluginsdata):
+        logging_mock, create_release_tag_mock, svn_checkin_mock, svn_add_mock, check_parameters_mock,
+        check_plugin_path_exists_mock, pluginsdata):
     """ Given arguments, when valid, then calls create_release_tag """
 
     # Arrange
