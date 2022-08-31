@@ -1,4 +1,6 @@
 """Contains several tools and utils for WordPress Plugins"""
+import shutil
+
 import devops_toolset.tools.svn as svn
 import logging
 import pathlib
@@ -41,11 +43,11 @@ def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = 
 
         logging.info(literals.get("wp_plugin_tag_path_created").format(plugin_tag_path=plugin_tag_path))
 
-        # If copy_trunk, then copy the content on tag folder using svn_copy
+        # If copy_trunk, then copy the content on tag folder
         if copy_trunk:
             plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
             __check_plugin_path_exists(plugin_trunk_path)
-            svn.svn_copy(plugin_trunk_path + "/*", str(plugin_tag_path))
+            shutil.copy(plugin_trunk_path, str(plugin_tag_path))
             logging.info(literals.get("wp_plugin_trunk_copied").format(plugin_trunk_path=plugin_tag_path))
 
         return
