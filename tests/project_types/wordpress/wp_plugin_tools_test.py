@@ -66,7 +66,7 @@ def test_create_release_tag_warns_when_path_already_exist(
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
 @patch("pathlib.Path.mkdir")
 @patch("pathlib.Path.exists")
-@patch("shutil.copy")
+@patch("shutil.copytree")
 @patch("logging.info")
 def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
         logging_mock, shutil_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
