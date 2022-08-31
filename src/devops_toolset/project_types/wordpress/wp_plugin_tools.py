@@ -47,7 +47,7 @@ def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = 
         if copy_trunk:
             plugin_trunk_path: str = str(pathlib.Path(plugin_root_path).joinpath('trunk'))
             __check_plugin_path_exists(plugin_trunk_path)
-            shutil.copy(plugin_trunk_path, str(plugin_tag_path))
+            shutil.copytree(plugin_trunk_path, str(plugin_tag_path))
             logging.info(literals.get("wp_plugin_trunk_copied").format(plugin_trunk_path=plugin_tag_path))
 
         return
