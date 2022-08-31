@@ -83,7 +83,7 @@ def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
     sut.create_release_tag(plugin_root_path, tag_name, True)
 
     # Assert
-    shutil_copy_mock.assert_called_once_with(plugin_trunk_path, plugin_tag_path)
+    shutil_copy_mock.assert_called_once_with(plugin_trunk_path, plugin_tag_path, dirs_exist_ok=True)
 
 
 # endregion create_release_tag
