@@ -66,10 +66,10 @@ def test_create_release_tag_warns_when_path_already_exist(
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.__check_plugin_path_exists")
 @patch("pathlib.Path.mkdir")
 @patch("pathlib.Path.exists")
-@patch("devops_toolset.tools.svn.svn_copy")
+@patch("shutil.copy")
 @patch("logging.info")
 def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
-        logging_mock, svn_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
+        logging_mock, shutil_copy_mock, exists_mock, mkdir_mock, check_plugin_path_exists_mock, pluginsdata):
     """ Given root path, when exists and copy_trunk is true, then creates tag directory and copies trunk data"""
 
     # Arrange
@@ -83,7 +83,7 @@ def test_create_release_tag_copies_trunk_when_copy_trunk_is_true(
     sut.create_release_tag(plugin_root_path, tag_name, True)
 
     # Assert
-    svn_copy_mock.assert_called_once_with(plugin_trunk_path + "/*", plugin_tag_path)
+    shutil_copy_mock.assert_called_once_with(plugin_trunk_path, plugin_tag_path)
 
 
 # endregion create_release_tag
