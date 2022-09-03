@@ -87,7 +87,7 @@ def parse_theme_metadata(css_file_content: bytes, tokens: List[str], add_environ
     for token in tokens:
 
         # Build the regex to retrieve data
-        regex = token + wp_constants.theme_metadata_parse_regex
+        regex = token + wp_constants.Expressions.WORDPRESS_REGEX_THEME_METADATA_PARSE
         logging.debug(wp_literals.get("wp_parsing_theme_regex").format(regex=regex))
 
         # Search with regex

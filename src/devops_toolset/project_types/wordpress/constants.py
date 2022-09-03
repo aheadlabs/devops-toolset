@@ -1,14 +1,16 @@
 """Defines constants for the WordPress module."""
 
-# TODO Move these classless constants
-required_files_suffixes = {
-    "site_configuration_file_path": "site.json"
-}
 
-theme_metadata_parse_regex = ": (.+)"
-functions_php_mytheme_regex = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
+class DefaultValues(object):
+    """Default value constants"""
+    WORDPRESS_DEFAULT_LOCALE = "en_US"
 
-github_raw_path = "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/"
+
+class Expressions(object):
+    """Expressions constants"""
+    WORDPRESS_REGEX_FUNCTIONS_PHP_MYTHEME = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
+    WORDPRESS_REGEX_THEME_METADATA_PARSE = ": (.+)"
+    WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE = r"\$wp_local_package\s=\s'([a-z]{2}_[A-Z]{2})'"
 
 
 class FileNames(object):
@@ -23,9 +25,15 @@ class FileNames(object):
     DEFAULT_SITE_ENVIRONMENTS = "default-site-environments.json"
     DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE = "default-wordpress-development-theme-structure.json"
     DEFAULT_WORDPRESS_PROJECT_STRUCTURE = "default-wordpress-project-structure.json"
+    REQUIRED_FILE_SUFFIXES = {
+        "site_configuration_file_path": "site.json"
+    }
     WORDPRESS_CONSTANTS_JSON = "wordpress-constants.json"
     WORDPRESS_ZIP_FILE_NAME_FORMAT = "wordpress*.zip"
-    WORDPRESS_ZIP_FILE_NAME_REGEX = r"^wordpress-([0-9]\.[0-9]\.[0-9])\.zip$"
+    WORDPRESS_ZIP_FILE_NAME_REGEX = r"^wordpress-([0-9]\.[0-9]\.[0-9]).*\.zip$"
+    WORDPRESS_CONTENT = "wp-content/"
+    WORDPRESS_LANGUAGES = "wp-content/languages/"
+    WORDPRESS_VERSION = "wp-includes/version.php"
 
 
 class Urls(object):

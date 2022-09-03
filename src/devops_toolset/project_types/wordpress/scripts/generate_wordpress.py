@@ -62,7 +62,9 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     root_path_obj: pathlib.Path = pathlib.Path(root_path)
 
     # Look for *site.json files in the project path
-    required_files_pattern_suffixes: list = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files_pattern_suffixes: list = list(
+        map(lambda x: f"*{x[1]}", constants.FileNames.REQUIRED_FILE_SUFFIXES.items())
+    )
     required_files_not_present: list[str] = paths.files_exist_filtered(
         root_path, False, required_files_pattern_suffixes)
 

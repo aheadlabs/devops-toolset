@@ -352,7 +352,7 @@ def replace_theme_meta_data_in_scss_file(file_path: str, src_theme_configuration
     if "tags" in src_theme_configuration:
         replacements["Tags"] = ", ".join(src_theme_configuration["tags"])
 
-    replace_theme_meta_data(file_path, replacements, wp_constants.theme_metadata_parse_regex)
+    replace_theme_meta_data(file_path, replacements, wp_constants.Expressions.WORDPRESS_REGEX_THEME_METADATA_PARSE)
 
 
 def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
@@ -360,7 +360,7 @@ def replace_theme_meta_data(path: str, replacements: dict, regex_str: str):
     Args:
         path: The file path to be replaced.
         replacements: The replacements content.
-        regex_str: The regex string used to match and replace the replacements dict.
+        regex_str: The regex string used to match and replace the replacements' dict.
     """
 
     replace_file = open(path, 'r', newline='\n')
@@ -395,7 +395,7 @@ def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration:
     core_php_file = open(file_path, 'r')
     file_content = core_php_file.read()
 
-    file_content = re.sub(wp_constants.functions_php_mytheme_regex, theme_slug, file_content)
+    file_content = re.sub(wp_constants.Expressions.WORDPRESS_REGEX_FUNCTIONS_PHP_MYTHEME, theme_slug, file_content)
 
     # Write replaced content to the file
     with open(file_path, 'w', newline='\n') as core_php_file:

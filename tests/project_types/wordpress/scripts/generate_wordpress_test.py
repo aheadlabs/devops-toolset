@@ -74,7 +74,9 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
     files_exist_mock.return_value = required_files
     environment = "any"
     root_path = wordpressdata.root_path
-    required_files_pattern_suffixes = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files_pattern_suffixes = list(
+        map(lambda x: f"*{x[1]}", constants.FileNames.REQUIRED_FILE_SUFFIXES.items())
+    )
 
     # Act
     sut.main(root_path, "root", "root", "root", environment, [''], {}, False, True, False, False, False)
@@ -170,7 +172,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
     """ Given root_path, when required files present in root_path, then calls get_required_file_paths"""
 
     # Arrange
-    required_files = list(map(lambda x: f"*{x[1]}", constants.required_files_suffixes.items()))
+    required_files = list(map(lambda x: f"*{x[1]}", constants.FileNames.REQUIRED_FILE_SUFFIXES.items()))
     files_exist_mock.return_value = required_files
     prompt_yn_mock.return_value = True
     environment = "any"

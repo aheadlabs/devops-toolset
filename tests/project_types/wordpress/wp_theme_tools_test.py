@@ -475,7 +475,7 @@ def test_replace_theme_meta_data_given_path_and_replacements_then_replaces_file_
     # Arrange
     file_path = wordpressdata.path
     replacements = json.loads(themesdata.replacements_on_scss_file)
-    regex = wp_constants.theme_metadata_parse_regex
+    regex = wp_constants.Expressions.WORDPRESS_REGEX_THEME_METADATA_PARSE
     expected_content = themesdata.default_scss_file_expected
     # Act
     with patch(wordpressdata.builtins_open, new_callable=mock_open,
