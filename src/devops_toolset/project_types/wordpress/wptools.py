@@ -14,6 +14,7 @@ import os
 import pathlib
 import re
 import requests
+import shutil
 import stat
 import sys
 from devops_toolset.core.CommandsCore import CommandsCore
@@ -24,7 +25,6 @@ from devops_toolset.project_types.wordpress.Literals import Literals as Wordpres
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
 from typing import List, Tuple, Union
-
 
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
@@ -83,10 +83,36 @@ def check_wordpress_files_locale(wordpress_path: str, locale: str):
         locale: WordPress locale to be checked.
     """
 
-    # TODO wp-includes/version.php => $wp_local_package = 'es_ES';
-    # TODO wp-content/languages => es_ES-* | *-es_ES.po | *-es_ES.mo
+    # Check if $wp_local_package is defined in wp-includes/version.php
+    version_file_path = pathlib.Path.joinpath(pathlib.Path(wordpress_path), wp_constants.FileNames.WORDPRESS_VERSION)
 
-    return True
+    locale_found, match = devops_toolset.filesystem.tools.search_regex_in_text_file(
+        wp_constants.Expressions.WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE, str(version_file_path))
+
+    # Check if $wp_local_package value matches locale setting
+    if locale_found:
+        wordpress_files_locale = match.groups()[0]
+        locale_ok = wordpress_files_locale == locale
+        if not locale_ok:
+            logging.warning(literals.get("wp_wordpress_zip_file_locale_mismatch").format(
+                locale=locale,
+                wordpress_files_locale=wordpress_files_locale
+            ))
+    elif not locale_found and locale != wp_constants.DefaultValues.WORDPRESS_DEFAULT_LOCALE:
+        logging.warning(literals.get("wp_wordpress_wp_local_package_value_not_set").format(
+            version_file_path=wp_constants.FileNames.WORDPRESS_VERSION
+        ))
+
+    # Check wp-content/languages directory and <locale>.po and <locale>.mo files exist
+    wordpress_path_obj = pathlib.Path(wordpress_path)
+    languages_directory_path = pathlib.Path.joinpath(wordpress_path_obj, wp_constants.FileNames.WORDPRESS_LANGUAGES)
+    po_file_path = pathlib.Path.joinpath(languages_directory_path, f"{locale}.po")
+    mo_file_path = pathlib.Path.joinpath(languages_directory_path, f"{locale}.mo")
+    languages_found = \
+        os.path.exists(languages_directory_path) and os.path.exists(po_file_path) and os.path.exists(mo_file_path)
+
+    if not languages_found and locale != wp_constants.DefaultValues.WORDPRESS_DEFAULT_LOCALE:
+        logging.warning(literals.get("wp_wordpress_zip_file_no_translations").format(locale=locale))
 
 
 def check_wordpress_zip_file_format(zip_file_path: str) -> tuple[bool, Union[str, None]]:
@@ -344,11 +370,6 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
         - project structure JSON file
     """
 
-    # required_file_patterns = wordpress.constants.required_files_suffixes
-    #
-    # for required_file_pattern in required_file_patterns:
-    #     if required_file_pattern.endswith()
-
     result = []
     for required_file_pattern in required_file_patterns:
         result.append(paths.get_file_path_from_pattern(path, required_file_pattern))
@@ -357,7 +378,7 @@ def get_required_file_paths(path: str, required_file_patterns: List[str]) -> Tup
         logging.info(literals.get("wp_required_file_paths_not_found"))
     else:
         devops_toolset.core.log_tools.log_indented_list(literals.get("wp_required_file_paths_found"),
-                                         result, devops_toolset.core.log_tools.LogLevel.info)
+                                                        result, devops_toolset.core.log_tools.LogLevel.info)
 
     return tuple(result)
 
@@ -449,7 +470,6 @@ def import_content_from_configuration_file(site_configuration: dict, environment
     debug_info = environment_config["wp_cli_debug"]
 
     for content_type in site_configuration["content"]["sources"]:
-
         # File name will be the {wxr_path}/{content_type}.xml
         content_path = str(pathlib.Path.joinpath(wxr_path, f"{content_type}.xml"))
 
@@ -484,7 +504,8 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
 
     for plugin in plugins:
         # Get plugin path
-        plugin_path = paths.get_file_path_from_pattern_multiple_paths([plugins_path, root_path], f"{plugin['name']}*.zip")
+        plugin_path = \
+            paths.get_file_path_from_pattern_multiple_paths([plugins_path, root_path], f"{plugin['name']}*.zip")
         logging.info(literals.get("wp_plugin_path").format(path=plugin_path))
 
         # Download plugin if needed
@@ -738,23 +759,35 @@ def unzip_wordpress(site_configuration: dict, zip_file_path: str, destination_pa
     filename_ok, version = check_wordpress_zip_file_format(zip_file_path)
 
     # Check if version is correct
-    if version == site_configuration["settings"]["version"]:
-        logging.info("WordPress zip file version has been checked successfully.")
+    settings_version = site_configuration["settings"]["version"]
+    if version == settings_version:
+        logging.info(literals.get("wp_wordpress_zip_file_version_ok"))
         version_ok = True
-    elif site_configuration["settings"]["version"] == "latest":
-        logging.info("WordPress zip file version was not checked since settings value is 'latest'.")
+    elif settings_version == "latest":
+        logging.warning(literals.get("wp_wordpress_zip_file_version_settings_latest"))
         version_ok = True
     else:
-        logging.info("WordPress zip file version is not valid.")
+        logging.warning(literals.get("wp_wordpress_zip_file_version_not_valid"))
         version_ok = False
+
+    if not version_ok:
+        logging.warning(literals.get("wp_wordpress_zip_file_and_settings_version_mismatch").format(
+            version=version,
+            settings_version=settings_version
+        ))
 
     # Unzip files
     devops_toolset.filesystem.zip.unzip_file(zip_file_path, destination_path)
 
     # Check if locale is correct
-    locale_ok: bool = check_wordpress_files_locale(destination_path, site_configuration["locale"])
+    wordpress_path = pathlib.Path.joinpath(pathlib.Path(destination_path), "wordpress")
+    check_wordpress_files_locale(str(wordpress_path), site_configuration["settings"]["locale"])
 
-    # TODO Warn if local file differs from site_configuration values (version, locale and skip_content)
+    # Delete wp-content if skip_content_download is True
+    wp_content_path = pathlib.Path.joinpath(wordpress_path, wp_constants.FileNames.WORDPRESS_CONTENT)
+    if site_configuration["settings"]["skip_content_download"] is True and wp_content_path.exists():
+        logging.warning(literals.get("wp_wordpress_zip_file_removed_wp_content"))
+        shutil.rmtree(wp_content_path, ignore_errors=True)
 
 
 if __name__ == "__main__":

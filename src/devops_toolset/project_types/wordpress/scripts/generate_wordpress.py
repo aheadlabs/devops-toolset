@@ -121,7 +121,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     if use_local_wordpress_binaries:
         wordpress_zip_path = devops_toolset.project_types.wordpress.wptools.find_wordpress_zip_file_in_path(root_path)
         devops_toolset.project_types.wordpress.wptools.unzip_wordpress(site_config, wordpress_zip_path, root_path)
-        # TODO Purge .gitkeep
+        devops_toolset.tools.git.purge_gitkeep(wordpress_path)
     else:
         devops_toolset.project_types.wordpress.wptools.download_wordpress(
             site_config, wordpress_path, environment_config["wp_cli_debug"])

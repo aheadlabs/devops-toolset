@@ -51,7 +51,10 @@ class Literals(ValueDictsBase):
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wordpress_path": _("The WordPress path is: {path}"),
+        "wp_wordpress_zip_file_and_settings_version_mismatch":
+            _("WordPress files version ({version}) and version specified in settings ({settings_version}) mismatch."),
         "wp_wordpress_zip_file_format_ok": _("WordPress zip file name format is ok. Version number is {version}."),
+        "wp_wordpress_zip_file_version_ok": _("WordPress zip file version has been checked successfully."),
         "wp_wpcli_add_ev": _("Remember to add the path to the PATH or BIN, depending on your operating system."),
         "wp_wpcli_backup_create_before": _("Creating database backup..."),
         "wp_wpcli_config_created_ok": _("File wp-config.php created successfully."),
@@ -99,6 +102,16 @@ class Literals(ValueDictsBase):
                                                          "(db privileges) {db_privileges}; "
                                                          "(global privileges) {global_privileges};"),
         "mysql_db_exists_skipping_creation": _("Database {schema} exists. I will not create any database..."),
+        "wp_wordpress_wp_local_package_value_not_set": _("$wp_local_package value was not set in {version_file_path}"),
+        "wp_wordpress_zip_file_locale_mismatch": _("Locale specified in settings ({locale}) doesn't match WordPress "
+                                                   "files locale ({wordpress_files_locale})."),
+        "wp_wordpress_zip_file_no_translations": _("WordPress files don't have translations for the locale specified "
+                                                   "in settings ({locale})"),
+        "wp_wordpress_zip_file_removed_wp_content": _("wp-content/ directory was removed from WordPress unzipped files"
+                                                      " since setting skip_content_download value is True"),
+        "wp_wordpress_zip_file_version_not_valid": _("WordPress zip file version is not valid."),
+        "wp_wordpress_zip_file_version_settings_latest":
+            _("WordPress zip file version was not checked since settings value is 'latest'."),
         "wp_wpcli_export_db_skipping_as_set": _("I am skipping the {dump} database dump as configured in settings..."),
         "wp_wpcli_user_exists": _("User {user} already exists. Skipping user creation..."),
     }
