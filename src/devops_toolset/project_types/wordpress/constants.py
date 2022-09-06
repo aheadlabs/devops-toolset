@@ -11,6 +11,7 @@ class Expressions(object):
     WORDPRESS_REGEX_FUNCTIONS_PHP_MYTHEME = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
     WORDPRESS_REGEX_THEME_METADATA_PARSE = ": (.+)"
     WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE = r"\$wp_local_package\s=\s'([a-z]{2}_[A-Z]{2})'"
+    WORDPRESS_FILTER_PLUGIN_NAME = "([a-z-]+)(?:\.php)?"
 
 
 class FileNames(object):

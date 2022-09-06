@@ -222,6 +222,35 @@ def create_wp_cli_bat_file(phar_path: str):
         bat.write(f"php \"{phar_path}\" %*")
 
 
+def delete_wordpress_content_based_on_settings(wp_content_path: pathlib.Path, site_configuration: dict):
+    """Deletes WordPress wp-content directory if skip_content_download is True,
+    except themes and plugins that are specified to be installed on the
+    settings file.
+
+    Args:
+        wp_content_path: Path to wp-content directory.
+        site_configuration: Site configuration.
+    """
+
+    # Delete all themes that are not specified in settings
+    themes_in_settings = list(map(lambda theme: theme["name"], site_configuration["settings"]["themes"]))
+    for child in pathlib.Path(wp_content_path, "themes").iterdir():
+        if child.name not in themes_in_settings and child.name != "index.php":
+            shutil.rmtree(child, ignore_errors=True)
+
+    # Delete all plugins that are not specified in settings
+    plugins_in_settings = list(map(lambda plugin: plugin["name"], site_configuration["settings"]["plugins"]))
+    for child in pathlib.Path(wp_content_path, "plugins").iterdir():
+        name: str = re.search(wp_constants.Expressions.WORDPRESS_FILTER_PLUGIN_NAME, child.name).groups()[0]
+        if name not in plugins_in_settings and child.name != "index.php":
+            if child.is_dir():
+                shutil.rmtree(child, ignore_errors=True)
+            elif child.is_file():
+                os.remove(child)
+
+    logging.warning(literals.get("wp_wordpress_zip_file_removed_wp_content"))
+
+
 def download_wordpress(site_configuration: dict, destination_path: str, wp_cli_debug: bool = False):
     """ Downloads the latest version of the WordPress core files using a site configuration file.
 
@@ -780,14 +809,14 @@ def unzip_wordpress(site_configuration: dict, zip_file_path: str, destination_pa
     devops_toolset.filesystem.zip.unzip_file(zip_file_path, destination_path)
 
     # Check if locale is correct
-    wordpress_path = pathlib.Path.joinpath(pathlib.Path(destination_path), "wordpress")
+    wordpress_path = pathlib.Path(pathlib.Path(destination_path), "wordpress")
     check_wordpress_files_locale(str(wordpress_path), site_configuration["settings"]["locale"])
 
     # Delete wp-content if skip_content_download is True
-    wp_content_path = pathlib.Path.joinpath(wordpress_path, wp_constants.FileNames.WORDPRESS_CONTENT)
-    if site_configuration["settings"]["skip_content_download"] is True and wp_content_path.exists():
-        logging.warning(literals.get("wp_wordpress_zip_file_removed_wp_content"))
-        shutil.rmtree(wp_content_path, ignore_errors=True)
+    delete_wordpress_content_based_on_settings(
+        pathlib.Path(wordpress_path, wp_constants.FileNames.WORDPRESS_CONTENT),
+        site_configuration
+    )
 
 
 if __name__ == "__main__":

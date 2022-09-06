@@ -107,8 +107,8 @@ class Literals(ValueDictsBase):
                                                    "files locale ({wordpress_files_locale})."),
         "wp_wordpress_zip_file_no_translations": _("WordPress files don't have translations for the locale specified "
                                                    "in settings ({locale})"),
-        "wp_wordpress_zip_file_removed_wp_content": _("wp-content/ directory was removed from WordPress unzipped files"
-                                                      " since setting skip_content_download value is True"),
+        "wp_wordpress_zip_file_removed_wp_content": _("Themes and plugins not specified in settings where removed from "
+                                                      "wp-content/ directory from WordPress unzipped files"),
         "wp_wordpress_zip_file_version_not_valid": _("WordPress zip file version is not valid."),
         "wp_wordpress_zip_file_version_settings_latest":
             _("WordPress zip file version was not checked since settings value is 'latest'."),
