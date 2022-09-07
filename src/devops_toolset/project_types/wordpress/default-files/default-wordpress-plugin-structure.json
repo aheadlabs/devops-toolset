@@ -1,0 +1,78 @@
+{
+  "$schema": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
+  "items": [
+    {
+      "name": ".devops",
+      "type": "directory",
+      "children": [
+        {
+          "name": ".gitkeep",
+          "type": "file",
+          "condition": "when-parent-not-empty"
+        }
+      ]
+    },
+    {
+      "name": "assets",
+      "type": "directory",
+      "children": [
+        {
+          "name": ".gitkeep",
+          "type": "file",
+          "condition": "when-parent-not-empty"
+        }
+      ]
+    },
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "[plugin-name]",
+          "type": "directory",
+          "children": [
+            {
+              "name": "[plugin-name].php",
+              "type": "file",
+              "default_content": {
+                 "source": "from_url",
+                 "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default.gitignore"
+              }
+            }
+          ]
+        },
+        {
+          "name": "readme.txt",
+          "type": "file",
+          "default_content": {
+            "source": "from_url",
+            "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default.gitignore"
+          }
+        }
+      ]
+    },
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "default_content": {
+        "source": "from_url",
+        "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default.gitignore"
+      }
+    },
+    {
+      "name": "LICENSE",
+      "type": "file",
+      "default_content": {
+        "source": "from_url",
+        "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default.gitignore"
+      }
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "default_content": {
+        "source": "from_url",
+        "value": "https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/devops_toolset/project_types/wordpress/default-files/default-README.md"
+      }
+    },
+}
