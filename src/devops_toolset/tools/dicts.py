@@ -37,9 +37,8 @@ def replace_string_in_dict(subject: dict, search: str, replace: str) -> dict:
                 item = replace_string_in_dict(item, search, replace)
                 value[index] = item
                 index = index + 1
-        if isinstance(value, str):
-            if search in value:
-                subject[key] = value.replace(search, replace)
+        if isinstance(value, str) and search in value:
+            subject[key] = value.replace(search, replace)
     return subject
 
 

@@ -31,6 +31,7 @@ def test_create_plugin_logs_error_when_plugin_destination_paths_does_not_exist(e
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
 def test_create_plugin_calls_purge_gitkeep_when_path_exists(parse_plugin_config_mock, add_item_mock,
                                                             purge_gitkeep_mock, exists_mock, pluginsdata):
+    """ Given root path, when exist, then calls purge_gitkeep """
     # Arrange
     exists_mock.return_value = True
     # Act
@@ -39,12 +40,14 @@ def test_create_plugin_calls_purge_gitkeep_when_path_exists(parse_plugin_config_
     # Assert
     purge_gitkeep_mock.assert_called_once_with(pathlib.Path(pluginsdata.plugin_root_path).as_posix())
 
+
 @patch("os.path.exists")
 @patch("devops_toolset.tools.git.purge_gitkeep")
 @patch.object(BasicStructureStarter, "add_item")
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
 def test_create_plugin_calls_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
                                                                 purge_gitkeep_mock, exists_mock, pluginsdata):
+    """ Given root path, when exists, then calls add_item method """
     # Arrange
     exists_mock.return_value = True
     # Act
@@ -60,21 +63,7 @@ def test_create_plugin_calls_add_item_when_path_exists(parse_plugin_config_mock,
 @patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
 def test_create_plugin_does_not_call_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
                                                                 purge_gitkeep_mock, exists_mock, pluginsdata):
-    # Arrange
-    exists_mock.return_value = True
-    # Act
-    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.empty_plugin_structure),
-                          pluginsdata.plugin_root_path)
-    # Assert
-    add_item_mock.assert_not_called()
-
-
-@patch("os.path.exists")
-@patch("devops_toolset.tools.git.purge_gitkeep")
-@patch.object(BasicStructureStarter, "add_item")
-@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
-def test_create_plugin_does_not_call_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
-                                                                purge_gitkeep_mock, exists_mock, pluginsdata):
+    """ Given root path, when exists and no items found, then doesn't call add_item method """
     # Arrange
     exists_mock.return_value = True
     # Act
