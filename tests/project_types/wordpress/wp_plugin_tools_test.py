@@ -1,10 +1,89 @@
 """Unit tests for the wp_plugin_tools file"""
+import json
 import pathlib
 
 import pytest
 from unittest.mock import patch
 
 import devops_toolset.project_types.wordpress.wp_plugin_tools as sut
+from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
+
+
+# region create_plugin
+
+
+@patch("logging.error")
+@patch("os.path.exists")
+def test_create_plugin_logs_error_when_plugin_destination_paths_does_not_exist(exists_mock, logging_mock, pluginsdata):
+    """ Given root path, when not exist, then logs error and returns """
+    # Arrange
+    exists_mock.return_value = False
+    # Act
+    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.plugin_structure),
+                      pluginsdata.plugin_root_path)
+    # Assert
+    logging_mock.assert_called_once()
+
+
+@patch("os.path.exists")
+@patch("devops_toolset.tools.git.purge_gitkeep")
+@patch.object(BasicStructureStarter, "add_item")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
+def test_create_plugin_calls_purge_gitkeep_when_path_exists(parse_plugin_config_mock, add_item_mock,
+                                                            purge_gitkeep_mock, exists_mock, pluginsdata):
+    # Arrange
+    exists_mock.return_value = True
+    # Act
+    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.plugin_structure),
+                      pluginsdata.plugin_root_path)
+    # Assert
+    purge_gitkeep_mock.assert_called_once_with(pathlib.Path(pluginsdata.plugin_root_path).as_posix())
+
+@patch("os.path.exists")
+@patch("devops_toolset.tools.git.purge_gitkeep")
+@patch.object(BasicStructureStarter, "add_item")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
+def test_create_plugin_calls_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
+                                                                purge_gitkeep_mock, exists_mock, pluginsdata):
+    # Arrange
+    exists_mock.return_value = True
+    # Act
+    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.plugin_structure),
+                          pluginsdata.plugin_root_path)
+    # Assert
+    add_item_mock.assert_called()
+
+
+@patch("os.path.exists")
+@patch("devops_toolset.tools.git.purge_gitkeep")
+@patch.object(BasicStructureStarter, "add_item")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
+def test_create_plugin_does_not_call_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
+                                                                purge_gitkeep_mock, exists_mock, pluginsdata):
+    # Arrange
+    exists_mock.return_value = True
+    # Act
+    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.empty_plugin_structure),
+                          pluginsdata.plugin_root_path)
+    # Assert
+    add_item_mock.assert_not_called()
+
+
+@patch("os.path.exists")
+@patch("devops_toolset.tools.git.purge_gitkeep")
+@patch.object(BasicStructureStarter, "add_item")
+@patch("devops_toolset.project_types.wordpress.wp_plugin_tools.parse_plugin_config_in_plugin_file")
+def test_create_plugin_does_not_call_add_item_when_path_exists(parse_plugin_config_mock, add_item_mock,
+                                                                purge_gitkeep_mock, exists_mock, pluginsdata):
+    # Arrange
+    exists_mock.return_value = True
+    # Act
+    sut.create_plugin(json.loads(pluginsdata.plugin_config), json.loads(pluginsdata.empty_plugin_structure),
+                          pluginsdata.plugin_root_path)
+    # Assert
+    add_item_mock.assert_not_called()
+
+# endregion create_plugin
 
 
 # region create_release_tag
@@ -256,7 +335,6 @@ def test_deploy_release_tag_calls_svn_checkin(
 
 # endregion deploy_release_tag
 
-
 # region __check_parameters
 
 @pytest.mark.parametrize("commit_message, username, password", [('', 'username', 'password'),
@@ -274,7 +352,6 @@ def test__check_parameters_raises_error_when_commit_message_is_none(commit_messa
 
 
 # endregion __check_parameters
-
 
 # region __check_plugin_path_exists
 

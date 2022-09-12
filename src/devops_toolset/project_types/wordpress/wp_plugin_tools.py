@@ -1,22 +1,64 @@
 """Contains several tools and utils for WordPress Plugins"""
+import logging
+import os.path
+import pathlib
 import shutil
 
+import devops_toolset.filesystem.paths as paths
+import devops_toolset.tools.git as git_tools
 import devops_toolset.tools.svn as svn
-import logging
-import pathlib
-
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App
 from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
+from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
+from devops_toolset.tools.dicts import replace_string_in_dict
 
 app: App = App()
 platform_specific_restapi = app.load_platform_specific("restapi")
 literals = LiteralsCore([WordpressLiterals])
 platform_literals = LiteralsCore([PlatformLiterals])
 commands = CommandsCore([WordpressCommands])
+
+
+def create_plugin(plugin_config: dict, plugin_structure: dict, plugin_destination_path: str):
+    """ Creates a new WordPress plugin based on a configuration json file and a structure file
+
+            Args:
+                :param plugin_config: Path which contains.
+                :param plugin_structure: Structure for the plugin
+                :param plugin_destination_path: Destination path for the plugin being created
+    """
+    # Check destination path exists before creating structure
+    if not os.path.exists(plugin_destination_path):
+        logging.error(literals.get("wp_non_valid_dir_path"))
+        return
+
+    # Get plugin slug
+    plugin_slug = plugin_config["slug"]
+    plugin_slug_token = '[plugin-name]'
+
+    # Purge .gitkeep
+    git_tools.purge_gitkeep(pathlib.Path(plugin_destination_path).as_posix())
+
+    # Use structure starter to create it based to the plugin structure
+    project_starter = BasicStructureStarter()
+
+    # Iterate through every item recursively
+    for item in plugin_structure["items"]:
+        # Replace [plugin_name] token inside file structure dict
+        item = replace_string_in_dict(item, plugin_slug_token, plugin_slug)
+        # Process structure item
+        project_starter.add_item(item, plugin_destination_path)
+
+    # Parse plugin data into readme.txt
+    parse_plugin_config_in_plugin_file(plugin_config, plugin_destination_path, 'readme.txt')
+    # Parse plugin data into README.MD
+    parse_plugin_config_in_plugin_file(plugin_config, plugin_destination_path, 'README.md')
+    # Parse plugin data into plugin's php code metadata
+    parse_plugin_config_in_plugin_file(plugin_config, plugin_destination_path, f'{plugin_slug}.php')
 
 
 def create_release_tag(plugin_root_path: str, tag_name: str, copy_trunk: bool = True):
@@ -120,6 +162,24 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
     except (FileNotFoundError, ValueError) as exception:
         logging.exception(exception)
         return
+
+
+def parse_plugin_config_in_plugin_file(plugin_data: dict, plugin_root_path: str, plugin_file: str):
+    """ Replaces plugin config values on readme.txt file
+
+        Args:
+            :param plugin_data: Plugin config parsed data
+            :param plugin_root_path: Plugin's root path.
+            :param plugin_file: Plugin's file to replace
+    """
+    # Get readme.txt file
+    plugin_file_path: str = paths.get_file_path_from_pattern(plugin_root_path, plugin_file, True)
+    # Replace data
+    with open(plugin_file_path, 'r+') as readme_file:
+        readme_content = readme_file.read()
+        for key, value in plugin_data.items():
+            readme_content.replace(f'[{key}]', value)
+        readme_file.write(readme_content)
 
 
 def __check_parameters(commit_message: str, username: str, password: str):
