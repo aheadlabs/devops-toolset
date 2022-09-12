@@ -1,17 +1,17 @@
-=== [PLUGIN_NAME] ===
-Contributors: [CONTRIBUTORS]
-Donate link: [DONATE_LINK]
-Tags: [TAGS]
-Requires at least: [REQUIRES_AT_LEAST]
-Tested up to: [TESTED_UP_TO]
-Stable tag: [TRUNK]
-Requires PHP: [REQUIRES_PHP]
-License: [LICENSE]
-License URI: [LICENSE_URI]
+=== [name] ===
+Contributors: [contributors]
+Donate link: [donate_link]
+Tags: [tags]
+Requires at least: [requires_at_least]
+Tested up to: [tested_up_to]
+Stable tag: [stable_tag]
+Requires PHP: [requires_php]
+License: [license]
+License URI: [license_uri]
 
 == Description ==
-[DESCRIPTION]
-Just install the plugin from the [WordPress plugins directory](https://developer.wordpress.org/plugins/[PLUGIN_SLUG]/)
+[description]
+Just install the plugin from the [WordPress plugins directory](https://developer.wordpress.org/plugins/[slug]/)
 
 == Changelog ==
 

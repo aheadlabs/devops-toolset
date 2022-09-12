@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name:  [PLUGIN_NAME]
-Plugin URI:   [PLUGIN_URI]
-Description:  [DESCRIPTION]
-Version:      [VERSION]
-Author:       [AUTHOR]
-Author URI:   [AUTHOR_URI]
-License:      [LICENSE]
-License URI:  [LICENSE_URI]
+Plugin Name:  [name]
+Plugin URI:   [uri]
+Description:  [description]
+Version:      [version]
+Author:       [author]
+Author URI:   [author_uri]
+License:      [license]
+License URI:  [license_uri]
 */
 
 /**

@@ -1,7 +1,7 @@
-# Insert your full plugin name on this title
+# [name]
 A briefly description of your plugin.
 
-Install the plugin from the [WordPress plugins directory](https://developer.wordpress.org/plugins/[plugin-name]/)
+Install the plugin from the [WordPress plugins directory](https://developer.wordpress.org/plugins/[slug]/)
 
 ## Add an example of the capabilities and features of your plugin
 
