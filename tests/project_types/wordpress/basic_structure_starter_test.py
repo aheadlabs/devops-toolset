@@ -56,7 +56,7 @@ def test_add_item_given_parameters_should_call_condition_met_when_item_has_child
     # Arrange
     item = {"type": "directory", "name": "foo_directory"}
     base_path = wordpressdata.wordpress_path
-    with patch.object(path_tools, "is_valid_path", return_value=True):
+    with patch.object(os.path, "exists", return_value=True):
         # Act
         BasicStructureStarter().add_item(item, base_path)
         # Assert
@@ -71,14 +71,14 @@ def test_add_item_given_parameters_when_child_condition_is_false_and_have_childr
     # Arrange
     item = {"type": "directory", "name": "foo_directory", "children": [{"name": "foo_file"}]}
     base_path = wordpressdata.wordpress_path
-    expected_path_1 = str(pathlib.Path.joinpath(pathlib.Path(base_path), "foo_directory"))
-    expected_path_2 = str(pathlib.Path.joinpath(pathlib.Path(expected_path_1), "foo_file"))
-    with patch.object(path_tools, "is_valid_path", return_value=True) as is_valid_path_mock:
+    expected_path_1 = pathlib.Path.joinpath(pathlib.Path(base_path), "foo_directory")
+    expected_path_2 = pathlib.Path.joinpath(pathlib.Path(expected_path_1), "foo_file")
+    with patch.object(os.path, "exists", return_value=True) as is_valid_path_mock:
         # Act
         BasicStructureStarter().add_item(item, base_path)
         # Assert
-        calls = [call(expected_path_1, True),
-                 call(expected_path_2, True)]
+        calls = [call(expected_path_1),
+                 call(expected_path_2)]
         is_valid_path_mock.assert_has_calls(calls, any_order=True)
 
 

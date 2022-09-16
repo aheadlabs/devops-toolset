@@ -164,22 +164,25 @@ def deploy_release_tag(plugin_root_path: str, tag_name: str, commit_message: str
         return
 
 
-def parse_plugin_config_in_plugin_file(plugin_data: dict, plugin_root_path: str, plugin_file: str):
+def parse_plugin_config_in_plugin_file(plugin_data: dict, plugin_root_path: str, plugin_file_name: str):
     """ Replaces plugin config values on readme.txt file
 
         Args:
             :param plugin_data: Plugin config parsed data
             :param plugin_root_path: Plugin's root path.
-            :param plugin_file: Plugin's file to replace
+            :param plugin_file_name: Plugin file name to replace
     """
     # Get readme.txt file
-    plugin_file_path: str = paths.get_file_path_from_pattern(plugin_root_path, plugin_file, True)
+    plugin_file_path: str = paths.get_file_path_from_pattern(plugin_root_path, plugin_file_name, True)
     # Replace data
-    with open(plugin_file_path, 'r+') as readme_file:
-        readme_content = readme_file.read()
+    with open(plugin_file_path, 'r') as plugin_file:
+        file_content = plugin_file.read()
         for key, value in plugin_data.items():
-            readme_content.replace(f'[{key}]', value)
-        readme_file.write(readme_content)
+            if isinstance(value, list):
+                value = ', '.join(value)
+            file_content = file_content.replace(f'[{key}]', value)
+    with open(plugin_file_path, 'w') as plugin_replaced_file:
+        plugin_replaced_file.write(file_content)
 
 
 def __check_parameters(commit_message: str, username: str, password: str):
