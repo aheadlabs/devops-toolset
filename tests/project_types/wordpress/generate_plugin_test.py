@@ -194,4 +194,3 @@ def test_teardown_purges_gitkeep_on_devops_path(purge_gitkeep_mock, move_files_m
     purge_gitkeep_mock.assert_called_with(devops_path)
 
 # endregion teardown()
-
