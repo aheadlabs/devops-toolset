@@ -87,7 +87,6 @@ def get_and_parse_required_plugin_file(root_path: str, file_pattern: str) -> dic
         Args:
             root_path: Path to the root location of the plugin.
             file_pattern: Pattern of the file to search for.
-    
     """
 
     plugin_file_path: str = paths.get_file_path_from_pattern(root_path, file_pattern, True)
