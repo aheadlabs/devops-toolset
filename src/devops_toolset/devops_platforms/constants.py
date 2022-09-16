@@ -11,6 +11,10 @@ class Urls(object):
                           "devops_toolset/project_types/wordpress/default-files/default-project.xml"
     DEFAULT_README = GITHUB_RAW_CONTENT + "devops_toolset/project_types/wordpress/default-files/default-README.md"
     DEFAULT_GITIGNORE = GITHUB_RAW_CONTENT + "devops_toolset/project_types/wordpress/default-files/default.gitignore"
+    DEFAULT_PLUGIN_CONFIG = GITHUB_RAW_CONTENT + \
+                            "devops_toolset/project_types/wordpress/default-files/default-plugin-config.json"
+    DEFAULT_PLUGIN_STRUCTURE = GITHUB_RAW_CONTENT + \
+                            "devops_toolset/project_types/wordpress/default-files/default-wordpress-plugin-structure.json"
     DEFAULT_SITE_CONFIG = GITHUB_RAW_CONTENT + \
                           "devops_toolset/project_types/wordpress/default-files/default-localhost-site.json"
     DEFAULT_SITE_ENVIRONMENTS = GITHUB_RAW_CONTENT + \
@@ -26,4 +30,9 @@ class Urls(object):
         "*site.json": DEFAULT_SITE_CONFIG,
         "*site-environments.json": DEFAULT_SITE_ENVIRONMENTS,
         "*project-structure.json": DEFAULT_WORDPRESS_PROJECT_STRUCTURE
+    }
+
+    plugin_bootstrap_required_files = {
+        "*plugin-config.json": DEFAULT_PLUGIN_CONFIG,
+        "*plugin-structure.json": DEFAULT_PLUGIN_STRUCTURE
     }

@@ -22,6 +22,39 @@ class PluginsData:
     username = "username"
     password = "password"
     plugin_root_path = "/non/existent/path"
+    plugin_config = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/wordpress-plugin-config-schema.json\"," \
+                    "\"name\":\"Plugin Name\",\"slug\":\"plugin-name\"," \
+                    "\"uri\":\"https://github.com/my-repository/plugin-name/\"," \
+                    "\"description\":\"Plugin description\"," \
+                    "\"version\":\"0.1.0\",\"author\":\"Plugin owner's name\",\"author_uri\":\"Plugin owner's uri\"," \
+                    "\"license\":\"GPL2\",\"license_uri\":\"https://www.gnu.org/licenses/gpl-2.0.html\"," \
+                    "\"contributors\":[\"contributor 1\",\"contributor 2\"]," \
+                    "\"donate_link\":\"https://paypal.me/my-donate-link\"," \
+                    "\"tags\":[\"tag 1\",\"tag 2\"],\"requires_at_least\":\"6.0\",\"tested_up_to\":\"6.0\"," \
+                    "\"stable_tag\":\"0.1.0\",\"requires_php\":\"5.2.4\"}"
+    empty_plugin_structure = "{\"items\":[]}"
+    plugin_structure = "{\"$schema\":\"http://dev.aheadlabs.com/schemas/json/project-structure-schema.json\"," \
+                       "\"items\":[{\"name\":\".devops\",\"type\":\"directory\",\"children\":[{\"name\":\".gitkeep\"," \
+                       "\"type\":\"file\",\"condition\":\"when-parent-not-empty\"}]},{\"name\":\"assets\"," \
+                       "\"type\":\"directory\",\"children\":[{\"name\":\".gitkeep\",\"type\":\"file\"," \
+                       "\"condition\":\"when-parent-not-empty\"}]},{\"name\":\"src\",\"type\":\"directory\"," \
+                       "\"children\":[{\"name\":\"[plugin-name]\",\"type\":\"directory\"," \
+                       "\"children\":[{\"name\":\"[plugin-name].php\",\"type\":\"file\"," \
+                       "\"default_content\":{\"source\":\"from_url\"," \
+                       "\"value\":\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
+                       "devops_toolset/project_types/wordpress/default-files/default-plugin-code.php\"}}]}," \
+                       "{\"name\":\"readme.txt\",\"type\":\"file\",\"default_content\":{\"source\":\"from_url\"," \
+                       "\"value\":\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
+                       "devops_toolset/project_types/wordpress/default-files/default-plugin-readme.txt\"}}]}," \
+                       "{\"name\":\".gitignore\",\"type\":\"file\",\"default_content\":{\"source\":\"from_url\"," \
+                       "\"value\":\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
+                       "devops_toolset/project_types/wordpress/default-files/default-plugin.gitignore\"}}," \
+                       "{\"name\":\"LICENSE\",\"type\":\"file\",\"default_content\":{\"source\":\"from_url\"," \
+                       "\"value\":\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
+                       "devops_toolset/project_types/wordpress/default-files/default-plugin-LICENSE\"}}," \
+                       "{\"name\":\"README.md\",\"type\":\"file\",\"default_content\":{\"source\":\"from_url\"," \
+                       "\"value\":\"https://raw.githubusercontent.com/aheadlabs/devops-toolset/master/src/" \
+                       "devops_toolset/project_types/wordpress/default-files/default-plugin-README.md\"}}]}"
 
 
 class ThemesData:

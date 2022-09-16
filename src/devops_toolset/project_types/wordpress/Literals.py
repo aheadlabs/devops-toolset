@@ -10,6 +10,7 @@ class Literals(ValueDictsBase):
     """ValueDicts for the wordpress module."""
 
     _titles = {
+        "wp_title_generate_plugin": _("Generate WordPress Plugin"),
         "wp_title_generate_wordpress": _("Generate WordPress site"),
         "wp_title_bootstrap_repository": _("Bootstrap WordPress repository"),
         "wp_title_wordpress_files": _("WordPress core"),
@@ -28,6 +29,7 @@ class Literals(ValueDictsBase):
         "wp_theme_structure_creating_from_default_file": _("Creating default development theme structure from "
                                                    "{resource}"),
         "wp_default_files": _("These are the default files from the GitHub repository:"),
+        "wp_downloading_default_file": _("Downloading default file {file} from {url}."),
         "wp_directory_created": _("Directory created: {directory}"),
         "wp_environment_file_used": _("The following environment file will be used: {file}"),
         "wp_file_created": _("File created: {file}"),
@@ -50,6 +52,8 @@ class Literals(ValueDictsBase):
         "wp_plugin_path": _("The plugin path is: {path}"),
         "wp_plugin_tag_path_created": _("Plugin's tag path created: {plugin_tag_path}"),
         "wp_plugin_trunk_copied": _("Plugin's trunk content copied successfully to: {plugin_trunk_path}"),
+        "wp_parsing_plugin_config_file": _("Parsing plugin's config file from {file}."),
+        "wp_parsing_plugin_structure_file": _("Parsing plugin's structure file from {file}."),
         "wp_theme_path": _("The theme path is: {path}"),
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
