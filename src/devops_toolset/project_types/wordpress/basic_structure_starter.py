@@ -36,7 +36,7 @@ class BasicStructureStarter(object):
             child_condition = True
 
         # Only if the item DOES NOT exist and condition is met
-        if not path_tools.is_valid_path(str(final_path), True) and child_condition and "type" in item:
+        if not os.path.exists(final_path) and child_condition and "type" in item:
             # Create item
             if item["type"] == "directory":
                 os.mkdir(final_path)
