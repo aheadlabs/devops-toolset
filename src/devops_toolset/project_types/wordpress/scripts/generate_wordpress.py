@@ -115,7 +115,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     themes_path: str = theme_tools.get_themes_path_from_root_path(root_path, global_constants)
 
     # Create project structure
-    devops_toolset.project_types.wordpress.wptools.start_basic_project_structure(root_path)
+    devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure(root_path)
 
     # WordPress core files
     if use_local_wordpress_binaries:
@@ -152,7 +152,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     devops_toolset.project_types.wordpress.wptools.add_wp_options(
         site_config["settings"]["options"], wordpress_path, environment_config["wp_cli_debug"])
 
-    # Install site theme
+    # Install site themes
     theme_tools.install_themes_from_configuration_file(
         site_config, environment_config, global_constants, root_path, skip_partial_dumps, **kwargs_)
 

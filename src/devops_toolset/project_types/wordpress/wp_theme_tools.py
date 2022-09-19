@@ -16,14 +16,13 @@ import devops_toolset.project_types.wordpress.wptools as wptools
 import re
 import devops_toolset.tools.git as git_tools
 
-
 from devops_toolset.core.app import App
 from devops_toolset.core.CommandsCore import CommandsCore
 from devops_toolset.core.LiteralsCore import LiteralsCore
-from devops_toolset.devops_platforms import constants as devops_platforms_constants
 from devops_toolset.devops_platforms.azuredevops.Literals import Literals as PlatformLiterals
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
+from devops_toolset.project_types.wordpress.constants import ProjectStructureType
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from devops_toolset.tools import cli
 
@@ -42,6 +41,7 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
         theme_path: Path to the theme in the WordPress repository.
         root_path: Path to the project root.
     """
+
     logging.info(literals.get("wp_looking_for_src_themes"))
 
     # Get configuration data and paths
@@ -53,16 +53,15 @@ def build_theme(themes_config: dict, theme_path: str, root_path: str):
         return
 
     src_theme = src_theme_list[0]
-    theme_path_obj = pathlib.Path(theme_path)
-    theme_path_src = pathlib.Path.joinpath(theme_path_obj, src_theme["source"])
-    theme_path_dist = pathlib.Path.joinpath(theme_path_src, "dist")
-    theme_path_zip = pathlib.Path.joinpath(theme_path_obj, f"{src_theme['name']}.zip")
+    theme_path_src = pathlib.Path(theme_path, src_theme["source"])
+    theme_path_dist = pathlib.Path(theme_path_src, "dist")
+    theme_path_zip = pathlib.Path(theme_path, f"{src_theme['name']}.zip")
 
     if os.path.exists(theme_path_src):
 
         theme_slug = src_theme["name"]
 
-        # Change to the the theme's source directory
+        # Change to the theme's source directory
         os.chdir(theme_path_src)
 
         # Run npm install from the package.json path
@@ -158,11 +157,11 @@ def create_development_theme(theme_configuration: dict, root_path: str, constant
         theme_slug = src_theme["source"]
 
         # Check if a structure file is available (should be named as [theme-slug]-wordpress-theme-structure
-        structure_file_name = f'{theme_slug}-wordpress-theme-structure.json'
-        structure_file_path = str(pathlib.Path.joinpath(pathlib.Path(root_path), structure_file_name))
+        structure_file = wp_constants.FileNames.WORDPRESS_DEVELOPMENT_THEME_STRUCTURE_FILE.format(theme_slug=theme_slug)
+        structure_file_path = str(pathlib.Path(root_path, structure_file))
 
         # Create the structure based on the theme_name
-        start_basic_theme_structure(destination_path, theme_slug, structure_file_path)
+        scaffold_basic_theme_structure(destination_path, theme_slug, structure_file_path)
 
         # Replace necessary theme files with the theme name.
         set_theme_metadata(root_path, src_theme)
@@ -175,7 +174,7 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
 
     NOTE: The URL must download a zip file that contains the theme. If the ZIP
         contains a non-standard inner structure, the calling process will
-        produce side-effects.
+        produce side effects.
 
     Args:
         theme_config: Theme configuration.
@@ -432,7 +431,7 @@ def set_theme_metadata(root_path: str, src_theme_configuration: dict):
     devops_toolset.filesystem.tools.update_xml_file_entity_text("./name", theme_slug, project_xml_path)
 
 
-def start_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
+def scaffold_basic_theme_structure(path: str, theme_name: str, structure_file_path: str = None) -> None:
     """ Creates a basic structure of a wordpress development theme based on its default theme-structure.json
 
         Args:
@@ -443,27 +442,26 @@ def start_basic_theme_structure(path: str, theme_name: str, structure_file_path:
         """
 
     # Parse theme structure configuration
-    if pathlib.Path.exists(pathlib.Path(structure_file_path)):
+    if pathlib.Path(structure_file_path).exists():
         theme_structure = wptools.get_site_configuration(structure_file_path)
-        logging.info(literals.get("wp_theme_structure_creating_from_file").format(theme_name=theme_name,
-                                                                                  file_name=structure_file_path))
+        logging.info(literals.get("wp_theme_structure_creating_from_file").format(
+            theme_name=theme_name,
+            file_name=structure_file_path))
     else:
-        theme_structure = wptools.get_default_project_structure(
-            devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE)
-        logging.info(literals.get("wp_theme_structure_creating_from_default_file").format(
-            resource=devops_platforms_constants.Urls.DEFAULT_WORDPRESS_DEVELOPMENT_THEME_STRUCTURE))
+        theme_structure = wptools.get_default_project_structure(ProjectStructureType.THEME)
+        logging.info(literals.get("wp_theme_structure_creating_from_default_file").format(resource="default file"))
 
     project_starter = BasicStructureStarter()
 
     # Change the main folder's name of the theme to the theme_name
     theme_structure["items"][0]["name"] = theme_name
 
-    # Purge .gitkeep
-    git_tools.purge_gitkeep(pathlib.Path(path).as_posix())
-
     # Iterate through every item recursively
     for item in theme_structure["items"]:
         project_starter.add_item(item, path)
+
+    # Purge .gitkeep
+    git_tools.purge_gitkeep(pathlib.Path(path).as_posix())
 
     logging.info(literals.get("wp_created_theme_structure").format(theme_name=theme_name))
 

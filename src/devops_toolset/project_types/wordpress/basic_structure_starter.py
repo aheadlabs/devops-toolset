@@ -15,7 +15,7 @@ literals = LiteralsCore([WordpressLiterals])
 
 
 class BasicStructureStarter(object):
-    """ Set of methods used to create a basic structure for a Wordpress project """
+    """ Set of methods used to create a basic structure for a WordPress project """
 
     def add_item(self, item, base_path_str: str) -> None:
         """ Creates the item (file or dir) in the current filesystem
@@ -112,7 +112,7 @@ class BasicStructureStarter(object):
         elif item["source"] == "from_library":
             path = pathlib.Path.joinpath(
                 pathlib.Path(os.path.realpath(__file__)).parent, "default-files", item["value"])
-            with open(path, "r") as default_content_file:
+            with open(path, "rb" if is_binary else "r") as default_content_file:
                 logging.debug(literals.get("wp_write_default_content").format(
                     file="",
                     source=f"file => {item['source']}"

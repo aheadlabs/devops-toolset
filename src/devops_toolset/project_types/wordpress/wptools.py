@@ -24,6 +24,7 @@ from devops_toolset.devops_platforms.azuredevops.Literals import Literals as Pla
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.project_types.wordpress.commands import Commands as WordpressCommands
+from devops_toolset.project_types.wordpress.constants import ProjectStructureType
 from typing import List, Tuple, Union
 
 app: App = App()
@@ -365,8 +366,9 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     return environment
 
 
-def get_default_project_structure() -> dict:
-    """Gets the default project structure for a WordPress project.
+def get_default_project_structure(structure_type: ProjectStructureType) -> dict:
+    """Gets the default project structure file path for a WordPress project or
+    a development theme project.
 
     For more information see:
         https://dev.aheadlabs.com/schemas/json/project-structure-schema.json
@@ -376,8 +378,14 @@ def get_default_project_structure() -> dict:
     """
 
     wordpress_directory_path = pathlib.Path(os.path.realpath(__file__)).parent
-    project_structure_path = pathlib.Path.joinpath(
-        wordpress_directory_path, "default-files", wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+
+    if structure_type is structure_type.WORDPRESS:
+        project_structure_path = pathlib.Path(
+            wordpress_directory_path, "default-files", wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE)
+    else:
+        # type is type.THEME
+        project_structure_path = pathlib.Path(
+            wordpress_directory_path, "default-files", wp_constants.FileNames.DEFAULT_WORDPRESS_DEV_THEME_STRUCTURE)
 
     with open(project_structure_path, 'r') as project_structure_file:
         data = json.load(project_structure_file)
@@ -742,7 +750,7 @@ def setup_database(environment_config: dict, wordpress_path: str, db_user_passwo
         wordpress_path, db_admin_user, db_admin_password, db_user, db_user_password, schema, db_host)
 
 
-def start_basic_project_structure(root_path: str) -> None:
+def scaffold_wordpress_basic_project_structure(root_path: str) -> None:
     """ Creates a basic structure of a WordPress project based on a project
     structure file.
 
@@ -760,7 +768,7 @@ def start_basic_project_structure(root_path: str) -> None:
         project_structure = get_site_configuration(str(structure_file_path))
         logging.info(literals.get("wp_project_structure_creating_from_file").format(file_name=structure_file_path))
     else:
-        project_structure = get_default_project_structure()
+        project_structure = get_default_project_structure(ProjectStructureType.WORDPRESS)
         logging.info(literals.get("wp_project_structure_creating_from_default_file").format(
             resource=wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
         ))

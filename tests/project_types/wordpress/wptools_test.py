@@ -818,7 +818,7 @@ def test_main_given_parameters_must_call_wptools_get_project_structure(get_proje
     root_path = wordpressdata.wordpress_path
     get_project_structure_mock.return_value = {"items": {}}
     # Act
-    sut.start_basic_project_structure(root_path)
+    sut.scaffold_wordpress_basic_project_structure(root_path)
     # Assert
     get_project_structure_mock.assert_called_once_with(project_structure_resource)
 
@@ -832,7 +832,7 @@ def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_str
     items_data = {"items": {'foo_item': 'foo_value'}}
     get_project_structure_mock.return_value = items_data
     # Act
-    sut.start_basic_project_structure(root_path)
+    sut.scaffold_wordpress_basic_project_structure(root_path)
     # Assert
     add_item_mock.assert_called_once_with('foo_item', root_path)
 
