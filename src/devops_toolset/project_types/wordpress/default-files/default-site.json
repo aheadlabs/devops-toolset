@@ -155,6 +155,10 @@
         "source_type": "wordpress"
       }
     ],
+    "project": {
+      "name": "My project name",
+      "slug": "my-project-name"
+    },
     "skip_content_download": true,
     "themes": [
       {
