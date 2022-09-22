@@ -361,7 +361,6 @@
 
   "type": "object",
   "properties": {
-    "$schema": {"type": "string"},
     "settings": {
       "type": "object",
       "$ref": "#/definitions/settings"
@@ -372,6 +371,9 @@
       "items": {
         "$ref": "#/definitions/environment"
       }
+    "$schema": {
+        "type": "string",
+        "format": "uri"
     },
     "content": {
       "type": "object",
