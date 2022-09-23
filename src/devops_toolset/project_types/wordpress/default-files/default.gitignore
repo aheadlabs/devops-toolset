@@ -1,3 +1,11 @@
+# IDEs
+**/.idea/
+**/.vscode/
+**/.vs/
+
+# devops-toolset
+.devops/devops-toolset/
+
 # WordPress core
 wordpress/wp-admin/
 wordpress/wp-content/themes/
@@ -10,17 +18,9 @@ wordpress/license.txt
 wordpress/readme.html
 wordpress/xmlrpc.php
 
-# devops-toolset
-.devops/devops-toolset/
-
 # temporary development files
 content/themes/*.zip
 
 # scripts in root
 *.ps1
 *.py
-
-# IDEs
-**/.idea/
-**/.vscode/
-**/.vs/

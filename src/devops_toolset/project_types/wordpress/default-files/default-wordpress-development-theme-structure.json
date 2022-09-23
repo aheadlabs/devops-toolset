@@ -1,8 +1,8 @@
 {
-  "$schema": "http://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
+  "$schema": "https://dev.aheadlabs.com/schemas/json/project-structure-schema.json",
   "items": [
       {
-          "name": "mytheme",
+          "name": "{{mytheme}}",
           "type": "directory",
           "children": [
               {
@@ -43,14 +43,6 @@
                                               "source": "from_library",
                                               "value": "default-variables.scss"
                                           }
-                                      },
-                                      {
-                                          "name": "_fontawesome.scss",
-                                          "type": "file",
-                                          "default_content": {
-                                              "source": "from_library",
-                                              "value": "default-fontawesome.scss"
-                                          }
                                       }
                                   ]
                               },
@@ -80,15 +72,15 @@
                                   ]
                               },
                               {
-                                  "name": "js",
+                                  "name": "ts",
                                   "type": "directory",
                                   "children": [
                                       {
-                                          "name": "site.js",
+                                          "name": "site.ts",
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_library",
-                                              "value": "default-site.js"
+                                              "value": "default-site.ts"
                                           }
                                       }
                                   ]
@@ -212,19 +204,11 @@
                   }
               },
               {
-                  "name": "gulpfile.js",
+                  "name": "browsersync.config.js",
                   "type": "file",
                   "default_content": {
                       "source": "from_library",
-                      "value": "default-gulpfile.js"
-                  }
-              },
-              {
-                  "name": "gulpfile.json",
-                  "type": "file",
-                  "default_content": {
-                      "source": "from_library",
-                      "value": "default-gulpfile.json"
+                      "value": "default-browsersync.config.js"
                   }
               },
               {
@@ -236,6 +220,14 @@
                   }
               },
               {
+                  "name": "README.md",
+                  "type": "file",
+                  "default_content": {
+                      "source": "from_library",
+                      "value": "default-theme-development-README.md"
+                  }
+              },
+              {
                   "name": "screenshot.png",
                   "type": "bfile",
                   "default_content": {
@@ -244,11 +236,27 @@
                   }
               },
               {
-                  "name": "README.md",
+                  "name": "screenshot.psd",
+                  "type": "bfile",
+                  "default_content": {
+                      "source": "from_library",
+                      "value": "default-theme-development-screenshot.psd"
+                  }
+              },
+              {
+                  "name": "tsconfig.json",
                   "type": "file",
                   "default_content": {
                       "source": "from_library",
-                      "value": "default-theme-development-README.md"
+                      "value": "default-tsconfig.json"
+                  }
+              },
+              {
+                  "name": "webpack.config.js",
+                  "type": "file",
+                  "default_content": {
+                      "source": "from_library",
+                      "value": "default-webpack.config.js"
                   }
               }
           ]
