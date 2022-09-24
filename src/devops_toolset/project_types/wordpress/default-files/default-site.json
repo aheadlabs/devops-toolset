@@ -156,9 +156,7 @@
       }
     ],
     "project": {
-      "author": "Ahead Labs, S.L.",
       "name": "My project name",
-      "slug": "my-project-name",
       "url": "https://aheadlabs.com",
       "version": "0.1.0"
     },

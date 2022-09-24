@@ -98,6 +98,14 @@
                                       "source": "from_library",
                                       "value": "default-functions-core.php"
                                   }
+                              },
+                              {
+                                  "name": "_toolset.php",
+                                  "type": "file",
+                                  "default_content": {
+                                      "source": "from_library",
+                                      "value": "default-functions-toolset.php"
+                                  }
                               }
                           ]
                       },
