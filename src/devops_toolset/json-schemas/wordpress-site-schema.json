@@ -244,43 +244,20 @@
         "project": {
           "type": "object",
           "properties": {
-            "author": {
-              "description": "Author of the project",
-              "type": "string"
-            },
-            "minimum-php-version": {
-              "description": "Minimum required version of PHP",
-              "type": "string"
-            },
-            "minimum-wordpress-version": {
-              "description": "Minimum WordPress version required",
-              "type": "string"
-            },
-            "minimum-wordpress-version-tested": {
-              "description": "Last WordPress version where the project was tested",
-              "type": "string"
-            },
             "name": {
               "description": "Name of the project",
-              "type": "string"
-            },
-            "slug": {
-              "description": "Name of the project in slug format, variable compliant",
-              "type": "string"
-            },
-            "tags": {
-              "description": "Tags of the project",
-              "type": "string"
-            },
-            "version": {
-              "description": "Version or initial version of the project, SemVer compliant with no leading v",
               "type": "string"
             },
             "url": {
               "description": "URL of the project",
               "type": "string"
+            },
+            "version": {
+              "description": "Project version, SemVer compliant with no leading v, usually the same as the development theme (src) version",
+              "type": "string"
             }
-          }
+          },
+          "required": ["name", "url", "version"]
         },
         "skip_content_download": {
           "description": "If true, no default themes or plugins will be downloaded",
@@ -495,28 +472,32 @@
     "wp_theme": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "source_type": {
-          "enum": [
-            "feed",
-            "src",
-            "url",
-            "wordpress",
-            "zip"
-          ]
-        },
-        "source": {
-          "type": "string"
-        },
-        "child_source": {
-          "type": "string"
-        },
         "activate": {
+          "description": "Theme will be activated if true",
           "type": "boolean"
         },
+        "author": {
+          "description": "Author of the theme",
+          "type": "string"
+        },
+        "author_uri": {
+          "description": "URL of the author",
+          "type": "string"
+        },
+        "build": {
+          "description": "Indicates if the theme is built by default after the scaffolding generation",
+          "type": "boolean"
+        },
+        "child_source": {
+          "description": "Source for the child theme if needed",
+          "type": "string"
+        },
+        "description": {
+          "description": "Theme description",
+          "type": "string"
+        },
         "feed": {
+          "description": "Feed data used to obtain the theme in case source is feed",
           "type": "object",
           "properties": {
             "name": {
@@ -541,30 +522,68 @@
             "version"
           ]
         },
-        "description": {
+        "minimum-php-version": {
+          "description": "Minimum required version of PHP",
           "type": "string"
         },
-        "uri": {
+        "minimum-wordpress-version": {
+          "description": "Minimum WordPress version required",
           "type": "string"
         },
-        "author": {
+        "minimum-wordpress-version-tested": {
+              "description": "Last WordPress version where the project was tested",
+              "type": "string"
+            },
+        "name": {
+          "description": "Name of the theme (slug) that should be the same as the source",
           "type": "string"
         },
-        "author_uri": {
+        "source": {
+          "description": "Key to obtain the theme from the specified source",
           "type": "string"
+        },
+        "source_type": {
+          "description": "Indicates where the theme will be obtained from or if it is a development theme (src)",
+          "enum": [
+            "feed",
+            "src",
+            "url",
+            "wordpress",
+            "zip"
+          ]
         },
         "tags": {
+          "description": "Theme tags",
           "type": "array",
           "contains": {
             "type": "string"
           }
+        },
+        "url": {
+          "description": "URL of the theme",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version or initial version of the project, SemVer compliant with no leading v, usually the same as the project version",
+          "type": "string"
         }
       },
       "additionalProperties": false,
       "required": [
+        "activate",
+        "author",
+        "author_uri",
+        "build",
+        "description",
+        "minimum-php-version",
+        "minimum-wordpress-version",
+        "minimum-wordpress-version-tested",
         "name",
+        "source",
         "source_type",
-        "source"
+        "tags",
+        "url",
+        "version"
       ]
     }
   },

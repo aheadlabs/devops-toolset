@@ -75,12 +75,6 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
                                                         required_files_not_present,
                                                         devops_toolset.core.log_tools.LogLevel.warning)
 
-        devops_toolset.core.log_tools.log_indented_list(
-            literals.get("wp_default_files"),
-            [constants.Urls.DEFAULT_SITE_ENVIRONMENTS,
-             constants.Urls.DEFAULT_SITE_CONFIG],
-            devops_toolset.core.log_tools.LogLevel.info)
-
         # Ask to use defaults
         use_defaults: bool = prompt.yn(literals.get("wp_use_default_files"))
 
@@ -115,7 +109,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     themes_path: str = theme_tools.get_themes_path_from_root_path(root_path, global_constants)
 
     # Create project structure
-    devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure(root_path)
+    devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure(root_path, site_config)
 
     # WordPress core files
     if use_local_wordpress_binaries:
@@ -128,7 +122,7 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
 
     # Create development theme (if needed)
     if create_development_theme:
-        theme_tools.create_development_theme(site_config["settings"]["themes"], root_path, global_constants)
+        theme_tools.create_development_theme(site_config, root_path, global_constants)
 
     # Set development themes / plugins ready
     theme_tools.build_theme(site_config["settings"]["themes"], themes_path, root_path)

@@ -48,6 +48,7 @@ class Literals(ValueDictsBase):
         "wp_themes_install_manually": _("Please, install the theme/s manually."),
         "wp_plugin_path": _("The plugin path is: {path}"),
         "wp_theme_path": _("The theme path is: {path}"),
+        "wp_theme_src_will_not_be_built": _("Development theme wil not be build due to configuration settings."),
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wordpress_path": _("The WordPress path is: {path}"),
@@ -131,6 +132,8 @@ class Literals(ValueDictsBase):
         "wp_env_x_not_found": _("Environment {environment} not found in the environments list."),
         "wp_environment_name_mandatory": _("environment-name is a mandatory parameter. I cannot continue."),
         "wp_environment_name_not_found": _("Environment name was not found. I cannot continue."),
+        "wp_environment_of_type_not_found": _("The environment of type {type} was not found. I cannot continue."),
+        "wp_theme_src_not_found": _("The src/development theme was not found. I cannot continue."),
         "wp_environment_path_mandatory": _("environment-path is a mandatory parameter. I cannot continue."),
         "wp_environment_path_not_found": _("Environment file path was not found. I cannot continue."),
         "wp_environment_x_found_multiple": _("Multiple environments found with name {environment}. "

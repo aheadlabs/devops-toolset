@@ -17,6 +17,9 @@ literals = LiteralsCore([WordpressLiterals])
 class BasicStructureStarter(object):
     """ Set of methods used to create a basic structure for a WordPress project """
 
+    def __init__(self, token_replacements: dict):
+        self.token_replacements = token_replacements
+
     def add_item(self, item, base_path_str: str) -> None:
         """ Creates the item (file or dir) in the current filesystem
 
@@ -79,8 +82,7 @@ class BasicStructureStarter(object):
         # Default behaviour
         return True
 
-    @staticmethod
-    def get_default_content(item, is_binary: bool = False) -> Union[str, bytes]:
+    def get_default_content(self, item, is_binary: bool = False) -> Union[str, bytes]:
         """ Gets the default content of the files based on the json item passed
 
             Args:
@@ -91,13 +93,15 @@ class BasicStructureStarter(object):
                 Content in text or binary format
         """
 
+        default_content = None
+
         # Gets content directly from source property in the .json file
         if item["source"] == "raw":
             logging.debug(literals.get("wp_write_default_content").format(
                 file="",
                 source=f"raw data => {item['source']}"
             ))
-            return item["value"]
+            default_content = item["value"]
 
         # Gets content from a file in the file system
         elif item["source"] == "from_file":
@@ -106,7 +110,7 @@ class BasicStructureStarter(object):
                     file="",
                     source=f"file => {item['source']}"
                 ))
-                return default_content_file.read()
+                default_content = default_content_file.read()
 
         # Gets content from a file in the library (devops-toolset)
         elif item["source"] == "from_library":
@@ -117,7 +121,7 @@ class BasicStructureStarter(object):
                     file="",
                     source=f"file => {item['source']}"
                 ))
-                return default_content_file.read()
+                default_content = default_content_file.read()
 
         # Gets content from a URL resource
         elif item["source"] == "from_url":
@@ -126,4 +130,13 @@ class BasicStructureStarter(object):
                 source=f"URL => {item['source']}"
             ))
             response = requests.get(item["value"])
-            return response.content if is_binary else response.text
+            default_content = response.content if is_binary else response.text
+
+        # Replace tokens inside the content
+        for key in self.token_replacements:
+            if not is_binary:
+                replacement = self.token_replacements[key]
+                replacement = ",".join(replacement) if type(replacement) is list else replacement
+                default_content = default_content.replace("{{" + key + "}}", replacement)
+
+        return default_content

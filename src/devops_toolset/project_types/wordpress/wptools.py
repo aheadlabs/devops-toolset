@@ -366,12 +366,18 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     return environment
 
 
-def get_default_project_structure(structure_type: ProjectStructureType) -> dict:
+def get_default_project_structure(structure_type: ProjectStructureType, token_replacements: dict = None) -> dict:
     """Gets the default project structure file path for a WordPress project or
     a development theme project.
 
     For more information see:
         https://dev.aheadlabs.com/schemas/json/project-structure-schema.json
+
+    Args:
+        structure_type: Type of project structure to get.
+        token_replacements: Key-value pairs to replace in the project structure file.
+            Tokens in the file must be enclosed in double braces but this parameter must
+            be braces free. ie: {{token}} in the file and token in the parameter value.
 
     Returns:
         Project structure as a dict.
@@ -388,7 +394,16 @@ def get_default_project_structure(structure_type: ProjectStructureType) -> dict:
             wordpress_directory_path, "default-files", wp_constants.FileNames.DEFAULT_WORDPRESS_DEV_THEME_STRUCTURE)
 
     with open(project_structure_path, 'r') as project_structure_file:
-        data = json.load(project_structure_file)
+        # Get file content
+        content = project_structure_file.read()
+
+        # Replace tokens
+        if token_replacements is not None:
+            for key in token_replacements:
+                content = content.replace("{{" + key + "}}", token_replacements[key])
+
+        # Convert to dict
+        data = json.loads(content)
 
     return data
 
@@ -750,12 +765,13 @@ def setup_database(environment_config: dict, wordpress_path: str, db_user_passwo
         wordpress_path, db_admin_user, db_admin_password, db_user, db_user_password, schema, db_host)
 
 
-def scaffold_wordpress_basic_project_structure(root_path: str) -> None:
+def scaffold_wordpress_basic_project_structure(root_path: str, site_configuration: dict) -> None:
     """ Creates a basic structure of a WordPress project based on a project
     structure file.
 
     Args:
-        root_path: Full path where the structure will be created
+        root_path: Full path where the structure will be created.
+        site_configuration: parsed site configuration.
     """
 
     logging.info(literals.get("wp_creating_project_structure"))
@@ -773,7 +789,11 @@ def scaffold_wordpress_basic_project_structure(root_path: str) -> None:
             resource=wp_constants.FileNames.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
         ))
 
-    project_starter = BasicStructureStarter()
+    token_replacements: dict = {
+        "project-name": site_configuration["settings"]["project"]["name"],
+        "project-version": site_configuration["settings"]["project"]["version"]
+    }
+    project_starter = BasicStructureStarter(token_replacements)
 
     # Iterate through every item recursively
     for item in project_structure["items"]:

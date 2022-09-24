@@ -23,7 +23,7 @@ class FileNames(object):
     DEFAULT_GITIGNORE = "default.gitignore"
     DEFAULT_PROJECT_XML = "default-project.xml"
     DEFAULT_README = "default-README.md"
-    DEFAULT_SITE_CONFIG = "default-localhost-site.json"
+    DEFAULT_SITE_CONFIG = "default-site.json"
     DEFAULT_SITE_ENVIRONMENTS = "default-site-environments.json"
     DEFAULT_WORDPRESS_DEV_THEME_STRUCTURE = "default-wordpress-development-theme-structure.json"
     DEFAULT_WORDPRESS_PROJECT_STRUCTURE = "default-wordpress-project-structure.json"
@@ -43,6 +43,16 @@ class ProjectStructureType(Enum):
     """Types of projects based on its file structure."""
     WORDPRESS = 1
     THEME = 2
+
+
+class ProjectEnvironmentType(Enum):
+    """Types of environments."""
+    DEVELOPMENT = 1
+    DEVOPS = 2
+    INTEGRATION = 3
+    QA = 4
+    STAGING = 5
+    PRODUCTION = 6
 
 
 class Urls(object):
