@@ -48,7 +48,7 @@ class Literals(ValueDictsBase):
         "wp_themes_install_manually": _("Please, install the theme/s manually."),
         "wp_plugin_path": _("The plugin path is: {path}"),
         "wp_theme_path": _("The theme path is: {path}"),
-        "wp_theme_src_will_not_be_built": _("Development theme wil not be build due to configuration settings."),
+        "wp_theme_src_will_not_be_built": _("Development theme wil not be built due to configuration settings."),
         "wp_themes_path": _("The themes path is: {path}"),
         "wp_use_default_files": _("Do you want me to use the default ones instead for those missing files?"),
         "wp_wordpress_path": _("The WordPress path is: {path}"),
@@ -93,8 +93,8 @@ class Literals(ValueDictsBase):
         "wp_wpcli_user_creating": _("Creating WordPress user {user}..."),
         "wp_wpcli_user_created": _("Created WordPress user {user}."),
         "wp_write_default_content": _("Writing default content to file \"{file}\" from {source}"),
-        "wp_gulp_build_before": _("Gulp build task has launched for theme {theme_slug}."),
-        "wp_gulp_build_after": _("Gulp build task has completed successfully for theme {theme_slug}."),
+        "wp_webpack_build_before": _("Webpack build task has launched for theme {theme_slug}."),
+        "wp_webpack_build_after": _("Webpack build task has completed successfully for theme {theme_slug}."),
     }
     _warnings = {
         "mysql_user_exists_grant_privileges_manually": _("User {user} exists in the {host} host and will not be "
@@ -174,7 +174,6 @@ class Literals(ValueDictsBase):
         "wp_src_theme_not_found": _("Create development theme was called but no src themes found. Please check your "
                                     "themes configuration and try again."),
         "wp_wpcli_theme_install_error": _("Theme {theme_name} could not be installed."),
-        "wp_gulp_build_error":
-            _("Gulp build task has encountered an error for theme {theme_slug}. "
-              "Please check above logs for more details."),
+        "wp_webpack_build_error": _("Webpack build task has encountered an error for theme {theme_slug}. "
+                                    "Please check above logs for more details."),
     }
