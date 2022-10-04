@@ -3,7 +3,7 @@ const
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
     packageJson = require("./package.json"),
     path = require("path"),
-    siteConfig = require("../../../.devops/site.json"),
+    siteConfig = require("../../../site.json"),
     version = "{{project-version}}";
 
 module.exports = (env) => {

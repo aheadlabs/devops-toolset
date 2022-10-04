@@ -359,7 +359,7 @@ def get_environment(site_config: dict, environment_name: str) -> dict:
     environment = environment_list[0]
 
     # Update URL constants (with the _url suffix) prepending the base URL
-    url_keys = devops_toolset.tools.dicts.filter_keys(environment["wp_config"], "_url$")
+    url_keys = devops_toolset.tools.dicts.filter_keys(environment["wp_config"], "^(content|plugin)_url$")
     for key in url_keys:
         environment["wp_config"][key]["value"] = environment["base_url"] + environment["wp_config"][key]["value"]
 

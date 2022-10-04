@@ -76,11 +76,11 @@
                                   "type": "directory",
                                   "children": [
                                       {
-                                          "name": "site.ts",
+                                          "name": "main.ts",
                                           "type": "file",
                                           "default_content": {
                                               "source": "from_library",
-                                              "value": "default-site.ts"
+                                              "value": "default-main.ts"
                                           }
                                       }
                                   ]

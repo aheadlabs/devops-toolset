@@ -44,23 +44,6 @@ def add_update_option(option: dict, wordpress_path: str, debug: bool = False, up
         rewrite_structure(option["value"], wordpress_path, debug)
 
 
-def rewrite_structure(permalink_structure: str, wordpress_path: str, debug: bool = False):
-    """Updates permalink structure using the 'wp rewrite structure' command.
-
-    Args:
-        permalink_structure: Permalink structure to be written when the update
-            takes place.
-        wordpress_path: Path to the WordPress installation.
-        debug: It True logs debug information.
-    """
-
-    cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
-        structure=permalink_structure,
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
-
-
 def add_database_option(option_name: str, option_value: str, wordpress_path: str,
                         debug_info: bool, autoload: bool = False):
     """Adds an option at the wp_options (*) table in the WordPress
@@ -364,29 +347,6 @@ def create_user(user: dict, wordpress_path: str, debug: bool):
     )
 
 
-def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
-    """Creates a WordPress user.
-
-    Args:
-        user_login: User login to be checked.
-        wordpress_path: Path to WordPress files.
-        debug: If present, --debug will be added to the command showing all debug trace information.
-
-    Returns:
-        True if the user exists.
-    """
-
-    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
-        user_login=user_login,
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
-
-    if result is None:
-        return False
-    return True
-
-
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
                                    db_privileges: str = 'create, alter, select, insert, update, delete',
@@ -416,6 +376,7 @@ def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_p
                 https://dev.mysql.com/doc/refman/en/grant.html#grant-privileges
                 e.g.: 'process'
     """
+
     # Check if the user exists
     output = cli.call_subprocess_with_result(commands.get("wpcli_db_query_user_exists").format(
         user=user,
@@ -499,40 +460,6 @@ def delete_post_type_content(wordpress_path: str, content_type: str, debug_info:
         log_before_err=[literals.get("wp_wpcli_post_delete_post_type_err").format(post_type=content_type)])
 
 
-def get_post_type_ids(wordpress_path: str, post_type: str):
-    """Gets the ids for all the posts that match an specific post type.
-
-    Args:
-        wordpress_path: Path to WordPress files.
-        post_type: Post type name to filter by.
-    """
-
-    return cli.call_subprocess_with_result(commands.get("wpcli_post_list_ids").format(
-        post_type=post_type,
-        path=wordpress_path
-    ))
-
-
-def wordpress_is_downloaded(path: str) -> bool:
-    """Checks if WordPress is downloaded at the specified path.
-
-    Args:
-        path: Path to be checked for WordPress files.
-
-    Returns:
-        True if WordPress files are present at the specified path.
-    """
-
-    version = cli.call_subprocess_with_result(commands.get("wpcli_core_version").format(path=path))
-
-    if version:
-        logging.warning(literals.get("wp_wpcli_core_version_already_downloaded")
-                        .format(version=version.replace("\n", "")))
-        return True
-    else:
-        return False
-
-
 def download_wordpress(destination_path: str, version: str, locale: str, skip_content: bool, debug: bool):
     """ Downloads the specific or latest version of the WordPress core files
     using WP-CLI.
@@ -577,27 +504,6 @@ def eval_code(php_code: str, wordpress_path: str) -> str:
         path=wordpress_path))
 
 
-def export_database(wordpress_path: str, dump_file_path: str, debug: bool):
-    """Exports a WordPress database to a dump file using WP-CLI.
-
-    All parameters are obtained from a site configuration file.
-
-    For more information see:
-        https://developer.wordpress.org/cli/commands/db/export/
-
-    Args:
-        wordpress_path: Path to WordPress files.
-        dump_file_path: Path to the destination dump file.
-        debug: If present, --debug will be added to the command showing all debug trace information.
-    """
-    cli.call_subprocess(commands.get("wpcli_db_export").format(
-        core_dump_path=dump_file_path,
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)),
-        log_before_out=[literals.get("wp_wpcli_db_export_before").format(path=dump_file_path)],
-        log_after_err=[literals.get("wp_wpcli_db_export_error")])
-
-
 def export_content_to_wxr(wordpress_path: str, destination_path: str, wrx_file_suffix: str = None):
     """Exports all WordPress content to a WXR XML file.
 
@@ -619,6 +525,41 @@ def export_content_to_wxr(wordpress_path: str, destination_path: str, wrx_file_s
         suffix=suffix),
         log_before_out=[literals.get("wp_wpcli_export").format(path=destination_path)],
         log_after_err=[literals.get("wp_wpcli_export_err").format(path=destination_path)])
+
+
+def export_database(wordpress_path: str, dump_file_path: str, debug: bool):
+    """Exports a WordPress database to a dump file using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/db/export/
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        dump_file_path: Path to the destination dump file.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+    """
+    cli.call_subprocess(commands.get("wpcli_db_export").format(
+        core_dump_path=dump_file_path,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)),
+        log_before_out=[literals.get("wp_wpcli_db_export_before").format(path=dump_file_path)],
+        log_after_err=[literals.get("wp_wpcli_db_export_error")])
+
+
+def get_post_type_ids(wordpress_path: str, post_type: str):
+    """Gets the ids for all the posts that match an specific post type.
+
+    Args:
+        wordpress_path: Path to WordPress files.
+        post_type: Post type name to filter by.
+    """
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_post_list_ids").format(
+        post_type=post_type,
+        path=wordpress_path
+    ))
 
 
 def import_database(wordpress_path: str, dump_file_path: str, debug: bool):
@@ -742,6 +683,46 @@ def install_wordpress_core(wordpress_path: str, url: str, title: str, admin_user
     )
 
 
+def rewrite_structure(permalink_structure: str, wordpress_path: str, debug: bool = False):
+    """Updates permalink structure using the 'wp rewrite structure' command.
+
+    Args:
+        permalink_structure: Permalink structure to be written when the update
+            takes place.
+        wordpress_path: Path to the WordPress installation.
+        debug: It True logs debug information.
+    """
+
+    cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
+        structure=permalink_structure,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+
+def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
+    """Creates a WordPress user.
+
+    Args:
+        user_login: User login to be checked.
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+
+    Returns:
+        True if the user exists.
+    """
+
+    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
+        user_login=user_login,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if result is None:
+        return False
+    return True
+
+
 def reset_database(wordpress_path: str, quiet: bool, debug_info: bool):
     """Removes all WordPress core tables from the database using WP-CLI.
 
@@ -836,6 +817,26 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
                 option_value=option_value)])
     else:
         logging.warning(literals.get("wp_wpcli_option_skipping").format(option_name=option_name))
+
+
+def wordpress_is_downloaded(path: str) -> bool:
+    """Checks if WordPress is downloaded at the specified path.
+
+    Args:
+        path: Path to be checked for WordPress files.
+
+    Returns:
+        True if WordPress files are present at the specified path.
+    """
+
+    version = cli.call_subprocess_with_result(commands.get("wpcli_core_version").format(path=path))
+
+    if version:
+        logging.warning(literals.get("wp_wpcli_core_version_already_downloaded")
+                        .format(version=version.replace("\n", "")))
+        return True
+    else:
+        return False
 
 
 def wp_cli_info():
