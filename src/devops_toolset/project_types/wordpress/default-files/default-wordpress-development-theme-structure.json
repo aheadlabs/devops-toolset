@@ -200,6 +200,14 @@
                               "source": "from_library",
                               "value": "default-header.php"
                           }
+                      },
+                      {
+                          "name": "index.php",
+                          "type": "file",
+                          "default_content": {
+                              "source": "from_library",
+                              "value": "default-index.php"
+                          }
                       }
                   ]
               },
