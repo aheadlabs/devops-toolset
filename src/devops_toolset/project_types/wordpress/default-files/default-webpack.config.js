@@ -1,5 +1,6 @@
 const
     CopyWebpackPlugin = require("copy-webpack-plugin"),
+    FileManagerPlugin = require("filemanager-webpack-plugin"),
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
     packageJson = require("./package.json"),
     path = require("path"),
@@ -11,7 +12,8 @@ module.exports = (env) => {
     env.environment = !env.environment ? "localhost" : env.environment;
     let mode = env.environment === "localhost" ? "development" : "production";
     let environmentConfig = siteConfig.environments.find(e => e.name === env.environment);
-    let relativeDistPath = `../../../wordpress${environmentConfig.wp_config.content_url.value}/themes/{{theme-name}}`;
+    let relativeDistPath = 'dist';
+    let wordpressDistPath = `../../../wordpress${environmentConfig.wp_config.content_url.value}/themes/aheadlabs`;
     let distJsPath = "assets/js";
 
     // Log values
@@ -101,6 +103,18 @@ module.exports = (env) => {
                         noErrorOnMissing: true
                     },
                 ]
+            }),
+            new FileManagerPlugin({
+                events: {
+                    onEnd: {
+                        copy: [
+                            {
+                                source: path.resolve(__dirname, relativeDistPath),
+                                destination: path.resolve(__dirname, wordpressDistPath)
+                            }
+                        ]
+                    }
+                }
             }),
         ],
         resolve: {
