@@ -163,10 +163,20 @@
     "skip_content_download": true,
     "themes": [
       {
-        "activate": true,
+        "activate": false,
+        "author": "Automattic",
+        "author_uri": "https://wordpress.org",
+        "build": false,
+        "description": "WordPress official theme",
         "name": "twentytwentytwo",
         "source": "twentytwentytwo",
-        "source_type": "wordpress"
+        "source_type": "wordpress",
+        "minimum-php-version": "5.6",
+        "minimum-wordpress-version": "5.9",
+        "minimum-wordpress-version-tested": "5.9",
+        "tags": ["wordpress"],
+        "url": "https://wordpress.org/themes/twentytwentytwo/",
+        "version": "1.2.0"
       }
     ],
     "title": "My site",
