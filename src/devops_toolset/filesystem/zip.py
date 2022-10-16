@@ -49,30 +49,24 @@ def download_and_unzip_file(url: str, destination: str, delete_after_unzip: bool
         os.remove(file_path)
 
 
-def zip_directory(directory_path: str, file_path, internal_path_prefix: str = ""):
-    """Creates a ZIP file of the contents of the specified directory path.
+def extract_file_from_zip(zip_file_path: str, file_path: str, destination_path: str):
+    """Extracts a file from a zip file.
 
     Args:
-        directory_path: Path to the directory to be zipped (directory will not
-            be included in the ZIP file).
-        file_path: Path to the file to be created.
-        internal_path_prefix: Prefix to be added to all the internal paths.
-            Must end with /
+        zip_file_path: Path to the ZIP file.
+        file_path: Path to the file inside the ZIP file.
+        destination_path: Path where the file will be extracted.
 
     Returns:
-        Path to the created ZIP file.
-    """
-    with zipfile.ZipFile(file_path, "w") as output_file:
-        for directory, subfolders, files in os.walk(directory_path):
-            for file in files:
-                current_path = pathlib.Path.joinpath(pathlib.Path(directory), file)
-                zip_internal_basepath = pathlib.Path(directory.replace(directory_path, "")).as_posix()
-                zip_internal_path = f"{internal_path_prefix}{zip_internal_basepath}/{file}"
-                output_file.write(current_path, zip_internal_path)
-                logging.debug(literals.get("fs_zip_added_file").format(
-                    zip_file_name=os.path.basename(file_path),
-                    added_file=zip_internal_path
-                ))
+        Tuple with file name and file path."""
+
+    with zipfile.ZipFile(zip_file_path, "r") as zip_file:
+        # Remove file path directory structure for the file inside the zip
+        file_info = zip_file.getinfo(file_path)
+        file_info.filename = os.path.basename(file_info.filename)
+
+        # Extract file
+        zip_file.extract(file_info, destination_path)
 
 
 def read_text_file_in_zip(zip_file_path: str, text_file_path: str) -> bytes:
@@ -99,6 +93,32 @@ def unzip_file(file_path: str, destination_path: str):
 
     with zipfile.ZipFile(file_path, 'r') as zip_file:
         zip_file.extractall(destination_path)
+
+
+def zip_directory(directory_path: str, file_path, internal_path_prefix: str = ""):
+    """Creates a ZIP file of the contents of the specified directory path.
+
+    Args:
+        directory_path: Path to the directory to be zipped (directory will not
+            be included in the ZIP file).
+        file_path: Path to the file to be created.
+        internal_path_prefix: Prefix to be added to all the internal paths.
+            Must end with /
+
+    Returns:
+        Path to the created ZIP file.
+    """
+    with zipfile.ZipFile(file_path, "w") as output_file:
+        for directory, subfolders, files in os.walk(directory_path):
+            for file in files:
+                current_path = pathlib.Path.joinpath(pathlib.Path(directory), file)
+                zip_internal_basepath = pathlib.Path(directory.replace(directory_path, "")).as_posix()
+                zip_internal_path = f"{internal_path_prefix}{zip_internal_basepath}/{file}"
+                output_file.write(current_path, zip_internal_path)
+                logging.debug(literals.get("fs_zip_added_file").format(
+                    zip_file_name=os.path.basename(file_path),
+                    added_file=zip_internal_path
+                ))
 
 
 if __name__ == "__main__":
