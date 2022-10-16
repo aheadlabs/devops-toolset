@@ -141,6 +141,20 @@
     ],
     "plugins": [
       {
+        "activate": false,
+        "force": true,
+        "name": "akismet",
+        "source": "akismet",
+        "source_type": "wordpress"
+      },
+      {
+        "activate": true,
+        "force": true,
+        "name": "google-site-kit",
+        "source": "google-site-kit",
+        "source_type": "wordpress"
+      },
+      {
         "activate": true,
         "force": true,
         "name": "wordpress-importer",
