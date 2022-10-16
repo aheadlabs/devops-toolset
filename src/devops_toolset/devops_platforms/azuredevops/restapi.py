@@ -80,7 +80,7 @@ def get_last_build_id(organization: str, project: str, user_name: str, access_to
         access_token: Token as defined in Azure DevOps personal access tokens
 
     Returns:
-        Id of the build
+        ID of the build
     """
     build_list = get_build_list(organization, project, user_name, access_token)
 
@@ -122,7 +122,7 @@ def get_last_build(organization: str, project: str, artifact_name: str,
 
 
 def get_artifact(organization: str, project: str, build_id: int, artifact_name: str, destination_path: str,
-                 user_name: str, access_token: str):
+                 user_name: str, access_token: str) -> tuple[str | None, str | None]:
     """Gets a build for a project.
 
     Args:
@@ -133,17 +133,22 @@ def get_artifact(organization: str, project: str, build_id: int, artifact_name: 
         destination_path: Path where the artifact will be saved.
         user_name: Token name as defined in Azure Devops personal access tokens
         access_token: Token as defined in Azure DevOps personal access tokens
+
+    Returns:
+        Tuple with file name and file path
     """
     build = get_build(organization, project, build_id, artifact_name, user_name, access_token)
     download_url = build["resource"]["downloadUrl"]
     if download_url:
         headers = generate_authentication_header(user_name, access_token)
-        devops_toolset.filesystem.paths.download_file(
+        return devops_toolset.filesystem.paths.download_file(
             build["resource"]["downloadUrl"], destination_path, f"{artifact_name}.zip", headers)
+
+    return None, None
 
 
 def get_last_artifact(organization: str, project: str, artifact_name: str, destination_path: str,
-                      user_name: str, access_token: str):
+                      user_name: str, access_token: str) -> tuple[str | None, str | None]:
     """Gets the last build for a project.
 
     Args:
@@ -153,10 +158,16 @@ def get_last_artifact(organization: str, project: str, artifact_name: str, desti
         destination_path: Path where the artifact will be saved.
         user_name: Token name as defined in Azure Devops personal access tokens
         access_token: Token as defined in Azure DevOps personal access tokens
+
+    Returns:
+        Tuple with file name and file path
     """
     last_build_id = get_last_build_id(organization, project, user_name, access_token)
     if last_build_id:
-        get_artifact(organization, project, last_build_id, artifact_name, destination_path, user_name, access_token)
+        return \
+            get_artifact(organization, project, last_build_id, artifact_name, destination_path, user_name, access_token)
+
+    return None, None
 
 
 if __name__ == "__main__":
