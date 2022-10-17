@@ -591,6 +591,7 @@ def import_wxr_content(wordpress_path: str, wxr_path: str, authors: str, debug: 
         debug: If present, --debug will be added to the command showing all debug trace information.
 
     """
+
     cli.call_subprocess(commands.get("wpcli_import").format(
         file=wxr_path, path=wordpress_path, authors=authors, debug_info=convert_wp_parameter_debug(debug)),
         log_before_process=[literals.get("wp_wpcli_import_before"), wxr_path],
@@ -614,6 +615,7 @@ def install_theme(wordpress_path: str, source: str, activate: bool, debug: bool,
        theme_name: Name of the theme to be installed (just used for log purposes)
 
     """
+
     cli.call_subprocess(commands.get("wpcli_theme_install").format(
         path=wordpress_path,
         source=source,
@@ -621,6 +623,28 @@ def install_theme(wordpress_path: str, source: str, activate: bool, debug: bool,
         debug_info=convert_wp_parameter_debug(debug)),
         log_before_process=[literals.get("wp_wpcli_theme_install_before").format(theme_name=theme_name)],
         log_after_err=[literals.get("wp_wpcli_theme_install_error").format(theme_name=theme_name)])
+
+
+def is_theme_installed(wordpress_path: str, debug: bool, theme_name: str):
+    """Checks if a theme is installed in WordPress using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/theme/is-installed/
+
+    Args:
+       wordpress_path: Path to the wordpress installation.
+       debug: --debug present will show all debug trace information.
+       theme_name: Name of the theme to be installed (just used for log purposes)
+
+    """
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_theme_is_installed").format(
+        path=wordpress_path,
+        name=theme_name,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
 
 
 def install_plugin(plugin_name: str, wordpress_path: str, activate: bool, force: bool, source: str, debug: bool):
@@ -683,46 +707,6 @@ def install_wordpress_core(wordpress_path: str, url: str, title: str, admin_user
     )
 
 
-def rewrite_structure(permalink_structure: str, wordpress_path: str, debug: bool = False):
-    """Updates permalink structure using the 'wp rewrite structure' command.
-
-    Args:
-        permalink_structure: Permalink structure to be written when the update
-            takes place.
-        wordpress_path: Path to the WordPress installation.
-        debug: It True logs debug information.
-    """
-
-    cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
-        structure=permalink_structure,
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
-
-
-def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
-    """Creates a WordPress user.
-
-    Args:
-        user_login: User login to be checked.
-        wordpress_path: Path to WordPress files.
-        debug: If present, --debug will be added to the command showing all debug trace information.
-
-    Returns:
-        True if the user exists.
-    """
-
-    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
-        user_login=user_login,
-        path=wordpress_path,
-        debug_info=convert_wp_parameter_debug(debug)
-    ))
-
-    if result is None:
-        return False
-    return True
-
-
 def reset_database(wordpress_path: str, quiet: bool, debug_info: bool):
     """Removes all WordPress core tables from the database using WP-CLI.
 
@@ -754,6 +738,23 @@ def reset_transients(wordpress_path: str):
                         log_after_err=[literals.get("wp_wpcli_delete_transients_err")])
 
 
+def rewrite_structure(permalink_structure: str, wordpress_path: str, debug: bool = False):
+    """Updates permalink structure using the 'wp rewrite structure' command.
+
+    Args:
+        permalink_structure: Permalink structure to be written when the update
+            takes place.
+        wordpress_path: Path to the WordPress installation.
+        debug: It True logs debug information.
+    """
+
+    cli.call_subprocess(commands.get("wpcli_rewrite_structure").format(
+        structure=permalink_structure,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+
 def set_configuration_value(name: str, value: str, value_type: ValueType, wordpress_path: str, raw: bool, debug: bool):
     """Creates or updates a value (constant or variable) at the wp-config-php
     WordPress configuration file using WP-CLI.
@@ -778,6 +779,55 @@ def set_configuration_value(name: str, value: str, value_type: ValueType, wordpr
         debug_info=convert_wp_parameter_debug(debug)
     ),  log_after_err=[literals.get("wp_wpcli_config_set_value_err")]
     )
+
+
+def theme_list_count(wordpress_path: str, debug: bool, theme_name: str = None):
+    """Returns the number of themes in WordPress using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/theme/is-installed/
+
+    Args:
+       wordpress_path: Path to the wordpress installation.
+       debug: --debug present will show all debug trace information.
+       theme_name: Name of the theme to be installed (just used for log purposes)
+
+    Returns:
+        Number of themes in the WordPress installation, optionally filtered by
+            name.
+    """
+
+    field_name = f"--name={theme_name}" if theme_name is not None else ""
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_theme_list_count_name").format(
+        path=wordpress_path,
+        field_name=field_name,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+
+def theme_list_json(wordpress_path: str, debug: bool):
+    """Returns the theme list from WordPress in JSON format using WP-CLI.
+
+    All parameters are obtained from a site configuration file.
+
+    For more information see:
+        https://developer.wordpress.org/cli/commands/theme/list/
+
+    Args:
+       wordpress_path: Path to the wordpress installation.
+       debug: --debug present will show all debug trace information.
+
+    Returns:
+        dict with the themes in the WordPress installation.
+    """
+
+    return cli.call_subprocess_with_result(commands.get("wpcli_theme_list_json").format(
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
 
 
 def update_database_option(option_name: str, option_value: str, wordpress_path: str,
@@ -817,6 +867,29 @@ def update_database_option(option_name: str, option_value: str, wordpress_path: 
                 option_value=option_value)])
     else:
         logging.warning(literals.get("wp_wpcli_option_skipping").format(option_name=option_name))
+
+
+def user_exists(user_login: str, wordpress_path: str, debug: bool) -> bool:
+    """Creates a WordPress user.
+
+    Args:
+        user_login: User login to be checked.
+        wordpress_path: Path to WordPress files.
+        debug: If present, --debug will be added to the command showing all debug trace information.
+
+    Returns:
+        True if the user exists.
+    """
+
+    result = cli.call_subprocess_with_result(commands.get("wp_user_get").format(
+        user_login=user_login,
+        path=wordpress_path,
+        debug_info=convert_wp_parameter_debug(debug)
+    ))
+
+    if result is None:
+        return False
+    return True
 
 
 def wordpress_is_downloaded(path: str) -> bool:
