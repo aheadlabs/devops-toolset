@@ -128,15 +128,15 @@ def main(root_path: str, db_user_password: str, db_admin_password: str, wp_admin
     theme_tools.build_theme(site_config, themes_path, root_path)
 
     # Configure WordPress site
-    devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(environment_config,
-                                                                                                wordpress_path,
-                                                                                                db_user_password)
+    devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file(
+        environment_config, wordpress_path, db_user_password
+    )
 
     # Create database and users
     if create_db:
-        devops_toolset.project_types.wordpress.wptools.setup_database(environment_config, wordpress_path,
-                                                                      db_user_password,
-                                                                      db_admin_password)
+        devops_toolset.project_types.wordpress.wptools.setup_database(
+            environment_config, wordpress_path, db_user_password, db_admin_password
+        )
 
     # Install WordPress site
     devops_toolset.project_types.wordpress.wptools.install_wordpress_site(

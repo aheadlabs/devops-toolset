@@ -111,7 +111,7 @@ def check_theme_configuration(theme: dict) -> bool:
     return True
 
 
-def check_themes_configuration(themes: dict) -> bool:
+def check_themes_activation_configuration(themes: dict) -> bool:
     """Checks that the themes configuration is correct.
 
     Args:

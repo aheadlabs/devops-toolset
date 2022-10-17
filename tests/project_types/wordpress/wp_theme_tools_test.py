@@ -178,7 +178,7 @@ def test_check_themes_configuration_given_themes_when_wrong_number_of_themes_the
     # Arrange
     themes_dict_content = json.loads(themes)
     # Act
-    result = sut.check_themes_configuration(themes_dict_content)
+    result = sut.check_themes_activation_configuration(themes_dict_content)
     # Assert
     assert result == expected
 
@@ -194,7 +194,7 @@ def test_check_themes_configuration_given_themes_when_wrong_number_of_activated_
     # Arrange
     themes_dict_content = json.loads(themes)
     # Act
-    result = sut.check_themes_configuration(themes_dict_content)
+    result = sut.check_themes_activation_configuration(themes_dict_content)
     # Assert
     assert result == expected
 
@@ -207,7 +207,7 @@ def test_check_themes_configuration_given_themes_when_correct_then_return_true(e
     themes_dict_content = json.loads(ThemesData.themes_content_with_two_themes_one_activated)
     expected = True
     # Act
-    result = sut.check_themes_configuration(themes_dict_content)
+    result = sut.check_themes_activation_configuration(themes_dict_content)
     # Assert
     assert result == expected
 
