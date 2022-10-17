@@ -5,12 +5,28 @@ from enum import Enum
 class DefaultValues(object):
     """Default value constants"""
     WORDPRESS_DEFAULT_LOCALE = "en_US"
+    WORDPRESS_ENV_VAR_PREFIX = "WP_ENV"
+    WORDPRESS_METADATA_EMPTY = {
+        "Theme Name": None,
+        "Theme URI": None,
+        "Description": None,
+        "Author": None,
+        "Author URI": None,
+        "Tags": None,
+        "Version": None,
+        "Requires at least": None,
+        "Tested up to": None,
+        "License": None,
+        "Text Domain": None,
+        "Template": None,
+    }
+    WORDPRESS_METADATA_PREFIX = "METADATA"
 
 
 class Expressions(object):
     """Expressions constants"""
     WORDPRESS_REGEX_FUNCTIONS_PHP_MYTHEME = "(mytheme)(?=_[\w\d\sáéíóú'-.])"
-    WORDPRESS_REGEX_THEME_METADATA_PARSE = ": (.+)"
+    WORDPRESS_REGEX_THEME_METADATA_PARSE = ": ([\w\/:.,{}\- ]*)\n"
     WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE = r"\$wp_local_package\s=\s'([a-z]{2}_[A-Z]{2})'"
     WORDPRESS_FILTER_PLUGIN_NAME = "([a-z-]+)(?:\.php)?"
 
