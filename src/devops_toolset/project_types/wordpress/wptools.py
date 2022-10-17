@@ -71,6 +71,7 @@ def add_wp_options(wp_options: dict, wordpress_path: str, debug: bool = False):
         wordpress_path: Path to the WordPress installation.
         debug: If True logs debug information.
     """
+
     for option in wp_options:
         wp_cli.add_update_option(option, wordpress_path, debug)
 
@@ -285,6 +286,7 @@ def download_wordpress_plugin(plugin_config: dict, destination_path: str):
         plugin_config: Plugin configuration.
         destination_path: Path where the plugin will be downloaded.
     """
+
     with open(destination_path, "wb") as file:
         response = requests.get(plugin_config["source"])
         file.write(response.content)
@@ -303,6 +305,7 @@ def export_database(environment_config: dict, wordpress_path: str, dump_file_pat
         wordpress_path: Path to WordPress files.
         dump_file_path: Path to the destination dump file.
     """
+
     wp_cli.export_database(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
 
@@ -478,6 +481,7 @@ def get_wordpress_path_from_root_path(root_path: str, constants: dict = None) ->
         root_path: Full path of the project.
         constants: WordPress constants.
     """
+
     logging.info(literals.get("wp_root_path").format(path=root_path))
 
     # Get constants if not passed
@@ -504,6 +508,7 @@ def import_content_from_configuration_file(site_configuration: dict, environment
         root_path: Path to the root repository.
         global_constants: Parsed global constants.
     """
+
     # If no content to import, then do nothing
     if "content" not in site_configuration:
         return
@@ -547,6 +552,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
            skip_partial_dumps: If True skips database dumps.
            skip_file_relocation: If True skips file relocation.
        """
+
     # Get data needed in the process
     plugins: dict = site_configuration["settings"]["plugins"]
     root_path_obj = pathlib.Path(root_path)
@@ -564,7 +570,7 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
         if plugin["source_type"] == "url":
             download_wordpress_plugin(plugin, plugin_path)
 
-            # Once downloaded, should have a .zip under plugins path, so can freely add this source as a .zip one for
+            # Once downloaded, should have a .zip under plugins' path, so can freely add this source as a .zip one for
             # further installing this plugin as a zip
             plugin["source_type"] = "zip"
 
@@ -606,6 +612,7 @@ def install_recommended_plugins():
     Args:
 
     """
+
     # TODO(alberto.carbonell) Develop an wp-cli extension.
     pass
 
