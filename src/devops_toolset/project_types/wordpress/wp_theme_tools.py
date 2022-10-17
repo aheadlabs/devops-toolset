@@ -27,6 +27,7 @@ from devops_toolset.tools import cli
 from typing import Union
 
 app: App = App()
+platform_specific_environment = app.load_platform_specific("environment")
 platform_specific_restapi = app.load_platform_specific("restapi")
 literals = LiteralsCore([WordpressLiterals])
 platform_literals = LiteralsCore([PlatformLiterals])
@@ -138,13 +139,15 @@ def check_themes_activation_configuration(themes: dict) -> bool:
     return True
 
 
-def create_development_theme(site_configuration: dict, root_path: str, constants: dict):
+def create_development_theme(site_configuration: dict, root_path: str, constants: dict) -> [dict, None]:
     """ Creates the structure of a development theme.
 
     Args:
         site_configuration: Site configuration
         root_path: The desired destination path of the theme
         constants: WordPress constants.
+
+    Returns: Theme configuration or None if src theme is not found.
     """
 
     destination_path = get_themes_path_from_root_path(root_path, constants)
@@ -163,8 +166,11 @@ def create_development_theme(site_configuration: dict, root_path: str, constants
 
         # Replace necessary theme files with the theme name.
         set_theme_metadata(root_path, src_theme)
+
+        return src_theme
     else:
         logging.warning(literals.get("wp_src_theme_not_found"))
+        return None
 
 
 def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs):
@@ -179,6 +185,7 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         destination_path: Path where the theme will be downloaded.
         kwargs: Platform-specific arguments
     """
+
     source_type: str = theme_config["source_type"]
 
     if source_type == "feed":
@@ -186,9 +193,15 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
         matches = re.search(r"https:\/\/dev.azure.com\/(\w+)\/", feed_config["organization_url"])
         organization = matches.group(1)
         if "azdevops_user" in kwargs and "azdevops_token" in kwargs:
-            platform_specific_restapi.get_last_artifact(organization, feed_config["name"], feed_config["package"],
-                                                        destination_path, kwargs["azdevops_user"],
-                                                        kwargs["azdevops_token"])
+            # Download package file
+            file_name, file_path = platform_specific_restapi.get_last_artifact(
+                organization, feed_config["name"], feed_config["package"], destination_path,
+                kwargs["azdevops_user"],kwargs["azdevops_token"])
+
+            # Extract theme zip from package and delete package
+            theme_zip_path = f"{theme_config['feed']['package']}/{theme_config['feed']['name']}.zip"
+            devops_toolset.filesystem.zip.extract_file_from_zip(file_path, theme_zip_path, destination_path)
+            os.remove(file_path)
         else:
             logging.warning(platform_literals.get("azdevops_token_not_found"))
             logging.warning(platform_literals.get("azdevops_download_package_manually"))
@@ -218,13 +231,17 @@ def get_src_theme(themes: dict) -> Union[dict, None]:
 
     Args
         themes: Themes node from site configuration
+
+    Returns:
+        Src theme configuration or None if not found
     """
 
     filtered_themes = list(filter(lambda t: t["source_type"] == "src", themes))
     if len(filtered_themes) == 1:
         return filtered_themes[0]
     else:
-        raise ValueError(literals.get("wp_theme_src_not_found"))
+        logging.warning(literals.get("wp_theme_src_not_found"))
+        return None
 
 
 def get_themes_path_from_root_path(root_path: str, constants: dict) -> str:
@@ -268,11 +285,17 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
     themes_path = pathlib.Path.joinpath(root_path_obj, global_constants["paths"]["content"]["themes"])
     debug_info = environment_config["wp_cli_debug"]
 
-    # Check themes configuration
-    if not check_themes_configuration(themes):
+    # Check themes activation configuration
+    if not check_themes_activation_configuration(themes):
         return
 
     for theme in themes:
+        # Check if theme is already installed
+        if int(wp_cli.theme_list_count(wordpress_path, debug_info, theme["name"])) == 1:
+            continue
+
+        logging.info(literals.get("wp_themes_installing_theme").format(theme=theme["name"]))
+
         # Check theme configuration
         if not check_theme_configuration(theme):
             continue
@@ -286,11 +309,11 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
         if theme["source_type"] in ["url", "feed"]:
             download_wordpress_theme(theme, str(themes_path), **kwargs)
 
-        # Get template for the theme if it has one
-        style_content: bytes = devops_toolset.filesystem.zip.read_text_file_in_zip(
-            theme_path, f"{theme['name']}/style.css")
-        metadata: dict = devops_toolset.filesystem.parsers.parse_theme_metadata(style_content, ["Template", "Version"])
-        theme["template"] = metadata["Template"] if "Template" in metadata else None
+        # Get template/framework for the theme if it has one
+        style_content: bytes = devops_toolset.filesystem.zip.read_text_file_in_zip(theme_path, "style.css")
+        metadata: dict = parse_theme_metadata(style_content.decode("utf-8"))
+        theme["template"] = metadata["Template"] \
+            if "Template" in metadata and metadata["Template"] is not None else None
         theme["version"] = metadata["Version"]
 
     # Set child theme and parent theme, or just child theme (the one to be activated)
@@ -594,7 +617,7 @@ def triage_themes(themes: dict) -> (dict, dict):
             parent_guess = theme["name"]
         if theme["activate"]:
             child = theme
-            if theme["template"]:
+            if "template" in theme:
                 parent_guess = theme["template"]
 
         if not theme["activate"] and not theme["template"] and theme["name"] == parent_guess:
