@@ -33,37 +33,34 @@ platform_literals = LiteralsCore([PlatformLiterals])
 commands = CommandsCore([WordpressCommands])
 
 
-def build_theme(site_config: dict, theme_path: str, root_path: str):
+def build_theme(theme_config: dict, theme_path: str, root_path: str):
     """ Builds a theme source into a packaged theme distribution using npm tasks
 
     Args:
-        site_config: Site configuration.
+        theme_config: Theme configuration.
         theme_path: Path to the theme in the WordPress repository.
         root_path: Path to the project root.
     """
 
     logging.info(literals.get("wp_looking_for_src_themes"))
 
-    # Get configuration data and paths
-    src_theme = get_src_theme(site_config["settings"]["themes"])
-
-    if src_theme is None:
+    if theme_config is None:
         # Src theme not present
         logging.info(literals.get("wp_no_src_themes"))
         return
 
-    if not src_theme["build"]:
+    if not theme_config["build"]:
         # Theme will not be build
         logging.info(literals.get("wp_theme_src_will_not_be_built"))
         return
 
-    theme_path_src = pathlib.Path(theme_path, src_theme["source"])
+    theme_path_src = pathlib.Path(theme_path, theme_config["source"])
     theme_path_dist = pathlib.Path(theme_path_src, "dist")
-    theme_path_zip = pathlib.Path(theme_path, f"{src_theme['name']}.zip")
+    theme_path_zip = pathlib.Path(theme_path, f"{theme_config['name']}.zip")
 
     if os.path.exists(theme_path_src):
 
-        theme_slug = src_theme["name"]
+        theme_slug = theme_config["name"]
 
         # Change to the theme's source directory
         os.chdir(theme_path_src)
@@ -72,14 +69,14 @@ def build_theme(site_config: dict, theme_path: str, root_path: str):
         npm.install()
 
         # Run npm run build to execute the task build with the required parameters
-        cli.call_subprocess(commands.get("wp_theme_src_build"),
+        cli.call_subprocess(commands.get("wp_theme_src_build_production"),
                             log_before_out=[literals.get("wp_webpack_build_before").format(theme_slug=theme_slug)],
                             log_after_out=[literals.get("wp_webpack_build_after").format(theme_slug=theme_slug)],
                             log_after_err=[literals.get("wp_webpack_build_error").format(theme_slug=theme_slug)])
 
         # Zip dist
         devops_toolset.filesystem.zip.zip_directory(
-            theme_path_dist.as_posix(), theme_path_zip.as_posix(), f"{theme_slug}/")
+            theme_path_dist.as_posix(), theme_path_zip.as_posix())
 
         # Replace project.xml version with the one in the package.json file
         package_json_path = str(pathlib.Path.joinpath(pathlib.Path(theme_path_src, "package.json")))
