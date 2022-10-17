@@ -7,6 +7,7 @@ import devops_toolset.filesystem.tools
 import devops_toolset.filesystem.zip
 import devops_toolset.project_types.wordpress.constants as wp_constants
 import devops_toolset.project_types.wordpress.wp_cli as wp_cli
+import devops_toolset.project_types.wordpress.wp_theme_tools as wp_theme_tools
 import devops_toolset.tools.git as git_tools
 import json
 import logging
@@ -783,6 +784,9 @@ def scaffold_wordpress_basic_project_structure(root_path: str, site_configuratio
 
     logging.info(literals.get("wp_creating_project_structure"))
 
+    # Get src theme if it exists in the configuration
+    src_theme: dict = wp_theme_tools.get_src_theme(site_configuration["settings"]["themes"])
+
     # Get guess file path
     structure_file_path = pathlib.Path.joinpath(pathlib.Path(root_path), "wordpress-project-structure.json")
 
@@ -798,7 +802,8 @@ def scaffold_wordpress_basic_project_structure(root_path: str, site_configuratio
 
     token_replacements: dict = {
         "project-name": site_configuration["settings"]["project"]["name"],
-        "project-version": site_configuration["settings"]["project"]["version"]
+        "project-version": site_configuration["settings"]["project"]["version"],
+        "theme-name": src_theme["name"] if src_theme is not None else "",
     }
     project_starter = BasicStructureStarter(token_replacements)
 
