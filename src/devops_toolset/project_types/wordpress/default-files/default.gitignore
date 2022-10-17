@@ -11,6 +11,7 @@ wordpress/wp-admin/
 wordpress/wp-content/themes/
 wordpress/wp-content/plugins/
 wordpress/wp-content/upgrade/
+wordpress/wp-content/index.php
 wordpress/wp-includes/
 wordpress/wp*.php
 wordpress/index.php
