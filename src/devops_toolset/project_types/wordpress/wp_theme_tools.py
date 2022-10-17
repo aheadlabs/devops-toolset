@@ -164,9 +164,6 @@ def create_development_theme(site_configuration: dict, root_path: str, constants
         # Create the structure based on the theme_name
         scaffold_basic_theme_structure(destination_path, site_configuration, structure_file_path)
 
-        # Replace necessary theme files with the theme name.
-        set_theme_metadata(root_path, src_theme)
-
         return src_theme
     else:
         logging.warning(literals.get("wp_src_theme_not_found"))
@@ -507,36 +504,6 @@ def replace_theme_slug_in_functions_php(file_path: str, src_theme_configuration:
     # Write replaced content to the file
     with open(file_path, 'w', newline='\n') as core_php_file:
         core_php_file.write(file_content)
-
-
-def set_theme_metadata(root_path: str, src_theme_configuration: dict):
-    """ Replaces theme meta-data values on required theme files
-    Args:
-        root_path: The path of the project
-        src_theme_configuration: The src theme configuration to be set.
-    """
-
-    constants = wptools.get_constants()
-    theme_slug = src_theme_configuration["source"]
-
-    # Get scss file path and content from the theme slug
-    themes_path = pathlib.Path.joinpath(pathlib.Path(root_path), constants["paths"]["content"]["themes"])
-
-    # Replace meta-data obtained inside theme .scss
-    scss_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "src", "assets", "css", "style.scss"))
-    replace_theme_meta_data_in_scss_file(scss_file_path, src_theme_configuration)
-
-    # Replace meta-data on the package.json file
-    package_json_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "package.json"))
-    replace_theme_meta_data_in_package_file(package_json_file_path, src_theme_configuration)
-
-    # Replace theme slug on the functions_core.php
-    functions_php_file_path = str(pathlib.Path.joinpath(themes_path, theme_slug, "src", "functions_php", "_core.php"))
-    replace_theme_slug_in_functions_php(functions_php_file_path, src_theme_configuration)
-
-    # Update project.xml name
-    project_xml_path = pathlib.Path.joinpath(pathlib.Path(root_path), "project.xml").as_posix()
-    devops_toolset.filesystem.tools.update_xml_file_entity_text("./name", theme_slug, project_xml_path)
 
 
 def scaffold_basic_theme_structure(
