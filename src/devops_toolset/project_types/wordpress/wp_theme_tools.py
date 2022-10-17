@@ -323,6 +323,62 @@ def install_themes_from_configuration_file(site_configuration: dict, environment
         logging.warning(literals.get("wp_wpcli_export_db_skipping_as_set").format(dump="theme"))
 
 
+def parse_theme_metadata(style_css_content: str, add_environment_variables: bool = False):
+    """Parses metadata from theme's main style sheet style.css.
+
+    Args:
+        style_css_content: Content of style.css file.
+        add_environment_variables: If True adds every metadata value as an
+            environment variable.
+
+    Returns
+        dict with metadata extracted in key-value pairs
+    """
+    logging.info(literals.get("wp_parsing_theme_metadata"))
+
+    metadata: dict = wp_constants.DefaultValues.WORDPRESS_METADATA_EMPTY
+    environment_variables: dict = {}
+
+    for key, value in metadata.items():
+        regex = key + wp_constants.Expressions.WORDPRESS_REGEX_THEME_METADATA_PARSE
+        logging.debug(literals.get("wp_parsing_theme_regex").format(regex=regex))
+        matches = re.search(regex, style_css_content)
+
+        if matches is not None and matches.group(1):
+            value = matches.group(1)
+            metadata[key] = value
+            logging.info(literals.get("wp_parsing_theme_matches_found").format(key=key, value=value))
+
+            if add_environment_variables:
+                env_key = f"{wp_constants.DefaultValues.WORDPRESS_ENV_VAR_PREFIX}_" \
+                          f"{wp_constants.DefaultValues.WORDPRESS_METADATA_PREFIX}_" \
+                          f"{value.upper().replace(' ', '_')}"
+                environment_variables[env_key] = value
+        else:
+            logging.warning(literals.get("wp_parsing_theme_no_matches_found").format(key=key))
+
+    if len(environment_variables) > 0:
+        platform_specific_environment.create_environment_variables(environment_variables)
+
+    return metadata
+
+
+def parse_theme_metadata_from_file(style_css_path: str, add_environment_variables: bool = False):
+    """Parses metadata from theme's main style sheet style.css.
+
+    Args:
+        style_css_path: Path to file style.css.
+        add_environment_variables: If True adds every metadata value as an
+            environment variable.
+
+    Returns
+        dict with metadata extracted in key-value pairs"""
+
+    with open(style_css_path, "r") as style:
+        content = style.read()
+        return parse_theme_metadata(content, add_environment_variables)
+
+
 def purge_theme_zip_installation_file_if_generated(theme_config: dict):
     """Purges the ZIP file used for installing the theme if the ZIP has been
     generated (source_type value is not zip in the theme configuration).
