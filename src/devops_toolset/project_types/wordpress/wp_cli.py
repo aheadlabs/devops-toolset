@@ -349,7 +349,7 @@ def create_user(user: dict, wordpress_path: str, debug: bool):
 
 def create_wordpress_database_user(wordpress_path: str, admin_user: str, admin_password: str, user: str, password: str,
                                    schema: str, host: str = 'localhost',
-                                   db_privileges: str = 'create, alter, select, insert, update, delete',
+                                   db_privileges: str = 'create, drop, alter, select, insert, update, delete',
                                    global_privileges: str = 'lock tables, process'):
     """Creates a database user to be used by WordPress
         e.g.:
