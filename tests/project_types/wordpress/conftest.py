@@ -220,6 +220,7 @@ class WordPressData:
     path = "/pathto"
     url_resource = "https://url/resource"
     default_pwd = "root"
+    token_replacements = []
 
 
 @pytest.fixture
