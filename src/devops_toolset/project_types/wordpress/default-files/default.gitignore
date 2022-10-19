@@ -20,6 +20,9 @@ wordpress/license.txt
 wordpress/readme.html
 wordpress/xmlrpc.php
 
+# 3rd party
+wordpress/wp-content/et-cache/
+
 # temporary development files
 content/themes/*.zip
 
