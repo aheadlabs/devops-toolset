@@ -50,7 +50,7 @@ def build_theme(theme_config: dict, theme_path: str, root_path: str):
         logging.info(literals.get("wp_no_src_themes"))
         return
 
-    if not theme_config["build"]:
+    if 'build' not in theme_config or not theme_config["build"]:
         # Theme will not be build
         logging.info(literals.get("wp_theme_src_will_not_be_built"))
         return
@@ -193,7 +193,7 @@ def download_wordpress_theme(theme_config: dict, destination_path: str, **kwargs
             # Download package file
             file_name, file_path = platform_specific_restapi.get_last_artifact(
                 organization, feed_config["name"], feed_config["package"], destination_path,
-                kwargs["azdevops_user"],kwargs["azdevops_token"])
+                kwargs["azdevops_user"], kwargs["azdevops_token"])
 
             # Extract theme zip from package and delete package
             theme_zip_path = f"{theme_config['feed']['package']}/{theme_config['feed']['name']}.zip"
