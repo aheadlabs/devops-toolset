@@ -50,7 +50,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 @patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_site")
 @patch("devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wptools.download_wordpress")
-@patch("devops_toolset.project_types.wordpress.wptools.start_basic_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure")
 @patch("devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
@@ -63,7 +63,7 @@ def test_main_given_required_files_when_not_present_and_localhost_and_no_default
 def test_main_given_required_files_when_present_then_calls_wptools_get_required_file_paths(
         create_users_mock, add_wp_options_mock, get_environment_mock, constants_mock, files_exist_mock,
         get_themes_path_mock, get_required_files_mock, get_site_config_mock, get_wordpress_path,
-        start_basic_structure_mock, download_wordpress_mock, set_wordpress_config_mock,
+        scaffold_basic_structure_mock, download_wordpress_mock, set_wordpress_config_mock,
         install_wordpress_site_mock, install_theme_mock, install_plugins_mock, build_theme_mock, log_indented_mock,
         logging_mock, generate_environments_mock, delete_sample_mock, export_database_mock, purge_gitkeep_mock,
         move_files_mock, convert_wp_config_token_mock,  import_content_mock, wordpressdata):
@@ -99,7 +99,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 @patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_site")
 @patch("devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wptools.download_wordpress")
-@patch("devops_toolset.project_types.wordpress.wptools.start_basic_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure")
 @patch("devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
@@ -114,7 +114,7 @@ def test_main_given_required_files_when_present_then_calls_wptools_get_required_
 def test_main_given_required_files_when_present_and_create_db_then_calls_setup_database(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
         constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,  get_site_config_mock,
-        get_wordpress_path, start_basic_structure_mock, download_wordpress_mock,
+        get_wordpress_path, scaffold_basic_structure_mock, download_wordpress_mock,
         set_wordpress_config_mock, install_wordpress_site_mock, setup_database_mock, install_theme_mock,
         install_plugins_mock, build_theme_mock, log_indented_mock, logging_mock, generate_environments_mock,
         delete_sample_mock, export_database_mock, purge_gitkeep_mock, import_content_mock, wordpressdata):
@@ -150,7 +150,7 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 @patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_site")
 @patch("devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wptools.download_wordpress")
-@patch("devops_toolset.project_types.wordpress.wptools.start_basic_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure")
 @patch("devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
@@ -165,7 +165,7 @@ def test_main_given_required_files_when_present_and_create_db_then_calls_setup_d
 def test_main_given_required_files_when_not_present_and_use_defaults_then_download_required_files(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock,
         get_environment_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
-        get_site_config_mock, get_wordpress_path, start_basic_structure_mock,
+        get_site_config_mock, get_wordpress_path, scaffold_basic_structure_mock,
         download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
         install_plugins_mock, build_theme_mock, prompt_yn_mock, log_indented_mock, generate_environments_mock,
         delete_sample_mock, export_database_mock, purge_gitkeep_mock, import_content_mock, wordpressdata, mocks):
@@ -204,7 +204,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 @patch("devops_toolset.project_types.wordpress.wptools.install_wordpress_site")
 @patch("devops_toolset.project_types.wordpress.wptools.set_wordpress_config_from_configuration_file")
 @patch("devops_toolset.project_types.wordpress.wptools.download_wordpress")
-@patch("devops_toolset.project_types.wordpress.wptools.start_basic_project_structure")
+@patch("devops_toolset.project_types.wordpress.wptools.scaffold_wordpress_basic_project_structure")
 @patch("devops_toolset.project_types.wordpress.wptools.get_wordpress_path_from_root_path")
 @patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
 @patch("devops_toolset.project_types.wordpress.wptools.get_required_file_paths")
@@ -220,7 +220,7 @@ def test_main_given_required_files_when_not_present_and_use_defaults_then_downlo
 def test_main_given_required_files_when_create_development_theme_then_calls_create_development_theme(
         move_files_mock, convert_wp_config_token_mock, create_users_mock, add_wp_options_mock, get_environment_mock,
         create_dev_theme_mock, constants_mock, files_exist_mock, get_themes_path_mock, get_required_files_mock,
-        get_site_config_mock, get_wordpress_path, start_basic_structure_mock,
+        get_site_config_mock, get_wordpress_path, scaffold_basic_structure_mock,
         download_wordpress_mock, set_wordpress_config_mock, install_wordpress_site_mock, install_theme_mock,
         install_plugins_mock, build_theme_mock, generate_environments_mock, delete_sample_mock, export_database_mock,
         purge_gitkeep_mock, wordpressdata, mocks):

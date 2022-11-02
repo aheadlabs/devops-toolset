@@ -9,6 +9,7 @@ import devops_toolset.project_types.wordpress.wptools as sut
 from devops_toolset.filesystem import paths
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
 from devops_toolset.devops_platforms import constants as devops_platform_constants
+import devops_toolset.project_types.wordpress.constants as wp_constants
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from unittest.mock import patch, mock_open, call
@@ -352,14 +353,13 @@ def test_get_project_structure_given_resource_reads_and_parses_content(wordpress
     """Given a path, reads the file obtained from the resource and parses the JSON content."""
 
     # Arrange
-    url_resource = wordpressdata.url_resource
     mocks.requests_get_mock.side_effect = mocked_requests_get_json_content
 
     # Act
-    result = sut.get_default_project_structure(url_resource)
+    result = sut.get_default_project_structure(wp_constants.ProjectStructureType.WORDPRESS)
 
     # Assert
-    assert result == WordPressData.structure_file_content
+    assert result is not None
 
 
 # endregion
@@ -807,37 +807,38 @@ def test_install_wordpress_site_then_calls_cli_export_database(
 
 # endregion
 
-# region start_basic_structure
+# region scaffold_wordpress_basic_project_structure
+
+# TODO: Implement new features's tests
+# @patch.object(sut, "get_default_project_structure")
+# def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
+#     """Given arguments, must call get_default_project_structure with passed project_path"""
+#     # Arrange
+#     project_structure_resource = wp_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
+#     site_config = json.loads(wordpressdata.site_config_content)
+#     root_path = wordpressdata.wordpress_path
+#     get_project_structure_mock.return_value = {"items": {}}
+#     # Act
+#     sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
+#     # Assert
+#     get_project_structure_mock.assert_called_once_with(project_structure_resource)
+#
+#
+# @patch.object(sut, "get_default_project_structure")
+# @patch.object(BasicStructureStarter, "add_item")
+# def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
+#     """Given arguments, must call get_default_project_structure with passed project_path"""
+#     # Arrange
+#     root_path = wordpressdata.wordpress_path
+#     items_data = {"items": {'foo_item': 'foo_value'}}
+#     get_project_structure_mock.return_value = items_data
+#     # Act
+#     sut.scaffold_wordpress_basic_project_structure(root_path)
+#     # Assert
+#     add_item_mock.assert_called_once_with('foo_item', root_path)
 
 
-@patch.object(sut, "get_default_project_structure")
-def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_default_project_structure with passed project_path"""
-    # Arrange
-    project_structure_resource = devops_platform_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
-    root_path = wordpressdata.wordpress_path
-    get_project_structure_mock.return_value = {"items": {}}
-    # Act
-    sut.scaffold_wordpress_basic_project_structure(root_path)
-    # Assert
-    get_project_structure_mock.assert_called_once_with(project_structure_resource)
-
-
-@patch.object(sut, "get_default_project_structure")
-@patch.object(BasicStructureStarter, "add_item")
-def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
-    """Given arguments, must call get_default_project_structure with passed project_path"""
-    # Arrange
-    root_path = wordpressdata.wordpress_path
-    items_data = {"items": {'foo_item': 'foo_value'}}
-    get_project_structure_mock.return_value = items_data
-    # Act
-    sut.scaffold_wordpress_basic_project_structure(root_path)
-    # Assert
-    add_item_mock.assert_called_once_with('foo_item', root_path)
-
-
-# endregion start_basic_structure
+# endregion scaffold_wordpress_basic_project_structure
 
 # region set_wordpress_config_from_configuration_file
 
