@@ -228,6 +228,7 @@ class WordPressData:
         "value": "/%category%/%postname%/",
         "autoload": "true"
     }
+    wp_locale_data = "$wp_local_package = 'en_US'"
     builtins_open = 'builtins.open'
     parent_not_empty_value = 'when_parent_not_empty'
     condition_key = 'condition'

@@ -45,7 +45,7 @@ def build_theme(theme_config: dict, theme_path: str, root_path: str):
 
     logging.info(literals.get("wp_looking_for_src_themes"))
 
-    if theme_config is None:
+    if theme_config == {}:
         # Src theme not present
         logging.info(literals.get("wp_no_src_themes"))
         return

@@ -26,9 +26,10 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs(logging_mock
     theme_path = wordpressdata.theme_path
     literal1 = literals.get("wp_looking_for_src_themes")
     literal2 = literals.get("wp_no_src_themes")
+    src_theme: dict = {}
 
     # Act
-    sut.build_theme(None, theme_path, root_path)
+    sut.build_theme(src_theme, theme_path, root_path)
     # Assert
     calls = [call(literal1), call(literal2)]
     logging_mock.assert_has_calls(calls)

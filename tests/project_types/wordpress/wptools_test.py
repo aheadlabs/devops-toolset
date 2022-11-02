@@ -5,6 +5,8 @@ import stat
 import pytest
 import json
 import pathlib
+
+import devops_toolset.project_types.wordpress.basic_structure_starter
 import devops_toolset.project_types.wordpress.wptools as sut
 from devops_toolset.filesystem import paths
 from devops_toolset.project_types.wordpress.basic_structure_starter import BasicStructureStarter
@@ -131,6 +133,46 @@ def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_up
     add_update_option_mock.assert_has_calls(calls)
 
 # endregion add_wp_options
+
+
+# region check_wordpress_files_locale
+
+
+@patch("devops_toolset.filesystem.tools.search_regex_in_text_file")
+@patch("logging.warning")
+def test_check_wordpress_files_locale_should_warn_when_locale_found_and_not_ok(logging_warning_mock,
+                                                                                   search_regex_mock,  wordpressdata):
+    """ Given locale, when found and not ok, when warns """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    locale_found = True
+    locale = 'es_ES'  # The locale intended to be found is en_US, so this will be a mismatch and not_ok
+    locale_match = re.search(wp_constants.Expressions.WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE,
+                             wordpressdata.wp_locale_data)
+    search_regex_mock.return_value = (locale_found, locale_match)
+    # Act
+    sut.check_wordpress_files_locale(wordpress_path, locale)
+    # Assert
+    logging_warning_mock.assert_called()
+
+
+@patch("devops_toolset.filesystem.tools.search_regex_in_text_file")
+@patch("logging.warning")
+def test_check_wordpress_files_locale_should_warn_when_not_locale_found_and_not_default(logging_warning_mock,
+                                                                                   search_regex_mock,  wordpressdata):
+    """ Given locale, when found and not ok, when warns """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    locale_found = False
+    locale = 'es_ES'  # The locale intended to be found is en_US, so this will be a mismatch and not_ok
+    locale_match = re.search(wp_constants.Expressions.WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE, "")
+    search_regex_mock.return_value = (locale_found, locale_match)
+    # Act
+    sut.check_wordpress_files_locale(wordpress_path, locale)
+    # Assert
+    logging_warning_mock.assert_called()
+
+# endregion
 
 # region convert_wp_config_token
 
@@ -809,34 +851,73 @@ def test_install_wordpress_site_then_calls_cli_export_database(
 
 # region scaffold_wordpress_basic_project_structure
 
-# TODO: Implement new features's tests
-# @patch.object(sut, "get_default_project_structure")
-# def test_main_given_parameters_must_call_wptools_get_project_structure(get_project_structure_mock, wordpressdata):
-#     """Given arguments, must call get_default_project_structure with passed project_path"""
-#     # Arrange
-#     project_structure_resource = wp_constants.Urls.DEFAULT_WORDPRESS_PROJECT_STRUCTURE
-#     site_config = json.loads(wordpressdata.site_config_content)
-#     root_path = wordpressdata.wordpress_path
-#     get_project_structure_mock.return_value = {"items": {}}
-#     # Act
-#     sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
-#     # Assert
-#     get_project_structure_mock.assert_called_once_with(project_structure_resource)
-#
-#
-# @patch.object(sut, "get_default_project_structure")
-# @patch.object(BasicStructureStarter, "add_item")
-# def test_main_given_parameters_must_call_add_item(add_item_mock, get_project_structure_mock, wordpressdata):
-#     """Given arguments, must call get_default_project_structure with passed project_path"""
-#     # Arrange
-#     root_path = wordpressdata.wordpress_path
-#     items_data = {"items": {'foo_item': 'foo_value'}}
-#     get_project_structure_mock.return_value = items_data
-#     # Act
-#     sut.scaffold_wordpress_basic_project_structure(root_path)
-#     # Assert
-#     add_item_mock.assert_called_once_with('foo_item', root_path)
 
+@patch("devops_toolset.project_types.wordpress.wptools.get_default_project_structure")
+@patch("logging.info")
+@patch("logging.warning")
+@patch("pathlib.Path.exists")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_src_theme")
+def test_scaffold_wordpress_given_parameters_when_path_not_exists_must_call_get_default_project_structure(
+        get_src_theme_mock, path_exists_mock, logging_warn_mock, logging_info_mock,
+        get_project_structure_mock, wordpressdata):
+    """Given arguments, must call get_default_project_structure with passed project_path"""
+    # Arrange
+
+    expected_default_project_structure = wp_constants.ProjectStructureType.WORDPRESS
+    path_exists_mock.return_value = False
+    site_config = json.loads(wordpressdata.site_config_content)
+    root_path = wordpressdata.wordpress_path
+    get_project_structure_mock.return_value = {"items": {}}
+    # Act
+    sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
+    # Assert
+    get_project_structure_mock.assert_called_once_with(expected_default_project_structure)
+
+
+@patch("logging.info")
+@patch("logging.warning")
+@patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
+@patch("pathlib.Path.exists")
+@patch("pathlib.Path.joinpath")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_src_theme")
+def test_scaffold_wordpress_given_parameters_when_path_exists_must_call_get_site_configuration(
+        get_src_theme_mock, path_joinpath_mock, path_exists_mock, get_site_configuration_mock, logging_warn_mock,
+        logging_info_mock, wordpressdata):
+    """Given arguments, must call get_default_project_structure with passed project_path"""
+    # Arrange
+    path_joinpath_mock.return_value = wordpressdata.project_structure_path
+    path_exists_mock.return_value = True
+    site_config = json.loads(wordpressdata.site_config_content)
+    root_path = wordpressdata.wordpress_path
+    # Act
+    sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
+    # Assert
+    get_site_configuration_mock.assert_called_once_with(wordpressdata.project_structure_path)
+
+
+@patch("logging.info")
+@patch("logging.warning")
+@patch("devops_toolset.project_types.wordpress.wptools.get_site_configuration")
+@patch("pathlib.Path.exists")
+@patch("pathlib.Path.joinpath")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.get_src_theme")
+def test_scaffold_wordpress_given_parameters_when_path_exists_must_add_items(
+        get_src_theme_mock, path_joinpath_mock, path_exists_mock, get_site_configuration_mock,
+        logging_warn_mock, logging_info_mock, wordpressdata):
+    """Given arguments, must call get_default_project_structure with passed project_path"""
+    # Arrange
+    items: dict = {'items': [{'item1': 'value1'}]}
+    path_joinpath_mock.return_value = wordpressdata.project_structure_path
+    path_exists_mock.return_value = True
+    site_config = json.loads(wordpressdata.site_config_content)
+    get_site_configuration_mock.return_value = items
+    root_path = wordpressdata.wordpress_path
+    # Act
+    with patch.object(devops_toolset.project_types.wordpress.basic_structure_starter.BasicStructureStarter,
+                      "add_item") as add_item_mock:
+        sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
+        # Assert
+        add_item_mock.assert_called_once_with(items["items"][0], root_path)
 
 # endregion scaffold_wordpress_basic_project_structure
 
