@@ -24,12 +24,11 @@ def test_build_theme_given_site_config_when_no_src_themes_then_logs(logging_mock
     # Arrange
     root_path = wordpressdata.root_path
     theme_path = wordpressdata.theme_path
-    no_src_theme_config = json.loads(themesdata.theme_single_no_src)
     literal1 = literals.get("wp_looking_for_src_themes")
-    literal2 = literals.get("wp_theme_src_will_not_be_built")
+    literal2 = literals.get("wp_no_src_themes")
 
     # Act
-    sut.build_theme(no_src_theme_config, theme_path, root_path)
+    sut.build_theme(None, theme_path, root_path)
     # Assert
     calls = [call(literal1), call(literal2)]
     logging_mock.assert_has_calls(calls)
@@ -380,6 +379,42 @@ def test_install_theme_given_configuration_file_when_wrong_themes_configuration_
     sut.install_themes_from_configuration_file(site_config, environment_config, constants, root_path, True)
     # Assert
     install_theme_mock.assert_not_called()
+
+
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_themes_activation_configuration")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_theme_configuration")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.download_wordpress_theme")
+@patch("devops_toolset.filesystem.zip.read_text_file_in_zip")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.triage_themes")
+@patch("devops_toolset.project_types.wordpress.wptools.convert_wp_config_token")
+@patch("devops_toolset.project_types.wordpress.wptools.export_database")
+@patch("logging.info")
+@patch("devops_toolset.project_types.wordpress.wp_cli.install_theme")
+@patch("devops_toolset.project_types.wordpress.wp_theme_tools.parse_theme_metadata")
+@patch("devops_toolset.project_types.wordpress.wp_cli.theme_list_count")
+def test_install_theme_given_configuration_file_theme_already_installed_then_skip(
+        theme_list_count_mock, parse_metadata_mock, install_theme_mock, logging_mock, export_database_mock,
+        convert_token_mock, triage_themes_mock, read_text_file_mock, download_wordpress_mock, check_theme_mock,
+        check_themes_mock, wordpressdata, themesdata):
+    """ Given the configuration values, when wrong single theme configuration found, then the theme is skipped """
+
+    # Arrange
+    theme_list_count_mock.return_value = 1
+    check_themes_mock.return_value = True
+    check_theme_mock.return_value = True
+    site_config = json.loads(wordpressdata.site_config_content)
+    site_config["themes"] = json.loads(themesdata.theme_single_src)
+    environment_config = site_config["environments"][0]
+    constants = json.loads(wordpressdata.constants_file_content)
+    root_path = wordpressdata.root_path
+    triage_themes_mock.return_value = None, json.loads(themesdata.themes_content_with_child_activated)[0]
+
+    # Act
+    sut.install_themes_from_configuration_file(site_config, environment_config, constants, root_path, True)
+
+    # Assert
+    install_theme_mock.assert_called()
+
 
 
 @patch("devops_toolset.project_types.wordpress.wp_theme_tools.check_themes_activation_configuration")
