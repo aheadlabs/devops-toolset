@@ -14,10 +14,10 @@ literals = LiteralsCore([WordpressLiterals])
 def main():
     """Deploys a WordPress site based on its build artifacts"""
 
-    # TODO Activate maintenance page
-    # TODO Deploy files artifact
-    # TODO Deploy SQL artifact
-    # TODO Deactivate maintenance page
+    # TODO(anyone) Activate maintenance page
+    # TODO(anyone) Deploy files artifact
+    # TODO(anyone) Deploy SQL artifact
+    # TODO(anyone) Deactivate maintenance page
 
     pass
 

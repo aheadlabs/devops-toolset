@@ -15,16 +15,16 @@ literals = LiteralsCore([WordpressLiterals])
 def main():
     """Builds a WordPress site based on the site configuration file"""
 
-    # TODO Get basic settings and configuration file, parse everything
-    # TODO Create or fix project structure
-    # TODO Download WordPress core files if version is newer or not present
-    # TODO Set / update WordPress options
-    # TODO Install theme/s
-    # TODO Configure WordPress site and delete sample configuration file if present
-    # TODO Import WXR content
-    # TODO Synchronize content with other environment?
-    # TODO Generate files artifact
-    # TODO Generate SQL artifact
+    # TODO(anyone) Get basic settings and configuration file, parse everything
+    # TODO(anyone) Create or fix project structure
+    # TODO(anyone) Download WordPress core files if version is newer or not present
+    # TODO(anyone) Set / update WordPress options
+    # TODO(anyone) Install theme/s
+    # TODO(anyone) Configure WordPress site and delete sample configuration file if present
+    # TODO(anyone) Import WXR content
+    # TODO(anyone) Synchronize content with other environment?
+    # TODO(anyone) Generate files artifact
+    # TODO(anyone) Generate SQL artifact
 
     pass
 
