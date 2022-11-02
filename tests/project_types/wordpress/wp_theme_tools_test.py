@@ -423,6 +423,57 @@ def test_install_theme_given_configuration_file_when_no_parent_theme_then_instal
 
 # endregion
 
+# region parse_theme_metadata()
+
+@patch("logging.info")
+@patch("logging.warning")
+def test_parse_theme_metadata_returns_default_metadata_when_no_css_content_to_parse(logging_warning_mock,
+                                                                                    logging_info_mock):
+    """ Given metadata dict, when no css content, then returns default_metadata """
+    # Arrange
+    css_content: str = ''
+    expected_result = wp_constants.DefaultValues.WORDPRESS_METADATA_EMPTY
+
+    # Act
+    result = sut.parse_theme_metadata(css_content)
+
+    # Assert
+    assert result == expected_result
+
+
+@patch("logging.info")
+@patch("logging.warning")
+def test_parse_theme_metadata_returns_metadata(logging_warning_mock, logging_info_mock, themesdata):
+    """ Given metadata dict, when css content present, then returns metadata parsed """
+    # Arrange
+    css_content: str = themesdata.default_scss_file_example
+    expected_result = wp_constants.DefaultValues.WORDPRESS_METADATA_EMPTY
+
+    # Act
+    result = sut.parse_theme_metadata(css_content)
+
+    # Assert
+    assert result == expected_result
+
+
+@patch("logging.info")
+@patch("logging.warning")
+def test_parse_theme_metadata_creates_environment_variables_when_flag_is_on(logging_warning_mock, logging_info_mock,
+                                                                            themesdata):
+    """ Given metadata dict, when css content present and add_environment_variables is True, then
+     creates environment variables """
+    # Arrange
+    css_content: str = themesdata.default_scss_file_example
+
+    # Act
+    with patch.object(sut, "platform_specific_environment") as platform_specific_mock:
+        with patch.object(platform_specific_mock, "create_environment_variables") as create_environment_variables_mock:
+            sut.parse_theme_metadata(css_content, True)
+
+            # Assert
+            create_environment_variables_mock.assert_called()
+# endregion
+
 # region replace_theme_meta_data_in_package_file()
 
 @patch("builtins.open", new_callable=mock_open, read_data=WordPressData.package_json_example_content)
