@@ -22,6 +22,17 @@ literals = LiteralsCore([WordpressLiterals])
 # region add_cloudfront_forwarded_proto_to_config
 
 
+@patch("pathlib.Path.joinpath")
+def test_add_cloudfront_forwarded_proto_returns_then_no_config_is_present(joinpath_mock, wordpressdata):
+    """ Given environment_config, when no aws_cloudfront on it, then returns """
+    # Arrange
+    wordpress_path = wordpressdata.wordpress_path
+    config = {"settings": {"aws_cloudfront": False}}
+    # Act
+    sut.add_cloudfront_forwarded_proto_to_config(config, wordpress_path)
+    # Assert
+    joinpath_mock.assert_not_called()
+
 @patch("pathlib.Path.exists")
 @patch("builtins.open", new_callable=mock_open, read_data="data")
 def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_not_exists(
