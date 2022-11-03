@@ -190,7 +190,7 @@ def create_configuration_file(environment_configuration: dict, wordpress_path: s
                                      )
 
 
-def create_users(users: dict, wordpress_path: str, debug: bool):
+def create_users(users: list, wordpress_path: str, debug: bool):
     """Creates WordPress users.
 
     Args:

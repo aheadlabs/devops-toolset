@@ -4,7 +4,7 @@ import unittest.mock as mock
 import devops_toolset.tools.cli as sut
 import subprocess
 import devops_toolset.core.log_tools as log_tools
-
+from pyfiglet import Figlet
 
 # region call_subprocess(str)
 
@@ -67,3 +67,20 @@ def test_call_subprocess_given_command_srt_when_stderr_has_lines_then_log_error(
         logging_mock.assert_called_once_with(expected_log_message, log_level)
 
 # endregion call_subprocess(str)
+
+# region print_title
+
+
+@mock.patch("builtins.print")
+def test_print_title(print_mock):
+    """ Given a text, then prints it using a Figlet instance """
+    # Arrange
+    text = "Example text"
+    f = Figlet()
+    title_text = f.renderText(text)
+    # Act
+    sut.print_title(text)
+    # Assert
+    print_mock.assert_called_with(title_text)
+
+# endregion print_title

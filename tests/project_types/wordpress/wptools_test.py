@@ -182,7 +182,7 @@ def test_check_wordpress_files_locale_should_warn_when_not_locale_found_and_not_
 
 @patch("os.path.basename")
 @patch("logging.info")
-def test_check_wordpress_zip_file_format_should_retuurn_version_when_file_name_matches(logging_info_mock,
+def test_check_wordpress_zip_file_format_should_return_version_when_file_name_matches(logging_info_mock,
                                                                                        path_basename_mock,
                                                                                        wordpressdata):
     """ Given zip_file_path, when name matches regex, then returns True and version """
@@ -198,7 +198,7 @@ def test_check_wordpress_zip_file_format_should_retuurn_version_when_file_name_m
 
 @patch("os.path.basename")
 @patch("logging.error")
-def test_check_wordpress_zip_file_format_should_retuurn_version_when_file_name_matches(logging_error_mock,
+def test_check_wordpress_zip_file_format_should_return_none_when_file_name_matches(logging_error_mock,
                                                                                        path_basename_mock,
                                                                                        wordpressdata):
     """ Given zip_file_path, when name matches regex, then returns True and version """
@@ -297,6 +297,43 @@ def test_create_configuration_file_then_calls_wp_cli_create_configuration_with_d
 
 
 # endregion
+
+# region create_users
+
+@patch("devops_toolset.project_types.wordpress.wp_cli.create_user")
+@patch("devops_toolset.project_types.wordpress.wp_cli.user_exists")
+def test_create_users_when_user_does_not_exist_then_create_user(user_exists_mock, create_user_mock, wordpressdata):
+    """ Given users data, when it not exist, then create it  """
+    # Arrange
+    user_exists_mock.return_value = False
+    user = {"user_login": "test_user"}
+    users = [user]
+    wordpress_path = wordpressdata.wordpress_path
+    debug = False
+
+    # Act
+    sut.create_users(users, wordpress_path, debug)
+    # Assert
+    create_user_mock.assert_called_with(user, wordpress_path, debug)
+
+
+@patch("logging.warning")
+@patch("devops_toolset.project_types.wordpress.wp_cli.user_exists")
+def test_create_users_when_user_does_exist_then_warns(user_exists_mock, logging_warning_mock, wordpressdata):
+    """ Given users data, when it not exist, then create it  """
+    # Arrange
+    user_exists_mock.return_value = True
+    wordpress_path = wordpressdata.wordpress_path
+    user = {"user_login": "test_user"}
+    users = [user]
+    debug = False
+    # Act
+    sut.create_users(users, wordpress_path, debug)
+    # Assert
+    logging_warning_mock.assert_called()
+
+
+# endregion create_users
 
 # region download_wordpress()
 
