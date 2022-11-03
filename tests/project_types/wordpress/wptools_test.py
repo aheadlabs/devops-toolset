@@ -20,6 +20,7 @@ from tests.project_types.wordpress.conftest import WordPressData, mocked_request
 
 literals = LiteralsCore([WordpressLiterals])
 
+
 # region add_cloudfront_forwarded_proto_to_config
 
 
@@ -46,7 +47,7 @@ def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_not_exists(
 @patch("builtins.open", new_callable=mock_open, read_data="data")
 @patch("re.search")
 def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_exists_calls_re_search_with_pattern(
-      search_mock, builtins_open, path_exists_mock, wordpressdata):
+        search_mock, builtins_open, path_exists_mock, wordpressdata):
     """Given path to wordpress installation, when wp-config.php exists, then
     searches for specific pattern."""
 
@@ -65,7 +66,7 @@ def test_add_cloudfront_forwarded_proto_snippet_when_wpconfig_exists_calls_re_se
 @patch("pathlib.Path.exists")
 @patch("re.search")
 def test_add_cloudfront_forwarded_proto_snippet_when_no_match_pattern(
-      search_mock, path_exists_mock, wordpressdata):
+        search_mock, path_exists_mock, wordpressdata):
     """Given path to wordpress installation, when no match specific pattern in
      wp-config content ends function."""
 
@@ -89,7 +90,7 @@ def test_add_cloudfront_forwarded_proto_snippet_when_no_match_pattern(
 @patch("re.search")
 @patch("re.sub")
 def test_add_cloudfront_forwarded_proto_snippet_when_match_pattern(
-     sub_mock, search_mock, path_exists_mock, tmp_path, wordpressdata):
+        sub_mock, search_mock, path_exists_mock, tmp_path, wordpressdata):
     """Given path to wordpress installation, when match specific pattern in
      wp-config overwrites content with match substitution."""
 
@@ -132,8 +133,8 @@ def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_up
         calls.append(call(option, wordpress_path, False))
     add_update_option_mock.assert_has_calls(calls)
 
-# endregion add_wp_options
 
+# endregion add_wp_options
 
 # region check_wordpress_files_locale
 
@@ -141,12 +142,12 @@ def test_add_wp_options_given_options_then_calls_wp_cli_add_update_option(add_up
 @patch("devops_toolset.filesystem.tools.search_regex_in_text_file")
 @patch("logging.warning")
 def test_check_wordpress_files_locale_should_warn_when_locale_found_and_not_ok(logging_warning_mock,
-                                                                                   search_regex_mock,  wordpressdata):
+                                                                               search_regex_mock, wordpressdata):
     """ Given locale, when found and not ok, when warns """
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
     locale_found = True
-    locale = 'es_ES'  # The locale intended to be found is en_US, so this will be a mismatch and not_ok
+    locale = 'es_ES'
     locale_match = re.search(wp_constants.Expressions.WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE,
                              wordpressdata.wp_locale_data)
     search_regex_mock.return_value = (locale_found, locale_match)
@@ -159,18 +160,57 @@ def test_check_wordpress_files_locale_should_warn_when_locale_found_and_not_ok(l
 @patch("devops_toolset.filesystem.tools.search_regex_in_text_file")
 @patch("logging.warning")
 def test_check_wordpress_files_locale_should_warn_when_not_locale_found_and_not_default(logging_warning_mock,
-                                                                                   search_regex_mock,  wordpressdata):
+                                                                                        search_regex_mock,
+                                                                                        wordpressdata):
     """ Given locale, when found and not ok, when warns """
     # Arrange
     wordpress_path = wordpressdata.wordpress_path
     locale_found = False
-    locale = 'es_ES'  # The locale intended to be found is en_US, so this will be a mismatch and not_ok
+    locale = 'es_ES'
     locale_match = re.search(wp_constants.Expressions.WORDPRESS_REGEX_VERSION_LOCAL_PACKAGE, "")
     search_regex_mock.return_value = (locale_found, locale_match)
     # Act
     sut.check_wordpress_files_locale(wordpress_path, locale)
     # Assert
     logging_warning_mock.assert_called()
+
+
+# endregion
+
+# region check_wordpress_zip_file_format
+
+
+@patch("os.path.basename")
+@patch("logging.info")
+def test_check_wordpress_zip_file_format_should_retuurn_version_when_file_name_matches(logging_info_mock,
+                                                                                       path_basename_mock,
+                                                                                       wordpressdata):
+    """ Given zip_file_path, when name matches regex, then returns True and version """
+    # Arrange
+    expected_version = "6.0.2"
+    wrodpress_zip_file_name = f'wordpress-{expected_version}.zip'
+    path_basename_mock.return_value = wrodpress_zip_file_name
+    # Act
+    found, version = sut.check_wordpress_zip_file_format(wrodpress_zip_file_name)
+    # Assert
+    assert found and version == expected_version
+
+
+@patch("os.path.basename")
+@patch("logging.error")
+def test_check_wordpress_zip_file_format_should_retuurn_version_when_file_name_matches(logging_error_mock,
+                                                                                       path_basename_mock,
+                                                                                       wordpressdata):
+    """ Given zip_file_path, when name matches regex, then returns True and version """
+    # Arrange
+    expected_version = "6.0.2"
+    wrodpress_zip_file_name = f'wordpress-incorrect_file-{expected_version}.zip'
+    path_basename_mock.return_value = wrodpress_zip_file_name
+    # Act
+    found, version = sut.check_wordpress_zip_file_format(wrodpress_zip_file_name)
+    # Assert
+    assert not found and version is None
+
 
 # endregion
 
@@ -310,6 +350,7 @@ def test_export_database_calls_wp_cli_export_database(export_database_mock, word
     # Assert
     export_database_mock.assert_called_once_with(wordpress_path, dump_file_path, environment_config["wp_cli_debug"])
 
+
 # endregion
 
 # region get_constants()
@@ -385,6 +426,7 @@ def test_get_environment_given_site_config_then_update_url_constants(filter_keys
 
     # Assert
     assert result["wp_config"]["content_url"]["value"] == expected_content_url_value
+
 
 # endregion get_environment()
 
@@ -486,7 +528,8 @@ def test_get_snippet_cloudfront_default_snippet_cloudfront_file_exists(path_exis
 @patch("devops_toolset.project_types.wordpress.wp_cli.import_wxr_content")
 @patch("devops_toolset.project_types.wordpress.wp_cli.delete_post_type_content")
 def test_import_content_from_configuration_file_given_args_then_call_delete_post_type_content(delete_content_mock,
-    import_wxr_content, wordpressdata):
+                                                                                              import_wxr_content,
+                                                                                              wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
 
     # Arrange
@@ -511,7 +554,8 @@ def test_import_content_from_configuration_file_given_args_then_call_delete_post
 @patch("devops_toolset.project_types.wordpress.wp_cli.delete_post_type_content")
 @pytest.mark.parametrize("authors_value", ["create", "skip", "mapping.csv"])
 def test_import_content_from_configuration_file_given_args_then_call_import_wxr_content(delete_content_mock,
-    import_wxr_content, authors_value, wordpressdata):
+                                                                                        import_wxr_content,
+                                                                                        authors_value, wordpressdata):
     """ Given args, for every content type present, should call delete_post_type_content with required data """
 
     # Arrange
@@ -641,6 +685,7 @@ def test_install_plugins_given_configuration_file_when_plugins_present_then_inst
                            environment_config["wp_cli_debug"])
         calls.append(plugin_call)
     install_plugin_mock.assert_has_calls(calls)
+
 
 # endregion
 
@@ -918,6 +963,7 @@ def test_scaffold_wordpress_given_parameters_when_path_exists_must_add_items(
         sut.scaffold_wordpress_basic_project_structure(root_path, site_config)
         # Assert
         add_item_mock.assert_called_once_with(items["items"][0], root_path)
+
 
 # endregion scaffold_wordpress_basic_project_structure
 
