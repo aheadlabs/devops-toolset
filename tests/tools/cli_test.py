@@ -68,6 +68,40 @@ def test_call_subprocess_given_command_srt_when_stderr_has_lines_then_log_error(
 
 # endregion call_subprocess(str)
 
+# region call_subprocess_with_result
+
+
+@mock.patch.object(subprocess, "Popen")
+def test_call_subprocess_with_result_logs_stdouterr_when_err_and_log_err_is_enabled(subprocess_mock, clidata):
+    """ Given command, logs to stdouterr when command returned error and log_err is enabled """
+    # Arrange
+    foo_command = clidata.sample_command
+    subprocess_mock.return_value.return_code = 0
+    subprocess_mock.return_value.communicate.return_value = (b"Some error", b"Some error")
+
+    # Act
+    with mock.patch.object(log_tools, "log_stdouterr") as logging_mock:
+        sut.call_subprocess_with_result(foo_command, True)
+        # Assert
+        logging_mock.assert_called()
+
+
+@mock.patch.object(subprocess, "Popen")
+def test_call_subprocess_with_result_returns_err_without_logging_when_log_err_disabled(subprocess_mock, clidata):
+    """ Given command, logs to stdouterr when command returned error and log_err is enabled """
+    # Arrange
+    foo_command = clidata.sample_command
+    expected_return = b"Some output"
+    subprocess_mock.return_value.return_code = 0
+    subprocess_mock.return_value.communicate.return_value = (expected_return, None)
+
+    # Act
+    result = sut.call_subprocess_with_result(foo_command)
+    # Assert
+    assert expected_return.decode("utf-8", errors="backslashreplace") == result
+
+# endregion
+
 # region print_title
 
 

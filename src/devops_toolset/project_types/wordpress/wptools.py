@@ -605,19 +605,6 @@ def install_plugins_from_configuration_file(site_configuration: dict, environmen
     git_tools.purge_gitkeep(plugins_path)
 
 
-def install_recommended_plugins():
-    """ Uses TGMPA core to decide and install automatically the recommended plugins.
-
-    See Also: https://tgmpluginactivation.com/
-    See Also: https://github.com/itspriddle/wp-cli-tgmpa-plugin
-    Args:
-
-    """
-
-    # TODO(alberto.carbonell) Develop an wp-cli extension.
-    pass
-
-
 def install_wordpress_core(site_config: dict, environment_config: dict, wordpress_path: str, admin_password: str):
     """Installs WordPress core files using a site configuration file.
 
