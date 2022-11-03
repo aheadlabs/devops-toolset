@@ -224,7 +224,7 @@ def test_convert_wp_config_token_given_token_when_date_match_then_calls_wp_cli_e
     # Act
     result = sut.convert_wp_config_token(token, wordpress_path)
     # Assert
-    assert result == expected_resul
+    assert result == expected_result
 
 # endregion
 
