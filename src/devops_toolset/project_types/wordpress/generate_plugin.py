@@ -19,7 +19,7 @@ import devops_toolset.tools.cli as cli
 import devops_toolset.tools.devops_toolset_utils
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App
-from devops_toolset.devops_platforms.constants import Urls
+from devops_toolset.project_types.wordpress.constants import Urls
 from devops_toolset.project_types.wordpress.Literals import Literals as WordpressLiterals
 from devops_toolset.project_types.wordpress.wp_plugin_tools import create_plugin
 
@@ -58,7 +58,7 @@ def main(root_path: str):
 
         # Download defaults from GitHub
         for file in required_files_not_present:
-            url = Urls.plugin_bootstrap_required_files[file]
+            url = Urls.PLUGIN_BOOTSTRAP_REQUIRED_FILES[file]
             file_name = paths.get_file_name_from_url(url)
             file_path = pathlib.Path.joinpath(pathlib.Path(root_path), file_name)
 

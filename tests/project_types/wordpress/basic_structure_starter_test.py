@@ -79,8 +79,8 @@ def test_add_item_given_parameters_when_child_condition_is_false_and_have_childr
         # Act
         BasicStructureStarter(token_replacements).add_item(item, base_path)
         # Assert
-        calls = [call(expected_path_1),
-                 call(expected_path_2)]
+        calls = [call(expected_path_1, True),
+                 call(expected_path_2, True)]
         is_valid_path_mock.assert_has_calls(calls, any_order=True)
 
 
