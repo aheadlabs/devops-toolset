@@ -30,7 +30,7 @@ def test_check_required_files_raises_value_error_when_not_required_files_and_not
     """ Given list of required files, when list does not contain elements and user does not want to use defaults, then
     raises a ValueError """
     # Arrange
-    required_files_list = ["*plugin-config.json", "*plugin-structure.json"]
+    required_files_list = wordpressdata.required_files_list_two_files
     prompt_yn_mock.return_value = False
     root_path = wordpressdata.root_path
     # Act
@@ -51,7 +51,7 @@ def test_check_required_files_downloads_files_when_use_defaults(files_exist_filt
     """ Given list of required files, when list does not contain elements and user does not want to use defaults, then
     raises a ValueError """
     # Arrange
-    required_files_list = ["*plugin-config.json"]
+    required_files_list = wordpressdata.required_files_list_one_file
     files_exist_filtered.return_value = required_files_list
     required_files_urls = {"*plugin-config.json": "some_url"}
     mocks.requests_get_mock.side_effect = mocked_requests_get

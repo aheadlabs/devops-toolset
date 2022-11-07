@@ -128,6 +128,8 @@ class WordPressData:
     wordpress_path_part = "/wordpress"
     wordpress_path_err = "/nonexistentpath"
     empty_dict = "{}"
+    required_files_list_one_file = ["*plugin-config.json"]
+    required_files_list_two_files = ["*plugin-config.json", "*plugin-structure.json"]
     environment_config_aws_cloudfront_true = {
         "wp_cli_debug": True,
         "wp_config": {

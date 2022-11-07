@@ -1,3 +1,5 @@
+""" Here we must place the common methods that are used in more than one script """
+
 from clint.textui import prompt
 from devops_toolset.core.LiteralsCore import LiteralsCore
 from devops_toolset.core.app import App

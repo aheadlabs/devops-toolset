@@ -260,5 +260,19 @@ def test_get_basic_paths_returns_tuple(realpath_mock):
 
 # region generate_additional_wpconfig_files
 
+@patch("devops_toolset.filesystem.paths.is_valid_path")
+@patch("shutil.move")
+def test_generate_additional_wpconfig_files_moves_file_if_is_valid_path(shutil_move_mock, is_valid_path_mock,
+                                                                        wordpressdata):
+    """ Given site_config and wordpress path, when its valid, should call shutils's move """
+    # Arrange
+    site_config = json.loads(wordpressdata.site_config_content)
+    wordpress_path = wordpressdata.wordpress_path
+    # Act
+    sut.generate_additional_wpconfig_files(site_config, {}, [], {}, wordpress_path)
+    # Assert
+    shutil_move_mock.assert_called()
 
+
+# TODO (alberto.carbonell) Finish generate_additional_wpconfig_files tests
 # endregion
