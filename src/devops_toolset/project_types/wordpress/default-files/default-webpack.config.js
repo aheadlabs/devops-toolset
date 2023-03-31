@@ -106,14 +106,26 @@ module.exports = (env) => {
             }),
             new FileManagerPlugin({
                 events: {
-                    onEnd: {
-                        copy: [
-                            {
+                    onStart: [
+                        {
+                            delete: [
+                                {
+                                    source: path.resolve(__dirname, wordpressDistPath),
+                                    options: {
+                                        force: true
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    onEnd: [
+                        {
+                            copy: [{
                                 source: path.resolve(__dirname, relativeDistPath),
                                 destination: path.resolve(__dirname, wordpressDistPath)
-                            }
-                        ]
-                    }
+                            }]
+                        }
+                    ]
                 }
             }),
         ],
