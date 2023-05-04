@@ -141,6 +141,9 @@
             },
             "wpml_auto_updates": {
               "$ref": "#/definitions/wp_config_property_boolean"
+            },
+            "post_revisions": {
+              "$ref": "#/definitions/wp_config_property_number"
             }
           },
           "additionalProperties": false,
