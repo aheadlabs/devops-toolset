@@ -26,7 +26,7 @@ This project contains general purpose, DevOps-related, scripts and tools.
 ## Prerequisites
 
 - You need Python 3.8.2+ installed on your machine. Please follow the instructions on the [Python web site](https://www.python.org/downloads/).
-- You also need to have pip package manager installed.
+- You also need to have [pip package manager](https://pypi.org/project/pip/) installed.
 
 ## How to use
 
