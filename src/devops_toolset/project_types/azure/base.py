@@ -1,5 +1,5 @@
-"""Provides deployment tools for Azure cloud."""
-import devops_toolset.tools.cli as cli
+"""Provides support for basic operations in Azure."""
+
 import logging
 
 from devops_toolset.core.app import App
