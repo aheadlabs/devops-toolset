@@ -2,8 +2,10 @@
 
 from devops_toolset.core.app import App
 from devops_toolset.core.ValueDictsBase import ValueDictsBase
+import gettext
 
 app: App = App()
+_ = gettext.gettext
 
 
 class Literals(ValueDictsBase):
@@ -11,6 +13,14 @@ class Literals(ValueDictsBase):
 
     _info = {
         "azure_cli_command_output": _("I got this output from the Azure CLI command:\n{output}"),
+        "azure_cli_resource_group_checking": _("Checking if resource group {name} exists..."),
+        "azure_cli_resource_group_created": _("Resource group {name} created."),
+        "azure_cli_resource_group_creating": _("Creating resource group {name}..."),
+        "azure_cli_resource_group_delete_failed": _("Resource group '{name}' deleted."),
+        "azure_cli_resource_group_deleting": _("Deleting resource group '{name}'..."),
+        "azure_cli_resource_group_deleted": _("Resource group '{name}' deleted."),
+        "azure_cli_resource_group_exists": _("Resource group {name} exists."),
+        "azure_cli_resource_group_not_exists": _("Resource group {name} does not exist."),
         "azure_cli_executing_command": _("Executing command => {command}"),
         "azure_cli_logging_in_service_principal":
             _("Logging into Azure using service principal {service_principal} on tenant {tenant}"),

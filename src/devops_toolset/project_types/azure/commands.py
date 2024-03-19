@@ -32,4 +32,7 @@ class Commands(ValueDictsBase):
         "azure_cli_extension_add": "az extension add --name {name}",
         "azure_cli_login_service_principal": "az login --service-principal -u {user}  -p {secret} --tenant {tenant}",
         "azure_cli_logout": "az logout",
+        "azure_cli_resource_group_create": "az group create --name {name} --location {location}",
+        "azure_cli_resource_group_delete": "az group delete --name {name} --yes --no-wait",
+        "azure_cli_resource_group_exists": "az group exists --name {name}",
     }
