@@ -12,9 +12,12 @@ class Literals(ValueDictsBase):
     """ValueDicts for the Azure module."""
 
     _info = {
+        "azure_cli_apim_apis_found": _("Found {number} APIs in API Management service {name}."),
+        "azure_cli_apim_apis_not_found": _("No APIs found in API Management service {name}."),
         "azure_cli_apim_check_failed": _("Failed to check if API Management service {name} exists."),
         "azure_cli_apim_checking": _("Checking if API Management service {name} exists..."),
         "azure_cli_apim_exists": _("API Management service {name} exists."),
+        "azure_cli_apim_getting_apis": _("Getting APIs from API Management service {name}..."),
         "azure_cli_apim_not_exists": _("API Management service {name} does not exist."),
         "azure_cli_command_output": _("I got this output from the Azure CLI command:\n{output}"),
         "azure_cli_resource_group_checking": _("Checking if resource group {name} exists..."),

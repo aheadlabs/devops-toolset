@@ -31,3 +31,21 @@ def check_apim_exists(resource_group_name, apim_name):
     else:
         logging.error(literals.get("azure_cli_apim_check_failed").format(name=apim_name))
         return False
+
+
+def get_apim_apis(resource_group_name, apim_name):
+    """Gets the list of APIs in an API Management service."""
+
+    logging.info(literals.get("azure_cli_apim_getting_apis").format(name=apim_name))
+    result = cli.call_subprocess_with_result(commands.get("azure_cli_apim_get_apis")
+                                             .format(resource_group_name=resource_group_name, name=apim_name))
+
+    if isinstance(result, str):
+        json_result = json.loads(result)
+        logging.info(literals.get("azure_cli_apim_apis_found").format(number=len(json_result), name=apim_name))
+        log_tools.log_list(['\t' + api.get('displayName') for api in json_result])
+        return json_result
+    elif isinstance(result, tuple):
+        logging.error(literals.get("azure_cli_apim_apis_not_found").format(name=apim_name))
+        logging.error(result[1])
+        return None
