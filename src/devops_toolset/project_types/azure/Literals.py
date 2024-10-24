@@ -33,6 +33,8 @@ class Literals(ValueDictsBase):
             _("Logging into Azure using service principal {service_principal} on tenant {tenant}"),
         "azure_cli_logging_out":
             _("Logging out from Azure (current logged in account)"),
+        "openapi_contracts_found": _("Found {number} OpenAPI contracts in {directory}."),
+        "openapi_contracts_found_deployable": _("Parsed {number} deployable OpenAPI contracts."),
     }
     _errors = {
         "azure_cli_db_mysql_flexible_server_execute_file_query_parameters_error":
